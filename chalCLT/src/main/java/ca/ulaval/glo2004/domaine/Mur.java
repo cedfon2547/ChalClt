@@ -1,0 +1,165 @@
+package ca.ulaval.glo2004.domaine;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * La classe Mur représente un mur du chalet. Un mur a un type, une hauteur, une largeur et une liste d'accessoires.
+ */
+public class Mur {
+    
+    /**
+     * Le type de mur.
+     */
+    private final TypeMur type;
+    
+    /**
+     * La liste des accessoires du mur.
+     */
+    private List<Accessoire> accessoires = new ArrayList<Accessoire>();
+    
+    /**
+     * Les dimensions du mur (hauteur et largeur).
+     */
+    private double[] dimensions = new double[2];
+    
+    /**
+     * Constructeur de la classe Mur.
+     * @param type Le type de mur.
+     * @param hauteur La hauteur du mur.
+     * @param largeur La largeur du mur.
+     */
+    public Mur(TypeMur type, double hauteur, double largeur) {
+        this.type = type;
+        this.dimensions = new double[] {hauteur, largeur};
+    }
+
+    /**
+     * Constructeur de la classe Mur.
+     * @param type Le type de mur.
+     * @param hauteur La hauteur du mur.
+     * @param largeur La largeur du mur.
+     * @param accessoires La liste des accessoires du mur.
+     */
+    public Mur(TypeMur type, double hauteur, double largeur, List<Accessoire> accessoires) {
+        this(type, hauteur, largeur);
+        this.accessoires = accessoires;
+    }
+
+    /**
+     * Retourne le type de mur.
+     * @return Le type de mur.
+     */
+    public TypeMur getType() {
+        return type;
+    }
+
+    /**
+     * Retourne la hauteur du mur.
+     * @return La hauteur du mur.
+     */
+    public double getHauteur() {
+        return dimensions[0];
+    }
+
+    /**
+     * Retourne la largeur du mur.
+     * @return La largeur du mur.
+     */
+    public double getLargeur() {
+        return dimensions[1];
+    }
+
+    /**
+     * Retourne la liste des accessoires du mur.
+     * @return La liste des accessoires du mur.
+     */
+    public List<Accessoire> getAccessoires() {
+        return accessoires;
+    }
+
+    /**
+     * Modifie la hauteur du mur.
+     * @param hauteur La nouvelle hauteur du mur.
+     */
+    public void setHauteur(double hauteur) {
+        dimensions[0] = hauteur;
+    }
+
+    /**
+     * Modifie la largeur du mur.
+     * @param largeur La nouvelle largeur du mur.
+     */
+    public void setLargeur(double largeur) {
+        dimensions[1] = largeur;
+    }
+
+    /**
+     * Modifie la liste des accessoires du mur.
+     * @param accessoires La nouvelle liste des accessoires du mur.
+     */
+    public void setAccessoires(List<Accessoire> accessoires) {
+        this.accessoires = accessoires;
+    }
+
+    /**
+     * Convertit le mur en un objet de transfert de données (DTO).
+     * @return Le DTO correspondant au mur.
+     */
+    public MurDTO toDTO() {
+        return new MurDTO(this);
+    }
+
+    /**
+     * La classe MurDTO représente un objet de transfert de données (DTO) pour un mur.
+     */
+    public static class MurDTO implements java.io.Serializable {
+        
+        /**
+         * Le type de mur.
+         */
+        public TypeMur type;
+        
+        /**
+         * La hauteur du mur.
+         */
+        public double hauteur;
+        
+        /**
+         * La largeur du mur.
+         */
+        public double largeur;
+        
+        /**
+         * La liste des accessoires du mur.
+         */
+        public List<Accessoire.AccessoireDTO> accessoires;
+
+        /**
+         * Constructeur de la classe MurDTO.
+         * @param mur Le mur à partir duquel créer le DTO.
+         */
+        public MurDTO(Mur mur) {
+            this.type = mur.type;
+            this.hauteur = mur.getHauteur();
+            this.largeur = mur.getLargeur();
+            this.accessoires = new ArrayList<Accessoire.AccessoireDTO>();
+            for (Accessoire accessoire : mur.getAccessoires()) {
+                this.accessoires.add(accessoire.toDTO());
+            }
+        }
+    }
+
+    /**
+     * Convertit un objet de transfert de données (DTO) en un mur.
+     * @param dto Le DTO à partir duquel créer le mur.
+     * @return Le mur correspondant au DTO.
+     */
+    public static Mur fromDTO(MurDTO dto) {
+        List<Accessoire> accessoires = new ArrayList<Accessoire>();
+        for (Accessoire.AccessoireDTO accessoireDTO : dto.accessoires) {
+            accessoires.add(Accessoire.fromDTO(accessoireDTO));
+        }
+        return new Mur(dto.type, dto.hauteur, dto.largeur, accessoires);
+    }
+}
