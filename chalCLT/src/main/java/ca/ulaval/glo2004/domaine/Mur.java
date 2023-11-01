@@ -263,7 +263,6 @@ public class Mur {
     public boolean VerifierMargeAcc(double[] p_position, double[] p_dimension, double margeminimal){
         return (p_position[0] - margeminimal < 0 && p_dimension[0] + p_position[0] + margeminimal > this.getLargeur()) && (p_position[1] - margeminimal < 0 && p_dimension[1] + p_position[1] + margeminimal > this.getHauteur());
     }
-
     /* pour affichage si jamais
     public static double[] getPosition(TypeMur type, double hauteur, double largeur, double longeur){
         switch(type){
