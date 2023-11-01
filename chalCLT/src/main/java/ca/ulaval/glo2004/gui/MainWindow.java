@@ -1,10 +1,12 @@
 package ca.ulaval.glo2004.gui;
 
 import java.awt.BorderLayout;
+import java.util.UUID;
 
 import javax.swing.JTable;
 import javax.swing.event.TableModelListener;
 
+import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.Controleur;
 import ca.ulaval.glo2004.domaine.utils.ImperialDimension;
@@ -38,6 +40,8 @@ public class MainWindow extends javax.swing.JFrame {
     public javax.swing.JPanel sidePanelTopSection;
     public javax.swing.JPanel sidePanelBottomSection;
     public JTable tableProprietesChalet;
+
+    public JTable tableProprietesAccessoire;
     public DrawingPanel drawingPanel;
     public ArbreDesComposantesChalet arbreDesComposantesChalet;
 
@@ -71,7 +75,7 @@ public class MainWindow extends javax.swing.JFrame {
         sidePanelTopSection.setLayout(sidePanelTopSectionLayout);
         sidePanelBottomSection.setLayout(sidePanelBottomSectionLayout);
 
-        initializePropertiesTable();
+        initializePropertiesTableChalet();
 
 
         sideSectionLayout.setHorizontalGroup(
@@ -116,7 +120,7 @@ public class MainWindow extends javax.swing.JFrame {
         add(mainWindowSplitPane);
     }
 
-    private void initializePropertiesTable() {
+    private void initializePropertiesTableChalet() {
         // TODO: Maybe move this to a separate class
         Chalet.ChaletDTO dtoChalet = controleur.getChalet();
         String[] columnNames = new String[] {
@@ -195,7 +199,81 @@ public class MainWindow extends javax.swing.JFrame {
         });
 
     }
+    private void initializePropertiesTableAccessoire(UUID uuid){
+        Accessoire.AccessoireDTO dtoAcessoire = controleur.getAccessoire(uuid);
+        String[] columnNames = new String[] {
+                "Propriété",
+                "Valeur"
+        };
+        Object[][] props = new Object[][] {
+                { "Hauteur", ImperialDimension.convertToImperial(dtoAcessoire.dimensions[1]) },
+                { "Largeur", ImperialDimension.convertToImperial(dtoAcessoire.dimensions[0]) },
+                { "Position x", ImperialDimension.convertToImperial(dtoAcessoire.position[0]) },
+                { "Position y", ImperialDimension.convertToImperial(dtoAcessoire.position[1])}
+        };
 
+        javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(props, columnNames) {
+            @Override
+            public int getColumnCount() {
+                return columnNames.length;
+            }
+
+            @Override
+            public int getRowCount() {
+                return props.length;
+            }
+
+            @Override
+            public String getColumnName(int col) {
+                return columnNames[col];
+            }
+
+            @Override
+            public Object getValueAt(int row, int col) {
+                return props[row][col];
+            }
+
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                return String.class;
+            }
+
+            @Override
+            public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+                System.out.println("Setting value at " + rowIndex + "," + columnIndex + " to " + aValue
+                        + " (an instance of " + aValue.getClass() + ")");
+
+                if (rowIndex == 0 || rowIndex == 1 || rowIndex == 2 || rowIndex == 3) {
+                    ImperialDimension dim = ImperialDimension.parseFromString((String) aValue);
+                    System.out.println("Dimension: " + dim);
+                    if (dim == null) {
+                        return;
+                    }
+
+                    props[rowIndex][columnIndex] = dim.toString();
+                    fireTableCellUpdated(rowIndex, columnIndex);
+                    return;
+                }
+
+                props[rowIndex][columnIndex] = aValue;
+                fireTableCellUpdated(rowIndex, columnIndex);
+            }
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 1;
+            }
+        };
+        tableProprietesAccessoire = new javax.swing.JTable(model);
+        tableProprietesAccessoire.getModel().addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(javax.swing.event.TableModelEvent evt) {
+                System.out.println("Table changed" + " " + evt.getFirstRow() + " " + evt.getLastRow() + " "
+                        + evt.getColumn() + " " + tableProprietesAccessoire.getValueAt(evt.getFirstRow(), evt.getColumn()));
+            }
+        });
+
+    }
     public Controleur getControleur() {
         return controleur;
     }

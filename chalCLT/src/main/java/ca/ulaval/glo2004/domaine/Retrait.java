@@ -1,22 +1,22 @@
 package ca.ulaval.glo2004.domaine;
 
 /*
- * La classe Retrait représente un retrait dans une pièce. Un retrait est une zone où il n'y a pas de mur, 
- * de colonne ou d'obstacle. Cette classe contient des informations sur le type de retrait, les dimensions 
+ * La classe Retrait représente un retrait dans une pièce. Un retrait est une zone où il n'y a pas de mur,
+ * de colonne ou d'obstacle. Cette classe contient des informations sur le type de retrait, les dimensions
  * et la position du retrait dans la pièce.
  */
 public class Retrait {
-    
+
     /**
      * Le type de retrait.
      */
     private TypeRetrait type;
-    
+
     /**
      * Les dimensions du retrait.
      */
     private double[] dimensions;
-    
+
     /**
      * La position du retrait.
      */
@@ -102,17 +102,17 @@ public class Retrait {
      * La classe RetraitDTO représente un objet de transfert de données pour un retrait.
      */
     public static class RetraitDTO implements java.io.Serializable {
-        
+
         /**
          * Le type de retrait.
          */
         public TypeRetrait type;
-        
+
         /**
          * Les dimensions du retrait.
          */
         public double[] dimensions;
-        
+
         /**
          * La position du retrait.
          */

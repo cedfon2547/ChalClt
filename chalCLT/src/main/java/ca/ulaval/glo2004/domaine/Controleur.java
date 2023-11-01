@@ -1,5 +1,7 @@
 package ca.ulaval.glo2004.domaine;
 
+import java.util.UUID;
+
 public class Controleur {
     private static Controleur instance = null;
     private ChalCLTProjet projectActif;
@@ -17,9 +19,20 @@ public class Controleur {
         return instance;
     }
 
-    
+
     public Chalet.ChaletDTO getChalet() {
         return projectActif.getChalet().toDTO(); /* Return DTO */
+    }
+
+    public Accessoire.AccessoireDTO getAccessoire(UUID uuid){
+        for (Mur mur: this.projectActif.getChalet().getMurs()){
+            for(Accessoire accessoire: mur.getAccessoires()){
+                if(accessoire.getAccessoireId().equals(uuid)){
+                    return accessoire.toDTO();
+                }
+            }
+        }
+        return null;
     }
 
     public void setChalet(Chalet.ChaletDTO chalet) {

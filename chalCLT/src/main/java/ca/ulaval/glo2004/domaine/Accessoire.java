@@ -5,11 +5,12 @@ import java.util.UUID;
 
 /**
  * Représente un accessoire qui peut être ajouté à un chalet.
- * Hérite de {@link ca.ulaval.glo2004.domain.Retrait}.
+ * Hérite de {@link ca.ulaval.glo2004.domaine.Retrait}.
  */
 public class Accessoire extends Retrait {
     private TypeAccessoire accessoireType;
     private UUID accessoireId;
+    private boolean validiterEtat;
 
     /**
      * Construit un objet Accessoire avec le type, la position et les dimensions spécifiés.
@@ -20,6 +21,7 @@ public class Accessoire extends Retrait {
     public Accessoire(TypeAccessoire accessoireType, double[] position, double[] dimensions) {
         super(TypeRetrait.Accessoire, position, dimensions);
         this.accessoireType = accessoireType;
+        this.validiterEtat = true;
         this.accessoireId = UUID.randomUUID();
     }
 
@@ -48,6 +50,12 @@ public class Accessoire extends Retrait {
     }
 
     /**
+     * Retourne la validiter de l'accessoire
+     * @return validerEtat
+     */
+    public boolean getValiditerEtat(){return validiterEtat;}
+
+    /**
      * Définit le type de l'accessoire.
      * @param accessoireType le nouveau type de l'accessoire
      */
@@ -64,16 +72,34 @@ public class Accessoire extends Retrait {
     }
 
     /**
+     *  Definit la validiter de l'accessoire
+     * @param p_validiterEtat
+     */
+    public void setValiditerEtat(boolean p_validiterEtat){this.validiterEtat = p_validiterEtat;}
+
+
+    /**
+     * Update la position de l'accessoire
+     * @param accessoireDTO
+     */
+    public void update(AccessoireDTO accessoireDTO){
+        this.setDimensions(accessoireDTO.dimensions.clone());
+        this.setPosition(accessoireDTO.position.clone());
+    }
+
+
+
+    /**
      * Retourne un objet AccessoireDTO représentant cet objet Accessoire.
      * @return un objet AccessoireDTO représentant cet objet Accessoire
      */
     public AccessoireDTO toDTO() {
         return new AccessoireDTO(this);
     }
-    
+
     /**
      * Représente un objet de transfert de données pour un objet Accessoire.
-     * Hérite de {@link ca.ulaval.glo2004.domain.Retrait.RetraitDTO}.
+     * Hérite de {@link ca.ulaval.glo2004.domaine.Retrait.RetraitDTO}.
      */
     public static class AccessoireDTO extends Retrait.RetraitDTO {
         public TypeAccessoire accessoireType;
@@ -98,4 +124,7 @@ public class Accessoire extends Retrait {
     public static Accessoire fromDTO(AccessoireDTO dto) {
         return new Accessoire(dto);
     }
+
 }
+
+
