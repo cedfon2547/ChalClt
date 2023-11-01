@@ -227,14 +227,14 @@ public class Mur {
     }
 
     /**
-     *
+     *Permet de voir la validité de l'accessoire par rapport au autre accessoire
      * @param p_position de l'objet qu'on veut verifier
      * @param p_dimension de l'objet qu'on veut verifier
      * @return boolean qui represente sa validite
      */
-    public boolean VerifierCollisionAcc(double[] p_position, double[] p_dimension){
+    public boolean verifierCollisionAcc(double[] p_position, double[] p_dimension, double margeacc){
 
-        Rectangle accrec = new Rectangle((int)p_position[0], (int)p_position[1], (int)p_dimension[0], (int)p_dimension[1]);
+        Rectangle accrec = new Rectangle((int)(p_position[0]-margeacc), (int)(p_position[1]-margeacc), (int)(p_dimension[0] + 2*margeacc), (int)(p_dimension[1]+ 2*margeacc));
         for (Accessoire accessoire: accessoires){
             Rectangle inters = new Rectangle((int)accessoire.getPosition()[0], (int)accessoire.getPosition()[1],(int)accessoire.getDimensions()[0], (int)accessoire.getDimensions()[1]);
             boolean intersect = accrec.intersects(inters);
@@ -242,6 +242,44 @@ public class Mur {
         }
         return false;
     }
+
+    /**
+     * Meme chose que verifierCollisionAcc mais avec une marge de 0 si on ne le passe pas en parametre
+     * @param p_position
+     * @param p_dimension
+     * @return
+     */
+    public boolean verifierCollisionAcc(double[] p_position, double[] p_dimension){
+        return this.verifierCollisionAcc(p_position, p_dimension, 0);
+    }
+
+    /**
+     *Permet de voir si l'accessoire est dans une position valide par rapport au mur et sa marge
+     * @param p_position position de l'accessoire
+     * @param p_dimension dimensions de l'accessoire
+     * @param margeminimal marge minimale du projet
+     * @return la validité
+     */
+    public boolean VerifierMargeAcc(double[] p_position, double[] p_dimension, double margeminimal){
+        return (p_position[0] - margeminimal < 0 && p_dimension[0] + p_position[0] + margeminimal > this.getLargeur()) && (p_position[1] - margeminimal < 0 && p_dimension[1] + p_position[1] + margeminimal > this.getHauteur());
+    }
+
+    /* pour affichage si jamais
+    public static double[] getPosition(TypeMur type, double hauteur, double largeur, double longeur){
+        switch(type){
+            // Les positions sont relatif sont au chalet sans les margess
+            case Droit:
+                return new double[]{largeur, hauteur, 0};
+            case Gauche:
+                return new double[]{0, hauteur, longeur};
+            case Facade:
+                return new double[]{0,hauteur,0};
+            case Arriere:
+                return new double[]{largeur, hauteur, longeur};
+            default:
+                throw new IllegalArgumentException("Type de mur invalide");
+        }
+    }*/
 
 
 }

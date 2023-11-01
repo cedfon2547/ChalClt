@@ -8,7 +8,8 @@ public class Chalet {
     private double epaisseurMur = 1.0;
     private TypeSensToit sensToit = TypeSensToit.Nord;
     private double angleToit = 20.0;
-    private double margeAccessoire = 0.0;
+    private double margeAccessoire = 3.0;
+
 
     // TODO: rallon, pignon
     private Mur[] murs = new Mur[] { new Mur(TypeMur.Facade, hauteur, largeur), new Mur(TypeMur.Arriere, hauteur, largeur), new Mur(TypeMur.Droit, hauteur, longueur), new Mur(TypeMur.Gauche, hauteur, longueur) };
