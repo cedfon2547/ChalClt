@@ -1,9 +1,14 @@
 package ca.ulaval.glo2004.gui.components;
 
 import java.awt.event.MouseAdapter;
-import javax.swing.tree.TreePath;
 
-import ca.ulaval.glo2004.gui.MainWindow;;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+
+import ca.ulaval.glo2004.domaine.Chalet;
+import ca.ulaval.glo2004.gui.MainWindow;
 
 public class ArbreDesComposantesChalet extends javax.swing.JPanel {
     MainWindow mainWindow;
@@ -31,12 +36,13 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
         titledBorder = javax.swing.BorderFactory.createTitledBorder("Composantes");
         setBorder(titledBorder);
 
+        String nom = this.mainWindow.getControleur().getChalet().nom;
         treeScrollPane = new javax.swing.JScrollPane();
         arbreComposantesChalet = new javax.swing.JTree();
 
         arbreComposantesChalet.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
-        chaletNode = new javax.swing.tree.DefaultMutableTreeNode("NomProjet");
+        chaletNode = new javax.swing.tree.DefaultMutableTreeNode(nom);
         mursNode = new javax.swing.tree.DefaultMutableTreeNode("Murs");
         toitNode = new javax.swing.tree.DefaultMutableTreeNode("Toit");
         murFacadeNode = new javax.swing.tree.DefaultMutableTreeNode("Façade");
@@ -47,6 +53,17 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
         toitRallongeVerticaleNode = new javax.swing.tree.DefaultMutableTreeNode("Rallonge verticale");
         toitPignonDroitNode = new javax.swing.tree.DefaultMutableTreeNode("Pignon droit");
         toitPignonGaucheNode = new javax.swing.tree.DefaultMutableTreeNode("Pignon gauche");
+
+        this.mainWindow.getControleur().addPropertyChangeListener("chalet", new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getPropertyName() == "chalet") {
+                    Chalet.ChaletDTO chaletDTO = (Chalet.ChaletDTO) evt.getNewValue();
+                    chaletNode.setUserObject(chaletDTO.nom);
+                    ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeChanged(chaletNode);
+                    //chaletNode = new javax.swing.tree.DefaultMutableTreeNode(evt.getNewValue().toString());
+                }
+            }
+        });
 
         javax.swing.tree.DefaultMutableTreeNode murFacadeAccChild1Node = new javax.swing.tree.DefaultMutableTreeNode(
                 "fenêtre_1");
@@ -131,22 +148,22 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                     switch (path.getLastPathComponent().toString()) {
                         case "Façade":
                             System.out.println("Facade");
-                            mainWindow.drawingPanel.activated = DrawingPanel.TypeDeVue.Facade;
+                            mainWindow.drawingPanel.vueActive = DrawingPanel.TypeDeVue.Facade;
                             mainWindow.drawingPanel.scene.getCamera().setDirection(DrawingPanel.TypeDeVue.vueFacade());
                             break;
                         case "Arrière":
                             System.out.println("Arriere");
-                            mainWindow.drawingPanel.activated = DrawingPanel.TypeDeVue.Arriere;
+                            mainWindow.drawingPanel.vueActive = DrawingPanel.TypeDeVue.Arriere;
                             mainWindow.drawingPanel.scene.getCamera().setDirection(DrawingPanel.TypeDeVue.vueArriere());
                             break;
                         case "Mur droit":
                             System.out.println("Mur droit");
-                            mainWindow.drawingPanel.activated = DrawingPanel.TypeDeVue.Droite;
+                            mainWindow.drawingPanel.vueActive = DrawingPanel.TypeDeVue.Droite;
                             mainWindow.drawingPanel.scene.getCamera().setDirection(DrawingPanel.TypeDeVue.vueDroite());
                             break;
                         case "Mur gauche":
                             System.out.println("Mur gauche");
-                            mainWindow.drawingPanel.activated = DrawingPanel.TypeDeVue.Gauche;
+                            mainWindow.drawingPanel.vueActive = DrawingPanel.TypeDeVue.Gauche;
                             mainWindow.drawingPanel.scene.getCamera().setDirection(DrawingPanel.TypeDeVue.vueGauche());
                             break;
                         case "Panneau supérieur":

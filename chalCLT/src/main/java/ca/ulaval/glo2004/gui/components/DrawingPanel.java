@@ -13,11 +13,11 @@ import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.TypeAccessoire;
 import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.Rasterizer;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.Rasterizer;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.base.Vector3D;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.mesh.TriangleMesh;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.scene.Camera;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.scene.Scene;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.gui.MainWindow;
 
@@ -33,7 +33,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             { "Droite", TypeDeVue.Droite.toString(), null },
             { "Gauche", TypeDeVue.Gauche.toString(), null },
     };
-    TypeDeVue activated = TypeDeVue.Dessus;
+    TypeDeVue vueActive = TypeDeVue.Dessus;
     javax.swing.JToolBar barreOutils;
 
     public DrawingPanel(MainWindow mainWindow) {
@@ -43,6 +43,8 @@ public class DrawingPanel extends javax.swing.JPanel {
         this.rasterizer = new Rasterizer(this.scene);
 
         this.scene.getLight().setPosition(new Vector3D(getWidth(), 200, 0));
+        //this.scene.getLight().setAmbientIntensity(0.6);
+        this.scene.getCamera().setDirection(TypeDeVue.vueDessus());
         Chalet.ChaletDTO chaletDTO = this.mainWindow.getControleur().getChalet();
 
         this.mainWindow.getControleur().ajouterAccessoire(TypeMur.Facade, TypeAccessoire.Fenetre, new double[] { 50, 0 }, new double[] { 50, 50 });
@@ -145,17 +147,17 @@ public class DrawingPanel extends javax.swing.JPanel {
                     for (Object[] obj : btns) {
                         if (obj[2] == btn) {
                             btn.setBackground(activeBtnColor);
-                            activated = TypeDeVue.valueOf((String) obj[1]);
+                            vueActive = TypeDeVue.valueOf((String) obj[1]);
 
-                            if (activated == TypeDeVue.Dessus) {
+                            if (vueActive == TypeDeVue.Dessus) {
                                 scene.getCamera().setDirection(TypeDeVue.vueDessus());
-                            } else if (activated == TypeDeVue.Facade) {
+                            } else if (vueActive == TypeDeVue.Facade) {
                                 scene.getCamera().setDirection(TypeDeVue.vueFacade());
-                            } else if (activated == TypeDeVue.Arriere) {
+                            } else if (vueActive == TypeDeVue.Arriere) {
                                 scene.getCamera().setDirection(TypeDeVue.vueArriere());
-                            } else if (activated == TypeDeVue.Droite) {
+                            } else if (vueActive == TypeDeVue.Droite) {
                                 scene.getCamera().setDirection(TypeDeVue.vueDroite());
-                            } else if (activated == TypeDeVue.Gauche) {
+                            } else if (vueActive == TypeDeVue.Gauche) {
                                 scene.getCamera().setDirection(TypeDeVue.vueGauche());
                             }
                         } else {
@@ -168,7 +170,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                 }
             });
 
-            if (btn.getName() == activated.toString())
+            if (btn.getName() == vueActive.toString())
                 btn.setBackground(activeBtnColor);
 
             barreOutils.add(btn);
@@ -201,7 +203,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             final String name = (String) obj[1];
             final javax.swing.JButton btn = (JButton) obj[2];
 
-            if (name == activated.toString())
+            if (name == vueActive.toString())
                 btn.setBackground(Color.LIGHT_GRAY);
             else
                 btn.setBackground(null);
@@ -402,8 +404,13 @@ public class DrawingPanel extends javax.swing.JPanel {
     @Override
     public void paintComponent(java.awt.Graphics g) {
         super.paintComponent(g);
+        // this.afficheur.drawGrid(g);
 
+        // this.scene.getLight().setPosition(scene.getCamera().getDirection().add(new
+        // Vector3D(0, 0, -1000)));
         this.rasterizer.draw(g, getSize());
+
+        // g.drawImage(this.afficheur.getImage(), 0, 0, null);
     }
 
     public static enum TypeDeVue {

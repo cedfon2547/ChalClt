@@ -1,6 +1,7 @@
 package ca.ulaval.glo2004.domaine;
 
 public class Chalet {
+    private String nom = "ChaletDefault";
     private double margeSupplementaireRetrait = 0.0;
     private double hauteur = 96;
     private double largeur = 120;
@@ -17,7 +18,8 @@ public class Chalet {
 
     public Chalet() {}
 
-    public Chalet(double hauteur, double largeur, double longueur, double epaisseurMur, TypeSensToit sensToit, double angleToit, double margeAccessoire, double margeSupplementaireRetrait) {
+    public Chalet(String nom, double hauteur, double largeur, double longueur, double epaisseurMur, TypeSensToit sensToit, double angleToit, double margeAccessoire, double margeSupplementaireRetrait) {
+        this.nom = nom;
         this.hauteur = hauteur;
         this.largeur = largeur;
         this.longueur = longueur;
@@ -29,7 +31,7 @@ public class Chalet {
     }
 
     public Chalet(ChaletDTO dto) {
-        this(dto.hauteur, dto.largeur, dto.longueur, dto.epaisseurMur, dto.sensToit, dto.angleToit, dto.margeAccessoire, dto.margeSupplementaireRetrait);
+        this(dto.nom, dto.hauteur, dto.largeur, dto.longueur, dto.epaisseurMur, dto.sensToit, dto.angleToit, dto.margeAccessoire, dto.margeSupplementaireRetrait);
     }
 
     public Mur getMur(TypeMur type) {
@@ -46,6 +48,7 @@ public class Chalet {
     }
 
     public void updateChalet(ChaletDTO dtoChalet) {
+        this.nom = dtoChalet.nom;
         this.hauteur = dtoChalet.hauteur;
         this.largeur = dtoChalet.largeur;
         this.longueur = dtoChalet.longueur;
@@ -60,6 +63,7 @@ public class Chalet {
     }
 
     public static class ChaletDTO implements java.io.Serializable {
+        public String nom;
         public double hauteur;
         public double largeur;
         public double longueur;
@@ -70,6 +74,7 @@ public class Chalet {
         public double margeSupplementaireRetrait;
 
         public ChaletDTO(Chalet chalet) {
+            this.nom = chalet.nom;
             this.hauteur = chalet.hauteur;
             this.largeur = chalet.largeur;
             this.longueur = chalet.longueur;
@@ -83,6 +88,7 @@ public class Chalet {
 
     /* Inclus aussi les DTOs pour les murs, ainsi que leurs accessoires. */
     public static class ChaletCompletDTO implements java.io.Serializable {
+        public String nom;
         public double hauteur;
         public double largeur;
         public double longueur;
@@ -95,6 +101,7 @@ public class Chalet {
         // public Toit.ToitDTO toit; TODO: a completer
 
         public ChaletCompletDTO(Chalet chalet) {
+            this.nom = chalet.nom;
             this.hauteur = chalet.hauteur;
             this.largeur = chalet.largeur;
             this.longueur = chalet.longueur;

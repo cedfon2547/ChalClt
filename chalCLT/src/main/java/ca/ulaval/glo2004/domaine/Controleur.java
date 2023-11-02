@@ -1,10 +1,13 @@
 package ca.ulaval.glo2004.domaine;
 
+import java.beans.PropertyChangeSupport;
+import java.beans.PropertyChangeListener;
 import java.util.UUID;
 
 public class Controleur {
     private static Controleur instance = null;
     private ChalCLTProjet projectActif;
+    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     // private UndoRedoManager undoRedoManager;
 
     private Controleur() {
@@ -37,6 +40,7 @@ public class Controleur {
 
     public void setChalet(Chalet.ChaletDTO chalet) {
         // undoRedoManager.push(projectActif.getChalet());
+        this.pcs.firePropertyChange("chalet", this.projectActif.getChalet().toDTO(), chalet);
         projectActif.getChalet().updateChalet(chalet);
     }
 
@@ -50,5 +54,21 @@ public class Controleur {
 
     public void ajouterAccessoire(TypeMur mur, TypeAccessoire typeAcc, double[] position, double[] dimension) {
         projectActif.getChalet().getMur(mur).AjouterAcessoire(typeAcc, position, dimension);
+    }
+
+    public void addPropertyChangeListener(String property, PropertyChangeListener listener) {
+        this.pcs.addPropertyChangeListener(property, listener);
+    }
+
+    public void removePropertyChangeListener(String property, PropertyChangeListener listener) {
+        this.pcs.removePropertyChangeListener(property, listener);
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.removePropertyChangeListener(listener);
     }
 }

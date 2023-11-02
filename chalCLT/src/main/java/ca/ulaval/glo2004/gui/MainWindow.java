@@ -3,14 +3,16 @@ package ca.ulaval.glo2004.gui;
 import java.awt.BorderLayout;
 import java.util.UUID;
 
+import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelListener;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.Controleur;
 import ca.ulaval.glo2004.domaine.TypeSensToit;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.utils.ImperialDimension;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.gui.components.ArbreDesComposantesChalet;
@@ -42,7 +44,9 @@ public class MainWindow extends javax.swing.JFrame {
     public javax.swing.JSplitPane sidePanelSplitPane;
     public javax.swing.JPanel sidePanelTopSection;
     public javax.swing.JPanel sidePanelBottomSection;
+    
     public JTable tableProprietesChalet;
+    public TitledBorder titledBorder;
 
     public JTable tableProprietesAccessoire;
     public DrawingPanel drawingPanel;
@@ -78,6 +82,9 @@ public class MainWindow extends javax.swing.JFrame {
         sidePanelTopSection.setLayout(sidePanelTopSectionLayout);
         sidePanelBottomSection.setLayout(sidePanelBottomSectionLayout);
 
+        titledBorder = javax.swing.BorderFactory.createTitledBorder("Propriétés du chalet");
+        sidePanelTopSection.setBorder(titledBorder);
+        
         initializePropertiesTableChalet();
 
 
@@ -131,6 +138,7 @@ public class MainWindow extends javax.swing.JFrame {
                 "Valeur"
         };
         Object[][] props = new Object[][] {
+                { "Nom", dtoChalet.nom},
                 { "Hauteur", ImperialDimension.convertToImperial(dtoChalet.hauteur) },
                 { "Largeur", ImperialDimension.convertToImperial(dtoChalet.largeur) },
                 { "Longueur", ImperialDimension.convertToImperial(dtoChalet.longueur) },
@@ -170,7 +178,7 @@ public class MainWindow extends javax.swing.JFrame {
                 System.out.println("Setting value at " + rowIndex + "," + columnIndex + " to " + aValue
                         + " (an instance of " + aValue.getClass() + ")");
 
-                if (rowIndex == 0 || rowIndex == 1 || rowIndex == 2 || rowIndex == 3) {
+                if (rowIndex == 1 || rowIndex == 2 || rowIndex == 3 || rowIndex == 4) {
                     ImperialDimension dim = ImperialDimension.parseFromString((String) aValue);
                     System.out.println("Dimension: " + dim);
                     if (dim == null) {
@@ -193,6 +201,7 @@ public class MainWindow extends javax.swing.JFrame {
         };
 
         tableProprietesChalet = new javax.swing.JTable(model);
+
         tableProprietesChalet.getModel().addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(javax.swing.event.TableModelEvent evt) {
@@ -200,12 +209,13 @@ public class MainWindow extends javax.swing.JFrame {
                         + evt.getColumn() + " " + tableProprietesChalet.getValueAt(evt.getFirstRow(), evt.getColumn()));
 
                 Chalet.ChaletDTO chaletDTO = controleur.getChalet();
-                chaletDTO.hauteur = ImperialDimension.parseFromString((String) tableProprietesChalet.getValueAt(0, 1).toString()).toInches();
-                chaletDTO.largeur = ImperialDimension.parseFromString((String) tableProprietesChalet.getValueAt(1, 1).toString()).toInches();
-                chaletDTO.longueur = ImperialDimension.parseFromString((String) tableProprietesChalet.getValueAt(2, 1).toString()).toInches();
-                chaletDTO.epaisseurMur = ImperialDimension.parseFromString((String) tableProprietesChalet.getValueAt(3, 1).toString()).toInches();
-                chaletDTO.angleToit = Double.parseDouble(tableProprietesChalet.getValueAt(4, 1).toString());
-                chaletDTO.sensToit = (TypeSensToit) tableProprietesChalet.getValueAt(5, 1);
+                chaletDTO.nom = (String) tableProprietesChalet.getValueAt(0, 1);
+                chaletDTO.hauteur = ImperialDimension.parseFromString((String) tableProprietesChalet.getValueAt(1, 1).toString()).toInches();
+                chaletDTO.largeur = ImperialDimension.parseFromString((String) tableProprietesChalet.getValueAt(2, 1).toString()).toInches();
+                chaletDTO.longueur = ImperialDimension.parseFromString((String) tableProprietesChalet.getValueAt(3, 1).toString()).toInches();
+                chaletDTO.epaisseurMur = ImperialDimension.parseFromString((String) tableProprietesChalet.getValueAt(4, 1).toString()).toInches();
+                chaletDTO.angleToit = Double.parseDouble(tableProprietesChalet.getValueAt(5, 1).toString());
+                chaletDTO.sensToit = (TypeSensToit) tableProprietesChalet.getValueAt(6, 1);
 
                 controleur.setChalet(chaletDTO);
                 drawingPanel.getScene().clearMeshes();
@@ -223,7 +233,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
 
     }
-    
+
     private void initializePropertiesTableAccessoire(UUID uuid){
         Accessoire.AccessoireDTO dtoAcessoire = controleur.getAccessoire(uuid);
         String[] columnNames = new String[] {
