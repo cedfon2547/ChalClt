@@ -9,6 +9,7 @@ import java.util.UUID;
  */
 public class Accessoire extends Retrait {
     private TypeAccessoire accessoireType;
+    private TypeMur typeMur;
     private UUID accessoireId;
     private boolean validiterEtat;
 
@@ -18,9 +19,10 @@ public class Accessoire extends Retrait {
      * @param position la position de l'accessoire
      * @param dimensions les dimensions de l'accessoire
      */
-    public Accessoire(TypeAccessoire accessoireType, double[] position, double[] dimensions) {
+    public Accessoire(TypeAccessoire accessoireType,TypeMur typeMur, double[] position, double[] dimensions) {
         super(TypeRetrait.Accessoire, position, dimensions);
         this.accessoireType = accessoireType;
+        this.typeMur = typeMur;
         this.validiterEtat = true;
         this.accessoireId = UUID.randomUUID();
     }
@@ -30,7 +32,7 @@ public class Accessoire extends Retrait {
      * @param dto l'objet AccessoireDTO à partir duquel construire
      */
     public Accessoire(AccessoireDTO dto) {
-        this(dto.accessoireType, dto.position, dto.dimensions);
+        this(dto.accessoireType,dto.typeMur, dto.position, dto.dimensions);
     }
 
     /**
@@ -104,6 +106,8 @@ public class Accessoire extends Retrait {
     public static class AccessoireDTO extends Retrait.RetraitDTO {
         public TypeAccessoire accessoireType;
         public UUID accessoireId;
+        public TypeMur typeMur;
+        public boolean validerEtat;
 
         /**
          * Construit un objet AccessoireDTO à partir d'un objet Accessoire.
@@ -113,6 +117,8 @@ public class Accessoire extends Retrait {
             super(accessoire);
             this.accessoireType = accessoire.accessoireType;
             this.accessoireId = accessoire.accessoireId;
+            this.typeMur = accessoire.typeMur;
+            this.validerEtat = accessoire.validiterEtat;
         }
     }
 

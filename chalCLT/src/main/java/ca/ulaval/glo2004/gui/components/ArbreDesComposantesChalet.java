@@ -7,11 +7,13 @@ import javax.swing.tree.TreePath;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
+import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.gui.MainWindow;
 
 public class ArbreDesComposantesChalet extends javax.swing.JPanel {
     MainWindow mainWindow;
+
     public ArbreDesComposantesChalet(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
         initComponents();
@@ -60,35 +62,82 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                     Chalet.ChaletDTO chaletDTO = (Chalet.ChaletDTO) evt.getNewValue();
                     chaletNode.setUserObject(chaletDTO.nom);
                     ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeChanged(chaletNode);
-                    //chaletNode = new javax.swing.tree.DefaultMutableTreeNode(evt.getNewValue().toString());
+                    // chaletNode = new
+                    // javax.swing.tree.DefaultMutableTreeNode(evt.getNewValue().toString());
                 }
+            }
+        });
+
+        this.mainWindow.getControleur().addPropertyChangeListener("ajouterAccessoire", new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                System.out.println("ajouterAccessoire");
+                Accessoire.AccessoireDTO accessoireDTO = (Accessoire.AccessoireDTO) evt.getNewValue();
+                javax.swing.tree.DefaultMutableTreeNode accessoireNode = new javax.swing.tree.DefaultMutableTreeNode(
+                        accessoireDTO.accessoireId);
+                switch (accessoireDTO.typeMur) {
+                    case Facade:
+                        murFacadeNode.add(accessoireNode);
+                        // ((DefaultTreeModel)
+                        // arbreComposantesChalet.getModel()).nodeChanged(murFacadeNode);
+                        ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeStructureChanged(murFacadeNode);
+                        break;
+                    case Arriere:
+                        murArriereNode.add(accessoireNode);
+                        // ((DefaultTreeModel)
+                        // arbreComposantesChalet.getModel()).nodeChanged(murArriereNode);
+                        ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeStructureChanged(murArriereNode);
+                        break;
+                    case Droit:
+                        murDroitNode.add(accessoireNode);
+                        // ((DefaultTreeModel)
+                        // arbreComposantesChalet.getModel()).nodeChanged(murDroitNode);
+                        ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeStructureChanged(murDroitNode);
+                        break;
+                    case Gauche:
+                        murGaucheNode.add(accessoireNode);
+                        // ((DefaultTreeModel)
+                        // arbreComposantesChalet.getModel()).nodeChanged(murGaucheNode);
+                        ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeStructureChanged(murGaucheNode);
+                        break;
+                    default:
+                        return;
+                }
+
+                arbreComposantesChalet.invalidate();
+                arbreComposantesChalet.repaint();
             }
         });
 
         javax.swing.tree.DefaultMutableTreeNode murFacadeAccChild1Node = new javax.swing.tree.DefaultMutableTreeNode(
                 "fenêtre_1");
-        javax.swing.tree.DefaultMutableTreeNode murFacadeAccChild2Node = new javax.swing.tree.DefaultMutableTreeNode(
-                "fenêtre_2");
-        javax.swing.tree.DefaultMutableTreeNode murFacadeAccChild3Node = new javax.swing.tree.DefaultMutableTreeNode(
-                "porte_1");
-        javax.swing.tree.DefaultMutableTreeNode murFacadeAccChild4Node = new javax.swing.tree.DefaultMutableTreeNode(
-                "porte_2");
+        // javax.swing.tree.DefaultMutableTreeNode murFacadeAccChild2Node = new
+        // javax.swing.tree.DefaultMutableTreeNode(
+        // "fenêtre_2");
+        // javax.swing.tree.DefaultMutableTreeNode murFacadeAccChild3Node = new
+        // javax.swing.tree.DefaultMutableTreeNode(
+        // "porte_1");
+        // javax.swing.tree.DefaultMutableTreeNode murFacadeAccChild4Node = new
+        // javax.swing.tree.DefaultMutableTreeNode(
+        // "porte_2");
 
-        javax.swing.tree.DefaultMutableTreeNode murArriereAccChild1Node = new javax.swing.tree.DefaultMutableTreeNode(
-                "fenêtre_1");
-        javax.swing.tree.DefaultMutableTreeNode murArriereAccChild2Node = new javax.swing.tree.DefaultMutableTreeNode(
-                "fenêtre_2");
-        javax.swing.tree.DefaultMutableTreeNode murArriereAccChild3Node = new javax.swing.tree.DefaultMutableTreeNode(
-                "porte_1");
+        // javax.swing.tree.DefaultMutableTreeNode murArriereAccChild1Node = new
+        // javax.swing.tree.DefaultMutableTreeNode(
+        // "fenêtre_1");
+        // javax.swing.tree.DefaultMutableTreeNode murArriereAccChild2Node = new
+        // javax.swing.tree.DefaultMutableTreeNode(
+        // "fenêtre_2");
+        // javax.swing.tree.DefaultMutableTreeNode murArriereAccChild3Node = new
+        // javax.swing.tree.DefaultMutableTreeNode(
+        // "porte_1");
 
         murFacadeNode.add(murFacadeAccChild1Node);
-        murFacadeNode.add(murFacadeAccChild2Node);
-        murFacadeNode.add(murFacadeAccChild3Node);
-        murFacadeNode.add(murFacadeAccChild4Node);
+        // murFacadeNode.add(murFacadeAccChild2Node);
+        // murFacadeNode.add(murFacadeAccChild3Node);
+        // murFacadeNode.add(murFacadeAccChild4Node);
 
-        murArriereNode.add(murArriereAccChild1Node);
-        murArriereNode.add(murArriereAccChild2Node);
-        murArriereNode.add(murArriereAccChild3Node);
+        // murArriereNode.add(murArriereAccChild1Node);
+        // murArriereNode.add(murArriereAccChild2Node);
+        // murArriereNode.add(murArriereAccChild3Node);
 
         // murFacadeNode.add(murFacadeAccNode);
         // murArriereNode.add(murArriereAccNode);
@@ -133,18 +182,39 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
     public MouseAdapter getTreeMouseListener() {
         return new MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                if (evt.getClickCount() == 2 && evt.getButton() == java.awt.event.MouseEvent.BUTTON1) {
-                    System.out.println("double clicked");
-                    TreePath path = arbreComposantesChalet.getPathForLocation(evt.getX(), evt.getY());
-                    if (path == null)
-                        return;
+                TreePath path = arbreComposantesChalet.getPathForLocation(evt.getX(), evt.getY());
 
-                    if (path.getPath().length == 1) {
-                        System.out.println("Projet");
+                if (path == null)
+                    return;
+                if (path.getPath().length == 1) {
+                    System.out.println("Projet");
+                    return;
+                }
 
-                        return;
+                TreePath parent = path.getParentPath();
+
+                if (parent != null) {
+                    String parentStr = parent.getLastPathComponent().toString();
+
+                    if (parentStr != null) {
+                        switch (parent.getLastPathComponent().toString()) {
+                            case "Façade":
+                                System.out.println("Acc Facade");
+                                break;
+                            case "Arrière":
+                                System.out.println("Acc Arriere");
+                                break;
+                            case "Mur droit":
+                                System.out.println("Acc Mur droit");
+                                break;
+                            case "Mur gauche":
+                                System.out.println("Acc Mur gauche");
+                                break;
+                        }
                     }
+                }
 
+                if (evt.getClickCount() == 2 && evt.getButton() == java.awt.event.MouseEvent.BUTTON1) {
                     switch (path.getLastPathComponent().toString()) {
                         case "Façade":
                             System.out.println("Facade");

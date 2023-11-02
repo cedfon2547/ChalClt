@@ -53,7 +53,9 @@ public class Controleur {
     }
 
     public void ajouterAccessoire(TypeMur mur, TypeAccessoire typeAcc, double[] position, double[] dimension) {
-        projectActif.getChalet().getMur(mur).AjouterAcessoire(typeAcc, position, dimension);
+        
+        Accessoire accessoire = projectActif.getChalet().getMur(mur).AjouterAcessoire(typeAcc, position, dimension);
+        this.pcs.firePropertyChange("ajouterAccessoire", null, accessoire.toDTO());
     }
 
     public void addPropertyChangeListener(String property, PropertyChangeListener listener) {

@@ -188,7 +188,7 @@ public class Mur {
      * @param p_dimension qui représente la dimensions de l'objet
      * @return
      */
-    public void AjouterAcessoire(TypeAccessoire p_type, double[] p_position, double[] p_dimension) {
+    public Accessoire AjouterAcessoire(TypeAccessoire p_type, double[] p_position, double[] p_dimension) {
 
         // Test de depart juste pour double verification
         if (p_position.length != 2) {
@@ -206,8 +206,10 @@ public class Mur {
                 throw new IllegalArgumentException("dimensions negative ou 0");
             }
         }// fin du test
-        Accessoire p_accessoire = new Accessoire(p_type, p_position, p_dimension);
+        Accessoire p_accessoire = new Accessoire(p_type,this.type, p_position, p_dimension);
         accessoires.add(p_accessoire);
+
+        return p_accessoire;
     }
 
 
