@@ -191,17 +191,18 @@ public class Mur {
     public void AjouterAcessoire(TypeAccessoire p_type, double[] p_position, double[] p_dimension) {
 
         // Test de depart juste pour double verification
-        if (p_position.length != 3) {
+        if (p_position.length != 2) {
             throw new IllegalArgumentException("mauvais nombre de position");
         }
-        if (p_dimension.length != 3) {
+        if (p_dimension.length != 2) {
             throw new IllegalArgumentException("mauvais nombre de dimension");
         }
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             if (p_position[i] < 0) {
                 throw new IllegalArgumentException("position negative");
             }
-            if (p_dimension[i] <= 0) {
+
+            if (p_dimension[i] < 0) {
                 throw new IllegalArgumentException("dimensions negative ou 0");
             }
         }// fin du test

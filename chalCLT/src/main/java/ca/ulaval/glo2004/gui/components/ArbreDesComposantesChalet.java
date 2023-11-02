@@ -1,10 +1,14 @@
 package ca.ulaval.glo2004.gui.components;
 
 import java.awt.event.MouseAdapter;
-import javax.swing.tree.TreePath;;
+import javax.swing.tree.TreePath;
+
+import ca.ulaval.glo2004.gui.MainWindow;;
 
 public class ArbreDesComposantesChalet extends javax.swing.JPanel {
-    public ArbreDesComposantesChalet() {
+    MainWindow mainWindow;
+    public ArbreDesComposantesChalet(MainWindow mainWindow) {
+        this.mainWindow = mainWindow;
         initComponents();
     }
 
@@ -127,15 +131,23 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                     switch (path.getLastPathComponent().toString()) {
                         case "Façade":
                             System.out.println("Facade");
+                            mainWindow.drawingPanel.activated = DrawingPanel.TypeDeVue.Facade;
+                            mainWindow.drawingPanel.scene.getCamera().setDirection(DrawingPanel.TypeDeVue.vueFacade());
                             break;
                         case "Arrière":
                             System.out.println("Arriere");
+                            mainWindow.drawingPanel.activated = DrawingPanel.TypeDeVue.Arriere;
+                            mainWindow.drawingPanel.scene.getCamera().setDirection(DrawingPanel.TypeDeVue.vueArriere());
                             break;
                         case "Mur droit":
                             System.out.println("Mur droit");
+                            mainWindow.drawingPanel.activated = DrawingPanel.TypeDeVue.Droite;
+                            mainWindow.drawingPanel.scene.getCamera().setDirection(DrawingPanel.TypeDeVue.vueDroite());
                             break;
                         case "Mur gauche":
                             System.out.println("Mur gauche");
+                            mainWindow.drawingPanel.activated = DrawingPanel.TypeDeVue.Gauche;
+                            mainWindow.drawingPanel.scene.getCamera().setDirection(DrawingPanel.TypeDeVue.vueGauche());
                             break;
                         case "Panneau supérieur":
                             System.out.println("Panneau supérieur");
@@ -150,6 +162,10 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                             System.out.println("Pignon gauche");
                             break;
                     }
+
+                    mainWindow.drawingPanel.updateToolbarBtns();
+                    mainWindow.drawingPanel.invalidate();
+                    mainWindow.drawingPanel.repaint();
                 }
             }
         };
