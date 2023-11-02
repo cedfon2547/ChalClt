@@ -47,4 +47,8 @@ public class Controleur {
     public void setPreferencesUtilisateur(PreferencesUtilisateur preferencesUtilisateur) {
         projectActif.setPreferencesUtilisateur(preferencesUtilisateur);
     }
+
+    public void ajouterAccessoire(TypeMur mur, TypeAccessoire typeAcc, double[] position, double[] dimension) {
+        projectActif.getChalet().getMur(mur).AjouterAcessoire(typeAcc, position, dimension);
+    }
 }

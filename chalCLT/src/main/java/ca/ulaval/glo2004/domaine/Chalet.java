@@ -2,10 +2,10 @@ package ca.ulaval.glo2004.domaine;
 
 public class Chalet {
     private double margeSupplementaireRetrait = 0.0;
-    private double hauteur = 10;
-    private double largeur = 10;
-    private double longueur = 10;
-    private double epaisseurMur = 1.0;
+    private double hauteur = 96;
+    private double largeur = 120;
+    private double longueur = 120;
+    private double epaisseurMur = 6.0;
     private TypeSensToit sensToit = TypeSensToit.Nord;
     private double angleToit = 20.0;
     private double margeAccessoire = 3.0;
@@ -60,14 +60,14 @@ public class Chalet {
     }
 
     public static class ChaletDTO implements java.io.Serializable {
-        public double hauteur = 10;
-        public double largeur = 10;
-        public double longueur = 10;
-        public double epaisseurMur = 1;
-        public TypeSensToit sensToit = TypeSensToit.Nord;
-        public double angleToit = 20;
-        public double margeAccessoire = 0;
-        public double margeSupplementaireRetrait = 0;
+        public double hauteur;
+        public double largeur;
+        public double longueur;
+        public double epaisseurMur;
+        public TypeSensToit sensToit;
+        public double angleToit;
+        public double margeAccessoire;
+        public double margeSupplementaireRetrait;
 
         public ChaletDTO(Chalet chalet) {
             this.hauteur = chalet.hauteur;
@@ -83,14 +83,14 @@ public class Chalet {
 
     /* Inclus aussi les DTOs pour les murs, ainsi que leurs accessoires. */
     public static class ChaletCompletDTO implements java.io.Serializable {
-        public double hauteur = 10;
-        public double largeur = 10;
-        public double longueur = 10;
-        public double epaisseurMur = 1;
-        public TypeSensToit sensToit = TypeSensToit.Nord;
-        public double angleToit = 20;
-        public double margeAccessoire = 0;
-        public double margeSupplementaireRetrait = 0;
+        public double hauteur;
+        public double largeur;
+        public double longueur;
+        public double epaisseurMur;
+        public TypeSensToit sensToit;
+        public double angleToit;
+        public double margeAccessoire;
+        public double margeSupplementaireRetrait;
         public Mur.MurDTO[] murs;
         // public Toit.ToitDTO toit; TODO: a completer
 
