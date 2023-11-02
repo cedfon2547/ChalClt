@@ -1,6 +1,7 @@
 package ca.ulaval.glo2004.gui;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.util.UUID;
 
 import javax.swing.JPanel;
@@ -17,6 +18,7 @@ import ca.ulaval.glo2004.domaine.utils.ImperialDimension;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.gui.components.ArbreDesComposantesChalet;
 import ca.ulaval.glo2004.gui.components.DrawingPanel;
+import ca.ulaval.glo2004.gui.components.TopButtonPanel;
 
 /*
  * UI main layout
@@ -127,7 +129,10 @@ public class MainWindow extends javax.swing.JFrame {
         sidePanelSplitPane.setDividerLocation(200);
 
         setLayout(new BorderLayout());
+        TopButtonPanel topButtonPanel = new TopButtonPanel(this);
         add(mainWindowSplitPane);
+        add(topButtonPanel,BorderLayout.BEFORE_FIRST_LINE);
+
     }
 
     private void initializePropertiesTableChalet() {

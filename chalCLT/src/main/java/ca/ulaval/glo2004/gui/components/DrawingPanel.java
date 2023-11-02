@@ -13,6 +13,7 @@ import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.TypeAccessoire;
 import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.scene.Scene;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.Rasterizer;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.mesh.TriangleMesh;

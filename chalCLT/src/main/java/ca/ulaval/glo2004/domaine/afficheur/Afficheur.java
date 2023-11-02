@@ -23,10 +23,10 @@ public class Afficheur {
 
     public void drawGrid(Graphics g) {
         Dimension panelDimension = this.drawingPanel.getSize();
-        PreferencesUtilisateur preferencesUtilisateur = this.drawingPanel.getMainWindow().getControleur().getPreferencesUtilisateur();
-        int gridSpacing = preferencesUtilisateur.getGridSpacing();
-        Color gridColor = preferencesUtilisateur.getGridColor();
-        Color backgroundColor = preferencesUtilisateur.getBackgroundColor();
+        PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateur = this.drawingPanel.getMainWindow().getControleur().getPreferencesUtilisateur();
+        int gridSpacing = preferencesUtilisateur.gridSpacing;
+        Color gridColor = preferencesUtilisateur.gridColor;
+        Color backgroundColor = preferencesUtilisateur.backgroundColor;
 
         g.setColor(backgroundColor);
         g.fillRect(0, 0, (int) panelDimension.getWidth(), (int) panelDimension.getHeight());

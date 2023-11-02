@@ -54,4 +54,32 @@ public class PreferencesUtilisateur {
     public void setGridSpacing(int gridSpacing) {
         this.gridSpacing = gridSpacing;
     }
+
+    public void update(PreferencesUtilisateurDTO preferencesUtilisateurDTO) {
+        this.afficherGrille = preferencesUtilisateurDTO.afficherGrille;
+        this.afficherVoisinSelection = preferencesUtilisateurDTO.afficherVoisinSelection;
+        this.backgroundColor = preferencesUtilisateurDTO.backgroundColor;
+        this.gridColor = preferencesUtilisateurDTO.gridColor;
+        this.gridSpacing = preferencesUtilisateurDTO.gridSpacing;
+    }
+
+    public PreferencesUtilisateurDTO toDTO() {
+        return new PreferencesUtilisateurDTO(this);
+    }
+
+    public static class PreferencesUtilisateurDTO {
+        public boolean afficherGrille = false;
+        public boolean afficherVoisinSelection = false;
+        public java.awt.Color backgroundColor = java.awt.Color.BLACK;
+        public java.awt.Color gridColor = java.awt.Color.GRAY;
+        public int gridSpacing = 50;
+
+        public PreferencesUtilisateurDTO(PreferencesUtilisateur preferencesUtilisateur) {
+            this.afficherGrille = preferencesUtilisateur.afficherGrille;
+            this.afficherVoisinSelection = preferencesUtilisateur.afficherVoisinSelection;
+            this.backgroundColor = preferencesUtilisateur.backgroundColor;
+            this.gridColor = preferencesUtilisateur.gridColor;
+            this.gridSpacing = preferencesUtilisateur.gridSpacing;
+        }
+    }
 }

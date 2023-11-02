@@ -44,12 +44,12 @@ public class Controleur {
         projectActif.getChalet().updateChalet(chalet);
     }
 
-    public PreferencesUtilisateur getPreferencesUtilisateur() {
-        return projectActif.getPreferencesUtilisateur();
+    public PreferencesUtilisateur.PreferencesUtilisateurDTO getPreferencesUtilisateur() {
+        return projectActif.getPreferencesUtilisateur().toDTO();
     }
 
-    public void setPreferencesUtilisateur(PreferencesUtilisateur preferencesUtilisateur) {
-        projectActif.setPreferencesUtilisateur(preferencesUtilisateur);
+    public void setPreferencesUtilisateur(PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateur) {
+        projectActif.getPreferencesUtilisateur().update(preferencesUtilisateur);
     }
 
     public void ajouterAccessoire(TypeMur mur, TypeAccessoire typeAcc, double[] position, double[] dimension) {
