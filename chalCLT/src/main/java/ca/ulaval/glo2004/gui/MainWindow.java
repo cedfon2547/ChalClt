@@ -3,7 +3,7 @@ package ca.ulaval.glo2004.gui;
 import java.awt.BorderLayout;
 import java.util.UUID;
 
-import javax.swing.*;
+import javax.swing.JTable;
 import javax.swing.event.TableModelListener;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
@@ -45,8 +45,6 @@ public class MainWindow extends javax.swing.JFrame {
     public DrawingPanel drawingPanel;
     public ArbreDesComposantesChalet arbreDesComposantesChalet;
 
-    public javax.swing.JComboBox<String> senseToitComboBox;
-
     public MainWindow(Controleur controleur) {
         super("ChalCLT - Créateur de chalets");
         this.controleur = controleur;
@@ -62,7 +60,6 @@ public class MainWindow extends javax.swing.JFrame {
         sidePanelBottomSection = new javax.swing.JPanel();
         drawingPanel = new DrawingPanel(this);
         arbreDesComposantesChalet = new ArbreDesComposantesChalet();
-        senseToitComboBox = new JComboBox<String>();
 
         javax.swing.GroupLayout sideSectionLayout = new javax.swing.GroupLayout(sideSection);
         javax.swing.GroupLayout sidePanelTopSectionLayout = new javax.swing.GroupLayout(sidePanelTopSection);
@@ -77,11 +74,6 @@ public class MainWindow extends javax.swing.JFrame {
         sideSection.setLayout(sideSectionLayout);
         sidePanelTopSection.setLayout(sidePanelTopSectionLayout);
         sidePanelBottomSection.setLayout(sidePanelBottomSectionLayout);
-
-        senseToitComboBox.addItem("Nord");
-        senseToitComboBox.addItem("Est");
-        senseToitComboBox.addItem("Sud");
-        senseToitComboBox.addItem("Ouest");
 
         initializePropertiesTableChalet();
 
@@ -136,13 +128,12 @@ public class MainWindow extends javax.swing.JFrame {
                 "Valeur"
         };
         Object[][] props = new Object[][] {
-                { "Objet", "NomChalet"},   //pour l'instant juste un string à voir si on donne un attribut nom à chalet
                 { "Hauteur", ImperialDimension.convertToImperial(dtoChalet.hauteur) },
                 { "Largeur", ImperialDimension.convertToImperial(dtoChalet.largeur) },
                 { "Longueur", ImperialDimension.convertToImperial(dtoChalet.longueur) },
                 { "Épaisseur panneaux", ImperialDimension.convertToImperial(dtoChalet.epaisseurMur) },
                 { "Angle du toit", dtoChalet.angleToit },
-                { "Sens du toit", new DefaultCellEditor(senseToitComboBox) },
+                { "Sens du toit", dtoChalet.sensToit },
         };
 
         javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(props, columnNames) {
@@ -176,7 +167,7 @@ public class MainWindow extends javax.swing.JFrame {
                 System.out.println("Setting value at " + rowIndex + "," + columnIndex + " to " + aValue
                         + " (an instance of " + aValue.getClass() + ")");
 
-                if (rowIndex == 1 || rowIndex == 2 || rowIndex == 3 || rowIndex == 4) {
+                if (rowIndex == 0 || rowIndex == 1 || rowIndex == 2 || rowIndex == 3) {
                     ImperialDimension dim = ImperialDimension.parseFromString((String) aValue);
                     System.out.println("Dimension: " + dim);
                     if (dim == null) {
@@ -215,7 +206,6 @@ public class MainWindow extends javax.swing.JFrame {
                 "Valeur"
         };
         Object[][] props = new Object[][] {
-                { "Objet", "NomAccessoire"},   //pour l'instant juste un string à voir si on donne un attribut nom à chalet
                 { "Hauteur", ImperialDimension.convertToImperial(dtoAcessoire.dimensions[1]) },
                 { "Largeur", ImperialDimension.convertToImperial(dtoAcessoire.dimensions[0]) },
                 { "Position x", ImperialDimension.convertToImperial(dtoAcessoire.position[0]) },
