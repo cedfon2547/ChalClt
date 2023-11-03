@@ -22,6 +22,8 @@ public class TopButtonPanel extends JPanel {
 
     public JToggleButton voisinToggleBtn;
 
+    private Insets margeBtn = new Insets(2, 2, 2, 2);
+
     public TopButtonPanel(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
         initComponent();
@@ -57,32 +59,39 @@ public class TopButtonPanel extends JPanel {
         ImageIcon iconVoisins = new ImageIcon(
                 "chalCLT\\src\\main\\java\\ca\\ulaval\\glo2004\\gui\\ressources\\icons\\voisin_1.png");
 
-        iconFenetre.setImage(iconFenetre.getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
-        iconPorte.setImage(iconPorte.getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
-        iconSupprimer.setImage(iconSupprimer.getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
-        iconGrille.setImage(iconGrille.getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
-        iconVoisins.setImage(iconVoisins.getImage().getScaledInstance(30, 30, Image.SCALE_DEFAULT));
+        iconFenetre.setImage(iconFenetre.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
+        iconPorte.setImage(iconPorte.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
+        iconSupprimer.setImage(iconSupprimer.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
+        iconGrille.setImage(iconGrille.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
+        iconVoisins.setImage(iconVoisins.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
 
+        
+        creerFenetreBtn.setFocusPainted(false);
         creerFenetreBtn.setIcon(iconFenetre);
         creerFenetreBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
         creerFenetreBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        creerFenetreBtn.setMargin(margeBtn);
         creerFenetreBtn.setBorder(null);
 
+        creerPorteBtn.setFocusPainted(false);
         creerPorteBtn.setIcon(iconPorte);
         creerPorteBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
         creerPorteBtn.setHorizontalTextPosition(SwingConstants.CENTER);
         creerPorteBtn.setBorder(null);
 
+        supprimerAccessoireBtn.setFocusPainted(false);
         supprimerAccessoireBtn.setIcon(iconSupprimer);
         supprimerAccessoireBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
         supprimerAccessoireBtn.setHorizontalTextPosition(SwingConstants.CENTER);
         supprimerAccessoireBtn.setBorder(null);
 
+        grilleToggleBtn.setFocusPainted(false);
         grilleToggleBtn.setIcon(iconGrille);
         grilleToggleBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
         grilleToggleBtn.setHorizontalTextPosition(SwingConstants.CENTER);
         grilleToggleBtn.setBorder(null);
 
+        voisinToggleBtn.setFocusPainted(false);
         voisinToggleBtn.setIcon(iconVoisins);
         voisinToggleBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
         voisinToggleBtn.setHorizontalTextPosition(SwingConstants.CENTER);
