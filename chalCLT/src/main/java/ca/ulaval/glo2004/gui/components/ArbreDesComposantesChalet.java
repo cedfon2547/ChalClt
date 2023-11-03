@@ -47,8 +47,8 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
         chaletNode = new javax.swing.tree.DefaultMutableTreeNode(nom);
         mursNode = new javax.swing.tree.DefaultMutableTreeNode("Murs");
         toitNode = new javax.swing.tree.DefaultMutableTreeNode("Toit");
-        murFacadeNode = new javax.swing.tree.DefaultMutableTreeNode("Façade");
-        murArriereNode = new javax.swing.tree.DefaultMutableTreeNode("Arrière");
+        murFacadeNode = new javax.swing.tree.DefaultMutableTreeNode("Mur façade");
+        murArriereNode = new javax.swing.tree.DefaultMutableTreeNode("Mur arrière");
         murDroitNode = new javax.swing.tree.DefaultMutableTreeNode("Mur droit");
         murGaucheNode = new javax.swing.tree.DefaultMutableTreeNode("Mur gauche");
         toitPanneauSuperieurNode = new javax.swing.tree.DefaultMutableTreeNode("Panneau supérieur");
