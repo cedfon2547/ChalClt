@@ -21,8 +21,6 @@ public class TopButtonPanel extends JPanel {
     public JToggleButton grilleToggleBtn;
 
     public JToggleButton voisinToggleBtn;
-    
-    private Insets margeBtn = new Insets(2, 2, 2, 2);
 
     public TopButtonPanel(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
