@@ -1,5 +1,7 @@
 package ca.ulaval.glo2004.gui.components;
 
+import ca.ulaval.glo2004.gui.MainWindow;
+
 public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     private javax.swing.JMenu affichageMenu;
     private javax.swing.JCheckBoxMenuItem afficherGrilleItem;
@@ -21,10 +23,12 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     private javax.swing.JRadioButtonMenuItem vueGaucheItem;
     private javax.swing.JRadioButtonMenuItem vueHautItem;
 
+    private MainWindow mainWindow;
     /**
      * Creates main TopBarMenu component
      */
-    public MainWindowTopBarMenu() {
+    public MainWindowTopBarMenu(MainWindow mainWindow) {
+        this.mainWindow = mainWindow;
         initComponents();
     }
 
@@ -311,48 +315,23 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     }
 
     private void vueHautItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-        vueArriereItem.setSelected(false);
-        vueDroitItem.setSelected(false);
-        vueFacadeItem.setSelected(false);
-        vueGaucheItem.setSelected(false);
-        vueHautItem.setSelected(true);
+        mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Dessus);
     }
 
     private void vueFacadeItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-        vueArriereItem.setSelected(false);
-        vueDroitItem.setSelected(false);
-        vueFacadeItem.setSelected(true);
-        vueGaucheItem.setSelected(false);
-        vueHautItem.setSelected(false);
+        mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Facade);
     }
 
     private void vueArriereItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-        vueArriereItem.setSelected(true);
-        vueDroitItem.setSelected(false);
-        vueFacadeItem.setSelected(false);
-        vueGaucheItem.setSelected(false);
-        vueHautItem.setSelected(false);
+        mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Arriere);
     }
 
     private void vueDroitItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-        vueArriereItem.setSelected(false);
-        vueDroitItem.setSelected(true);
-        vueFacadeItem.setSelected(false);
-        vueGaucheItem.setSelected(false);
-        vueHautItem.setSelected(false);
+        mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Droite);
     }
 
     private void vueGaucheItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-        vueArriereItem.setSelected(false);
-        vueDroitItem.setSelected(false);
-        vueFacadeItem.setSelected(false);
-        vueGaucheItem.setSelected(true);
-        vueHautItem.setSelected(false);
+        mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Gauche);
     }
 
     private void afficherGrilleItemActionPerformed(java.awt.event.ActionEvent evt) {
@@ -369,5 +348,47 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
 
     private void retablirItemActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+    }
+
+    public void activerVue(DrawingPanel.TypeDeVue vue) {
+        System.out.println("activerVue");
+
+        switch (vue) {
+            case Dessus:
+                vueHautItem.setSelected(true);
+                vueFacadeItem.setSelected(false);
+                vueArriereItem.setSelected(false);
+                vueDroitItem.setSelected(false);
+                vueGaucheItem.setSelected(false);
+                break;
+            case Facade:
+                vueHautItem.setSelected(false);
+                vueFacadeItem.setSelected(true);
+                vueArriereItem.setSelected(false);
+                vueDroitItem.setSelected(false);
+                vueGaucheItem.setSelected(false);
+                break;
+            case Arriere:
+                vueHautItem.setSelected(false);
+                vueFacadeItem.setSelected(false);
+                vueArriereItem.setSelected(true);
+                vueDroitItem.setSelected(false);
+                vueGaucheItem.setSelected(false);
+                break;
+            case Droite:
+                vueHautItem.setSelected(false);
+                vueFacadeItem.setSelected(false);
+                vueArriereItem.setSelected(false);
+                vueDroitItem.setSelected(true);
+                vueGaucheItem.setSelected(false);
+                break;
+            case Gauche:
+                vueHautItem.setSelected(false);
+                vueFacadeItem.setSelected(false);
+                vueArriereItem.setSelected(false);
+                vueDroitItem.setSelected(false);
+                vueGaucheItem.setSelected(true);
+                break;
+        }
     }
 }

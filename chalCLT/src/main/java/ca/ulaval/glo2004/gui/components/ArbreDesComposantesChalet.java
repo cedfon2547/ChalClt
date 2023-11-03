@@ -174,23 +174,19 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                     switch (path.getLastPathComponent().toString()) {
                         case "Mur façade":
                             System.out.println("Mur Facade");
-                            mainWindow.drawingPanel.vueActive = DrawingPanel.TypeDeVue.Facade;
-                            mainWindow.drawingPanel.scene.getCamera().setDirection(DrawingPanel.TypeDeVue.vueFacade());
+                            mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Facade);
                             break;
                         case "Mur arrière":
                             System.out.println("Mur Arriere");
-                            mainWindow.drawingPanel.vueActive = DrawingPanel.TypeDeVue.Arriere;
-                            mainWindow.drawingPanel.scene.getCamera().setDirection(DrawingPanel.TypeDeVue.vueArriere());
+                            mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Arriere);
                             break;
                         case "Mur droit":
                             System.out.println("Mur droit");
-                            mainWindow.drawingPanel.vueActive = DrawingPanel.TypeDeVue.Droite;
-                            mainWindow.drawingPanel.scene.getCamera().setDirection(DrawingPanel.TypeDeVue.vueDroite());
+                            mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Droite);
                             break;
                         case "Mur gauche":
                             System.out.println("Mur gauche");
-                            mainWindow.drawingPanel.vueActive = DrawingPanel.TypeDeVue.Gauche;
-                            mainWindow.drawingPanel.scene.getCamera().setDirection(DrawingPanel.TypeDeVue.vueGauche());
+                            mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Gauche);
                             break;
                         case "Panneau supérieur":
                             System.out.println("Panneau supérieur");
