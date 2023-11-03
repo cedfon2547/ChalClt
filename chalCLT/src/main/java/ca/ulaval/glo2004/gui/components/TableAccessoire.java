@@ -7,7 +7,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelListener;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
-import ca.ulaval.glo2004.domaine.Chalet.ChaletDTO;
 import ca.ulaval.glo2004.domaine.utils.ImperialDimension;
 import ca.ulaval.glo2004.gui.MainWindow;
 
@@ -40,11 +39,11 @@ public class TableAccessoire extends JTable {
 
         model = new javax.swing.table.DefaultTableModel(props, columnNames);
         this.setModel(model);
-        model.addTableModelListener(new TableModelListener() {
+        this.getModel().addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(javax.swing.event.TableModelEvent evt) {
                 System.out.println("Table changed" + " " + evt.getFirstRow() + " " + evt.getLastRow() + " "
-                        + evt.getColumn() + " " + model.getValueAt(evt.getFirstRow(), evt.getColumn()));
+                        + evt.getColumn() + " " + getValueAt(evt.getFirstRow(), evt.getColumn()));
             }
         });
     }

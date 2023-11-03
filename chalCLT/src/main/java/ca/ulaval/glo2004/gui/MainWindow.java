@@ -19,6 +19,7 @@ import ca.ulaval.glo2004.gui.components.ArbreDesComposantesChalet;
 import ca.ulaval.glo2004.gui.components.DrawingPanel;
 import ca.ulaval.glo2004.gui.components.MainWindowTopBarMenu;
 import ca.ulaval.glo2004.gui.components.TopButtonPanel;
+import ca.ulaval.glo2004.gui.components.TableChalet;
 
 /*
  * UI main layout
@@ -47,8 +48,7 @@ public class MainWindow extends javax.swing.JFrame {
     public javax.swing.JPanel sidePanelTopSection;
     public javax.swing.JPanel sidePanelBottomSection;
     
-    public JTable tableProprietesChalet;
-    public TitledBorder titledBorder;
+    public TableChalet tableProprietesChalet;
 
     public JTable tableProprietesAccessoire;
     public JScrollPane tableContainer;
@@ -76,6 +76,7 @@ public class MainWindow extends javax.swing.JFrame {
         drawingPanel = new DrawingPanel(this);
         arbreDesComposantesChalet = new ArbreDesComposantesChalet(this);
         tableContainer = new JScrollPane();
+        tableProprietesChalet = new TableChalet(this);
 
         javax.swing.GroupLayout sideSectionLayout = new javax.swing.GroupLayout(sideSection);
         javax.swing.GroupLayout sidePanelTopSectionLayout = new javax.swing.GroupLayout(sidePanelTopSection);
@@ -91,11 +92,10 @@ public class MainWindow extends javax.swing.JFrame {
         sidePanelTopSection.setLayout(sidePanelTopSectionLayout);
         sidePanelBottomSection.setLayout(sidePanelBottomSectionLayout);
 
-        titledBorder = javax.swing.BorderFactory.createTitledBorder("Propriétés du chalet");
-        sidePanelTopSection.setBorder(titledBorder);
+        sidePanelTopSection.setBorder(tableProprietesChalet.getTitledBorder());
         
-        initializePropertiesTableChalet();
-
+        tableContainer.add(tableProprietesChalet.getTableHeader());
+        tableContainer.setViewportView(tableProprietesChalet);
 
         sideSectionLayout.setHorizontalGroup(
                 sideSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -142,193 +142,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     }
 
-    private void initializePropertiesTableChalet() {
-        // TODO: Maybe move this to a separate class
-        Chalet.ChaletDTO dtoChalet = controleur.getChalet();
-        String[] columnNames = new String[] {
-                "Propriété",
-                "Valeur"
-        };
-        Object[][] props = new Object[][] {
-                { "Nom", dtoChalet.nom},
-                { "Hauteur", ImperialDimension.convertToImperial(dtoChalet.hauteur) },
-                { "Largeur", ImperialDimension.convertToImperial(dtoChalet.largeur) },
-                { "Longueur", ImperialDimension.convertToImperial(dtoChalet.longueur) },
-                { "Épaisseur panneaux", ImperialDimension.convertToImperial(dtoChalet.epaisseurMur) },
-                { "Angle du toit", dtoChalet.angleToit },
-                { "Sens du toit", dtoChalet.sensToit },
-        };
-
-        javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(props, columnNames) {
-            @Override
-            public int getColumnCount() {
-                return columnNames.length;
-            }
-
-            @Override
-            public int getRowCount() {
-                return props.length;
-            }
-
-            @Override
-            public String getColumnName(int col) {
-                return columnNames[col];
-            }
-
-            @Override
-            public Object getValueAt(int row, int col) {
-                return props[row][col];
-            }
-
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                return String.class;
-            }
-
-            @Override
-            public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-                System.out.println("Setting value at " + rowIndex + "," + columnIndex + " to " + aValue
-                        + " (an instance of " + aValue.getClass() + ")");
-
-                if (rowIndex == 1 || rowIndex == 2 || rowIndex == 3 || rowIndex == 4) {
-                    ImperialDimension dim = ImperialDimension.parseFromString((String) aValue);
-                    System.out.println("Dimension: " + dim);
-                    if (dim == null) {
-                        return;
-                    }
-
-                    props[rowIndex][columnIndex] = dim.toString();
-                    fireTableCellUpdated(rowIndex, columnIndex);
-                    return;
-                }
-
-                props[rowIndex][columnIndex] = aValue;
-                fireTableCellUpdated(rowIndex, columnIndex);
-            }
-
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return column == 1;
-            }
-        };
-
-        tableProprietesChalet = new javax.swing.JTable(model);
-
-        // JTableHeader header = new JTableHeader();
-        tableProprietesChalet.setTableHeader(tableProprietesChalet.getTableHeader());
-
-        tableProprietesChalet.getModel().addTableModelListener(new TableModelListener() {
-            @Override
-            public void tableChanged(javax.swing.event.TableModelEvent evt) {
-                System.out.println("Table changed" + " " + evt.getFirstRow() + " " + evt.getLastRow() + " "
-                        + evt.getColumn() + " " + tableProprietesChalet.getValueAt(evt.getFirstRow(), evt.getColumn()));
-
-                Chalet.ChaletDTO chaletDTO = controleur.getChalet();
-                chaletDTO.nom = (String) tableProprietesChalet.getValueAt(0, 1);
-                chaletDTO.hauteur = ImperialDimension.parseFromString((String) tableProprietesChalet.getValueAt(1, 1).toString()).toInches();
-                chaletDTO.largeur = ImperialDimension.parseFromString((String) tableProprietesChalet.getValueAt(2, 1).toString()).toInches();
-                chaletDTO.longueur = ImperialDimension.parseFromString((String) tableProprietesChalet.getValueAt(3, 1).toString()).toInches();
-                chaletDTO.epaisseurMur = ImperialDimension.parseFromString((String) tableProprietesChalet.getValueAt(4, 1).toString()).toInches();
-                chaletDTO.angleToit = Double.parseDouble(tableProprietesChalet.getValueAt(5, 1).toString());
-                chaletDTO.sensToit = (TypeSensToit) tableProprietesChalet.getValueAt(6, 1);
-
-                controleur.setChalet(chaletDTO);
-                drawingPanel.getScene().clearMeshes();
-                TriangleMesh[] meshes = PanelHelper.generateMeshMurs(chaletDTO.largeur, chaletDTO.hauteur, chaletDTO.longueur,
-                        chaletDTO.epaisseurMur);
-                meshes[0].getMaterial().setColor(java.awt.Color.RED);
-                meshes[1].getMaterial().setColor(java.awt.Color.BLUE);
-                meshes[2].getMaterial().setColor(java.awt.Color.GREEN);
-                meshes[3].getMaterial().setColor(java.awt.Color.YELLOW);
-
-                drawingPanel.getScene().addMeshes(meshes);
-                
-                drawingPanel.repaint();
-            }
-        });
-
-
-        
-        tableContainer.add(tableProprietesChalet.getTableHeader());
-        tableContainer.setViewportView(tableProprietesChalet);
-    }
-
-    private void initializePropertiesTableAccessoire(UUID uuid){
-        Accessoire.AccessoireDTO dtoAcessoire = controleur.getAccessoire(uuid);
-        String[] columnNames = new String[] {
-                "Propriété",
-                "Valeur"
-        };
-        Object[][] props = new Object[][] {
-                { "Hauteur", ImperialDimension.convertToImperial(dtoAcessoire.dimensions[1]) },
-                { "Largeur", ImperialDimension.convertToImperial(dtoAcessoire.dimensions[0]) },
-                { "Position x", ImperialDimension.convertToImperial(dtoAcessoire.position[0]) },
-                { "Position y", ImperialDimension.convertToImperial(dtoAcessoire.position[1])}
-        };
-
-        javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(props, columnNames) {
-            @Override
-            public int getColumnCount() {
-                return columnNames.length;
-            }
-
-            @Override
-            public int getRowCount() {
-                return props.length;
-            }
-
-            @Override
-            public String getColumnName(int col) {
-                return columnNames[col];
-            }
-
-            @Override
-            public Object getValueAt(int row, int col) {
-                return props[row][col];
-            }
-
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                return String.class;
-            }
-
-            @Override
-            public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-                System.out.println("Setting value at " + rowIndex + "," + columnIndex + " to " + aValue
-                        + " (an instance of " + aValue.getClass() + ")");
-
-                if (rowIndex == 0 || rowIndex == 1 || rowIndex == 2 || rowIndex == 3) {
-                    ImperialDimension dim = ImperialDimension.parseFromString((String) aValue);
-                    System.out.println("Dimension: " + dim);
-                    if (dim == null) {
-                        return;
-                    }
-
-                    props[rowIndex][columnIndex] = dim.toString();
-                    fireTableCellUpdated(rowIndex, columnIndex);
-                    return;
-                }
-
-                props[rowIndex][columnIndex] = aValue;
-                fireTableCellUpdated(rowIndex, columnIndex);
-            }
-
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return column == 1;
-            }
-        };
-        tableProprietesAccessoire = new javax.swing.JTable(model);
-        tableProprietesAccessoire.getModel().addTableModelListener(new TableModelListener() {
-            @Override
-            public void tableChanged(javax.swing.event.TableModelEvent evt) {
-                System.out.println("Table changed" + " " + evt.getFirstRow() + " " + evt.getLastRow() + " "
-                        + evt.getColumn() + " " + tableProprietesAccessoire.getValueAt(evt.getFirstRow(), evt.getColumn()));
-            }
-        });
-
-    }
-
+    
     public Controleur getControleur() {
         return controleur;
     }
