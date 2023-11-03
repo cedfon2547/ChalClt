@@ -5,9 +5,11 @@ import java.awt.GridLayout;
 import java.util.UUID;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.JTableHeader;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
@@ -51,6 +53,8 @@ public class MainWindow extends javax.swing.JFrame {
     public TitledBorder titledBorder;
 
     public JTable tableProprietesAccessoire;
+    public JScrollPane tableContainer;
+
     public DrawingPanel drawingPanel;
     public ArbreDesComposantesChalet arbreDesComposantesChalet;
 
@@ -69,6 +73,7 @@ public class MainWindow extends javax.swing.JFrame {
         sidePanelBottomSection = new javax.swing.JPanel();
         drawingPanel = new DrawingPanel(this);
         arbreDesComposantesChalet = new ArbreDesComposantesChalet(this);
+        tableContainer = new JScrollPane();
 
         javax.swing.GroupLayout sideSectionLayout = new javax.swing.GroupLayout(sideSection);
         javax.swing.GroupLayout sidePanelTopSectionLayout = new javax.swing.GroupLayout(sidePanelTopSection);
@@ -101,12 +106,12 @@ public class MainWindow extends javax.swing.JFrame {
         sidePanelTopSectionLayout.setHorizontalGroup(
                 sidePanelTopSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGap(100, 100, Short.MAX_VALUE)
-                        .addComponent(tableProprietesChalet));
+                        .addComponent(tableContainer));
 
         sidePanelTopSectionLayout.setVerticalGroup(
                 sidePanelTopSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGap(100, 100, Short.MAX_VALUE)
-                        .addComponent(tableProprietesChalet));
+                        .addComponent(tableContainer));
 
         sidePanelBottomSectionLayout.setHorizontalGroup(
                 sidePanelBottomSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -207,6 +212,9 @@ public class MainWindow extends javax.swing.JFrame {
 
         tableProprietesChalet = new javax.swing.JTable(model);
 
+        // JTableHeader header = new JTableHeader();
+        tableProprietesChalet.setTableHeader(tableProprietesChalet.getTableHeader());
+
         tableProprietesChalet.getModel().addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(javax.swing.event.TableModelEvent evt) {
@@ -237,6 +245,8 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
+        tableContainer.add(tableProprietesChalet.getTableHeader());
+        tableContainer.setViewportView(tableProprietesChalet);
     }
 
     private void initializePropertiesTableAccessoire(UUID uuid){

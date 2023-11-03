@@ -199,19 +199,22 @@ public class DrawingPanel extends javax.swing.JPanel {
                 grabFocus();
                 System.out.println("Mouse Clicked");
 
+                TriangleMesh mesh = rasterizer.getMeshFromPoint(e.getPoint());
+                if (mesh != null) {
+                    System.out.println(mesh.getID());
+                }
+
                 repaint();
             }
 
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
                 // TODO Auto-generated method stub
-
             }
 
             @Override
             public void mouseReleased(java.awt.event.MouseEvent e) {
                 // TODO Auto-generated method stub
-
             }
 
             @Override
@@ -357,8 +360,6 @@ public class DrawingPanel extends javax.swing.JPanel {
                         }
 
                 }
-
-                System.out.println(scene.getLight().getPosition());
 
                 repaint();
             }
