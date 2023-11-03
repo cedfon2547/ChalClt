@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 public class TopButtonPanel extends JPanel {
 
@@ -49,15 +50,15 @@ public class TopButtonPanel extends JPanel {
         voisinToggleBtn.setPreferredSize(new Dimension(75, 50));
 
         ImageIcon iconFenetre = new ImageIcon(
-                "chalCLT\\src\\main\\java\\ca\\ulaval\\glo2004\\gui\\ressources\\icons\\fenetre_1.png");
+                getClass().getClassLoader().getResource("\\icons\\fenetre_1.png"));
         ImageIcon iconPorte = new ImageIcon(
-                "chalCLT\\src\\main\\java\\ca\\ulaval\\glo2004\\gui\\ressources\\icons\\door_1.png");
+                getClass().getClassLoader().getResource("\\icons\\door_1.png"));
         ImageIcon iconSupprimer = new ImageIcon(
-                "chalCLT\\src\\main\\java\\ca\\ulaval\\glo2004\\gui\\ressources\\icons\\supprimer_1.png");
+                getClass().getClassLoader().getResource("\\icons\\supprimer_1.png"));
         ImageIcon iconGrille = new ImageIcon(
-                "chalCLT\\src\\main\\java\\ca\\ulaval\\glo2004\\gui\\ressources\\icons\\grille_1.png");
+                getClass().getClassLoader().getResource("\\icons\\grille_1.png"));
         ImageIcon iconVoisins = new ImageIcon(
-                "chalCLT\\src\\main\\java\\ca\\ulaval\\glo2004\\gui\\ressources\\icons\\voisin_1.png");
+                getClass().getClassLoader().getResource("\\icons\\voisin_1.png"));
 
         iconFenetre.setImage(iconFenetre.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
         iconPorte.setImage(iconPorte.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
