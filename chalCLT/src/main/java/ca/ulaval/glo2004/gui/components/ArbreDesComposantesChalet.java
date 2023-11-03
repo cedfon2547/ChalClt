@@ -154,11 +154,11 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
 
                     if (parentStr != null) {
                         switch (parent.getLastPathComponent().toString()) {
-                            case "Façade":
-                                System.out.println("Acc Facade");
+                            case "Mur Façade":
+                                System.out.println("Acc Mur Facade");
                                 break;
-                            case "Arrière":
-                                System.out.println("Acc Arriere");
+                            case "Mur Arrière":
+                                System.out.println("Acc Mur Arriere");
                                 break;
                             case "Mur droit":
                                 System.out.println("Acc Mur droit");
@@ -172,13 +172,13 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
 
                 if (evt.getClickCount() == 2 && evt.getButton() == java.awt.event.MouseEvent.BUTTON1) {
                     switch (path.getLastPathComponent().toString()) {
-                        case "Façade":
-                            System.out.println("Facade");
+                        case "Mur Façade":
+                            System.out.println("Mur Facade");
                             mainWindow.drawingPanel.vueActive = DrawingPanel.TypeDeVue.Facade;
                             mainWindow.drawingPanel.scene.getCamera().setDirection(DrawingPanel.TypeDeVue.vueFacade());
                             break;
-                        case "Arrière":
-                            System.out.println("Arriere");
+                        case "Mur Arrière":
+                            System.out.println("Mur Arriere");
                             mainWindow.drawingPanel.vueActive = DrawingPanel.TypeDeVue.Arriere;
                             mainWindow.drawingPanel.scene.getCamera().setDirection(DrawingPanel.TypeDeVue.vueArriere());
                             break;
