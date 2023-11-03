@@ -10,7 +10,6 @@ import java.awt.Color;
 import java.awt.GridLayout;
 
 import ca.ulaval.glo2004.domaine.Chalet;
-import ca.ulaval.glo2004.domaine.Controleur;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.Rasterizer;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
@@ -113,18 +112,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                         if (obj[2] == btn) {
                             btn.setBackground(activeBtnColor);
                             vueActive = TypeDeVue.valueOf((String) obj[1]);
-
-                            if (vueActive == TypeDeVue.Dessus) {
-                                scene.getCamera().setDirection(TypeDeVue.vueDessus());
-                            } else if (vueActive == TypeDeVue.Facade) {
-                                scene.getCamera().setDirection(TypeDeVue.vueFacade());
-                            } else if (vueActive == TypeDeVue.Arriere) {
-                                scene.getCamera().setDirection(TypeDeVue.vueArriere());
-                            } else if (vueActive == TypeDeVue.Droite) {
-                                scene.getCamera().setDirection(TypeDeVue.vueDroite());
-                            } else if (vueActive == TypeDeVue.Gauche) {
-                                scene.getCamera().setDirection(TypeDeVue.vueGauche());
-                            }
+                            changerVue(vueActive);
                         } else {
                             ((javax.swing.JButton) obj[2]).setBackground(null);
                         }
@@ -309,31 +297,6 @@ public class DrawingPanel extends javax.swing.JPanel {
                             camera.zoomOutDirection(new java.awt.Point(getWidth() / 2, getHeight() / 2), getSize());
                         }
                         break;
-                    case java.awt.event.KeyEvent.VK_1:
-                        // Top
-                        scene.getCamera().setDirection(new Vector3D(Math.PI / 2, 0, 0));
-                        scene.getCamera().setPosition(new Vector3D(0, 0, -1000));
-                        break;
-                    case java.awt.event.KeyEvent.VK_2:
-                        // Front
-                        scene.getCamera().setDirection(new Vector3D(0, Math.PI / 2, 0));
-                        scene.getCamera().setPosition(new Vector3D(0, 0, -1000));
-                        break;
-                    case java.awt.event.KeyEvent.VK_3:
-                        // Back
-                        scene.getCamera().setDirection(new Vector3D(0, -Math.PI / 2, 0));
-                        scene.getCamera().setPosition(new Vector3D(0, 0, -1000));
-                        break;
-                    case java.awt.event.KeyEvent.VK_4:
-                        // Left
-                        scene.getCamera().setDirection(new Vector3D(0, 0, 0));
-                        scene.getCamera().setPosition(new Vector3D(0, 0, -1000));
-                        break;
-                    case java.awt.event.KeyEvent.VK_5:
-                        // Right
-                        scene.getCamera().setDirection(new Vector3D(0, Math.PI, 0));
-                        scene.getCamera().setPosition(new Vector3D(0, 0, -1000));
-                        break;
                     case java.awt.event.KeyEvent.VK_R:
                         scene.getCamera().setDirection(new Vector3D(0, 0, 0));
                         scene.getCamera().setPosition(new Vector3D(0, 0, -1000));
@@ -380,6 +343,27 @@ public class DrawingPanel extends javax.swing.JPanel {
         this.rasterizer.draw(g, getSize());
 
         // g.drawImage(this.afficheur.getImage(), 0, 0, null);
+    }
+
+    public void changerVue(TypeDeVue vue) {
+        this.vueActive = vue;
+
+        if (vueActive == TypeDeVue.Dessus) {
+            scene.getCamera().setDirection(TypeDeVue.vueDessus());
+        } else if (vueActive == TypeDeVue.Facade) {
+            scene.getCamera().setDirection(TypeDeVue.vueFacade());
+        } else if (vueActive == TypeDeVue.Arriere) {
+            scene.getCamera().setDirection(TypeDeVue.vueArriere());
+        } else if (vueActive == TypeDeVue.Droite) {
+            scene.getCamera().setDirection(TypeDeVue.vueDroite());
+        } else if (vueActive == TypeDeVue.Gauche) {
+            scene.getCamera().setDirection(TypeDeVue.vueGauche());
+        }
+
+        mainWindow.menu.activerVue(vueActive);
+        updateToolbarBtns();
+        invalidate();
+        repaint();
     }
 
     public static enum TypeDeVue {

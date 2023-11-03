@@ -1,15 +1,12 @@
 package ca.ulaval.glo2004.gui;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.util.UUID;
 
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.JTableHeader;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
@@ -20,6 +17,7 @@ import ca.ulaval.glo2004.domaine.utils.ImperialDimension;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.gui.components.ArbreDesComposantesChalet;
 import ca.ulaval.glo2004.gui.components.DrawingPanel;
+import ca.ulaval.glo2004.gui.components.MainWindowTopBarMenu;
 import ca.ulaval.glo2004.gui.components.TopButtonPanel;
 
 /*
@@ -57,10 +55,14 @@ public class MainWindow extends javax.swing.JFrame {
 
     public DrawingPanel drawingPanel;
     public ArbreDesComposantesChalet arbreDesComposantesChalet;
+    public MainWindowTopBarMenu menu;
 
     public MainWindow(Controleur controleur) {
         super("ChalCLT - Créateur de chalets");
         this.controleur = controleur;
+        this.menu = new MainWindowTopBarMenu(this);
+        
+        setJMenuBar(menu); // Add the menu bar to the window
         initComponents();
     }
 
@@ -326,6 +328,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
 
     }
+
     public Controleur getControleur() {
         return controleur;
     }
