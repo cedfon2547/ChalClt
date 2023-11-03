@@ -31,6 +31,19 @@ public class Scene {
         return meshes;
     }
 
+    public TriangleMesh getMesh(int index) {
+        return meshes.get(index);
+    }
+
+    public TriangleMesh getMesh(String id) {
+        for (TriangleMesh mesh : meshes) {
+            if (mesh.ID.equals(id)) {
+                return mesh;
+            }
+        }
+        return null;
+    }
+
     public Light getLight() {
         return light;
     }
