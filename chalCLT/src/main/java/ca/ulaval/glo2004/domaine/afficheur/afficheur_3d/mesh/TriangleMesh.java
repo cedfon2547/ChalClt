@@ -10,6 +10,7 @@ public class TriangleMesh {
     public String ID = UUID.randomUUID().toString();
     private List<Triangle> triangles;
     private Material material = new Material(); // The material of the object
+    private boolean isSelected = false;
 
     public TriangleMesh(List<Triangle> triangles) {
         this.triangles = triangles;
@@ -30,6 +31,10 @@ public class TriangleMesh {
         this.ID = ID;
     }
 
+    public String getID() {
+        return ID;
+    }
+
     public List<Triangle> getTriangles() {
         return this.triangles;
     }
@@ -44,6 +49,14 @@ public class TriangleMesh {
 
     public void setMaterial(Material material) {
         this.material = material;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
     }
 
     /*
