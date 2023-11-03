@@ -245,6 +245,8 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
+
+        
         tableContainer.add(tableProprietesChalet.getTableHeader());
         tableContainer.setViewportView(tableProprietesChalet);
     }
