@@ -257,14 +257,14 @@ public class DrawingPanel extends javax.swing.JPanel {
                         if (evt.isShiftDown()) {
                             camera.rotateX(rotateStep);
                         } else {
-                            camera.moveLeft(10);
+                            camera.moveLeft(-10);
                         }
                         break;
                     case java.awt.event.KeyEvent.VK_RIGHT:
                         if (evt.isShiftDown()) {
                             camera.rotateX(-rotateStep);
                         } else {
-                            camera.moveLeft(-10);
+                            camera.moveLeft(10);
                         }
                         break;
                     case java.awt.event.KeyEvent.VK_UP:

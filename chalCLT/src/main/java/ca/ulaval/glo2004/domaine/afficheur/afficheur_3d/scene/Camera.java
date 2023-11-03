@@ -64,12 +64,18 @@ public class Camera {
 
     public void zoomInDirection(Point mousePosition, Dimension viewportDimension) {
         double zoomFactor = 1 * 1.01; // Define the zoom factor
-        this.scale = this.scale * zoomFactor; 
+        // move cam in direction of mouse by scale*
+        this.position = position.add(new Vector3D((mousePosition.x-viewportDimension.width/2) * (1-zoomFactor),(mousePosition.y-viewportDimension.height/2) * (1-zoomFactor),0));
+
+        this.scale = this.scale * zoomFactor;
+
     }
 
     public void zoomOutDirection(Point mousePosition, Dimension viewportDimension) {
-        double zoomFactor = 1 * 1.01; // Define the zoom factor
-        this.scale = this.scale / zoomFactor;
+        double zoomFactor = 1 / 1.01; // Define the zoom factor
+
+        this.position = position.add(new Vector3D((mousePosition.x-viewportDimension.width/2) * (1-zoomFactor),(mousePosition.y-viewportDimension.height/2) * (1-zoomFactor),0));
+        this.scale = this.scale * zoomFactor;
     }
 
     public Camera copy() {
