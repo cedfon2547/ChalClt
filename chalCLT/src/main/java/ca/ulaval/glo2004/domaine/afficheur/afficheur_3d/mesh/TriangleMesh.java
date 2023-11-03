@@ -1,10 +1,10 @@
-package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.mesh;
+package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.base.Vector3D;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 
 public class TriangleMesh {
     public String ID = UUID.randomUUID().toString();

@@ -1,4 +1,4 @@
-package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.base;
+package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base;
 
 public class Matrix {
     public double[][] values = new double[][] {

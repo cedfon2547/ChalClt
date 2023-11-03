@@ -1,4 +1,4 @@
-package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.scene;
+package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene;
 
 import java.awt.Color;
 

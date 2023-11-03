@@ -13,7 +13,7 @@ import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.Controleur;
 import ca.ulaval.glo2004.domaine.TypeSensToit;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.mesh.TriangleMesh;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.utils.ImperialDimension;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.gui.components.ArbreDesComposantesChalet;

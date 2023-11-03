@@ -1,4 +1,4 @@
-package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2;
+package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.base.Matrix;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.base.Vector3D;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.mesh.Triangle;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.mesh.TriangleMesh;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.scene.Light;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.scene.Scene;
-
 import com.google.common.collect.Lists;
+
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Matrix;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.Triangle;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Light;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -53,98 +53,98 @@ public class Rasterizer {
         g2.fillRect(0, 0, 10000, 10000);
     }
 
-    private Color getPixelColor(TriangleMesh object, Color color, Vector3D norm, Vector3D pixelPoint) {
-        if (object.getMaterial() == null) {
-            return color;
-        }
+//     private Color getPixelColor(TriangleMesh object, Color color, Vector3D norm, Vector3D pixelPoint) {
+//         if (object.getMaterial() == null) {
+//             return color;
+//         }
 
-        Color objectColor = color != null ? color : object.getMaterial().getColor();
+//         Color objectColor = color != null ? color : object.getMaterial().getColor();
 
-        double ka = object.getMaterial().getAmbient() + scene.getLight().getAmbientIntensity() + scene.getLight().getIntensity();
-        double kd = object.getMaterial().getDiffuse();
-        double ks = object.getMaterial().getSpecular();
-        double n = object.getMaterial().getShininess();
+//         double ka = object.getMaterial().getAmbient() + scene.getLight().getAmbientIntensity() + scene.getLight().getIntensity();
+//         double kd = object.getMaterial().getDiffuse();
+//         double ks = object.getMaterial().getSpecular();
+//         double n = object.getMaterial().getShininess();
 
-        // Suppose we only have one light
-        Light light = scene.getLight();
+//         // Suppose we only have one light
+//         Light light = scene.getLight();
 
-        // Blend the object color and the light color using linear interpolation
-        Color blendedColor = new Color(
-                (int) Light.Lerp(objectColor.getRed(), light.getColor().getRed(),
-                        light.getBlenderFactor()),
-                (int) Light.Lerp(objectColor.getGreen(), light.getColor().getGreen(),
-                        light.getBlenderFactor()),
-                (int) Light.Lerp(objectColor.getBlue(), light.getColor().getBlue(),
-                        light.getBlenderFactor()),
-                (int) objectColor.getAlpha());
+//         // Blend the object color and the light color using linear interpolation
+//         Color blendedColor = new Color(
+//                 (int) Light.Lerp(objectColor.getRed(), light.getColor().getRed(),
+//                         light.getBlenderFactor()),
+//                 (int) Light.Lerp(objectColor.getGreen(), light.getColor().getGreen(),
+//                         light.getBlenderFactor()),
+//                 (int) Light.Lerp(objectColor.getBlue(), light.getColor().getBlue(),
+//                         light.getBlenderFactor()),
+//                 (int) objectColor.getAlpha());
 
-        // Calculate the ambient component of the lighting model using the blended color
-        Color ambientColor = new Color(
-                (int) Math.min(255, (ka * blendedColor.getRed())),
-                (int) Math.min(255, ka * blendedColor.getGreen()),
-                (int) Math.min(255, ka * blendedColor.getBlue()),
-                (int) objectColor.getAlpha());
+//         // Calculate the ambient component of the lighting model using the blended color
+//         Color ambientColor = new Color(
+//                 (int) Math.min(255, (ka * blendedColor.getRed())),
+//                 (int) Math.min(255, ka * blendedColor.getGreen()),
+//                 (int) Math.min(255, ka * blendedColor.getBlue()),
+//                 (int) objectColor.getAlpha());
 
-        Vector3D lightPosition = light.getPosition();
+//         Vector3D lightPosition = light.getPosition();
 
-        // The direction from the point to the light source
-        Vector3D lightDir = lightPosition.sub(pixelPoint).normalize();
-        // The distance from the point to the light source
-        double lightDistance = lightDir.getNormLength();
+//         // The direction from the point to the light source
+//         Vector3D lightDir = lightPosition.sub(pixelPoint).normalize();
+//         // The distance from the point to the light source
+//         double lightDistance = lightDir.getNormLength();
 
-        // Calculate the diffuse component of the lighting model using the blended color
-        double diffuseFactor = Math.max(0, norm.dotProduct(lightDir));
-        if (diffuseFactor < 0) {
-            return ambientColor;
-        }
+//         // Calculate the diffuse component of the lighting model using the blended color
+//         double diffuseFactor = Math.max(0, norm.dotProduct(lightDir));
+//         if (diffuseFactor < 0) {
+//             return ambientColor;
+//         }
 
-        // Calculate the specular component of the lighting model using the Phong
-        // reflection model
-        // Vector3D viewDir = scene.getCamera().getPosition().sub(pixelPoint).normalize();
-        // Vector3D reflectDir = norm.multiplyScalar(2 * norm.dotProduct(lightDir)).sub(lightDir).normalize();
-        double specularFactor = 0; // Math.pow(Math.max(0, viewDir.dotProduct(reflectDir)), n);
-        if (specularFactor < 0) {
-            specularFactor = 0;
-        }
+//         // Calculate the specular component of the lighting model using the Phong
+//         // reflection model
+//         // Vector3D viewDir = scene.getCamera().getPosition().sub(pixelPoint).normalize();
+//         // Vector3D reflectDir = norm.multiplyScalar(2 * norm.dotProduct(lightDir)).sub(lightDir).normalize();
+//         double specularFactor = 0; // Math.pow(Math.max(0, viewDir.dotProduct(reflectDir)), n);
+//         if (specularFactor < 0) {
+//             specularFactor = 0;
+//         }
 
-        // Color specularColor = new Color(
-        //         (int) (ks * specularFactor * blendedColor.getRed()),
-        //         (int) (ks * specularFactor * blendedColor.getGreen()),
-        //         (int) (ks * specularFactor * blendedColor.getBlue()),
-        //         (int) (ks * ks));
+//         // Color specularColor = new Color(
+//         //         (int) (ks * specularFactor * blendedColor.getRed()),
+//         //         (int) (ks * specularFactor * blendedColor.getGreen()),
+//         //         (int) (ks * specularFactor * blendedColor.getBlue()),
+//         //         (int) (ks * ks));
 
-        // Calculate the attenuation based on the distance to the light source
-        double attenuation = 1 / (1 + 0.5 * lightDistance + 0.01 * lightDistance * lightDistance);
+//         // Calculate the attenuation based on the distance to the light source
+//         double attenuation = 1 / (1 + 0.5 * lightDistance + 0.01 * lightDistance * lightDistance);
 
-        // Modify the diffuse and specular calculations to include the attenuation
-        Color diffuseColor = new Color(
-                (int) Math.min(255, (kd * diffuseFactor * blendedColor.getRed() * attenuation)),
-                (int) Math.min(255, (kd * diffuseFactor * blendedColor.getGreen() * attenuation)),
-                (int) Math.min(255, kd * diffuseFactor * blendedColor.getBlue() * attenuation),
-                (int) objectColor.getAlpha());
+//         // Modify the diffuse and specular calculations to include the attenuation
+//         Color diffuseColor = new Color(
+//                 (int) Math.min(255, (kd * diffuseFactor * blendedColor.getRed() * attenuation)),
+//                 (int) Math.min(255, (kd * diffuseFactor * blendedColor.getGreen() * attenuation)),
+//                 (int) Math.min(255, kd * diffuseFactor * blendedColor.getBlue() * attenuation),
+//                 (int) objectColor.getAlpha());
 
-        Color specularColor = new Color(
-                (int) (ks * specularFactor * blendedColor.getRed() * attenuation),
-                (int) (ks * specularFactor * blendedColor.getGreen() * attenuation),
-                (int) (ks * specularFactor * blendedColor.getBlue() * attenuation),
-                (int) (ks * ks));
+//         Color specularColor = new Color(
+//                 (int) (ks * specularFactor * blendedColor.getRed() * attenuation),
+//                 (int) (ks * specularFactor * blendedColor.getGreen() * attenuation),
+//                 (int) (ks * specularFactor * blendedColor.getBlue() * attenuation),
+//                 (int) (ks * ks));
 
-        // Calculate the final color
-        // Add up the ambient, diffuse and specular components to get the final color
+//         // Calculate the final color
+//         // Add up the ambient, diffuse and specular components to get the final color
 
-        int finalRed = (int) Math.min(255,
-                ambientColor.getRed() + diffuseColor.getRed() + specularColor.getRed());
-        int finalGreen = (int) Math.min(255,
-                ambientColor.getGreen() + diffuseColor.getGreen() + specularColor.getGreen());
-        int finalBlue = (int) Math.min(255,
-                ambientColor.getBlue() + diffuseColor.getBlue() + specularColor.getBlue());
-        int finalAlpha = (int) Math.min(255,
-                ambientColor.getAlpha() + diffuseColor.getAlpha() + specularColor.getAlpha());
+//         int finalRed = (int) Math.min(255,
+//                 ambientColor.getRed() + diffuseColor.getRed() + specularColor.getRed());
+//         int finalGreen = (int) Math.min(255,
+//                 ambientColor.getGreen() + diffuseColor.getGreen() + specularColor.getGreen());
+//         int finalBlue = (int) Math.min(255,
+//                 ambientColor.getBlue() + diffuseColor.getBlue() + specularColor.getBlue());
+//         int finalAlpha = (int) Math.min(255,
+//                 ambientColor.getAlpha() + diffuseColor.getAlpha() + specularColor.getAlpha());
 
-        Color finalColor = new Color(finalRed, finalGreen, finalBlue, finalAlpha);
+//         Color finalColor = new Color(finalRed, finalGreen, finalBlue, finalAlpha);
 
-        return finalColor;
-    }
+//         return finalColor;
+//     }
 
     private BufferedImage rasterize(Dimension panelDimension) {
         BufferedImage canvasBuffer = new BufferedImage((int) panelDimension.getWidth(),

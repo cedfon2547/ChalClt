@@ -1,7 +1,7 @@
-package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.scene;
+package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene;
 import java.awt.Color;
 
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.base.Vector3D;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 
 public class Light {
     private double intensity = 5;

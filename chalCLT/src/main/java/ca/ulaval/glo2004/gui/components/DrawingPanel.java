@@ -10,15 +10,12 @@ import java.awt.Color;
 import java.awt.GridLayout;
 
 import ca.ulaval.glo2004.domaine.Chalet;
-import ca.ulaval.glo2004.domaine.TypeAccessoire;
-import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.scene.Scene;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.Rasterizer;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.base.Vector3D;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.mesh.TriangleMesh;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.scene.Camera;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.scene.Scene;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.Rasterizer;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.gui.MainWindow;
 
@@ -44,11 +41,8 @@ public class DrawingPanel extends javax.swing.JPanel {
         this.rasterizer = new Rasterizer(this.scene);
 
         this.scene.getLight().setPosition(new Vector3D(getWidth(), 200, 0));
-        //this.scene.getLight().setAmbientIntensity(0.6);
         this.scene.getCamera().setDirection(TypeDeVue.vueDessus());
         Chalet.ChaletDTO chaletDTO = this.mainWindow.getControleur().getChalet();
-
-        this.mainWindow.getControleur().ajouterAccessoire(TypeMur.Facade, TypeAccessoire.Fenetre, new double[] { 50, 0 }, new double[] { 50, 50 });
 
 
         TriangleMesh[] meshes = PanelHelper.generateMeshMurs(chaletDTO.largeur, chaletDTO.hauteur, chaletDTO.longueur,
@@ -61,37 +55,6 @@ public class DrawingPanel extends javax.swing.JPanel {
         meshes[3].getMaterial().setColor(java.awt.Color.YELLOW);
 
         this.scene.addMeshes(meshes);
-
-        PanelHelper.RectPlane2D rect1 = new PanelHelper.RectPlane2D(new double[] { 0, 0 }, new double[] { 30, 30 }, 0);
-
-        // PanelHelper.RectPlane2D rect2 = rect1.remove(new double[] {50, 50}, new double[] {80, 80});        
-        // PanelHelper.RectPlane2D rect3 = rect1.remove(new double[] {50, 50}, new double[] {80, 80});
-
-        // PanelHelper.RectPlane2D rect4 = new PanelHelper.RectPlane2D(new double[] { 25, 0}, new double[] { 250, 300 }, 0);
-        // PanelHelper.RectPlane2D rect5 = rect4.remove(new double[] {50, 50}, new double[] {80, 80});
-        // PanelHelper.RectPlane2D rect6 = new PanelHelper.RectPlane2D(new double[] { 35, 50}, new double[] {30, 80}, 0);
-
-        TriangleMesh mesh1 = TriangleMesh.fromDoubleList(rect1.triangles);
-        mesh1 = mesh1.translate(new Vector3D(meshes[1].getBounding()[0].getX(), meshes[1].getBounding()[0].getY(), meshes[1].getBounding()[0].getZ() + 7));
-        // TriangleMesh mesh2 = TriangleMesh.fromDoubleList(rect3.triangles);
-        // TriangleMesh mesh3 = TriangleMesh.fromDoubleList(rect5.triangles);
-        // TriangleMesh mesh4 = TriangleMesh.fromDoubleList(rect6.triangles);
-        // mesh4 = mesh4.translate(new Vector3D(0, 0, 15)).rotateYOnPlace(Math.toRadians(90));
-        // TriangleMesh mesh5 = mesh4.copy().translate(new Vector3D(95, 0, 0));
-
-        mesh1.getMaterial().setColor(java.awt.Color.CYAN);
-        // mesh2.getMaterial().setColor(java.awt.Color.MAGENTA);
-        // mesh3.getMaterial().setColor(java.awt.Color.ORANGE);
-        // mesh4.getMaterial().setColor(java.awt.Color.PINK);
-        // mesh5.getMaterial().setColor(java.awt.Color.PINK);
-
-        // mesh3 = mesh3.translate(new Vector3D(0, 0, 30));
-        // this.scene.addMesh(mesh1);
-        this.scene.addMesh(mesh1);
-        // this.scene.addMesh(mesh2);
-        // this.scene.addMesh(mesh3);
-        // this.scene.addMesh(mesh4);
-        // this.scene.addMesh(mesh5);
 
         initComponents();
     }

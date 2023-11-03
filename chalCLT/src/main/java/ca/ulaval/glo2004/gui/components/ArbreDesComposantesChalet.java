@@ -62,8 +62,6 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                     Chalet.ChaletDTO chaletDTO = (Chalet.ChaletDTO) evt.getNewValue();
                     chaletNode.setUserObject(chaletDTO.nom);
                     ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeChanged(chaletNode);
-                    // chaletNode = new
-                    // javax.swing.tree.DefaultMutableTreeNode(evt.getNewValue().toString());
                 }
             }
         });
@@ -77,26 +75,18 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                 switch (accessoireDTO.typeMur) {
                     case Facade:
                         murFacadeNode.add(accessoireNode);
-                        // ((DefaultTreeModel)
-                        // arbreComposantesChalet.getModel()).nodeChanged(murFacadeNode);
                         ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeStructureChanged(murFacadeNode);
                         break;
                     case Arriere:
                         murArriereNode.add(accessoireNode);
-                        // ((DefaultTreeModel)
-                        // arbreComposantesChalet.getModel()).nodeChanged(murArriereNode);
                         ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeStructureChanged(murArriereNode);
                         break;
                     case Droit:
                         murDroitNode.add(accessoireNode);
-                        // ((DefaultTreeModel)
-                        // arbreComposantesChalet.getModel()).nodeChanged(murDroitNode);
                         ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeStructureChanged(murDroitNode);
                         break;
                     case Gauche:
                         murGaucheNode.add(accessoireNode);
-                        // ((DefaultTreeModel)
-                        // arbreComposantesChalet.getModel()).nodeChanged(murGaucheNode);
                         ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeStructureChanged(murGaucheNode);
                         break;
                     default:
@@ -107,40 +97,6 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                 arbreComposantesChalet.repaint();
             }
         });
-
-        javax.swing.tree.DefaultMutableTreeNode murFacadeAccChild1Node = new javax.swing.tree.DefaultMutableTreeNode(
-                "fenêtre_1");
-        // javax.swing.tree.DefaultMutableTreeNode murFacadeAccChild2Node = new
-        // javax.swing.tree.DefaultMutableTreeNode(
-        // "fenêtre_2");
-        // javax.swing.tree.DefaultMutableTreeNode murFacadeAccChild3Node = new
-        // javax.swing.tree.DefaultMutableTreeNode(
-        // "porte_1");
-        // javax.swing.tree.DefaultMutableTreeNode murFacadeAccChild4Node = new
-        // javax.swing.tree.DefaultMutableTreeNode(
-        // "porte_2");
-
-        // javax.swing.tree.DefaultMutableTreeNode murArriereAccChild1Node = new
-        // javax.swing.tree.DefaultMutableTreeNode(
-        // "fenêtre_1");
-        // javax.swing.tree.DefaultMutableTreeNode murArriereAccChild2Node = new
-        // javax.swing.tree.DefaultMutableTreeNode(
-        // "fenêtre_2");
-        // javax.swing.tree.DefaultMutableTreeNode murArriereAccChild3Node = new
-        // javax.swing.tree.DefaultMutableTreeNode(
-        // "porte_1");
-
-        murFacadeNode.add(murFacadeAccChild1Node);
-        // murFacadeNode.add(murFacadeAccChild2Node);
-        // murFacadeNode.add(murFacadeAccChild3Node);
-        // murFacadeNode.add(murFacadeAccChild4Node);
-
-        // murArriereNode.add(murArriereAccChild1Node);
-        // murArriereNode.add(murArriereAccChild2Node);
-        // murArriereNode.add(murArriereAccChild3Node);
-
-        // murFacadeNode.add(murFacadeAccNode);
-        // murArriereNode.add(murArriereAccNode);
 
         mursNode.add(murFacadeNode);
         mursNode.add(murArriereNode);

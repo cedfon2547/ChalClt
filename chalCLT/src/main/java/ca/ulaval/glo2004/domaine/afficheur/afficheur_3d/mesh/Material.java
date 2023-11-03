@@ -1,4 +1,4 @@
-package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.mesh;
+package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh;
 import java.awt.Color;
 
 public class Material {

@@ -1,12 +1,11 @@
-package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.scene;
+package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.base.Vector3D;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.mesh.TriangleMesh;
-// import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d_2.mesh.TriangleMeshGroup;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 
 public class Scene {
     private SceneConfiguration configuration = new SceneConfiguration();
