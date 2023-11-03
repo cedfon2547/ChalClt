@@ -58,7 +58,7 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
 
         this.mainWindow.getControleur().addPropertyChangeListener("chalet", new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName() == "chalet") {
+                if (evt.getPropertyName().equals("chalet")) {
                     Chalet.ChaletDTO chaletDTO = (Chalet.ChaletDTO) evt.getNewValue();
                     chaletNode.setUserObject(chaletDTO.nom);
                     ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeChanged(chaletNode);
@@ -154,11 +154,11 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
 
                     if (parentStr != null) {
                         switch (parent.getLastPathComponent().toString()) {
-                            case "Façade":
-                                System.out.println("Acc Facade");
+                            case "Mur façade":
+                                System.out.println("Acc Mur Facade");
                                 break;
-                            case "Arrière":
-                                System.out.println("Acc Arriere");
+                            case "Mur arrière":
+                                System.out.println("Acc Mur Arriere");
                                 break;
                             case "Mur droit":
                                 System.out.println("Acc Mur droit");
@@ -172,13 +172,13 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
 
                 if (evt.getClickCount() == 2 && evt.getButton() == java.awt.event.MouseEvent.BUTTON1) {
                     switch (path.getLastPathComponent().toString()) {
-                        case "Façade":
-                            System.out.println("Facade");
+                        case "Mur façade":
+                            System.out.println("Mur Facade");
                             mainWindow.drawingPanel.vueActive = DrawingPanel.TypeDeVue.Facade;
                             mainWindow.drawingPanel.scene.getCamera().setDirection(DrawingPanel.TypeDeVue.vueFacade());
                             break;
-                        case "Arrière":
-                            System.out.println("Arriere");
+                        case "Mur arrière":
+                            System.out.println("Mur Arriere");
                             mainWindow.drawingPanel.vueActive = DrawingPanel.TypeDeVue.Arriere;
                             mainWindow.drawingPanel.scene.getCamera().setDirection(DrawingPanel.TypeDeVue.vueArriere());
                             break;
