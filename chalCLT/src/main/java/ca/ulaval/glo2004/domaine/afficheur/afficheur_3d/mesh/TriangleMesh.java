@@ -8,6 +8,8 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 
 public class TriangleMesh {
     public String ID = UUID.randomUUID().toString();
+
+    private String componentHandle = ""; // some indicator of what this mesh represents // sorta dupicate of ID
     private List<Triangle> triangles;
     private Material material = new Material(); // The material of the object
     private boolean isSelected = false;
@@ -25,14 +27,24 @@ public class TriangleMesh {
         this.material = material;
     }
 
-    public TriangleMesh(List<Triangle> triangles, Material material, String ID) {
+    public TriangleMesh(List<Triangle> triangles, Material material, String ID, String handle) {
         this.triangles = triangles;
         this.material = material;
         this.ID = ID;
+        this.componentHandle = handle;
     }
 
     public String getID() {
         return ID;
+    }
+
+    // feel free to fix, this is a bodge
+    public String getHandle() {
+        return componentHandle;
+    }
+
+    public void setHandle(String handle) {
+        componentHandle=handle;
     }
 
     public List<Triangle> getTriangles() {
@@ -130,7 +142,7 @@ public class TriangleMesh {
             newTriangles.add(triangle.translate(translation));
         }
 
-        return new TriangleMesh(newTriangles, this.material.copy(), this.ID);
+        return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
     }
 
     public TriangleMesh scale(Vector3D scale) {
@@ -140,7 +152,7 @@ public class TriangleMesh {
             newTriangles.add(triangle.scale(scale));
         }
 
-        return new TriangleMesh(newTriangles, this.material.copy(), this.ID);
+        return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
     }
 
     public TriangleMesh rotateX(double angle) {
@@ -150,7 +162,7 @@ public class TriangleMesh {
             newTriangles.add(triangle.rotateX(angle));
         }
 
-        return new TriangleMesh(newTriangles, this.material.copy(), this.ID);
+        return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
     }
 
     public TriangleMesh rotateXOnPlace(double angle) {
@@ -161,7 +173,7 @@ public class TriangleMesh {
             newTriangles.add(triangle.translate(center.multiplyScalar(-1)).rotateX(angle).translate(center));
         }
 
-        return new TriangleMesh(newTriangles, this.material.copy(), this.ID);
+        return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
     }
 
     public TriangleMesh rotateY(double angle) {
@@ -171,7 +183,7 @@ public class TriangleMesh {
             newTriangles.add(triangle.rotateY(angle));
         }
 
-        return new TriangleMesh(newTriangles, this.material.copy(), this.ID);
+        return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
     }
 
     public TriangleMesh rotateYOnPlace(double angle) {
@@ -182,7 +194,7 @@ public class TriangleMesh {
             newTriangles.add(triangle.translate(center.multiplyScalar(-1)).rotateY(angle).translate(center));
         }
 
-        return new TriangleMesh(newTriangles, this.material.copy(), this.ID);
+        return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
     }
 
     public TriangleMesh rotateZ(double angle) {
@@ -192,7 +204,7 @@ public class TriangleMesh {
             newTriangles.add(triangle.rotateZ(angle));
         }
 
-        return new TriangleMesh(newTriangles, this.material.copy(), this.ID);
+        return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
     }
 
     public TriangleMesh rotateZOnPlace(double angle) {
@@ -203,7 +215,7 @@ public class TriangleMesh {
             newTriangles.add(triangle.translate(center.multiplyScalar(-1)).rotateZ(angle).translate(center));
         }
 
-        return new TriangleMesh(newTriangles, this.material.copy(), this.ID);
+        return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
     }
 
     public double getWidth() {

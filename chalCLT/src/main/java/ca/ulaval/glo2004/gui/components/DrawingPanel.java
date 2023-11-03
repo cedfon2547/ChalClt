@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 
 import ca.ulaval.glo2004.domaine.Chalet;
+import ca.ulaval.glo2004.domaine.Controleur;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.Rasterizer;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
@@ -201,7 +202,10 @@ public class DrawingPanel extends javax.swing.JPanel {
 
                 TriangleMesh mesh = rasterizer.getMeshFromPoint(e.getPoint());
                 if (mesh != null) {
-                    System.out.println(mesh.getID());
+                    //System.out.println(mesh.getID());
+                    System.out.println(mesh.getHandle());
+                    rasterizer.deselectAllMeshes(); // change to unless shift or w/e
+                    mesh.setSelected(true);
                 }
 
                 repaint();
@@ -386,23 +390,23 @@ public class DrawingPanel extends javax.swing.JPanel {
         Gauche;
 
         public static Vector3D vueDessus() {
-            return new Vector3D(-Math.PI / 2, 0, 0);
+            return new Vector3D(-Math.PI / 2, Math.PI, 0);
         }
 
         public static Vector3D vueFacade() {
-            return new Vector3D(0, Math.PI / 2, 0);
+            return new Vector3D(0, Math.PI, 0);
         }
 
         public static Vector3D vueArriere() {
-            return new Vector3D(0, -Math.PI / 2, 0);
-        }
-
-        public static Vector3D vueDroite() {
             return new Vector3D(0, 0, 0);
         }
 
+        public static Vector3D vueDroite() {
+            return new Vector3D(0, Math.PI/2, 0);
+        }
+
         public static Vector3D vueGauche() {
-            return new Vector3D(0, Math.PI, 0);
+            return new Vector3D(0, -Math.PI/2, 0);
         }
     }
 }

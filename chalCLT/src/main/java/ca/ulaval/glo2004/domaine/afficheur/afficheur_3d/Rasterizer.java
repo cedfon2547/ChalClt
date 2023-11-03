@@ -261,9 +261,16 @@ public class Rasterizer {
                 }
             }
 
-            TriangleMesh transformed = new TriangleMesh(transformedTriangles);
+            TriangleMesh transformed = new TriangleMesh(transformedTriangles, obj.getMaterial());
+            transformed.setSelected(obj.isSelected());
             transformed.ID = obj.ID;
             tMeshes.add(transformed);
+            Graphics g = canvasBuffer.getGraphics();
+            g.setColor(scene.getConfiguration().getSelectionColor());
+            if(obj.isSelected()) {
+                Vector3D[] bounds = transformed.getBounding();
+                g.drawRect((int)bounds[0].getX(),(int)bounds[0].getY(),(int)transformed.getWidth(),(int)transformed.getHeight());
+            }
         }
 
         return canvasBuffer;
@@ -395,5 +402,11 @@ public class Rasterizer {
         }
 
         return null;
+    }
+
+    public void deselectAllMeshes(){
+        for(TriangleMesh mesh:scene.getMeshes())
+            mesh.setSelected(false);
+
     }
 }

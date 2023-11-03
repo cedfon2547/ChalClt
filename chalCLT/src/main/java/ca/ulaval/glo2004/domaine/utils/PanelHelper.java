@@ -240,6 +240,11 @@ public class PanelHelper {
         TriangleMesh murDroite = TriangleMesh.fromDoubleList(trianglesDroite);
         TriangleMesh murGauche = TriangleMesh.fromDoubleList(trianglesGauche);
 
+        murFacade.setHandle("facade");
+        murArriere.setHandle("arriere");
+        murDroite.setHandle("droite");
+        murGauche.setHandle("gauche");
+
         Vector3D murFacadeCenter = murFacade.getCenter().copy();
         Vector3D murArriereCenter = murArriere.getCenter().copy();
         Vector3D murDroiteCenter = murDroite.getCenter().copy();
