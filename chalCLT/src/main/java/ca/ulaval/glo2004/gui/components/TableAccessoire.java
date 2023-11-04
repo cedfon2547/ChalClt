@@ -11,34 +11,31 @@ import ca.ulaval.glo2004.domaine.utils.ImperialDimension;
 import ca.ulaval.glo2004.gui.MainWindow;
 
 public class TableAccessoire extends JTable {
-
     private MainWindow mainWindow;
-
     private Accessoire.AccessoireDTO dtoAcessoire;
-
     private String[] columnNames;
-
     private Object[][] props;
-
     private javax.swing.table.DefaultTableModel model;
-
     private TitledBorder titledBorder;
-    
-    public TableAccessoire(UUID uuid){
-        dtoAcessoire = mainWindow.getControleur().getAccessoire(uuid);
-        String[] columnNames = new String[] {
+
+    public TableAccessoire(Accessoire.AccessoireDTO dtoAcessoire) {
+        this.dtoAcessoire = dtoAcessoire;
+        
+        columnNames = new String[] {
                 "Propriété",
                 "Valeur"
         };
-        Object[][] props = new Object[][] {
+        props = new Object[][] {
                 { "Hauteur", ImperialDimension.convertToImperial(dtoAcessoire.dimensions[1]) },
                 { "Largeur", ImperialDimension.convertToImperial(dtoAcessoire.dimensions[0]) },
                 { "Position x", ImperialDimension.convertToImperial(dtoAcessoire.position[0]) },
-                { "Position y", ImperialDimension.convertToImperial(dtoAcessoire.position[1])}
+                { "Position y", ImperialDimension.convertToImperial(dtoAcessoire.position[1]) }
         };
 
         model = new javax.swing.table.DefaultTableModel(props, columnNames);
         this.setModel(model);
+        titledBorder = javax.swing.BorderFactory.createTitledBorder("Propriétés de l'accessoire");
+
         this.getModel().addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(javax.swing.event.TableModelEvent evt) {
@@ -47,6 +44,7 @@ public class TableAccessoire extends JTable {
             }
         });
     }
+
     @Override
     public int getColumnCount() {
         return columnNames.length;
@@ -97,5 +95,8 @@ public class TableAccessoire extends JTable {
     public boolean isCellEditable(int row, int column) {
         return column == 1;
     }
-}
 
+    public TitledBorder getTitledBorder() {
+        return titledBorder;
+    }
+}

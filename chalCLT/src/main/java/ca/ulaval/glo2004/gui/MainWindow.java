@@ -1,23 +1,14 @@
 package ca.ulaval.glo2004.gui;
 
 import java.awt.BorderLayout;
-import java.util.UUID;
-
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.TableModelListener;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
-import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.Controleur;
-import ca.ulaval.glo2004.domaine.TypeSensToit;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
-import ca.ulaval.glo2004.domaine.utils.ImperialDimension;
-import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.gui.components.ArbreDesComposantesChalet;
 import ca.ulaval.glo2004.gui.components.DrawingPanel;
 import ca.ulaval.glo2004.gui.components.MainWindowTopBarMenu;
+import ca.ulaval.glo2004.gui.components.TableAccessoire;
 import ca.ulaval.glo2004.gui.components.TopButtonPanel;
 import ca.ulaval.glo2004.gui.components.TableChalet;
 
@@ -50,7 +41,7 @@ public class MainWindow extends javax.swing.JFrame {
     
     public TableChalet tableProprietesChalet;
 
-    public JTable tableProprietesAccessoire;
+    public TableAccessoire tableProprietesAccessoire;
     public JScrollPane tableContainer;
 
     public DrawingPanel drawingPanel;
@@ -76,7 +67,6 @@ public class MainWindow extends javax.swing.JFrame {
         drawingPanel = new DrawingPanel(this);
         arbreDesComposantesChalet = new ArbreDesComposantesChalet(this);
         tableContainer = new JScrollPane();
-        tableProprietesChalet = new TableChalet(this);
 
         javax.swing.GroupLayout sideSectionLayout = new javax.swing.GroupLayout(sideSection);
         javax.swing.GroupLayout sidePanelTopSectionLayout = new javax.swing.GroupLayout(sidePanelTopSection);
@@ -91,12 +81,7 @@ public class MainWindow extends javax.swing.JFrame {
         sideSection.setLayout(sideSectionLayout);
         sidePanelTopSection.setLayout(sidePanelTopSectionLayout);
         sidePanelBottomSection.setLayout(sidePanelBottomSectionLayout);
-
-        sidePanelTopSection.setBorder(tableProprietesChalet.getTitledBorder());
         
-        tableContainer.add(tableProprietesChalet.getTableHeader());
-        tableContainer.setViewportView(tableProprietesChalet);
-
         sideSectionLayout.setHorizontalGroup(
                 sideSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGap(0, 0, Short.MAX_VALUE));
@@ -140,10 +125,25 @@ public class MainWindow extends javax.swing.JFrame {
         add(mainWindowSplitPane);
         add(topButtonPanel,BorderLayout.BEFORE_FIRST_LINE);
 
+        showChaletTable();
     }
 
     
     public Controleur getControleur() {
         return controleur;
+    }
+
+    public void showChaletTable() {
+        tableProprietesChalet = new TableChalet(this);
+        tableContainer.setBorder(tableProprietesChalet.getTitledBorder());
+        tableContainer.add(tableProprietesChalet.getTableHeader());
+        tableContainer.setViewportView(tableProprietesChalet);
+    }
+
+    public void showAccessoireTable(Accessoire.AccessoireDTO dtoAccessoire) {
+        tableProprietesAccessoire = new TableAccessoire(dtoAccessoire);
+        tableContainer.setBorder(tableProprietesAccessoire.getTitledBorder());
+        tableContainer.add(tableProprietesAccessoire.getTableHeader());
+        tableContainer.setViewportView(tableProprietesAccessoire);
     }
 }

@@ -3,8 +3,6 @@ package ca.ulaval.glo2004.gui.components;
 import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableModel;
 
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.Chalet.ChaletDTO;
@@ -28,69 +26,63 @@ public class TableChalet extends JTable {
 
     private TitledBorder titledBorder;
 
+    public TableChalet(MainWindow mainWindow) {
 
-   
-        
-        public TableChalet(MainWindow mainWindow){
-            
-            
-            this.mainWindow = mainWindow;
-            this.dtoChalet = mainWindow.getControleur().getChalet();
-            this.columnNames = new String[] {
-                    "Propriété",
-                    "Valeur"
-            };
-            this.props = new Object[][] {
-                    { "Nom", dtoChalet.nom},
-                    { "Hauteur", ImperialDimension.convertToImperial(dtoChalet.hauteur) },
-                    { "Largeur", ImperialDimension.convertToImperial(dtoChalet.largeur) },
-                    { "Longueur", ImperialDimension.convertToImperial(dtoChalet.longueur) },
-                    { "Épaisseur panneaux", ImperialDimension.convertToImperial(dtoChalet.epaisseurMur) },
-                    { "Angle du toit", dtoChalet.angleToit },
-                    { "Sens du toit", dtoChalet.sensToit },
-            };
-            model = new javax.swing.table.DefaultTableModel(props, columnNames);
-            this.setModel(model);
-            titledBorder = javax.swing.BorderFactory.createTitledBorder("Propriétés du chalet");
-            JTableHeader header = new JTableHeader();
-            this.setTableHeader(this.getTableHeader());
+        this.mainWindow = mainWindow;
+        this.dtoChalet = mainWindow.getControleur().getChalet();
+        this.columnNames = new String[] {
+                "Propriété",
+                "Valeur"
+        };
+        this.props = new Object[][] {
+                { "Nom", dtoChalet.nom },
+                { "Hauteur", ImperialDimension.convertToImperial(dtoChalet.hauteur) },
+                { "Largeur", ImperialDimension.convertToImperial(dtoChalet.largeur) },
+                { "Longueur", ImperialDimension.convertToImperial(dtoChalet.longueur) },
+                { "Épaisseur panneaux", ImperialDimension.convertToImperial(dtoChalet.epaisseurMur) },
+                { "Angle du toit", dtoChalet.angleToit },
+                { "Sens du toit", dtoChalet.sensToit },
+        };
+        model = new javax.swing.table.DefaultTableModel(props, columnNames);
+        this.setModel(model);
+        titledBorder = javax.swing.BorderFactory.createTitledBorder("Propriétés du chalet");
+        this.setTableHeader(this.getTableHeader());
 
-            this.getModel().addTableModelListener(new TableModelListener() {
+        this.getModel().addTableModelListener(new TableModelListener() {
             @Override
-                public void tableChanged(javax.swing.event.TableModelEvent evt) {
-                    System.out.println("Table changed" + " " + evt.getFirstRow() + " " + evt.getLastRow() + " "
-                            + evt.getColumn() + " " + getValueAt(evt.getFirstRow(), evt.getColumn()));
+            public void tableChanged(javax.swing.event.TableModelEvent evt) {
+                System.out.println("Table changed" + " " + evt.getFirstRow() + " " + evt.getLastRow() + " "
+                        + evt.getColumn() + " " + getValueAt(evt.getFirstRow(), evt.getColumn()));
 
-                    Chalet.ChaletDTO chaletDTO = mainWindow.getControleur().getChalet();
-                    chaletDTO.nom = (String) getValueAt(0, 1);
-                    chaletDTO.hauteur = ImperialDimension.parseFromString((String) getValueAt(1, 1).toString()).toInches();
-                    chaletDTO.largeur = ImperialDimension.parseFromString((String) getValueAt(2, 1).toString()).toInches();
-                    chaletDTO.longueur = ImperialDimension.parseFromString((String) getValueAt(3, 1).toString()).toInches();
-                    chaletDTO.epaisseurMur = ImperialDimension.parseFromString((String) getValueAt(4, 1).toString()).toInches();
-                    chaletDTO.angleToit = Double.parseDouble(getValueAt(5, 1).toString());
-                    chaletDTO.sensToit = (TypeSensToit) getValueAt(6, 1);
+                Chalet.ChaletDTO chaletDTO = mainWindow.getControleur().getChalet();
+                chaletDTO.nom = (String) getValueAt(0, 1);
+                chaletDTO.hauteur = ImperialDimension.parseFromString((String) getValueAt(1, 1).toString()).toInches();
+                chaletDTO.largeur = ImperialDimension.parseFromString((String) getValueAt(2, 1).toString()).toInches();
+                chaletDTO.longueur = ImperialDimension.parseFromString((String) getValueAt(3, 1).toString()).toInches();
+                chaletDTO.epaisseurMur = ImperialDimension.parseFromString((String) getValueAt(4, 1).toString())
+                        .toInches();
+                chaletDTO.angleToit = Double.parseDouble(getValueAt(5, 1).toString());
+                chaletDTO.sensToit = (TypeSensToit) getValueAt(6, 1);
 
-                    mainWindow.getControleur().setChalet(chaletDTO);
-                    mainWindow.drawingPanel.getScene().clearMeshes();
-                    TriangleMesh[] meshes = PanelHelper.generateMeshMurs(chaletDTO.largeur, chaletDTO.hauteur, chaletDTO.longueur,
-                            chaletDTO.epaisseurMur);
-                    meshes[0].getMaterial().setColor(java.awt.Color.RED);
-                    meshes[1].getMaterial().setColor(java.awt.Color.BLUE);
-                    meshes[2].getMaterial().setColor(java.awt.Color.GREEN);
-                    meshes[3].getMaterial().setColor(java.awt.Color.YELLOW);
+                mainWindow.getControleur().setChalet(chaletDTO);
+                mainWindow.drawingPanel.getScene().clearMeshes();
+                TriangleMesh[] meshes = PanelHelper.generateMeshMurs(chaletDTO.largeur, chaletDTO.hauteur,
+                        chaletDTO.longueur,
+                        chaletDTO.epaisseurMur);
+                meshes[0].getMaterial().setColor(java.awt.Color.RED);
+                meshes[1].getMaterial().setColor(java.awt.Color.BLUE);
+                meshes[2].getMaterial().setColor(java.awt.Color.GREEN);
+                meshes[3].getMaterial().setColor(java.awt.Color.YELLOW);
 
-                    mainWindow.drawingPanel.getScene().addMeshes(meshes);
-                    
-                    mainWindow.drawingPanel.repaint();
-                }
-            });  
-             
-        }
+                mainWindow.drawingPanel.getScene().addMeshes(meshes);
 
-    
+                mainWindow.drawingPanel.repaint();
+            }
+        });
 
-    
-    @Override 
+    }
+
+    @Override
     public int getColumnCount() {
         return columnNames.length;
     }
@@ -141,10 +133,7 @@ public class TableChalet extends JTable {
         return column == 1;
     }
 
-    public TitledBorder getTitledBorder(){
+    public TitledBorder getTitledBorder() {
         return titledBorder;
     }
 }
-
-    
-    

@@ -28,7 +28,7 @@ public class Retrait {
      * @param dimensions Les dimensions du retrait.
      * @param position La position du retrait.
      */
-    public Retrait(TypeRetrait type, double[] dimensions, double[] position) {
+    public Retrait(TypeRetrait type, double[] position, double[] dimensions) {
         this.type = type;
         this.dimensions = dimensions;
         this.position = position;
