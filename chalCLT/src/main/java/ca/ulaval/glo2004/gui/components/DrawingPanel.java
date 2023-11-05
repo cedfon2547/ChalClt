@@ -2,12 +2,14 @@ package ca.ulaval.glo2004.gui.components;
 
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
 
 import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Point;
 
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
@@ -44,10 +46,8 @@ public class DrawingPanel extends javax.swing.JPanel {
         this.scene.getCamera().setDirection(TypeDeVue.vueDessus());
         Chalet.ChaletDTO chaletDTO = this.mainWindow.getControleur().getChalet();
 
-
         TriangleMesh[] meshes = PanelHelper.generateMeshMurs(chaletDTO.largeur, chaletDTO.hauteur, chaletDTO.longueur,
                 chaletDTO.epaisseurMur);
-        
 
         meshes[0].getMaterial().setColor(java.awt.Color.RED);
         meshes[1].getMaterial().setColor(java.awt.Color.BLUE);
@@ -77,6 +77,7 @@ public class DrawingPanel extends javax.swing.JPanel {
         addMouseListener(this.mouseListener());
         addMouseWheelListener(this.mouseWheelListener());
         addKeyListener(this.keyListener());
+        addMouseMotionListener(this.mouseMotionListener());
 
         buildToolbar();
     }
@@ -131,7 +132,6 @@ public class DrawingPanel extends javax.swing.JPanel {
             invalidate();
             repaint();
         }
-
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -190,7 +190,7 @@ public class DrawingPanel extends javax.swing.JPanel {
 
                 TriangleMesh mesh = rasterizer.getMeshFromPoint(e.getPoint());
                 if (mesh != null) {
-                    //System.out.println(mesh.getID());
+                    // System.out.println(mesh.getID());
                     System.out.println(mesh.getHandle());
                     rasterizer.deselectAllMeshes(); // change to unless shift or w/e
                     mesh.setSelected(true);
@@ -219,6 +219,100 @@ public class DrawingPanel extends javax.swing.JPanel {
             public void mouseExited(java.awt.event.MouseEvent e) {
                 // TODO Auto-generated method stub
 
+            }
+        };
+    }
+
+    private MouseMotionListener mouseMotionListener() {
+        return new MouseMotionListener() {
+            boolean initialized = false;
+            boolean isDragging = false;
+            Vector3D initialDragCamPosition = null;
+            Vector3D initialDragCamDirection = null;
+            Point initialPoint = null;
+
+            @Override
+            public void mouseDragged(java.awt.event.MouseEvent e) {
+                // TODO Auto-generated method stub
+                if (!initialized) {
+                    MouseListener mouseListener = new MouseListener() {
+                        @Override
+                        public void mouseClicked(java.awt.event.MouseEvent e) {
+                            // TODO Auto-generated method stub
+                        }
+
+                        @Override
+                        public void mousePressed(java.awt.event.MouseEvent e) {
+                            // TODO Auto-generated method stub
+                            System.out.println("Mouse Pressed " + e.getPoint().toString());
+                            isDragging = true;
+                            initialPoint = e.getPoint();
+                            initialDragCamPosition = scene.getCamera().getPosition();
+                            initialDragCamDirection = scene.getCamera().getDirection();
+                        }
+
+                        @Override
+                        public void mouseReleased(java.awt.event.MouseEvent e) {
+                            // TODO Auto-generated method stub
+                            System.out.println("Mouse Released " + e.getPoint().toString());
+                            isDragging = false;
+                            initialPoint = null;
+                            initialDragCamPosition = null;
+                            initialDragCamDirection = null;
+                        }
+
+                        @Override
+                        public void mouseEntered(java.awt.event.MouseEvent e) {
+                            // TODO Auto-generated method stub
+
+                        }
+
+                        @Override
+                        public void mouseExited(java.awt.event.MouseEvent e) {
+                            // TODO Auto-generated method stub
+
+                        }
+                    };
+
+                    addMouseListener(mouseListener);
+                    isDragging = true;
+                    initialDragCamDirection = scene.getCamera().getDirection();
+                    initialDragCamPosition = scene.getCamera().getPosition();
+                    initialPoint = e.getPoint();
+                    initialized = true;
+                }
+
+                if (isDragging && initialPoint != null && initialDragCamDirection != null
+                        && initialDragCamPosition != null) {
+                    int diffX = e.getPoint().x - initialPoint.x;
+                    int diffY = e.getPoint().y - initialPoint.y;
+
+                    if (e.isShiftDown()) {
+                        // Rotating instead of translate
+                        // Convert the diffX and diffY to radians
+                        double rotateStep = Math.toRadians(1);
+                        double rotateX = rotateStep * diffY / 3;
+                        double rotateY = rotateStep * diffX / 3;
+
+                        Vector3D direction = initialDragCamDirection.add(new Vector3D(rotateX, rotateY, 0));
+                        if (direction.x > 0) {
+                            direction.x = 0;
+                        } else if (direction.x < -Math.PI / 2) {
+                            direction.x = -Math.PI / 2;
+                        }
+
+                        scene.getCamera().setDirection(direction);
+                    } else {
+                        scene.getCamera().setPosition(initialDragCamPosition.add(new Vector3D(diffX, diffY, 0)));
+                    }
+
+                    repaint();
+                }
+            }
+
+            @Override
+            public void mouseMoved(java.awt.event.MouseEvent e) {
+                // TODO Auto-generated method stub
             }
         };
     }
@@ -325,7 +419,6 @@ public class DrawingPanel extends javax.swing.JPanel {
                         } else {
                             scene.getLight().setAmbientIntensity(scene.getLight().getAmbientIntensity() + 0.1);
                         }
-
                 }
 
                 repaint();
@@ -386,11 +479,11 @@ public class DrawingPanel extends javax.swing.JPanel {
         }
 
         public static Vector3D vueDroite() {
-            return new Vector3D(0, Math.PI/2, 0);
+            return new Vector3D(0, Math.PI / 2, 0);
         }
 
         public static Vector3D vueGauche() {
-            return new Vector3D(0, -Math.PI/2, 0);
+            return new Vector3D(0, -Math.PI / 2, 0);
         }
     }
 }
