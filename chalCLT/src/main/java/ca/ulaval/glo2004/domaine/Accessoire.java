@@ -12,7 +12,7 @@ public class Accessoire extends Retrait {
     private TypeMur typeMur;
     private String accessoireNom;
     private UUID accessoireId;
-    private boolean validiterEtat;
+    private boolean valide;
 
     /**
      * Construit un objet Accessoire avec le type, la position et les dimensions spécifiés.
@@ -25,7 +25,7 @@ public class Accessoire extends Retrait {
         this.accessoireType = accessoireType;
         this.typeMur = typeMur;
         this.accessoireNom = accessoireType.toString();
-        this.validiterEtat = true;
+        this.valide = true;
         this.accessoireId = UUID.randomUUID();
     }
 
@@ -62,10 +62,10 @@ public class Accessoire extends Retrait {
     }
 
     /**
-     * Retourne la validiter de l'accessoire
-     * @return validerEtat
+     * Retourne la validité de l'accessoire
+     * @return valide
      */
-    public boolean getValiditerEtat(){return validiterEtat;}
+    public boolean getValide(){return valide;}
 
     /**
      * mis à jour de l'accessoire. 
@@ -76,7 +76,7 @@ public class Accessoire extends Retrait {
         this.accessoireNom = accessoireDTO.accessoireNom;
         this.accessoireType = accessoireDTO.accessoireType;
         this.typeMur = accessoireDTO.typeMur;
-        this.validiterEtat = accessoireDTO.validerEtat;
+        this.valide = accessoireDTO.valide;
         this.update(accessoireDTO);
     }
 
@@ -105,10 +105,10 @@ public class Accessoire extends Retrait {
     }
 
     /**
-     *  Definit la validiter de l'accessoire
+     *  Definit la validité de l'accessoire
      * @param p_validiterEtat
      */
-    public void setValiditerEtat(boolean p_validiterEtat){this.validiterEtat = p_validiterEtat;}
+    public void setValide(boolean p_validiterEtat){this.valide = p_validiterEtat;}
 
 
     /**
@@ -139,7 +139,7 @@ public class Accessoire extends Retrait {
         public String accessoireNom;
         public UUID accessoireId;
         public TypeMur typeMur;
-        public boolean validerEtat;
+        public boolean valide;
 
         /**
          * Construit un objet AccessoireDTO à partir d'un objet Accessoire.
@@ -151,7 +151,7 @@ public class Accessoire extends Retrait {
             this.accessoireType = accessoire.accessoireType;
             this.accessoireId = accessoire.accessoireId;
             this.typeMur = accessoire.typeMur;
-            this.validerEtat = accessoire.validiterEtat;
+            this.valide = accessoire.valide;
         }
     }
 
