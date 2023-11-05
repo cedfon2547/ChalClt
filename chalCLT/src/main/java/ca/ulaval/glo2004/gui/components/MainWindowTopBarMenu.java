@@ -352,41 +352,26 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
 
     public void activerVue(DrawingPanel.TypeDeVue vue) {
         System.out.println("activerVue");
-
+        // adhering to DRY, one switch at a time
+        vueHautItem.setSelected(false);
+        vueFacadeItem.setSelected(false);
+        vueArriereItem.setSelected(false);
+        vueDroitItem.setSelected(false);
+        vueGaucheItem.setSelected(false);
         switch (vue) {
             case Dessus:
                 vueHautItem.setSelected(true);
-                vueFacadeItem.setSelected(false);
-                vueArriereItem.setSelected(false);
-                vueDroitItem.setSelected(false);
-                vueGaucheItem.setSelected(false);
                 break;
             case Facade:
-                vueHautItem.setSelected(false);
                 vueFacadeItem.setSelected(true);
-                vueArriereItem.setSelected(false);
-                vueDroitItem.setSelected(false);
-                vueGaucheItem.setSelected(false);
                 break;
             case Arriere:
-                vueHautItem.setSelected(false);
-                vueFacadeItem.setSelected(false);
                 vueArriereItem.setSelected(true);
-                vueDroitItem.setSelected(false);
-                vueGaucheItem.setSelected(false);
                 break;
             case Droite:
-                vueHautItem.setSelected(false);
-                vueFacadeItem.setSelected(false);
-                vueArriereItem.setSelected(false);
                 vueDroitItem.setSelected(true);
-                vueGaucheItem.setSelected(false);
                 break;
             case Gauche:
-                vueHautItem.setSelected(false);
-                vueFacadeItem.setSelected(false);
-                vueArriereItem.setSelected(false);
-                vueDroitItem.setSelected(false);
                 vueGaucheItem.setSelected(true);
                 break;
         }
