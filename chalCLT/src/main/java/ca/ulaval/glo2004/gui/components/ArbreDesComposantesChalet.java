@@ -39,6 +39,17 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
     javax.swing.tree.DefaultMutableTreeNode toitPignonDroitNode;
     javax.swing.tree.DefaultMutableTreeNode toitPignonGaucheNode;
     Accessoire.AccessoireDTO accDto;
+
+    public static final String _STRING_MURS = "Murs";
+    public static final String _STRING_TOIT = "Toit";
+    public static final String _STRING_MUR_FACADE = "Mur façade";
+    public static final String _STRING_MUR_ARRIERE = "Mur arrière";
+    public static final String _STRING_MUR_DROIT = "Mur droit";
+    public static final String _STRING_MUR_GAUCHE = "Mur gauche";
+    public static final String _STRING_PANNEAU_SUPERIEUR = "Panneau supérieur";
+    public static final String _STRING_RALLONGE_VERTICALE = "Rallonge verticale";
+    public static final String _STRING_PIGNON_DROIT = "Pignon droit";
+    public static final String _STRING_PIGNON_GAUCHE = "Pignon gauche";
     
 
     private void initComponents() {
@@ -52,16 +63,16 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
         arbreComposantesChalet.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
         chaletNode = new javax.swing.tree.DefaultMutableTreeNode(nom);
-        mursNode = new javax.swing.tree.DefaultMutableTreeNode("Murs");
-        toitNode = new javax.swing.tree.DefaultMutableTreeNode("Toit");
-        murFacadeNode = new javax.swing.tree.DefaultMutableTreeNode("Mur façade");
-        murArriereNode = new javax.swing.tree.DefaultMutableTreeNode("Mur arrière");
-        murDroitNode = new javax.swing.tree.DefaultMutableTreeNode("Mur droit");
-        murGaucheNode = new javax.swing.tree.DefaultMutableTreeNode("Mur gauche");
-        toitPanneauSuperieurNode = new javax.swing.tree.DefaultMutableTreeNode("Panneau supérieur");
-        toitRallongeVerticaleNode = new javax.swing.tree.DefaultMutableTreeNode("Rallonge verticale");
-        toitPignonDroitNode = new javax.swing.tree.DefaultMutableTreeNode("Pignon droit");
-        toitPignonGaucheNode = new javax.swing.tree.DefaultMutableTreeNode("Pignon gauche");
+        mursNode = new javax.swing.tree.DefaultMutableTreeNode(_STRING_MURS);
+        toitNode = new javax.swing.tree.DefaultMutableTreeNode(_STRING_TOIT);
+        murFacadeNode = new javax.swing.tree.DefaultMutableTreeNode(_STRING_MUR_FACADE);
+        murArriereNode = new javax.swing.tree.DefaultMutableTreeNode(_STRING_MUR_ARRIERE);
+        murDroitNode = new javax.swing.tree.DefaultMutableTreeNode(_STRING_MUR_DROIT);
+        murGaucheNode = new javax.swing.tree.DefaultMutableTreeNode(_STRING_MUR_GAUCHE);
+        toitPanneauSuperieurNode = new javax.swing.tree.DefaultMutableTreeNode(_STRING_PANNEAU_SUPERIEUR);
+        toitRallongeVerticaleNode = new javax.swing.tree.DefaultMutableTreeNode(_STRING_RALLONGE_VERTICALE);
+        toitPignonDroitNode = new javax.swing.tree.DefaultMutableTreeNode(_STRING_PIGNON_DROIT);
+        toitPignonGaucheNode = new javax.swing.tree.DefaultMutableTreeNode(_STRING_PIGNON_GAUCHE);
 
         this.mainWindow.getControleur().addPropertyChangeListener("chalet", new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
@@ -187,22 +198,22 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                             AccessoireTreeNode nodeAccStr = (AccessoireTreeNode)path.getLastPathComponent();
                             accDto = mainWindow.getControleur().getAccessoire(nodeAccStr.getUuid());
                             switch (parent.getLastPathComponent().toString()) {
-                                case "Mur façade":
+                                case _STRING_MUR_FACADE:
                                     System.out.println("Acc Mur Facade");
                                     accDto = mainWindow.getControleur().getAccessoire(UUID.fromString(nodeAccStr.getUuid().toString()));
                                     mainWindow.showAccessoireTable(accDto);
                                     break;
-                                case "Mur arrière":
+                                case _STRING_MUR_ARRIERE:
                                     System.out.println("Acc Mur Arriere");
                                     accDto = mainWindow.getControleur().getAccessoire(UUID.fromString(nodeAccStr.getUuid().toString()));
                                     mainWindow.showAccessoireTable(accDto);
                                     break;
-                                case "Mur droit":
+                                case _STRING_MUR_DROIT:
                                     System.out.println("Acc Mur droit");
                                     accDto = mainWindow.getControleur().getAccessoire(UUID.fromString(nodeAccStr.getUuid().toString()));
                                     mainWindow.showAccessoireTable(accDto);
                                     break;
-                                case "Mur gauche":
+                                case _STRING_MUR_GAUCHE:
                                     System.out.println("Acc Mur gauche");
                                     accDto = mainWindow.getControleur().getAccessoire(UUID.fromString(nodeAccStr.getUuid().toString()));
                                     mainWindow.showAccessoireTable(accDto);
@@ -217,32 +228,32 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
 
                 if (evt.getClickCount() == 2 && evt.getButton() == java.awt.event.MouseEvent.BUTTON1) {
                     switch (path.getLastPathComponent().toString()) {
-                        case "Mur façade":
+                        case _STRING_MUR_FACADE:
                             System.out.println("Mur Facade");
                             mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Facade);
                             break;
-                        case "Mur arrière":
+                        case _STRING_MUR_ARRIERE:
                             System.out.println("Mur Arriere");
                             mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Arriere);
                             break;
-                        case "Mur droit":
+                        case _STRING_MUR_DROIT:
                             System.out.println("Mur droit");
                             mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Droite);
                             break;
-                        case "Mur gauche":
+                        case _STRING_MUR_GAUCHE:
                             System.out.println("Mur gauche");
                             mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Gauche);
                             break;
-                        case "Panneau supérieur":
+                        case _STRING_PANNEAU_SUPERIEUR:
                             System.out.println("Panneau supérieur");
                             break;
-                        case "Rallonge verticale":
+                        case _STRING_RALLONGE_VERTICALE:
                             System.out.println("Rallonge verticale");
                             break;
-                        case "Pignon droit":
+                        case _STRING_PIGNON_DROIT:
                             System.out.println("Pignon droit");
                             break;
-                        case "Pignon gauche":
+                        case _STRING_PIGNON_GAUCHE:
                             System.out.println("Pignon gauche");
                             break;
                     }
