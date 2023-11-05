@@ -63,6 +63,11 @@ public class Controleur {
         this.pcs.firePropertyChange("ajouterAccessoire", null, accessoire.toDTO());
     }
 
+    public void supprimerAccessoire(TypeMur mur, UUID uuid){
+        Accessoire accessoire = projectActif.getChalet().getMur(mur).retirerAccessoire(uuid);
+        this.pcs.firePropertyChange("supprimerAccessoire", null, accessoire.toDTO());
+    }
+
     public void addPropertyChangeListener(String property, PropertyChangeListener listener) {
         this.pcs.addPropertyChangeListener(property, listener);
     }
