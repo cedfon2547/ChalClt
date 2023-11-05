@@ -189,10 +189,11 @@ public class DrawingPanel extends javax.swing.JPanel {
                 System.out.println("Mouse Clicked");
 
                 TriangleMesh mesh = rasterizer.getMeshFromPoint(e.getPoint());
+                rasterizer.deselectAllMeshes();
+
                 if (mesh != null) {
                     // System.out.println(mesh.getID());
                     System.out.println(mesh.getHandle());
-                    rasterizer.deselectAllMeshes(); // change to unless shift or w/e
                     mesh.setSelected(true);
                 }
 
