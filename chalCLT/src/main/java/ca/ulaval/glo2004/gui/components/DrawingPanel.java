@@ -4,18 +4,22 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
-
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Point;
 
+import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
+import ca.ulaval.glo2004.domaine.TypeAccessoire;
+import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.Rasterizer;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
@@ -44,19 +48,9 @@ public class DrawingPanel extends javax.swing.JPanel {
 
         this.scene.getLight().setPosition(new Vector3D(getWidth(), 200, 0));
         this.scene.getCamera().setDirection(TypeDeVue.vueDessus());
-        Chalet.ChaletDTO chaletDTO = this.mainWindow.getControleur().getChalet();
-
-        TriangleMesh[] meshes = PanelHelper.generateMeshMurs(chaletDTO.largeur, chaletDTO.hauteur, chaletDTO.longueur,
-                chaletDTO.epaisseurMur);
-
-        meshes[0].getMaterial().setColor(java.awt.Color.RED);
-        meshes[1].getMaterial().setColor(java.awt.Color.BLUE);
-        meshes[2].getMaterial().setColor(java.awt.Color.GREEN);
-        meshes[3].getMaterial().setColor(java.awt.Color.YELLOW);
-
-        this.scene.addMeshes(meshes);
 
         initComponents();
+        rechargerAffichage();
     }
 
     public MainWindow getMainWindow() {
@@ -202,24 +196,18 @@ public class DrawingPanel extends javax.swing.JPanel {
 
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
-                // TODO Auto-generated method stub
             }
 
             @Override
             public void mouseReleased(java.awt.event.MouseEvent e) {
-                // TODO Auto-generated method stub
             }
 
             @Override
             public void mouseEntered(java.awt.event.MouseEvent e) {
-                // TODO Auto-generated method stub
-
             }
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent e) {
-                // TODO Auto-generated method stub
-
             }
         };
     }
@@ -234,18 +222,14 @@ public class DrawingPanel extends javax.swing.JPanel {
 
             @Override
             public void mouseDragged(java.awt.event.MouseEvent e) {
-                // TODO Auto-generated method stub
                 if (!initialized) {
                     MouseListener mouseListener = new MouseListener() {
                         @Override
                         public void mouseClicked(java.awt.event.MouseEvent e) {
-                            // TODO Auto-generated method stub
                         }
 
                         @Override
                         public void mousePressed(java.awt.event.MouseEvent e) {
-                            // TODO Auto-generated method stub
-                            System.out.println("Mouse Pressed " + e.getPoint().toString());
                             isDragging = true;
                             initialPoint = e.getPoint();
                             initialDragCamPosition = scene.getCamera().getPosition();
@@ -254,7 +238,6 @@ public class DrawingPanel extends javax.swing.JPanel {
 
                         @Override
                         public void mouseReleased(java.awt.event.MouseEvent e) {
-                            // TODO Auto-generated method stub
                             System.out.println("Mouse Released " + e.getPoint().toString());
                             isDragging = false;
                             initialPoint = null;
@@ -264,14 +247,11 @@ public class DrawingPanel extends javax.swing.JPanel {
 
                         @Override
                         public void mouseEntered(java.awt.event.MouseEvent e) {
-                            // TODO Auto-generated method stub
 
                         }
 
                         @Override
                         public void mouseExited(java.awt.event.MouseEvent e) {
-                            // TODO Auto-generated method stub
-
                         }
                     };
 
@@ -430,13 +410,7 @@ public class DrawingPanel extends javax.swing.JPanel {
     @Override
     public void paintComponent(java.awt.Graphics g) {
         super.paintComponent(g);
-        // this.afficheur.drawGrid(g);
-
-        // this.scene.getLight().setPosition(scene.getCamera().getDirection().add(new
-        // Vector3D(0, 0, -1000)));
         this.rasterizer.draw(g, getSize());
-
-        // g.drawImage(this.afficheur.getImage(), 0, 0, null);
     }
 
     public void changerVue(TypeDeVue vue) {
@@ -457,6 +431,71 @@ public class DrawingPanel extends javax.swing.JPanel {
         mainWindow.menu.activerVue(vueActive);
         updateToolbarBtns();
         invalidate();
+        repaint();
+    }
+
+    public void rechargerAffichage() {
+        Chalet.ChaletDTO chaletDTO = this.mainWindow.getControleur().getChalet();
+        scene.clearMeshes();
+
+        TriangleMesh[] meshes = PanelHelper.generateMeshMurs(chaletDTO.largeur, chaletDTO.hauteur, chaletDTO.longueur,
+                chaletDTO.epaisseurMur);
+
+        List<Accessoire.AccessoireDTO> accessoires = this.mainWindow.getControleur().getAccessoires();
+
+        for (Accessoire.AccessoireDTO accessoireDTO : accessoires) {
+            TypeMur typeMur = accessoireDTO.typeMur;
+
+            TriangleMeshGroup accMesh = null;
+
+            if (accessoireDTO.accessoireType == TypeAccessoire.Fenetre) {
+                accMesh = PanelHelper.buildWindow(accessoireDTO.dimensions[0], accessoireDTO.dimensions[1],
+                        new Vector3D(0, 0, 0), 5);
+            } else if (accessoireDTO.accessoireType == TypeAccessoire.Porte) {
+                accMesh = PanelHelper.buildDoor(accessoireDTO.dimensions[0], accessoireDTO.dimensions[1],
+                        new Vector3D(0, 0, 0), 4);
+            }
+
+            switch (typeMur) {
+                case Facade:
+                    // Moving the door mesh to the top left corner of the wall
+                    accMesh = accMesh.translate(meshes[0].getCenter());
+                    accMesh = accMesh.translate(new Vector3D(meshes[0].getWidth() / 2 - accMesh.getWidth(),
+                            -meshes[0].getHeight() / 2, -chaletDTO.epaisseurMur));
+                    break;
+                case Arriere:
+                    accMesh = accMesh.rotateY(Math.PI);
+                    accMesh = accMesh.translate(meshes[1].getCenter());
+                    accMesh = accMesh.translate(new Vector3D(
+                            -meshes[1].getWidth() / 2 + accMesh.getWidth() / 2,
+                            -meshes[1].getHeight() / 2 + accMesh.getHeight() / 2, chaletDTO.epaisseurMur + 2));
+                    break;
+                case Gauche:
+                    accMesh = accMesh.rotateY(-Math.PI / 2);
+                    accMesh = accMesh.translate(meshes[3].getCenter());
+                    accMesh = accMesh.translate(new Vector3D(chaletDTO.epaisseurMur + 2,
+                            -meshes[3].getHeight() / 2 + accMesh.getHeight() / 2,
+                            meshes[3].getDepth() / 2 - accMesh.getDepth() / 2));
+                    break;
+                case Droit:
+                    accMesh = accMesh.rotateY(Math.PI / 2);
+                    accMesh = accMesh.translate(meshes[2].getCenter());
+                    accMesh = accMesh.translate(new Vector3D(-chaletDTO.epaisseurMur - 2,
+                            -meshes[2].getHeight() / 2 + accMesh.getHeight() / 2,
+                            -meshes[2].getDepth() / 2 + accMesh.getDepth() / 2));
+                    break;
+            }
+
+            this.scene.addMeshes(accMesh.getMeshes());
+            repaint();
+        }
+
+        meshes[0].getMaterial().setColor(java.awt.Color.RED);
+        meshes[1].getMaterial().setColor(java.awt.Color.BLUE);
+        meshes[2].getMaterial().setColor(java.awt.Color.GREEN);
+        meshes[3].getMaterial().setColor(java.awt.Color.YELLOW);
+
+        scene.addMeshes(meshes);
         repaint();
     }
 

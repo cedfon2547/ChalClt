@@ -8,7 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.UUID;
 
 public class TopButtonPanel extends JPanel {
 
@@ -64,7 +63,6 @@ public class TopButtonPanel extends JPanel {
         iconGrille.setImage(iconGrille.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
         iconVoisins.setImage(iconVoisins.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
 
-        
         creerFenetreBtn.setFocusPainted(false);
         creerFenetreBtn.setIcon(iconFenetre);
         creerFenetreBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -125,6 +123,7 @@ public class TopButtonPanel extends JPanel {
 
                 mainWindow.getControleur().ajouterAccessoire(typeMur, TypeAccessoire.Fenetre, new double[] { 0, 0 },
                         new double[] { 50, 50 });
+                mainWindow.drawingPanel.rechargerAffichage();
 
             }
         });
@@ -158,8 +157,8 @@ public class TopButtonPanel extends JPanel {
                 }
 
                 mainWindow.getControleur().ajouterAccessoire(typeMur, TypeAccessoire.Porte, new double[] { 0, 0 },
-                        new double[] { 50, 50 });
-
+                        new double[] { 32, 60 });
+                mainWindow.drawingPanel.rechargerAffichage();
             }
         });
 

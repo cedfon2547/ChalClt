@@ -10,7 +10,7 @@ public class TriangleMesh {
     public String ID = UUID.randomUUID().toString();
 
     private String componentHandle = ""; // some indicator of what this mesh represents // sorta dupicate of ID
-    private List<Triangle> triangles;
+    protected List<Triangle> triangles;
     private Material material = new Material(); // The material of the object
     private boolean isSelected = false;
 
@@ -20,6 +20,14 @@ public class TriangleMesh {
 
     public TriangleMesh(TriangleMesh mesh) {
         this.triangles = mesh.triangles;
+    }
+
+    public TriangleMesh(TriangleMesh[] meshes) {
+        this.triangles = new ArrayList<Triangle>();
+
+        for (TriangleMesh mesh : meshes) {
+            this.triangles.addAll(mesh.triangles);
+        }
     }
 
     public TriangleMesh(List<Triangle> triangles, Material material) {

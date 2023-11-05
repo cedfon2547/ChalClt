@@ -2,6 +2,8 @@ package ca.ulaval.glo2004.domaine;
 
 import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Controleur {
@@ -38,6 +40,16 @@ public class Controleur {
         return null;
     }
 
+    public List<Accessoire.AccessoireDTO> getAccessoires() {
+        List<Accessoire.AccessoireDTO> accessoires = new ArrayList<>();
+        for (Mur mur: this.projectActif.getChalet().getMurs()) {
+            for (Accessoire accessoire: mur.getAccessoires()) {
+                accessoires.add(accessoire.toDTO());
+            }
+        }
+
+        return accessoires;
+    }
     public void setChalet(Chalet.ChaletDTO chalet) {
         // undoRedoManager.push(projectActif.getChalet());
         this.pcs.firePropertyChange("chalet", this.projectActif.getChalet().toDTO(), chalet);

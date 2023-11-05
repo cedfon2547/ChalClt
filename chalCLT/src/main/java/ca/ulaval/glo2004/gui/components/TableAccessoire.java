@@ -1,13 +1,11 @@
 package ca.ulaval.glo2004.gui.components;
 
-import java.util.UUID;
 
 import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelListener;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
-import ca.ulaval.glo2004.domaine.Accessoire.AccessoireDTO;
 import ca.ulaval.glo2004.domaine.utils.ImperialDimension;
 import ca.ulaval.glo2004.gui.MainWindow;
 

@@ -1,19 +1,16 @@
 package ca.ulaval.glo2004.gui.components;
 
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 
-import javax.swing.text.html.HTML.Tag;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.beans.PropertyChangeListener;
 import java.util.UUID;
 import java.beans.PropertyChangeEvent;
 
-import ca.ulaval.glo2004.gui.components.AccessoireTreeNode;
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
-import ca.ulaval.glo2004.domaine.Accessoire.AccessoireDTO;
 import ca.ulaval.glo2004.gui.MainWindow;
 
 public class ArbreDesComposantesChalet extends javax.swing.JPanel {
@@ -151,15 +148,18 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
         arbreComposantesChalet.setEditable(true);
         arbreComposantesChalet.setName("tableDesComposantes"); // NOI18N
         arbreComposantesChalet.setShowsRootHandles(true);
-        treeScrollPane.setViewportView(arbreComposantesChalet);
         arbreComposantesChalet.getAccessibleContext().setAccessibleName("ArbreDesComposantes");
         arbreComposantesChalet.getAccessibleContext().setAccessibleDescription("Arbre des composantes");
         arbreComposantesChalet.setToggleClickCount(0);
 
+        treeScrollPane.setViewportView(arbreComposantesChalet);
+
         arbreComposantesChalet.addMouseListener(getTreeMouseListener());
+        arbreComposantesChalet.addFocusListener(this.getFocusListener());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
+
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(treeScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE));
@@ -192,9 +192,7 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                    
                     if (parentStr != null) {
                         Object nodeClass = path.getLastPathComponent().getClass();
-                        // System.out.println(nodeClass.toString());
-                        // System.out.println(accessoireTreeNode.getClass().toString());
-                        if(nodeClass == accessoireTreeNode.getClass()){
+                        if(nodeClass == accessoireTreeNode.getClass()) {
                             AccessoireTreeNode nodeAccStr = (AccessoireTreeNode)path.getLastPathComponent();
                             accDto = mainWindow.getControleur().getAccessoire(nodeAccStr.getUuid());
                             switch (parent.getLastPathComponent().toString()) {
@@ -222,6 +220,8 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                                     mainWindow.showChaletTable();
                                     break;
                             }
+                        } else {
+                            mainWindow.showChaletTable();
                         }
                     }
                 }
@@ -262,6 +262,21 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                     mainWindow.drawingPanel.invalidate();
                     mainWindow.drawingPanel.repaint();
                 }
+            }
+        };
+    }
+
+    private FocusListener getFocusListener() {
+        return new FocusListener() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                System.out.println("focusGained");
+            }
+
+            @Override
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                System.out.println("focusLost");
+                arbreComposantesChalet.clearSelection();
             }
         };
     }

@@ -106,6 +106,21 @@ public class TriangleMeshGroup {
         return new Vector3D[] { new Vector3D(minX, minY, minZ), new Vector3D(maxX, maxY, maxZ) };
     }
 
+    public double getWidth() {
+        Vector3D[] bounding = this.getBounding();
+        return bounding[1].getX() - bounding[0].getX();
+    }
+
+    public double getHeight() {
+        Vector3D[] bounding = this.getBounding();
+        return bounding[1].getY() - bounding[0].getY();
+    }
+
+    public double getDepth() {
+        Vector3D[] bounding = this.getBounding();
+        return bounding[1].getZ() - bounding[0].getZ();
+    }
+
     public Vector3D getCenter() {
         Vector3D[] bounding = this.getBounding();
         return new Vector3D((bounding[0].getX() + bounding[1].getX()) / 2,

@@ -7,27 +7,18 @@ import javax.swing.event.TableModelListener;
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.Chalet.ChaletDTO;
 import ca.ulaval.glo2004.domaine.TypeSensToit;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.utils.ImperialDimension;
-import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.gui.MainWindow;
 
 public class TableChalet extends JTable {
-
     private MainWindow mainWindow;
-
     private ChaletDTO dtoChalet;
-
     private String[] columnNames;
-
     private Object[][] props;
-
     private javax.swing.table.DefaultTableModel model;
-
     private TitledBorder titledBorder;
 
     public TableChalet(MainWindow mainWindow) {
-
         this.mainWindow = mainWindow;
         this.dtoChalet = mainWindow.getControleur().getChalet();
         this.columnNames = new String[] {
@@ -65,18 +56,7 @@ public class TableChalet extends JTable {
                 chaletDTO.sensToit = (TypeSensToit) getValueAt(6, 1);
 
                 mainWindow.getControleur().setChalet(chaletDTO);
-                mainWindow.drawingPanel.getScene().clearMeshes();
-                TriangleMesh[] meshes = PanelHelper.generateMeshMurs(chaletDTO.largeur, chaletDTO.hauteur,
-                        chaletDTO.longueur,
-                        chaletDTO.epaisseurMur);
-                meshes[0].getMaterial().setColor(java.awt.Color.RED);
-                meshes[1].getMaterial().setColor(java.awt.Color.BLUE);
-                meshes[2].getMaterial().setColor(java.awt.Color.GREEN);
-                meshes[3].getMaterial().setColor(java.awt.Color.YELLOW);
-
-                mainWindow.drawingPanel.getScene().addMeshes(meshes);
-
-                mainWindow.drawingPanel.repaint();
+                mainWindow.drawingPanel.rechargerAffichage();
             }
         });
 

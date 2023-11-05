@@ -1,6 +1,9 @@
 package ca.ulaval.glo2004.gui;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JScrollPane;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
@@ -47,6 +50,8 @@ public class MainWindow extends javax.swing.JFrame {
     public DrawingPanel drawingPanel;
     public ArbreDesComposantesChalet arbreDesComposantesChalet;
     public MainWindowTopBarMenu menu;
+
+    public List<Accessoire.AccessoireDTO> accessoiresSelectionnees = new ArrayList<Accessoire.AccessoireDTO>();
 
     public MainWindow(Controleur controleur) {
         super("ChalCLT - Créateur de chalets");
@@ -145,5 +150,23 @@ public class MainWindow extends javax.swing.JFrame {
         tableContainer.setBorder(tableProprietesAccessoire.getTitledBorder());
         tableContainer.add(tableProprietesAccessoire.getTableHeader());
         tableContainer.setViewportView(tableProprietesAccessoire);
+    }
+
+    public void ajouterAccessoireSelectionnee(Accessoire.AccessoireDTO accessoireDTO) {
+        accessoiresSelectionnees.add(accessoireDTO);
+    }
+
+    public void retirerAccessoireSelectionnee(Accessoire.AccessoireDTO accessoireDTO) {
+        accessoiresSelectionnees.remove(accessoireDTO);
+    }
+
+    public void deleteAllAccessoiresSelectionnees() {
+        for (Accessoire.AccessoireDTO accessoireDTO: accessoiresSelectionnees) {
+            controleur.supprimerAccessoire(accessoireDTO.typeMur, accessoireDTO.accessoireId);
+        }
+
+        accessoiresSelectionnees.clear();
+
+        drawingPanel.rechargerAffichage();
     }
 }

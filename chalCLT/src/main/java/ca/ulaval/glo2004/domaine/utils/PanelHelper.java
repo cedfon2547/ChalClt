@@ -5,6 +5,9 @@ import java.util.List;
 
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.shapes.RectCuboid;
+import java.awt.Color;
 
 /**
  * Cette classe contient une méthode statique pour construire un mur en 3D à
@@ -143,7 +146,7 @@ public class PanelHelper {
                 { x1 + (d / 2), y1, z1 + d },
                 { x1 + w - (d / 2), y1 + h, z1 + d },
                 { x1 + (d / 2), y1 + h, z1 + d } });
-        
+
         // Front rainure face
         triangles.add(new double[][] {
                 { x1, y1, z1 + (d / 2) },
@@ -250,6 +253,8 @@ public class PanelHelper {
         Vector3D murDroiteCenter = murDroite.getCenter().copy();
         Vector3D murGaucheCenter = murGauche.getCenter().copy();
 
+        List<TriangleMesh> meshes = new ArrayList<TriangleMesh>();
+
         murFacade = murFacade.translate(murFacadeCenter.multiplyScalar(-1));
         murArriere = murArriere.translate(murArriereCenter.multiplyScalar(-1));
         murDroite = murDroite.translate(murDroiteCenter.multiplyScalar(-1));
@@ -264,7 +269,91 @@ public class PanelHelper {
         murDroite = murDroite.translate(new Vector3D(-largeur / 2 + epaisseurMur, 0, 0));
         murGauche = murGauche.translate(new Vector3D(largeur / 2 - epaisseurMur, 0, 0));
 
-        return new TriangleMesh[] { murFacade, murArriere, murDroite, murGauche };
+        TriangleMesh[] murs = new TriangleMesh[] { murFacade, murArriere, murDroite, murGauche };
+
+        for (TriangleMesh mesh : murs) {
+            meshes.add(mesh);
+        }
+
+        return meshes.toArray(new TriangleMesh[meshes.size()]);
+    }
+
+    public static TriangleMeshGroup buildWindow(double width, double height, Vector3D position, double frameWidth) {
+        double x0 = position.x, y0 = position.y, z0 = position.z;
+
+        // this.scene.addMeshes(meshes);
+        RectCuboid fenetreFrame1 = new RectCuboid(new Vector3D(x0, y0, z0),
+                new Vector3D(frameWidth, height, frameWidth));
+        RectCuboid fenetreFrame2 = new RectCuboid(new Vector3D(x0 + width, y0, z0),
+                new Vector3D(frameWidth, height, frameWidth));
+        RectCuboid fenetreFrame3 = new RectCuboid(new Vector3D(x0, y0, z0),
+                new Vector3D(width, frameWidth, frameWidth));
+        RectCuboid fenetreFrame4 = new RectCuboid(new Vector3D(x0, y0 + height - frameWidth, z0),
+                new Vector3D(width, frameWidth, frameWidth));
+        RectCuboid fenetreFrame5 = new RectCuboid(new Vector3D(x0 + width / 2 - frameWidth / 2, y0, z0),
+                new Vector3D(frameWidth, height, frameWidth));
+        RectCuboid fenetreFrame6 = new RectCuboid(new Vector3D(x0, y0 + height / 2 - frameWidth / 2, z0),
+                new Vector3D(width, frameWidth, frameWidth));
+        RectCuboid fenetreVitre = new RectCuboid(new Vector3D(x0 + frameWidth / 2, y0 + frameWidth / 2, frameWidth / 3),
+                new Vector3D(width - frameWidth / 2, height - frameWidth / 2, 2));
+
+        TriangleMesh fenetreFrame = new TriangleMesh(new TriangleMesh[] {
+                fenetreFrame1,
+                fenetreFrame2,
+                fenetreFrame3,
+                fenetreFrame4,
+                fenetreFrame5,
+                fenetreFrame6
+        });
+
+        fenetreVitre.getMaterial().setColor(new Color(76, 144, 168));
+
+        return new TriangleMeshGroup(new TriangleMesh[] {
+                fenetreFrame,
+                fenetreVitre
+        });
+    }
+
+    public static TriangleMeshGroup buildDoor(double width, double height, Vector3D position, double frameWidth) {
+        double x0 = position.x, y0 = position.y, z0 = position.z;
+
+        RectCuboid doorFrame1 = new RectCuboid(new Vector3D(x0, y0, z0),
+                new Vector3D(frameWidth, height, frameWidth));
+        RectCuboid doorFrame2 = new RectCuboid(new Vector3D(x0 + width, y0, z0),
+                new Vector3D(frameWidth, height, frameWidth));
+        RectCuboid doorFrame3 = new RectCuboid(new Vector3D(x0 + width / 2, y0, z0),
+                new Vector3D(frameWidth, height, frameWidth));
+        RectCuboid doorFrame4 = new RectCuboid(new Vector3D(x0, y0, z0),
+                new Vector3D(width, frameWidth, frameWidth));
+        RectCuboid doorFrame5 = new RectCuboid(new Vector3D(x0, y0 + height - frameWidth, z0),
+                new Vector3D(width, frameWidth, frameWidth));
+        RectCuboid doorFrame6 = new RectCuboid(
+                new Vector3D(x0 + frameWidth / 2, y0 + frameWidth / 2, z0 + frameWidth / 2),
+                new Vector3D(width - frameWidth / 2, height - frameWidth / 2, 1));
+        RectCuboid doorFrame7 = new RectCuboid(new Vector3D(x0 + 1, y0 + height / 2, z0 - frameWidth),
+                new Vector3D(2, 2, 5));
+        RectCuboid doorFrame8 = new RectCuboid(new Vector3D(x0, y0 + height / 2 - 1, z0 - frameWidth - 3),
+                new Vector3D(4, 4, 4));
+
+        doorFrame1.getMaterial().setColor(new Color(139, 69, 19));
+        doorFrame2.getMaterial().setColor(new Color(139, 69, 19));
+        doorFrame3.getMaterial().setColor(new Color(139, 69, 19));
+        doorFrame4.getMaterial().setColor(new Color(139, 69, 19));
+        doorFrame5.getMaterial().setColor(new Color(139, 69, 19));
+        doorFrame6.getMaterial().setColor(new Color(222, 184, 135));
+        doorFrame7.getMaterial().setColor(Color.GRAY);
+        doorFrame8.getMaterial().setColor(Color.GRAY);
+
+        return new TriangleMeshGroup(new TriangleMesh[] {
+                doorFrame1,
+                doorFrame2,
+                doorFrame3,
+                doorFrame4,
+                doorFrame5,
+                doorFrame6,
+                doorFrame7,
+                doorFrame8
+        });
     }
 
     public static class RectPlane2D {
@@ -325,13 +414,16 @@ public class PanelHelper {
             RectPlane2D rect2 = new RectPlane2D(new double[] { this.position[0], position[1] },
                     new double[] { position[0] - this.position[0], dimension[1] }, this.axis);
             RectPlane2D rect3 = new RectPlane2D(new double[] { position[0] + dimension[0], position[1] },
-                    new double[] { this.dimension[0] - (position[0] - this.position[0]) - dimension[0], dimension[1] },
+                    new double[] { this.dimension[0] - (position[0] - this.position[0])
+                            - dimension[0], dimension[1] },
                     this.axis);
-            RectPlane2D rect4 = new RectPlane2D(new double[] { this.position[0], position[1] + dimension[1] },
+            RectPlane2D rect4 = new RectPlane2D(
+                    new double[] { this.position[0], position[1] + dimension[1] },
                     new double[] { this.dimension[0],
-                            this.dimension[1] - (position[1] - this.position[1]) - dimension[1] },
+                            this.dimension[1] - (position[1] - this.position[1])
+                                    - dimension[1] },
                     this.axis);
-            
+
             rect1.triangles.addAll(rect2.triangles);
             rect1.triangles.addAll(rect3.triangles);
             rect1.triangles.addAll(rect4.triangles);

@@ -57,7 +57,9 @@ public class Scene {
     }
 
     public void addMeshes(List<TriangleMesh> meshes) {
-        meshes.addAll(meshes);
+        for (TriangleMesh mesh : meshes) {
+            this.meshes.add(mesh);
+        }
     }
 
     public void addMeshes(TriangleMesh[] meshes) {
