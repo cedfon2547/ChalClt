@@ -233,11 +233,11 @@ public class Mur {
      * @param uuid DTO à partir duquel créer le mur.
      * @return Le mur correspondant au DTO.
      */
-    public void retirerAccessoire(UUID uuid) {
+    public Accessoire retirerAccessoire(UUID uuid) {
         for(Accessoire accessoire: accessoires){
             if (accessoire.getAccessoireId().equals(uuid)) {
                 accessoires.remove(accessoire);
-                return;
+                 return accessoire;
             }
         }
         throw new IllegalAccessError("Ne contient pas cet accessoire");

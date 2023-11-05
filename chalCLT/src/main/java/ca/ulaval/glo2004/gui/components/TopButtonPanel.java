@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.UUID;
 
 public class TopButtonPanel extends JPanel {
 
@@ -165,7 +166,31 @@ public class TopButtonPanel extends JPanel {
         supprimerAccessoireBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // todo
+                DrawingPanel.TypeDeVue vueActive = mainWindow.drawingPanel.vueActive;
+                if (vueActive == DrawingPanel.TypeDeVue.Dessus) {
+                    return;
+                }
+
+                // Mapping TypeDeVue -> TypeMur
+                TypeMur typeMur = null;
+
+                switch (vueActive) {
+                    case Arriere:
+                        typeMur = TypeMur.Arriere;
+                        break;
+                    case Facade:
+                        typeMur = TypeMur.Facade;
+                        break;
+                    case Gauche:
+                        typeMur = TypeMur.Gauche;
+                        break;
+                    case Droite:
+                        typeMur = TypeMur.Droit;
+                        break;
+                    default:
+                        return;
+                }
+
             }
         });
 
