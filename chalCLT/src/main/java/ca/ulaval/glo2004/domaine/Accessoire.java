@@ -10,6 +10,7 @@ import java.util.UUID;
 public class Accessoire extends Retrait {
     private TypeAccessoire accessoireType;
     private TypeMur typeMur;
+    private String accessoireNom;
     private UUID accessoireId;
     private boolean validiterEtat;
 
@@ -23,6 +24,7 @@ public class Accessoire extends Retrait {
         super(TypeRetrait.Accessoire, position, dimensions);
         this.accessoireType = accessoireType;
         this.typeMur = typeMur;
+        this.accessoireNom = "nom Default";
         this.validiterEtat = true;
         this.accessoireId = UUID.randomUUID();
     }
@@ -52,10 +54,30 @@ public class Accessoire extends Retrait {
     }
 
     /**
+     * Retourne le nom de l'accessoire.
+     * @return le nom de l'accessoire
+     */
+    public String getAccessoireNom(){
+        return accessoireNom;
+    }
+
+    /**
      * Retourne la validiter de l'accessoire
      * @return validerEtat
      */
     public boolean getValiditerEtat(){return validiterEtat;}
+
+    /**
+     * mis à jour de l'accessoire. 
+     * @param accessoireDTO l'accessoire mis à jour
+     */
+    public void updateAccessoire(AccessoireDTO accessoireDTO){
+        this.accessoireId = accessoireDTO.accessoireId;
+        this.accessoireNom = accessoireDTO.accessoireNom;
+        this.accessoireType = accessoireDTO.accessoireType;
+        this.typeMur = accessoireDTO.typeMur;
+        this.validiterEtat = accessoireDTO.validerEtat;
+    }
 
     /**
      * Définit le type de l'accessoire.
@@ -71,6 +93,14 @@ public class Accessoire extends Retrait {
      */
     public void setAccessoireId(UUID accessoireId) {
         this.accessoireId = accessoireId;
+    }
+
+    /**
+     * Définit le nom de l'accessoire.
+     * @param accessoireNom le nouveau nom de l'accessoire
+     */
+    public void setAccessoireNom(String accessoireNom){
+        this.accessoireNom = accessoireNom;
     }
 
     /**
@@ -105,6 +135,7 @@ public class Accessoire extends Retrait {
      */
     public static class AccessoireDTO extends Retrait.RetraitDTO {
         public TypeAccessoire accessoireType;
+        public String accessoireNom;
         public UUID accessoireId;
         public TypeMur typeMur;
         public boolean validerEtat;
@@ -115,6 +146,7 @@ public class Accessoire extends Retrait {
          */
         public AccessoireDTO(Accessoire accessoire) {
             super(accessoire);
+            this.accessoireNom = accessoire.accessoireNom;
             this.accessoireType = accessoire.accessoireType;
             this.accessoireId = accessoire.accessoireId;
             this.typeMur = accessoire.typeMur;

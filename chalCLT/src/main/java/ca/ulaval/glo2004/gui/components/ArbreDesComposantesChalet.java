@@ -2,14 +2,18 @@ package ca.ulaval.glo2004.gui.components;
 
 import java.awt.event.MouseAdapter;
 
+import javax.swing.text.html.HTML.Tag;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.beans.PropertyChangeListener;
 import java.util.UUID;
 import java.beans.PropertyChangeEvent;
 
+import ca.ulaval.glo2004.gui.components.AccessoireTreeNode;
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
+import ca.ulaval.glo2004.domaine.Accessoire.AccessoireDTO;
 import ca.ulaval.glo2004.gui.MainWindow;
 
 public class ArbreDesComposantesChalet extends javax.swing.JPanel {
@@ -34,6 +38,8 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
     javax.swing.tree.DefaultMutableTreeNode toitRallongeVerticaleNode;
     javax.swing.tree.DefaultMutableTreeNode toitPignonDroitNode;
     javax.swing.tree.DefaultMutableTreeNode toitPignonGaucheNode;
+    Accessoire.AccessoireDTO accDto;
+    
 
     private void initComponents() {
         titledBorder = javax.swing.BorderFactory.createTitledBorder("Composantes");
@@ -67,29 +73,45 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
             }
         });
 
+        this.mainWindow.getControleur().addPropertyChangeListener("accessoire", new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals("accessoire")) {
+                    accDto = (Accessoire.AccessoireDTO) evt.getNewValue();
+                    AccessoireTreeNode accessoireTreeNode = (AccessoireTreeNode)arbreComposantesChalet.getLastSelectedPathComponent();
+                    accessoireTreeNode.setUserObject(accDto.accessoireNom);
+                    ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeChanged(accessoireTreeNode);
+                }
+            }
+        });
         this.mainWindow.getControleur().addPropertyChangeListener("ajouterAccessoire", new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 System.out.println("ajouterAccessoire");
-                Accessoire.AccessoireDTO accessoireDTO = (Accessoire.AccessoireDTO) evt.getNewValue();
-                javax.swing.tree.DefaultMutableTreeNode accessoireNode = new javax.swing.tree.DefaultMutableTreeNode(
-                        accessoireDTO.accessoireId);
+                accDto = (Accessoire.AccessoireDTO) evt.getNewValue();
+                AccessoireTreeNode accessoireNode = new AccessoireTreeNode(
+                        accDto.accessoireNom,accDto.accessoireId);
 
-                switch (accessoireDTO.typeMur) {
+                switch (accDto.typeMur) {
                     case Facade:
                         murFacadeNode.add(accessoireNode);
+                        accessoireNode.setUserObject(accDto.accessoireNom);
                         ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeStructureChanged(murFacadeNode);
+                        
                         break;
                     case Arriere:
                         murArriereNode.add(accessoireNode);
+                        accessoireNode.setUserObject(accDto.accessoireNom);
                         ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeStructureChanged(murArriereNode);
                         break;
                     case Droit:
                         murDroitNode.add(accessoireNode);
+                        accessoireNode.setUserObject(accDto.accessoireNom);
                         ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeStructureChanged(murDroitNode);
                         break;
                     case Gauche:
                         murGaucheNode.add(accessoireNode);
+                        accessoireNode.setUserObject(accDto.accessoireNom);
                         ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeStructureChanged(murGaucheNode);
+                        
                         break;
                     default:
                         return;
@@ -152,39 +174,43 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                 }
 
                 TreePath parent = path.getParentPath();
+                AccessoireTreeNode accessoireTreeNode = new AccessoireTreeNode("testNode", null);
 
                 if (parent != null) {
                     String parentStr = parent.getLastPathComponent().toString();
-
+                   
                     if (parentStr != null) {
-                        String nodeAccStr = path.getLastPathComponent().toString();
-                        Accessoire.AccessoireDTO accDto;
-
-                        switch (parent.getLastPathComponent().toString()) {
-                            case "Mur façade":
-                                System.out.println("Acc Mur Facade");
-                                accDto = mainWindow.getControleur().getAccessoire(UUID.fromString(nodeAccStr));
-                                System.out.println(accDto);
-                                mainWindow.showAccessoireTable(accDto);
-                                break;
-                            case "Mur arrière":
-                                System.out.println("Acc Mur Arriere");
-                                accDto = mainWindow.getControleur().getAccessoire(UUID.fromString(nodeAccStr));
-                                mainWindow.showAccessoireTable(accDto);
-                                break;
-                            case "Mur droit":
-                                System.out.println("Acc Mur droit");
-                                accDto = mainWindow.getControleur().getAccessoire(UUID.fromString(nodeAccStr));
-                                mainWindow.showAccessoireTable(accDto);
-                                break;
-                            case "Mur gauche":
-                                System.out.println("Acc Mur gauche");
-                                accDto = mainWindow.getControleur().getAccessoire(UUID.fromString(nodeAccStr));
-                                mainWindow.showAccessoireTable(accDto);
-                                break;
-                            default:
-                                mainWindow.showChaletTable();
-                                break;
+                        Object nodeClass = path.getLastPathComponent().getClass();
+                        // System.out.println(nodeClass.toString());
+                        // System.out.println(accessoireTreeNode.getClass().toString());
+                        if(nodeClass == accessoireTreeNode.getClass()){
+                            AccessoireTreeNode nodeAccStr = (AccessoireTreeNode)path.getLastPathComponent();
+                            accDto = mainWindow.getControleur().getAccessoire(nodeAccStr.getUuid());
+                            switch (parent.getLastPathComponent().toString()) {
+                                case "Mur façade":
+                                    System.out.println("Acc Mur Facade");
+                                    accDto = mainWindow.getControleur().getAccessoire(UUID.fromString(nodeAccStr.getUuid().toString()));
+                                    mainWindow.showAccessoireTable(accDto);
+                                    break;
+                                case "Mur arrière":
+                                    System.out.println("Acc Mur Arriere");
+                                    accDto = mainWindow.getControleur().getAccessoire(UUID.fromString(nodeAccStr.getUuid().toString()));
+                                    mainWindow.showAccessoireTable(accDto);
+                                    break;
+                                case "Mur droit":
+                                    System.out.println("Acc Mur droit");
+                                    accDto = mainWindow.getControleur().getAccessoire(UUID.fromString(nodeAccStr.getUuid().toString()));
+                                    mainWindow.showAccessoireTable(accDto);
+                                    break;
+                                case "Mur gauche":
+                                    System.out.println("Acc Mur gauche");
+                                    accDto = mainWindow.getControleur().getAccessoire(UUID.fromString(nodeAccStr.getUuid().toString()));
+                                    mainWindow.showAccessoireTable(accDto);
+                                    break;
+                                default:
+                                    mainWindow.showChaletTable();
+                                    break;
+                            }
                         }
                     }
                 }

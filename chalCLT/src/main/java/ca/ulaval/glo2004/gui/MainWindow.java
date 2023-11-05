@@ -141,7 +141,7 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     public void showAccessoireTable(Accessoire.AccessoireDTO dtoAccessoire) {
-        tableProprietesAccessoire = new TableAccessoire(dtoAccessoire);
+        tableProprietesAccessoire = new TableAccessoire(this,dtoAccessoire);
         tableContainer.setBorder(tableProprietesAccessoire.getTitledBorder());
         tableContainer.add(tableProprietesAccessoire.getTableHeader());
         tableContainer.setViewportView(tableProprietesAccessoire);

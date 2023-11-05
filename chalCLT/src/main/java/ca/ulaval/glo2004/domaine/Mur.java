@@ -89,6 +89,20 @@ public class Mur {
         return accessoires;
     }
 
+    public Accessoire getAccessoire(UUID accessoireUuid){
+        
+        List<Accessoire> listAccessoires = this.getAccessoires();
+        if(listAccessoires == null){
+            throw new IllegalArgumentException("pas d'accessoire");
+        }
+        for(Accessoire accessoire : accessoires ){
+            if (accessoire.getAccessoireId() == accessoireUuid){
+                return accessoire;
+            }
+        }
+        throw new IllegalArgumentException("L'accessoire n'est pas dans ce mur");
+    }
+
     /**
      * Modifie la hauteur du mur.
      *

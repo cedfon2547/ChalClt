@@ -7,6 +7,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelListener;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
+import ca.ulaval.glo2004.domaine.Accessoire.AccessoireDTO;
 import ca.ulaval.glo2004.domaine.utils.ImperialDimension;
 import ca.ulaval.glo2004.gui.MainWindow;
 
@@ -18,7 +19,8 @@ public class TableAccessoire extends JTable {
     private javax.swing.table.DefaultTableModel model;
     private TitledBorder titledBorder;
 
-    public TableAccessoire(Accessoire.AccessoireDTO dtoAcessoire) {
+    public TableAccessoire(MainWindow mainWindow,Accessoire.AccessoireDTO dtoAcessoire) {
+        this.mainWindow = mainWindow;
         this.dtoAcessoire = dtoAcessoire;
         
         columnNames = new String[] {
@@ -26,6 +28,7 @@ public class TableAccessoire extends JTable {
                 "Valeur"
         };
         props = new Object[][] {
+                { "Nom", dtoAcessoire.accessoireNom},
                 { "Hauteur", ImperialDimension.convertToImperial(dtoAcessoire.dimensions[1]) },
                 { "Largeur", ImperialDimension.convertToImperial(dtoAcessoire.dimensions[0]) },
                 { "Position x", ImperialDimension.convertToImperial(dtoAcessoire.position[0]) },
@@ -41,6 +44,13 @@ public class TableAccessoire extends JTable {
             public void tableChanged(javax.swing.event.TableModelEvent evt) {
                 System.out.println("Table changed" + " " + evt.getFirstRow() + " " + evt.getLastRow() + " "
                         + evt.getColumn() + " " + getValueAt(evt.getFirstRow(), evt.getColumn()));
+            
+                Accessoire.AccessoireDTO accessoireDTO = mainWindow.getControleur().getAccessoire(dtoAcessoire.accessoireId);
+
+                accessoireDTO.accessoireNom = (String)getValueAt(0, 1);
+
+                //todo pour le reste des attributs
+                mainWindow.getControleur().setAccessoire(accessoireDTO.typeMur,accessoireDTO);
             }
         });
     }
@@ -75,7 +85,7 @@ public class TableAccessoire extends JTable {
         System.out.println("Setting value at " + rowIndex + "," + columnIndex + " to " + aValue
                 + " (an instance of " + aValue.getClass() + ")");
 
-        if (rowIndex == 0 || rowIndex == 1 || rowIndex == 2 || rowIndex == 3) {
+        if (rowIndex == 1 || rowIndex == 2 || rowIndex == 3 || rowIndex == 4) {
             ImperialDimension dim = ImperialDimension.parseFromString((String) aValue);
             System.out.println("Dimension: " + dim);
             if (dim == null) {

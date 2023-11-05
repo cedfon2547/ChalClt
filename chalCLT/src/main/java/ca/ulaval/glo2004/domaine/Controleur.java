@@ -44,6 +44,11 @@ public class Controleur {
         projectActif.getChalet().updateChalet(chalet);
     }
 
+    public void setAccessoire(TypeMur mur,Accessoire.AccessoireDTO accessoireDTO){
+        this.pcs.firePropertyChange("accessoire", this.getAccessoire(accessoireDTO.accessoireId), accessoireDTO);// à vérifier si ok
+        projectActif.getChalet().getMur(mur).getAccessoire(accessoireDTO.accessoireId).updateAccessoire(accessoireDTO);
+    }
+
     public PreferencesUtilisateur.PreferencesUtilisateurDTO getPreferencesUtilisateur() {
         return projectActif.getPreferencesUtilisateur().toDTO();
     }
