@@ -48,8 +48,10 @@ public class TableAccessoire extends JTable {
                 Accessoire.AccessoireDTO accessoireDTO = mainWindow.getControleur().getAccessoire(dtoAcessoire.accessoireId);
 
                 accessoireDTO.accessoireNom = (String)getValueAt(0, 1);
-
-                //todo pour le reste des attributs
+                accessoireDTO.dimensions[1] = ImperialDimension.parseFromString((String) getValueAt(1, 1).toString()).toInches();
+                accessoireDTO.dimensions[0] = ImperialDimension.parseFromString((String) getValueAt(2, 1).toString()).toInches();
+                accessoireDTO.position[0] = ImperialDimension.parseFromString((String) getValueAt(3, 1).toString()).toInches();
+                accessoireDTO.position[1] = ImperialDimension.parseFromString((String) getValueAt(4, 1).toString()).toInches();
                 mainWindow.getControleur().setAccessoire(accessoireDTO.typeMur,accessoireDTO);
             }
         });

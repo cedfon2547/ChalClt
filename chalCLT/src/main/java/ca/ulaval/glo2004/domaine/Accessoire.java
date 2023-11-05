@@ -24,7 +24,7 @@ public class Accessoire extends Retrait {
         super(TypeRetrait.Accessoire, position, dimensions);
         this.accessoireType = accessoireType;
         this.typeMur = typeMur;
-        this.accessoireNom = "nom Default";
+        this.accessoireNom = accessoireType.toString();
         this.validiterEtat = true;
         this.accessoireId = UUID.randomUUID();
     }
@@ -77,6 +77,7 @@ public class Accessoire extends Retrait {
         this.accessoireType = accessoireDTO.accessoireType;
         this.typeMur = accessoireDTO.typeMur;
         this.validiterEtat = accessoireDTO.validerEtat;
+        this.update(accessoireDTO);
     }
 
     /**
