@@ -450,10 +450,10 @@ public class DrawingPanel extends javax.swing.JPanel {
 
             if (accessoireDTO.accessoireType == TypeAccessoire.Fenetre) {
                 accMesh = PanelHelper.buildWindow(accessoireDTO.dimensions[0], accessoireDTO.dimensions[1],
-                        new Vector3D(0, 0, 0), 3);
+                        new Vector3D(-mainWindow.getControleur().getChalet().margeAccessoire, mainWindow.getControleur().getChalet().hauteur/2 - accessoireDTO.dimensions[1], 0), 3);
             } else if (accessoireDTO.accessoireType == TypeAccessoire.Porte) {
                 accMesh = PanelHelper.buildDoor(accessoireDTO.dimensions[0], accessoireDTO.dimensions[1],
-                        new Vector3D(0, 0, 0), 4);
+                        new Vector3D( (accessoireDTO.dimensions[0] - mainWindow.getControleur().getChalet().largeur + 9)/2, mainWindow.getControleur().getChalet().hauteur - accessoireDTO.dimensions[1], 0), 4);
             }
 
             switch (typeMur) {
