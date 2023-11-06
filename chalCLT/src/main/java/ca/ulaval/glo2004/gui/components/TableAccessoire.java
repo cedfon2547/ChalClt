@@ -52,6 +52,8 @@ public class TableAccessoire extends JTable {
                 accessoireDTO.position[1] = ImperialDimension.parseFromString((String) getValueAt(4, 1).toString()).toInches();
 
                 mainWindow.getControleur().setAccessoire(accessoireDTO.typeMur,accessoireDTO);
+                mainWindow.arbreDesComposantesChalet.invalidate();
+                mainWindow.arbreDesComposantesChalet.repaint();
                 mainWindow.drawingPanel.rechargerAffichage();
 
             }
