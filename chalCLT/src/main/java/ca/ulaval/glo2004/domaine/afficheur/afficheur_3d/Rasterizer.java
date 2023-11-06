@@ -186,7 +186,17 @@ public class Rasterizer {
                                 .multiply(camRotateZ);
 
                 Matrix transform = translateToOrigin.multiply(camTransform);
+                if (scene.getConfiguration().getShowGridXY()) {
+                        this.drawGridXY(canvasBuffer, transform);
+                }
 
+                if (scene.getConfiguration().getShowGridXZ()) {
+                        this.drawGridXZ(canvasBuffer, transform);
+                }
+
+                if (scene.getConfiguration().getShowGridYZ()) {
+                        this.drawGridYZ(canvasBuffer, transform);
+                }
                 if (scene.getConfiguration().getShowAxis()) {
                         this.drawAxes(canvasBuffer, transform);
                 }
@@ -358,6 +368,75 @@ public class Rasterizer {
                 g2.drawLine((int) yAxis1.x, (int) yAxis1.y, (int) yAxis2.x, (int) yAxis2.y);
                 g2.setColor(Color.BLUE);
                 g2.drawLine((int) zAxis1.x, (int) zAxis1.y, (int) zAxis2.x, (int) zAxis2.y);
+        }
+
+        public void drawGridXY(BufferedImage image, Matrix transform) {
+                Graphics2D g2 = (Graphics2D) image.getGraphics();
+                g2.setColor(Color.GRAY);
+
+                int gridStep = scene.getConfiguration().getGridStep();
+                int axisLength = gridStep * scene.getConfiguration().getStepCounts();
+
+                for (int i = -axisLength; i <= axisLength; i += gridStep) {
+                        Vector3D x3 = new Vector3D(i, -axisLength, 0);
+                        Vector3D x4 = new Vector3D(i, axisLength, 0);
+                        Vector3D y3 = new Vector3D(-axisLength, i, 0);
+                        Vector3D y4 = new Vector3D(axisLength, i, 0);
+
+                        x3 = x3.multiplyMatrix(transform);
+                        x4 = x4.multiplyMatrix(transform);
+                        y3 = y3.multiplyMatrix(transform);
+                        y4 = y4.multiplyMatrix(transform);
+
+                        g2.drawLine((int) x3.x, (int) x3.y, (int) x4.x, (int) x4.y);
+                        g2.drawLine((int) y3.x, (int) y3.y, (int) y4.x, (int) y4.y);
+                }
+        }
+
+        public void drawGridXZ(BufferedImage image, Matrix transform) {
+                Graphics2D g2 = (Graphics2D) image.getGraphics();
+                g2.setColor(Color.GRAY);
+
+                int gridStep = scene.getConfiguration().getGridStep();
+                int axisLength = gridStep * scene.getConfiguration().getStepCounts();
+
+                for (int i = -axisLength; i <= axisLength; i += gridStep) {
+                        Vector3D x1 = new Vector3D(i, 0, -axisLength);
+                        Vector3D x2 = new Vector3D(i, 0, axisLength);
+                        Vector3D y1 = new Vector3D(-axisLength, 0, i);
+                        Vector3D y2 = new Vector3D(axisLength, 0, i);
+
+                        x1 = x1.multiplyMatrix(transform);
+                        x2 = x2.multiplyMatrix(transform);
+                        y1 = y1.multiplyMatrix(transform);
+                        y2 = y2.multiplyMatrix(transform);
+
+                        g2.drawLine((int) x1.x, (int) x1.y, (int) x2.x, (int) x2.y);
+                        g2.drawLine((int) y1.x, (int) y1.y, (int) y2.x, (int) y2.y);
+                }
+        }
+
+        public void drawGridYZ(BufferedImage image, Matrix transform) {
+                Graphics2D g2 = (Graphics2D) image.getGraphics();
+                g2.setColor(Color.GRAY);
+
+                int gridStep = scene.getConfiguration().getGridStep();
+                int axisLength = gridStep * scene.getConfiguration().getStepCounts();
+
+                for (int i = -axisLength; i <= axisLength; i += gridStep) {
+                        Vector3D x1 = new Vector3D(0, -axisLength, i);
+                        Vector3D x2 = new Vector3D(0, axisLength, i);
+                        Vector3D y1 = new Vector3D(0, i, -axisLength);
+                        Vector3D y2 = new Vector3D(0, i, axisLength);
+
+                        x1 = x1.multiplyMatrix(transform);
+                        x2 = x2.multiplyMatrix(transform);
+                        y1 = y1.multiplyMatrix(transform);
+                        y2 = y2.multiplyMatrix(transform);
+
+                        g2.drawLine((int) x1.x, (int) x1.y, (int) x2.x, (int) x2.y);
+                        g2.drawLine((int) y1.x, (int) y1.y, (int) y2.x, (int) y2.y);
+                }
         }
 
         public void drawCameraDetails(Graphics g, Point position) {
