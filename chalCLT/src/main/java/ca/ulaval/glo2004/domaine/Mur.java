@@ -89,6 +89,12 @@ public class Mur {
         return accessoires;
     }
 
+    /**
+     * Retourne un accessoire spécifique du mur.
+     * 
+     * @param accessoireUuid le UUID de l'accessoire recherché.
+     * @return L'accessoire recherché.
+     */
     public Accessoire getAccessoire(UUID accessoireUuid){
         
         List<Accessoire> listAccessoires = this.getAccessoires();

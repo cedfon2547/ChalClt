@@ -288,13 +288,13 @@ public class PanelHelper {
                 new Vector3D(frameWidth, height, frameWidth));
         RectCuboid fenetreFrame3 = new RectCuboid(new Vector3D(x0, y0, z0),
                 new Vector3D(width, frameWidth, frameWidth));
-        RectCuboid fenetreFrame4 = new RectCuboid(new Vector3D(x0, y0 + height - frameWidth, z0),
+        RectCuboid fenetreFrame4 = new RectCuboid(new Vector3D(x0, y0 + height - frameWidth, z0 ),
                 new Vector3D(width, frameWidth, frameWidth));
-        RectCuboid fenetreFrame5 = new RectCuboid(new Vector3D(x0 + width / 2, y0, z0),
+        RectCuboid fenetreFrame5 = new RectCuboid(new Vector3D(x0 + width / 2, y0, z0 ),
                 new Vector3D(frameWidth, height, frameWidth));
-        RectCuboid fenetreFrame6 = new RectCuboid(new Vector3D(x0, y0 + height / 2 - frameWidth / 2, z0),
+        RectCuboid fenetreFrame6 = new RectCuboid(new Vector3D(x0, y0 + height / 2 - frameWidth / 2, z0 ),
                 new Vector3D(width, frameWidth, frameWidth));
-        RectCuboid fenetreVitre = new RectCuboid(new Vector3D(x0 + frameWidth / 2, y0 + frameWidth / 2, frameWidth / 3),
+        RectCuboid fenetreVitre = new RectCuboid(new Vector3D(x0 + frameWidth / 2, y0 + frameWidth / 2, z0 + frameWidth / 3),
                 new Vector3D(width - frameWidth / 2, height - frameWidth / 2, 2));
 
         TriangleMesh fenetreFrame = new TriangleMesh(new TriangleMesh[] {
@@ -345,12 +345,16 @@ public class PanelHelper {
         doorFrame7.getMaterial().setColor(Color.GRAY);
         doorFrame8.getMaterial().setColor(Color.GRAY);
 
-        return new TriangleMeshGroup(new TriangleMesh[] {
+        TriangleMesh doorFrame = new TriangleMesh(new TriangleMesh[] {
                 doorFrame1,
                 doorFrame2,
                 doorFrame3,
                 doorFrame4,
-                doorFrame5,
+                doorFrame5
+        });
+
+        return new TriangleMeshGroup(new TriangleMesh[] {
+                doorFrame,
                 doorFrame6,
                 doorFrame7,
                 doorFrame8

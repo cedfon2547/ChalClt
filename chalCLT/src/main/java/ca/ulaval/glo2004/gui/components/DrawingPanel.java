@@ -450,39 +450,55 @@ public class DrawingPanel extends javax.swing.JPanel {
 
             if (accessoireDTO.accessoireType == TypeAccessoire.Fenetre) {
                 accMesh = PanelHelper.buildWindow(accessoireDTO.dimensions[0], accessoireDTO.dimensions[1],
-                        new Vector3D(-mainWindow.getControleur().getChalet().margeAccessoire, mainWindow.getControleur().getChalet().hauteur/2 - accessoireDTO.dimensions[1], 0), 3);
+                        new Vector3D(0, 0, 0), 3);
             } else if (accessoireDTO.accessoireType == TypeAccessoire.Porte) {
                 accMesh = PanelHelper.buildDoor(accessoireDTO.dimensions[0], accessoireDTO.dimensions[1],
-                        new Vector3D( (accessoireDTO.dimensions[0] - mainWindow.getControleur().getChalet().largeur + 9)/2, mainWindow.getControleur().getChalet().hauteur - accessoireDTO.dimensions[1], 0), 4);
+                        new Vector3D(0, 0, 0), 4);
             }
-
+            double margeAccessoire = mainWindow.getControleur().getChalet().margeAccessoire;
             switch (typeMur) {
                 case Facade:
+                    
                     // Moving the door mesh to the top left corner of the wall
                     accMesh = accMesh.translate(meshes[0].getCenter());
                     accMesh = accMesh.translate(new Vector3D(meshes[0].getWidth() / 2 - accMesh.getWidth(),
                             -meshes[0].getHeight() / 2, -chaletDTO.epaisseurMur));
+                    accMesh = accMesh.translate(new Vector3D(-margeAccessoire - accessoireDTO.position[0],
+                            margeAccessoire + accessoireDTO.position[1], 0));
+
                     break;
                 case Arriere:
+                    
                     accMesh = accMesh.rotateY(Math.PI);
                     accMesh = accMesh.translate(meshes[1].getCenter());
+                    if(accessoireDTO.accessoireType == TypeAccessoire.Fenetre){
+                        accMesh = accMesh.translate(new Vector3D(0,0,-accMesh.getDepth()-1));
+                    }
                     accMesh = accMesh.translate(new Vector3D(
-                            -meshes[1].getWidth() / 2 + accMesh.getWidth() / 2,
-                            -meshes[1].getHeight() / 2 + accMesh.getHeight() / 2, chaletDTO.epaisseurMur + 2));
+                            -meshes[1].getWidth() / 2 + accMesh.getWidth() / 2 + margeAccessoire + accessoireDTO.position[0],
+                            -meshes[1].getHeight() / 2 + accMesh.getHeight() / 2 + margeAccessoire + accessoireDTO.position[1], chaletDTO.epaisseurMur + 2));
                     break;
                 case Gauche:
+                    
                     accMesh = accMesh.rotateY(-Math.PI / 2);
                     accMesh = accMesh.translate(meshes[3].getCenter());
+                    if(accessoireDTO.accessoireType == TypeAccessoire.Fenetre){
+                        accMesh = accMesh.translate(new Vector3D(-accMesh.getWidth()-1,0,0));
+                    }
                     accMesh = accMesh.translate(new Vector3D(chaletDTO.epaisseurMur + 2,
-                            -meshes[3].getHeight() / 2 + accMesh.getHeight() / 2,
-                            meshes[3].getDepth() / 2 - accMesh.getDepth() / 2));
+                            -meshes[3].getHeight() / 2 + accMesh.getHeight() / 2 + margeAccessoire + accessoireDTO.position[1],
+                            meshes[3].getDepth() / 2 - accMesh.getDepth() / 2 - margeAccessoire - accessoireDTO.position[0]));
                     break;
                 case Droit:
+                    
                     accMesh = accMesh.rotateY(Math.PI / 2);
                     accMesh = accMesh.translate(meshes[2].getCenter());
+                    if(accessoireDTO.accessoireType == TypeAccessoire.Fenetre){
+                        accMesh = accMesh.translate(new Vector3D(accMesh.getWidth()+1,0,0));
+                    }
                     accMesh = accMesh.translate(new Vector3D(-chaletDTO.epaisseurMur - 2,
-                            -meshes[2].getHeight() / 2 + accMesh.getHeight() / 2,
-                            -meshes[2].getDepth() / 2 + accMesh.getDepth() / 2));
+                            -meshes[2].getHeight() / 2 + accMesh.getHeight() / 2 + margeAccessoire + accessoireDTO.position[1],
+                            -meshes[2].getDepth() / 2 + accMesh.getDepth() / 2 + margeAccessoire + accessoireDTO.position[0]));
                     break;
             }
 
