@@ -290,7 +290,7 @@ public class PanelHelper {
                 new Vector3D(width, frameWidth, frameWidth));
         RectCuboid fenetreFrame4 = new RectCuboid(new Vector3D(x0, y0 + height - frameWidth, z0),
                 new Vector3D(width, frameWidth, frameWidth));
-        RectCuboid fenetreFrame5 = new RectCuboid(new Vector3D(x0 + width / 2 - frameWidth / 2, y0, z0),
+        RectCuboid fenetreFrame5 = new RectCuboid(new Vector3D(x0 + width / 2, y0, z0),
                 new Vector3D(frameWidth, height, frameWidth));
         RectCuboid fenetreFrame6 = new RectCuboid(new Vector3D(x0, y0 + height / 2 - frameWidth / 2, z0),
                 new Vector3D(width, frameWidth, frameWidth));
@@ -306,6 +306,7 @@ public class PanelHelper {
                 fenetreFrame6
         });
 
+        fenetreFrame.getMaterial().setColor(new Color(192, 192, 192));
         fenetreVitre.getMaterial().setColor(new Color(76, 144, 168));
 
         return new TriangleMeshGroup(new TriangleMesh[] {

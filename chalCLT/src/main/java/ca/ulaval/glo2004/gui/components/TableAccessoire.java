@@ -50,7 +50,10 @@ public class TableAccessoire extends JTable {
                 accessoireDTO.dimensions[0] = ImperialDimension.parseFromString((String) getValueAt(2, 1).toString()).toInches();
                 accessoireDTO.position[0] = ImperialDimension.parseFromString((String) getValueAt(3, 1).toString()).toInches();
                 accessoireDTO.position[1] = ImperialDimension.parseFromString((String) getValueAt(4, 1).toString()).toInches();
+
                 mainWindow.getControleur().setAccessoire(accessoireDTO.typeMur,accessoireDTO);
+                mainWindow.drawingPanel.rechargerAffichage();
+
             }
         });
     }
@@ -82,16 +85,16 @@ public class TableAccessoire extends JTable {
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        System.out.println("Setting value at " + rowIndex + "," + columnIndex + " to " + aValue
-                + " (an instance of " + aValue.getClass() + ")");
+        // System.out.println("Setting value at " + rowIndex + "," + columnIndex + " to " + aValue
+        //         + " (an instance of " + aValue.getClass() + ")");
 
         if (rowIndex == 1 || rowIndex == 2 || rowIndex == 3 || rowIndex == 4) {
             ImperialDimension dim = ImperialDimension.parseFromString((String) aValue);
-            System.out.println("Dimension: " + dim);
+            
             if (dim == null) {
                 return;
             }
-
+            
             props[rowIndex][columnIndex] = dim.toString();
             model.fireTableCellUpdated(rowIndex, columnIndex);
             return;

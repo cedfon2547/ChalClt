@@ -122,7 +122,7 @@ public class TopButtonPanel extends JPanel {
                 }
 
                 mainWindow.getControleur().ajouterAccessoire(typeMur, TypeAccessoire.Fenetre, new double[] { 0, 0 },
-                        new double[] { 50, 50 });
+                        new double[] { 20, 20 });
                 mainWindow.drawingPanel.rechargerAffichage();
 
             }
