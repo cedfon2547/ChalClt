@@ -33,7 +33,7 @@ public class TableChalet extends JTable {
                 { "Épaisseur panneaux", ImperialDimension.convertToImperial(dtoChalet.epaisseurMur) },
                 { "Angle du toit", dtoChalet.angleToit },
                 { "Sens du toit", dtoChalet.sensToit },
-                {" Marge accessoire", dtoChalet.margeAccessoire},
+                {" Marge accessoire", ImperialDimension.convertToImperial(dtoChalet.margeAccessoire)},
         };
         model = new javax.swing.table.DefaultTableModel(props, columnNames);
         this.setModel(model);
