@@ -86,6 +86,7 @@ public class TopButtonPanel extends JPanel {
         grilleToggleBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
         grilleToggleBtn.setHorizontalTextPosition(SwingConstants.CENTER);
         grilleToggleBtn.setBorder(null);
+        grilleToggleBtn.setSelected(true);
 
         voisinToggleBtn.setFocusPainted(false);
         voisinToggleBtn.setIcon(iconVoisins);
@@ -192,14 +193,21 @@ public class TopButtonPanel extends JPanel {
 
             }
         });
+        PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = mainWindow.getControleur()
+                .getPreferencesUtilisateur();
+        preferencesUtilisateurDTO.afficherGrille = true;
+        mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO);
 
         grilleToggleBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = mainWindow.getControleur()
                         .getPreferencesUtilisateur();
                 preferencesUtilisateurDTO.afficherGrille = !preferencesUtilisateurDTO.afficherGrille;
-                mainWindow.drawingPanel.repaint();
+                mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO);
+
+                mainWindow.drawingPanel.rechargerAffichage();
             }
         });
 
@@ -222,6 +230,7 @@ public class TopButtonPanel extends JPanel {
         add(supprimerAccessoireBtn);
         add(grilleToggleBtn);
         add(voisinToggleBtn);
+        mainWindow.drawingPanel.rechargerAffichage();
     }
 
 }
