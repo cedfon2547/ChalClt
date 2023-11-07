@@ -345,10 +345,12 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
 
     private void annulerItemActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+        System.out.println("UNDO");
     }
 
     private void retablirItemActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+        System.out.println("REDO");
     }
 
     public void activerVue(Afficheur.TypeDeVue vue) {

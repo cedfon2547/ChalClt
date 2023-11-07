@@ -5,11 +5,14 @@ import java.awt.event.MouseAdapter;
 
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultTreeCellEditor;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.text.Position;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.EventObject;
 import java.util.List;
 import java.beans.PropertyChangeEvent;
 
@@ -68,6 +71,14 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
         toitPignonDroitNode = new javax.swing.tree.DefaultMutableTreeNode(Constants._STRING_PIGNON_DROIT);
         toitPignonGaucheNode = new javax.swing.tree.DefaultMutableTreeNode(Constants._STRING_PIGNON_GAUCHE);
         treeRenderer = new TreeRenderer(mainWindow);
+        
+        arbreComposantesChalet.setCellEditor(new DefaultTreeCellEditor(arbreComposantesChalet, (DefaultTreeCellRenderer) arbreComposantesChalet.getCellRenderer()) {
+            @Override
+            public boolean isCellEditable(EventObject event) {
+                return false;
+            }
+        });
+
         arbreComposantesChalet.setCellRenderer(treeRenderer);
 
         this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.CHALET, this.getChaletChangeListener());

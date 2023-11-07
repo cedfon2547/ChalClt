@@ -51,7 +51,6 @@ public class Controleur {
         return accessoires;
     }
     public void setChalet(Chalet.ChaletDTO chalet) {
-        // undoRedoManager.push(projectActif.getChalet());
         this.pcs.firePropertyChange(EventType.CHALET, this.projectActif.getChalet().toDTO(), chalet);
         projectActif.getChalet().updateChalet(chalet);
     }
