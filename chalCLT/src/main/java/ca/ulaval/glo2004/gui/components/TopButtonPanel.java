@@ -1,5 +1,6 @@
 package ca.ulaval.glo2004.gui.components;
 
+import ca.ulaval.glo2004.App;
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.domaine.TypeAccessoire;
 import ca.ulaval.glo2004.domaine.TypeMur;
@@ -10,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 public class TopButtonPanel extends JPanel {
 
@@ -48,16 +50,30 @@ public class TopButtonPanel extends JPanel {
         grilleToggleBtn.setPreferredSize(new Dimension(75, 50));
         voisinToggleBtn.setPreferredSize(new Dimension(75, 50));
 
-        ImageIcon iconFenetre = new ImageIcon(
-                getClass().getClassLoader().getResource("\\icons\\fenetre_1.png"));
-        ImageIcon iconPorte = new ImageIcon(
-                getClass().getClassLoader().getResource("\\icons\\door_1.png"));
-        ImageIcon iconSupprimer = new ImageIcon(
-                getClass().getClassLoader().getResource("\\icons\\supprimer_1.png"));
-        ImageIcon iconGrille = new ImageIcon(
-                getClass().getClassLoader().getResource("\\icons\\grille_1.png"));
-        ImageIcon iconVoisins = new ImageIcon(
-                getClass().getClassLoader().getResource("\\icons\\voisin_1.png"));
+        String fenetreImgName = "/icons/fenetre_1.png";
+        String porteImgName = "/icons/door_1.png";
+        String supprimerImgName = "/icons/supprimer_1.png";
+        String grilleImgName = "/icons/grille_1.png";
+        String voisinImgName = "/icons/voisin_1.png";
+
+        URL fenetreImgURL = App.class.getResource(fenetreImgName);
+        URL porteImgURL = App.class.getResource(porteImgName);
+        URL supprimerImgURL = App.class.getResource(supprimerImgName);
+        URL grilleImgURL = App.class.getResource(grilleImgName);
+        URL voisinImgURL = App.class.getResource(voisinImgName);
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        
+        Image fenetreImg = tk.getImage(fenetreImgURL);
+        Image porteImg = tk.getImage(porteImgURL);
+        Image supprimerImg = tk.getImage(supprimerImgURL);
+        Image grilleImg = tk.getImage(grilleImgURL);
+        Image voisinImg = tk.getImage(voisinImgURL);
+
+        ImageIcon iconFenetre = new ImageIcon(fenetreImg);
+        ImageIcon iconPorte = new ImageIcon(porteImg);
+        ImageIcon iconSupprimer = new ImageIcon(supprimerImg);
+        ImageIcon iconGrille = new ImageIcon(grilleImg);
+        ImageIcon iconVoisins = new ImageIcon(voisinImg);
 
         iconFenetre.setImage(iconFenetre.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
         iconPorte.setImage(iconPorte.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));

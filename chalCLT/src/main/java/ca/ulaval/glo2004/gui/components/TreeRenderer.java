@@ -1,13 +1,15 @@
 package ca.ulaval.glo2004.gui.components;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Image;
+import java.awt.*;
+import java.net.URL;
+import java.util.Objects;
+
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
+import ca.ulaval.glo2004.App;
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.TypeAccessoire;
 import ca.ulaval.glo2004.gui.MainWindow;
@@ -28,13 +30,28 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
     public TreeRenderer(MainWindow mainWindow) {
         super();
         this.mainWindow = mainWindow;
-        this.fenetreIcon = new ImageIcon(getClass().getClassLoader().getResource("\\icons\\fenetre_tree.png"));
+        String fenetreImgName = "/icons/fenetre_tree.png";
+        String porteImgName = "/icons/porte_tree.png";
+        String murImgName = "/icons/mur_icon.png";
+        String chaletImgName = "/icons/chalet_icon.png";
+        URL fenetreImgURL = App.class.getResource(fenetreImgName);
+        URL porteImgURL = App.class.getResource(porteImgName);
+        URL murImgURL = App.class.getResource(murImgName);
+        URL chaletImgURL = App.class.getResource(chaletImgName);
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        Image fenetreImg = tk.getImage(fenetreImgURL);
+        Image porteImg = tk.getImage(porteImgURL);
+        Image murImg = tk.getImage(murImgURL);
+        Image chaletImg = tk.getImage(chaletImgURL);
+        
+        //URL iconUrl = this.getClass().getResource("\\icons\\fenetre_tree.png");
+        this.fenetreIcon = new ImageIcon(fenetreImg);
         this.fenetreIcon.setImage(this.fenetreIcon.getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
-        this.porteIcon = new ImageIcon(getClass().getClassLoader().getResource("\\icons\\porte_tree.png"));
+        this.porteIcon = new ImageIcon(porteImg);
         this.porteIcon.setImage(this.porteIcon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
-        this.murIcon = new ImageIcon(getClass().getClassLoader().getResource("\\icons\\mur_icon.png"));
+        this.murIcon = new ImageIcon(murImg);
         this.murIcon.setImage(this.murIcon.getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
-        this.chaletIcon = new ImageIcon(getClass().getClassLoader().getResource("\\icons\\chalet_icon.png"));
+        this.chaletIcon = new ImageIcon(chaletImg);
         this.chaletIcon.setImage(this.chaletIcon.getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
 
     }
