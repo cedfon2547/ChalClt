@@ -54,7 +54,7 @@ public class TableChalet extends JTable {
                 chaletDTO.epaisseurMur = ImperialDimension.parseFromString((String) getValueAt(4, 1).toString())
                         .toInches();
                 chaletDTO.angleToit = Double.parseDouble(getValueAt(5, 1).toString());
-                chaletDTO.sensToit = (TypeSensToit) getValueAt(6, 1);
+                chaletDTO.sensToit = TypeSensToit.valueOf((String) getValueAt(6, 1));
                 chaletDTO.margeAccessoire = ImperialDimension.parseFromString((String) getValueAt(7, 1).toString()).toInches();
 
                 mainWindow.getControleur().setChalet(chaletDTO);

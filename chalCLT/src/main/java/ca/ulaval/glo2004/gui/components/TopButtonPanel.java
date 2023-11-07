@@ -1,10 +1,15 @@
 package ca.ulaval.glo2004.gui.components;
 
+import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.domaine.TypeAccessoire;
 import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.gui.MainWindow;
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,7 +32,7 @@ public class TopButtonPanel extends JPanel {
         initComponent();
     }
 
-    private void initComponent() {
+    public void initComponent() {
         FlowLayout fLayout = new FlowLayout(FlowLayout.LEFT);
         fLayout.setAlignOnBaseline(true);
         fLayout.setHgap(0);
@@ -166,30 +171,63 @@ public class TopButtonPanel extends JPanel {
         supprimerAccessoireBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DrawingPanel.TypeDeVue vueActive = mainWindow.drawingPanel.vueActive;
-                if (vueActive == DrawingPanel.TypeDeVue.Dessus) {
-                    return;
-                }
+                System.out.println(mainWindow.getAccessoiresSelectionnees().size());
+                mainWindow.deleteAllAccessoiresSelectionnees();
+                
+                // DrawingPanel.TypeDeVue vueActive = mainWindow.drawingPanel.vueActive;
+                // if (vueActive == DrawingPanel.TypeDeVue.Dessus) {
+                //     return;
+                // }
+                // TreePath treePath = mainWindow.arbreDesComposantesChalet.arbreComposantesChalet.getSelectionPath();
+                // if (treePath != null) {
+                //     DefaultMutableTreeNode node = (DefaultMutableTreeNode) mainWindow.arbreDesComposantesChalet.arbreComposantesChalet.getLastSelectedPathComponent();
 
-                // Mapping TypeDeVue -> TypeMur
-                TypeMur typeMur = null;
+                //     if (node != null) {
+                //         if (node.getUserObject() instanceof Accessoire.AccessoireDTO) {
+                //             Accessoire.AccessoireDTO accDto = (Accessoire.AccessoireDTO) node.getUserObject();
+                //             mainWindow.getControleur().supprimerAccessoire(accDto.typeMur, accDto.accessoireId);
+                //             mainWindow.drawingPanel.rechargerAffichage();
+                //             mainWindow.showChaletTable();
+                //             // mainWindow.arbreDesComposantesChalet.
+                //             // DefaultTreeModel model = (DefaultTreeModel) mainWindow.arbreDesComposantesChalet.arbreComposantesChalet.getModel();
+                //             //mainWindow.arbreDesComposantesChalet.treeRenderer.invalidate();
+                //             // node.removeFromParent();
+                //             // model.removeNodeFromParent(node);
+                //             // mainWindow.arbreDesComposantesChalet.arbreComposantesChalet.setModel(model);
+                //             // mainWindow.arbreDesComposantesChalet.arbreComposantesChalet.removeSelectionPath(treePath);
+                            
+                //             // node.removeFromParent();
+                //             // DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+                //             // model.reload(root);
 
-                switch (vueActive) {
-                    case Arriere:
-                        typeMur = TypeMur.Arriere;
-                        break;
-                    case Facade:
-                        typeMur = TypeMur.Facade;
-                        break;
-                    case Gauche:
-                        typeMur = TypeMur.Gauche;
-                        break;
-                    case Droite:
-                        typeMur = TypeMur.Droit;
-                        break;
-                    default:
-                        return;
-                }
+                //             // mainWindow.arbreDesComposantesChalet.invalidate();
+                            
+                //             //mainWindow.arbreDesComposantesChalet.treeRenderer.repaint();
+                            
+                //             // mainWindow.arbreDesComposantesChalet.rechargerArbre();
+
+                //         }
+                //     }
+                // }
+                // // Mapping TypeDeVue -> TypeMur
+                // TypeMur typeMur = null;
+
+                // switch (vueActive) {
+                //     case Arriere:
+                //         typeMur = TypeMur.Arriere;
+                //         break;
+                //     case Facade:
+                //         typeMur = TypeMur.Facade;
+                //         break;
+                //     case Gauche:
+                //         typeMur = TypeMur.Gauche;
+                //         break;
+                //     case Droite:
+                //         typeMur = TypeMur.Droit;
+                //         break;
+                //     default:
+                //         return;
+                // }
 
             }
         });
@@ -222,7 +260,10 @@ public class TopButtonPanel extends JPanel {
             }
         });
 
-        supprimerAccessoireBtn.setEnabled(false);
+        
+        if(mainWindow.getAccessoiresSelectionnees().size()==0){
+            supprimerAccessoireBtn.setEnabled(false);
+        }
         voisinToggleBtn.setEnabled(false);
 
         add(creerFenetreBtn);

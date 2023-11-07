@@ -43,7 +43,7 @@ public class DrawingPanel extends javax.swing.JPanel {
 
     public DrawingPanel(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
-        this.afficheur = new Afficheur(this);
+        //this.afficheur = new Afficheur(this);
         this.scene = new Scene();
         this.rasterizer = new Rasterizer(this.scene);
 
@@ -273,18 +273,18 @@ public class DrawingPanel extends javax.swing.JPanel {
                     if (e.isShiftDown()) {
                         // Rotating instead of translate
                         // Convert the diffX and diffY to radians
-                        double rotateStep = Math.toRadians(1);
-                        double rotateX = rotateStep * diffY / 3;
-                        double rotateY = rotateStep * diffX / 3;
+                        // double rotateStep = Math.toRadians(1);
+                        // double rotateX = rotateStep * diffY / 3;
+                        // double rotateY = rotateStep * diffX / 3;
 
-                        Vector3D direction = initialDragCamDirection.add(new Vector3D(rotateX, rotateY, 0));
-                        if (direction.x > 0) {
-                            direction.x = 0;
-                        } else if (direction.x < -Math.PI / 2) {
-                            direction.x = -Math.PI / 2;
-                        }
+                        // Vector3D direction = initialDragCamDirection.add(new Vector3D(rotateX, rotateY, 0));
+                        // if (direction.x > 0) {
+                        //     direction.x = 0;
+                        // } else if (direction.x < -Math.PI / 2) {
+                        //     direction.x = -Math.PI / 2;
+                        // }
 
-                        scene.getCamera().setDirection(direction);
+                        // scene.getCamera().setDirection(direction);
                     } else {
                         scene.getCamera().setPosition(initialDragCamPosition.add(new Vector3D(diffX, diffY, 0)));
                     }
@@ -317,92 +317,92 @@ public class DrawingPanel extends javax.swing.JPanel {
                 double rotateStep = Math.toRadians(5);
                 Camera camera = scene.getCamera();
 
-                switch (evt.getKeyCode()) {
-                    case java.awt.event.KeyEvent.VK_LEFT:
-                        if (evt.isShiftDown()) {
-                            camera.rotateX(rotateStep);
-                        } else {
-                            camera.moveLeft(-10);
-                        }
-                        break;
-                    case java.awt.event.KeyEvent.VK_RIGHT:
-                        if (evt.isShiftDown()) {
-                            camera.rotateX(-rotateStep);
-                        } else {
-                            camera.moveLeft(10);
-                        }
-                        break;
-                    case java.awt.event.KeyEvent.VK_UP:
-                        if (evt.isShiftDown()) {
-                            camera.rotateY(rotateStep);
-                        } else {
-                            camera.moveUp(10);
-                        }
-                        break;
-                    case java.awt.event.KeyEvent.VK_DOWN:
-                        if (evt.isShiftDown()) {
-                            camera.rotateY(-rotateStep);
-                        } else {
-                            camera.moveUp(-10);
-                        }
-                        break;
-                    case java.awt.event.KeyEvent.VK_Z:
-                        if (evt.isShiftDown()) {
-                            camera.rotateZ(rotateStep);
-                        } else {
-                            camera.moveForward(10);
-                        }
-                        break;
-                    case java.awt.event.KeyEvent.VK_X:
-                        if (evt.isShiftDown()) {
-                            camera.rotateZ(-rotateStep);
-                        } else {
-                            camera.moveForward(-10);
-                        }
-                        break;
-                    case java.awt.event.KeyEvent.VK_EQUALS:
-                        if (evt.isShiftDown()) {
-                            scene.getLight().setIntensity(scene.getLight().getIntensity() + 0.1);
-                        } else {
-                            camera.zoomInDirection(new java.awt.Point(getWidth() / 2, getHeight() / 2), getSize());
-                        }
-                        break;
-                    case java.awt.event.KeyEvent.VK_MINUS:
-                        if (evt.isShiftDown()) {
-                            scene.getLight().setIntensity(scene.getLight().getIntensity() - 0.1);
-                        } else {
-                            camera.zoomOutDirection(new java.awt.Point(getWidth() / 2, getHeight() / 2), getSize());
-                        }
-                        break;
-                    case java.awt.event.KeyEvent.VK_R:
-                        scene.getCamera().setDirection(new Vector3D(0, 0, 0));
-                        scene.getCamera().setPosition(new Vector3D(0, 0, -1000));
-                        break;
-                    case java.awt.event.KeyEvent.VK_A:
-                        scene.getLight().setPosition(scene.getLight().getPosition().add(new Vector3D(-10, 0, 0)));
-                        break;
-                    case java.awt.event.KeyEvent.VK_D:
-                        scene.getLight().setPosition(scene.getLight().getPosition().add(new Vector3D(10, 0, 0)));
-                        break;
-                    case java.awt.event.KeyEvent.VK_W:
-                        scene.getLight().setPosition(scene.getLight().getPosition().add(new Vector3D(0, 10, 0)));
-                        break;
-                    case java.awt.event.KeyEvent.VK_S:
-                        scene.getLight().setPosition(scene.getLight().getPosition().add(new Vector3D(0, -10, 0)));
-                        break;
-                    case java.awt.event.KeyEvent.VK_Q:
-                        scene.getLight().setPosition(scene.getLight().getPosition().add(new Vector3D(0, 0, 10)));
-                        break;
-                    case java.awt.event.KeyEvent.VK_E:
-                        scene.getLight().setPosition(scene.getLight().getPosition().add(new Vector3D(0, 0, -10)));
-                        break;
-                    case java.awt.event.KeyEvent.VK_P:
-                        if (evt.isShiftDown()) {
-                            scene.getLight().setAmbientIntensity(scene.getLight().getAmbientIntensity() - 0.1);
-                        } else {
-                            scene.getLight().setAmbientIntensity(scene.getLight().getAmbientIntensity() + 0.1);
-                        }
-                }
+                // switch (evt.getKeyCode()) {
+                //     case java.awt.event.KeyEvent.VK_LEFT:
+                //         if (evt.isShiftDown()) {
+                //             camera.rotateX(rotateStep);
+                //         } else {
+                //             camera.moveLeft(-10);
+                //         }
+                //         break;
+                //     case java.awt.event.KeyEvent.VK_RIGHT:
+                //         if (evt.isShiftDown()) {
+                //             camera.rotateX(-rotateStep);
+                //         } else {
+                //             camera.moveLeft(10);
+                //         }
+                //         break;
+                //     case java.awt.event.KeyEvent.VK_UP:
+                //         if (evt.isShiftDown()) {
+                //             camera.rotateY(rotateStep);
+                //         } else {
+                //             camera.moveUp(10);
+                //         }
+                //         break;
+                //     case java.awt.event.KeyEvent.VK_DOWN:
+                //         if (evt.isShiftDown()) {
+                //             camera.rotateY(-rotateStep);
+                //         } else {
+                //             camera.moveUp(-10);
+                //         }
+                //         break;
+                //     case java.awt.event.KeyEvent.VK_Z:
+                //         if (evt.isShiftDown()) {
+                //             camera.rotateZ(rotateStep);
+                //         } else {
+                //             camera.moveForward(10);
+                //         }
+                //         break;
+                //     case java.awt.event.KeyEvent.VK_X:
+                //         if (evt.isShiftDown()) {
+                //             camera.rotateZ(-rotateStep);
+                //         } else {
+                //             camera.moveForward(-10);
+                //         }
+                //         break;
+                //     case java.awt.event.KeyEvent.VK_EQUALS:
+                //         if (evt.isShiftDown()) {
+                //             scene.getLight().setIntensity(scene.getLight().getIntensity() + 0.1);
+                //         } else {
+                //             camera.zoomInDirection(new java.awt.Point(getWidth() / 2, getHeight() / 2), getSize());
+                //         }
+                //         break;
+                //     case java.awt.event.KeyEvent.VK_MINUS:
+                //         if (evt.isShiftDown()) {
+                //             scene.getLight().setIntensity(scene.getLight().getIntensity() - 0.1);
+                //         } else {
+                //             camera.zoomOutDirection(new java.awt.Point(getWidth() / 2, getHeight() / 2), getSize());
+                //         }
+                //         break;
+                //     case java.awt.event.KeyEvent.VK_R:
+                //         scene.getCamera().setDirection(new Vector3D(0, 0, 0));
+                //         scene.getCamera().setPosition(new Vector3D(0, 0, -1000));
+                //         break;
+                //     case java.awt.event.KeyEvent.VK_A:
+                //         scene.getLight().setPosition(scene.getLight().getPosition().add(new Vector3D(-10, 0, 0)));
+                //         break;
+                //     case java.awt.event.KeyEvent.VK_D:
+                //         scene.getLight().setPosition(scene.getLight().getPosition().add(new Vector3D(10, 0, 0)));
+                //         break;
+                //     case java.awt.event.KeyEvent.VK_W:
+                //         scene.getLight().setPosition(scene.getLight().getPosition().add(new Vector3D(0, 10, 0)));
+                //         break;
+                //     case java.awt.event.KeyEvent.VK_S:
+                //         scene.getLight().setPosition(scene.getLight().getPosition().add(new Vector3D(0, -10, 0)));
+                //         break;
+                //     case java.awt.event.KeyEvent.VK_Q:
+                //         scene.getLight().setPosition(scene.getLight().getPosition().add(new Vector3D(0, 0, 10)));
+                //         break;
+                //     case java.awt.event.KeyEvent.VK_E:
+                //         scene.getLight().setPosition(scene.getLight().getPosition().add(new Vector3D(0, 0, -10)));
+                //         break;
+                //     case java.awt.event.KeyEvent.VK_P:
+                //         if (evt.isShiftDown()) {
+                //             scene.getLight().setAmbientIntensity(scene.getLight().getAmbientIntensity() - 0.1);
+                //         } else {
+                //             scene.getLight().setAmbientIntensity(scene.getLight().getAmbientIntensity() + 0.1);
+                //         }
+                // }
 
                 repaint();
             }
@@ -457,11 +457,16 @@ public class DrawingPanel extends javax.swing.JPanel {
 
             if (accessoireDTO.accessoireType == TypeAccessoire.Fenetre) {
                 accMesh = PanelHelper.buildWindow(accessoireDTO.dimensions[0], accessoireDTO.dimensions[1],
-                        new Vector3D(0, 0, 0), 3);
+                        new Vector3D(0, 0, 0), 2);
             } else if (accessoireDTO.accessoireType == TypeAccessoire.Porte) {
                 accMesh = PanelHelper.buildDoor(accessoireDTO.dimensions[0], accessoireDTO.dimensions[1],
                         new Vector3D(0, 0, 0), 4);
+
+                System.out.println((accMesh.getBounding()[1].y) + " "
+                        + (chaletDTO.hauteur - accMesh.getHeight() - chaletDTO.margeAccessoire));
+
             }
+
             double margeAccessoire = mainWindow.getControleur().getChalet().margeAccessoire;
             switch (typeMur) {
                 case Facade:
@@ -472,6 +477,10 @@ public class DrawingPanel extends javax.swing.JPanel {
                             -meshes[0].getHeight() / 2, -chaletDTO.epaisseurMur));
                     accMesh = accMesh.translate(new Vector3D(-margeAccessoire - accessoireDTO.position[0],
                             margeAccessoire + accessoireDTO.position[1], 0));
+                    if (accessoireDTO.accessoireType == TypeAccessoire.Porte) {
+                        accMesh = accMesh.translate(new Vector3D(0,
+                                chaletDTO.hauteur - accMesh.getHeight() - chaletDTO.margeAccessoire, 0));
+                    }
 
                     break;
                 case Arriere:
@@ -487,6 +496,10 @@ public class DrawingPanel extends javax.swing.JPanel {
                             -meshes[1].getHeight() / 2 + accMesh.getHeight() / 2 + margeAccessoire
                                     + accessoireDTO.position[1],
                             chaletDTO.epaisseurMur + 2));
+                    if (accessoireDTO.accessoireType == TypeAccessoire.Porte) {
+                        accMesh = accMesh.translate(new Vector3D(0,
+                                chaletDTO.hauteur - accMesh.getHeight() - chaletDTO.margeAccessoire, 0));
+                    }
                     break;
                 case Gauche:
 
@@ -500,6 +513,9 @@ public class DrawingPanel extends javax.swing.JPanel {
                                     + accessoireDTO.position[1],
                             meshes[3].getDepth() / 2 - accMesh.getDepth() / 2 - margeAccessoire
                                     - accessoireDTO.position[0]));
+                    if(accessoireDTO.accessoireType == TypeAccessoire.Porte){
+                        accMesh = accMesh.translate(new Vector3D(0,chaletDTO.hauteur - accMesh.getHeight() - chaletDTO.margeAccessoire,0));
+                    }
                     break;
                 case Droit:
 
@@ -513,6 +529,9 @@ public class DrawingPanel extends javax.swing.JPanel {
                                     + accessoireDTO.position[1],
                             -meshes[2].getDepth() / 2 + accMesh.getDepth() / 2 + margeAccessoire
                                     + accessoireDTO.position[0]));
+                    if(accessoireDTO.accessoireType == TypeAccessoire.Porte){
+                        accMesh = accMesh.translate(new Vector3D(0,chaletDTO.hauteur - accMesh.getHeight() - chaletDTO.margeAccessoire,0));
+                    }
                     break;
             }
 

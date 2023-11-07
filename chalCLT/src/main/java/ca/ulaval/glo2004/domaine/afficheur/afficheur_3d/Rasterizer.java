@@ -446,10 +446,10 @@ public class Rasterizer {
 
                 g.setColor(Color.WHITE);
                 g.drawString(
-                                String.format("Camera Position: (%s, %s, %s)", cameraPosition.x, cameraPosition.y,
+                                String.format("Camera Position: (%.2f, %.2f, %.2f)", cameraPosition.x, cameraPosition.y,
                                                 cameraPosition.z),
                                 position.x, position.y);
-                g.drawString(String.format("Camera Direction: (%s, %s, %s)", cameraDirection.x, cameraDirection.y,
+                g.drawString(String.format("Camera Direction: (%.2f, %.2f, %.2f)", cameraDirection.x, cameraDirection.y,
                                 cameraDirection.z), position.x, position.y + 20);
                 g.drawString(String.format("Camera Scale: %.2f", cameraScale), position.x, position.y + 40);
         }

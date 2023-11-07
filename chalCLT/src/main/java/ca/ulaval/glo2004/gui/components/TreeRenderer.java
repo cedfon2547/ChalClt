@@ -66,103 +66,31 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
             boolean isLeaf, int row, boolean focused) {
         super.getTreeCellRendererComponent(tree, value, selected, expanded, isLeaf, row, focused);
 
+        DefaultMutableTreeNode tempDefaultMutableTreeNode = (DefaultMutableTreeNode) value;
+
+        if (tempDefaultMutableTreeNode.isRoot()) {
+            setIcon(chaletIcon);
+        }
+        
         try {
-            // AccessoireTreeNode tempAccessoireTreeNode = (AccessoireTreeNode) value;
-            
-
-            if (value instanceof DefaultMutableTreeNode) {
-                DefaultMutableTreeNode tempDefaultMutableTreeNode = (DefaultMutableTreeNode) value;
-                if(tempDefaultMutableTreeNode.isRoot()){
-                    setIcon(chaletIcon);
-                }
-                switch (tempDefaultMutableTreeNode.getUserObject().toString()) {
-                    case ArbreDesComposantesChalet._STRING_MUR_FACADE:
-                        setIcon(murIcon);
-                        break;
-                    case ArbreDesComposantesChalet._STRING_MUR_ARRIERE:
-                        setIcon(murIcon);
-                        break;
-                    case ArbreDesComposantesChalet._STRING_MUR_DROIT:
-                        setIcon(murIcon);
-                        break;
-                    case ArbreDesComposantesChalet._STRING_MUR_GAUCHE:
-                        setIcon(murIcon);
-                        break;
-                    default:
-                        break;
-
-                }
-                DefaultMutableTreeNode parent = (DefaultMutableTreeNode) tempDefaultMutableTreeNode.getParent();
-
-                if (parent != null) {
-                    System.out.println(parent.getUserObject());
-
-                    // AccessoireTreeNode tempAccessoireTreeNode = (AccessoireTreeNode) value;
-                    switch (parent.getUserObject().toString()) {
-                        case ArbreDesComposantesChalet._STRING_MUR_FACADE:
-                            System.out.println("2Acc Mur Facade");
-                            setIcon(fenetreIcon);
-                            break;
-                        case ArbreDesComposantesChalet._STRING_MUR_ARRIERE:
-                            System.out.println("2Acc Mur Arriere");
-                            setIcon(fenetreIcon);
-                            break;
-                        case ArbreDesComposantesChalet._STRING_MUR_DROIT:
-                            System.out.println("2Acc Mur droit");
-                            setIcon(fenetreIcon);
-                            break;
-                        case ArbreDesComposantesChalet._STRING_MUR_GAUCHE:
-                            System.out.println("2Acc Mur gauche");
-                            setIcon(fenetreIcon);
-                            break;
-                        default:
-
-                            break;
-                    }
-                }
-                if (tempDefaultMutableTreeNode.getUserObject() instanceof Accessoire.AccessoireDTO) {
-                    System.out.println("n'importe quoi");
-                    System.out.println(parent.getUserObject());
-                    Accessoire.AccessoireDTO accDto = mainWindow.getControleur().getAccessoire(
-                            ((Accessoire.AccessoireDTO) tempDefaultMutableTreeNode.getUserObject()).accessoireId);
-                    ImageIcon icon;
-                    if (accDto.accessoireType == TypeAccessoire.Fenetre) {
-                        icon = fenetreIcon;
+            if (value instanceof MurTreeNode) {
+                setIcon(murIcon);
+            } else if (value instanceof AccessoireTreeNode) {
+                AccessoireTreeNode accNode = (AccessoireTreeNode) value;
+                if (accNode.getParent() instanceof MurTreeNode) {
+                    if (accNode.getTypeAccessoire() == TypeAccessoire.Fenetre) {
+                        setIcon(fenetreIcon);
                     } else {
-                        icon = porteIcon;
+                        setIcon(porteIcon);
                     }
-                    // AccessoireTreeNode tempAccessoireTreeNode = (AccessoireTreeNode) value;
-                    switch (parent.getUserObject().toString()) {
-                        case ArbreDesComposantesChalet._STRING_MUR_FACADE:
-                            System.out.println("2Acc Mur Facade");
-                            setIcon(icon);
-                            break;
-                        case ArbreDesComposantesChalet._STRING_MUR_ARRIERE:
-                            System.out.println("2Acc Mur Arriere");
-                            setIcon(icon);
-                            break;
-                        case ArbreDesComposantesChalet._STRING_MUR_DROIT:
-                            System.out.println("2Acc Mur droit");
-                            setIcon(icon);
-                            break;
-                        case ArbreDesComposantesChalet._STRING_MUR_GAUCHE:
-                            System.out.println("2Acc Mur gauche");
-                            setIcon(icon);
-                            break;
-                        default:
+                    System.out.println("changement de nom " + accNode.getAccessoireDTO());
 
-                            break;
-                    }
-
+                    Accessoire.AccessoireDTO accDto = mainWindow.getControleur().getAccessoire(accNode.getAccessoireDTO().accessoireId);                    
                     this.setText(accDto.accessoireNom);
-                    this.setPreferredSize(new Dimension(100, 30));
+                    this.setPreferredSize(new Dimension(100, 20));
                 }
-            }
 
-            // if(tempAccessoireTreeNode.getTypeAccessoire()==TypeAccessoire.Fenetre){
-            // System.out.println("in");
-            // setIcon(fenetreIcon);
-            // }
+            }
         } finally {
         }
 

@@ -353,6 +353,8 @@ public class PanelHelper {
                 doorFrame5
         });
 
+        doorFrame.getMaterial().setColor(new Color(139,69,19));
+
         return new TriangleMeshGroup(new TriangleMesh[] {
                 doorFrame,
                 doorFrame6,

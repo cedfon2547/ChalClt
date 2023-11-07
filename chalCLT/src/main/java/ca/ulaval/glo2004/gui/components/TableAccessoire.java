@@ -6,6 +6,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelListener;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
+import ca.ulaval.glo2004.domaine.TypeAccessoire;
 import ca.ulaval.glo2004.domaine.utils.ImperialDimension;
 import ca.ulaval.glo2004.gui.MainWindow;
 
@@ -25,6 +26,7 @@ public class TableAccessoire extends JTable {
                 "Propriété",
                 "Valeur"
         };
+
         props = new Object[][] {
                 { "Nom", dtoAcessoire.accessoireNom},
                 { "Hauteur", ImperialDimension.convertToImperial(dtoAcessoire.dimensions[1]) },
@@ -32,6 +34,10 @@ public class TableAccessoire extends JTable {
                 { "Position x", ImperialDimension.convertToImperial(dtoAcessoire.position[0]) },
                 { "Position y", ImperialDimension.convertToImperial(dtoAcessoire.position[1]) }
         };
+
+        // if (dtoAcessoire.accessoireType == TypeAccessoire.Fenetre) {
+        //     props[4] = new Object[] { "Position y", ImperialDimension.convertToImperial(dtoAcessoire.position[1]) };
+        // }
 
         model = new javax.swing.table.DefaultTableModel(props, columnNames);
         this.setModel(model);
@@ -45,17 +51,20 @@ public class TableAccessoire extends JTable {
             
                 Accessoire.AccessoireDTO accessoireDTO = mainWindow.getControleur().getAccessoire(dtoAcessoire.accessoireId);
 
-                accessoireDTO.accessoireNom = (String)getValueAt(0, 1);
+                accessoireDTO.accessoireNom = (String) getValueAt(0, 1);
                 accessoireDTO.dimensions[1] = ImperialDimension.parseFromString((String) getValueAt(1, 1).toString()).toInches();
                 accessoireDTO.dimensions[0] = ImperialDimension.parseFromString((String) getValueAt(2, 1).toString()).toInches();
                 accessoireDTO.position[0] = ImperialDimension.parseFromString((String) getValueAt(3, 1).toString()).toInches();
-                accessoireDTO.position[1] = ImperialDimension.parseFromString((String) getValueAt(4, 1).toString()).toInches();
+                
+                if (dtoAcessoire.accessoireType == TypeAccessoire.Fenetre) {
+                    accessoireDTO.position[1] = ImperialDimension.parseFromString((String) getValueAt(4, 1).toString()).toInches();
+                }
 
-                mainWindow.getControleur().setAccessoire(accessoireDTO.typeMur,accessoireDTO);
-                mainWindow.arbreDesComposantesChalet.invalidate();
-                mainWindow.arbreDesComposantesChalet.repaint();
+                mainWindow.getControleur().setAccessoire(accessoireDTO.typeMur, accessoireDTO);
+                mainWindow.arbreDesComposantesChalet.rechargerNoeudAccessoire(accessoireDTO);
+                // mainWindow.arbreDesComposantesChalet.invalidate();
+                // mainWindow.arbreDesComposantesChalet.repaint();
                 mainWindow.drawingPanel.rechargerAffichage();
-
             }
         });
     }
@@ -77,6 +86,9 @@ public class TableAccessoire extends JTable {
 
     @Override
     public Object getValueAt(int row, int col) {
+        // if (dtoAcessoire.accessoireType == TypeAccessoire.Fenetre) {
+        //     props[4] = new Object[] { "Position y", ImperialDimension.convertToImperial(dtoAcessoire.position[1]) };
+        // } 
         return props[row][col];
     }
 
@@ -108,6 +120,11 @@ public class TableAccessoire extends JTable {
 
     @Override
     public boolean isCellEditable(int row, int column) {
+        // Si le type est une porte, on restraint la modification de la valeur y puisque la porte est initialement positionnée au bas du mur.
+        if (dtoAcessoire.accessoireType == TypeAccessoire.Porte && row == 4 && column == 1) {
+            return false;
+        }  
+
         return column == 1;
     }
 

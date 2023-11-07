@@ -76,6 +76,7 @@ public class Controleur {
     }
 
     public void supprimerAccessoire(TypeMur mur, UUID uuid){
+        
         Accessoire accessoire = projectActif.getChalet().getMur(mur).retirerAccessoire(uuid);
         this.pcs.firePropertyChange("supprimerAccessoire", null, accessoire.toDTO());
     }
