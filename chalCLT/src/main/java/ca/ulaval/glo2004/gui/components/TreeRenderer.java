@@ -2,7 +2,6 @@ package ca.ulaval.glo2004.gui.components;
 
 import java.awt.*;
 import java.net.URL;
-import java.util.Objects;
 
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
@@ -96,7 +95,7 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
                     }
                     // System.out.println("changement de nom " + accNode.getAccessoireDTO());
 
-                    Accessoire.AccessoireDTO accDto = mainWindow.getControleur().getAccessoire(accNode.getAccessoireDTO().accessoireId);                    
+                    Accessoire.AccessoireDTO accDto = mainWindow.getControleur().getAccessoire(accNode.getAccessoireDTO().accessoireId);
                     this.setText(accDto.accessoireNom);
                     this.setPreferredSize(new Dimension(100, 20));
                 }

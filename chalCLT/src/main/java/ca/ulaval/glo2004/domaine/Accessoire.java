@@ -61,6 +61,10 @@ public class Accessoire extends Retrait {
         return accessoireNom;
     }
 
+    public TypeMur getTypeMur() {
+        return typeMur;
+    }
+
     /**
      * Retourne la validité de l'accessoire
      * @return valide
@@ -110,6 +114,9 @@ public class Accessoire extends Retrait {
      */
     public void setValide(boolean p_validiterEtat){this.valide = p_validiterEtat;}
 
+    public void setTypeMur(TypeMur typeMur) {
+        this.typeMur = typeMur;
+    }
 
     /**
      * Update la position de l'accessoire

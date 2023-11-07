@@ -71,8 +71,9 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
         toitPignonDroitNode = new javax.swing.tree.DefaultMutableTreeNode(Constants._STRING_PIGNON_DROIT);
         toitPignonGaucheNode = new javax.swing.tree.DefaultMutableTreeNode(Constants._STRING_PIGNON_GAUCHE);
         treeRenderer = new TreeRenderer(mainWindow);
-        
-        arbreComposantesChalet.setCellEditor(new DefaultTreeCellEditor(arbreComposantesChalet, (DefaultTreeCellRenderer) arbreComposantesChalet.getCellRenderer()) {
+
+        arbreComposantesChalet.setCellEditor(new DefaultTreeCellEditor(arbreComposantesChalet,
+                (DefaultTreeCellRenderer) arbreComposantesChalet.getCellRenderer()) {
             @Override
             public boolean isCellEditable(EventObject event) {
                 return false;
@@ -81,11 +82,36 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
 
         arbreComposantesChalet.setCellRenderer(treeRenderer);
 
-        this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.CHALET, this.getChaletChangeListener());
-        this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.ACCESSOIRE, this.getAccessoireChangeListener());
-        this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.SUPPRIMER_ACCESSOIRE, this.getSupprimerAccessoireListener());
-        this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.AJOUTER_ACCESSOIRE, this.getAjouterAccessoireListener());
+        this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.CHALET,
+                this.getChaletChangeListener());
+        this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.ACCESSOIRE,
+                this.getAccessoireChangeListener());
+        this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.SUPPRIMER_ACCESSOIRE,
+                this.getSupprimerAccessoireListener());
+        this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.AJOUTER_ACCESSOIRE,
+                this.getAjouterAccessoireListener());
 
+        this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.SUPPRIMER_ACCESSOIRES,
+                new PropertyChangeListener() {
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        DefaultTreeModel model = (DefaultTreeModel) arbreComposantesChalet.getModel();
+
+                        List<Accessoire.AccessoireDTO> listAcc = (List<Accessoire.AccessoireDTO>) evt.getNewValue();
+                        List<AccessoireTreeNode> toRemove = new ArrayList<AccessoireTreeNode>();
+                        for (AccessoireTreeNode accNode : accessoireNodes) {
+                            if (listAcc.contains(accNode.getAccessoireDTO())) {
+                                model.removeNodeFromParent(accNode);
+                                toRemove.add(accNode);
+                            }
+                        }
+
+                        for (AccessoireTreeNode accNode : toRemove) {
+                            accessoireNodes.remove(accNode);
+                        }
+
+                        mainWindow.showChaletTable();
+                    }
+                });
         mursNode.add(murFacadeNode);
         mursNode.add(murArriereNode);
         mursNode.add(murDroitNode);
@@ -113,7 +139,7 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
         arbreComposantesChalet.addMouseListener(this.getTreeMouseListener());
         arbreComposantesChalet.addFocusListener(this.getFocusListener());
         arbreComposantesChalet.addTreeSelectionListener(this.getTreeSelectionListener());
-        
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
 
@@ -145,6 +171,7 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
             }
         };
     }
+
     private PropertyChangeListener getChaletChangeListener() {
         return new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
@@ -184,8 +211,21 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
     private PropertyChangeListener getSupprimerAccessoireListener() {
         return new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                // System.out.println("Retirer Accessoire " + ((Accessoire.AccessoireDTO)
-                // evt.getNewValue()).accessoireNom);
+                System.out
+                        .println("Retirer Accessoire " + ((Accessoire.AccessoireDTO) evt.getNewValue()).accessoireNom);
+
+                AccessoireTreeNode toRemove = null;
+
+                DefaultTreeModel model = (DefaultTreeModel) arbreComposantesChalet.getModel();
+                for (AccessoireTreeNode accNode : accessoireNodes) {
+                    if (accNode.getAccessoireDTO().accessoireId == ((Accessoire.AccessoireDTO) evt
+                            .getNewValue()).accessoireId) {
+                        model.removeNodeFromParent(accNode);
+                        toRemove = accNode;
+                    }
+                }
+
+                accessoireNodes.remove(toRemove);
                 mainWindow.showChaletTable();
             }
         };

@@ -137,6 +137,9 @@ public class MainWindow extends javax.swing.JFrame {
         return controleur;
     }
 
+    //todo
+    public void rechargerMainWindow(){}
+
     /**
      * Affiche la table des propriétés du chalet.
      */
@@ -198,24 +201,7 @@ public class MainWindow extends javax.swing.JFrame {
      * supprime les nœuds correspondants de l'arbre des composantes du chalet et recharge l'affichage.
      */
     public void deleteAllAccessoiresSelectionnees() {
-        DefaultTreeModel model = (DefaultTreeModel) arbreDesComposantesChalet.arbreComposantesChalet.getModel();
-
-        for (Accessoire.AccessoireDTO accessoireDTO: accessoiresSelectionnees) {
-            controleur.supprimerAccessoire(accessoireDTO.typeMur, accessoireDTO.accessoireId);
-        }
-
-        List<AccessoireTreeNode> toRemove = new ArrayList<AccessoireTreeNode>();
-        for (AccessoireTreeNode accNode: arbreDesComposantesChalet.accessoireNodes) {
-            if (accessoiresSelectionnees.contains(accNode.getAccessoireDTO())) {
-                model.removeNodeFromParent(accNode);
-                toRemove.add(accNode);
-            }
-        }
-
-        for (AccessoireTreeNode accNode: toRemove) {
-            arbreDesComposantesChalet.accessoireNodes.remove(accNode);
-        }
-
+        this.controleur.supprimerAccessoires(accessoiresSelectionnees);
         this.clearAccessoiresSelectionnees();
 
         drawingPanel.rechargerAffichage();

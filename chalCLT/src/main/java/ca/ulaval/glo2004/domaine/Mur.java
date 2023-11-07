@@ -207,8 +207,7 @@ public class Mur {
      * @param p_dimension qui représente la dimensions de l'objet
      * @return
      */
-    public Accessoire AjouterAcessoire(TypeAccessoire p_type, double[] p_position, double[] p_dimension) {
-
+    public Accessoire ajouterAccessoire(TypeAccessoire p_type, double[] p_position, double[] p_dimension) {
         // Test de depart juste pour double verification
         if (p_position.length != 2) {
             throw new IllegalArgumentException("mauvais nombre de position");
@@ -231,6 +230,11 @@ public class Mur {
         return p_accessoire;
     }
 
+    public Accessoire ajouterAccessoire(Accessoire acc) {
+        accessoires.add(acc);
+        return acc;
+    }
+
     /**
      * Retire un accessoire
      *
@@ -244,7 +248,8 @@ public class Mur {
                 return accessoire;
             }
         }
-        throw new IllegalAccessError("Ne contient pas cet accessoire");
+
+        return null;
     }
 
     /**
