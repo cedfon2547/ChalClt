@@ -15,6 +15,8 @@ import java.beans.PropertyChangeEvent;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
+import ca.ulaval.glo2004.domaine.Controleur;
+import ca.ulaval.glo2004.gui.Constants;
 import ca.ulaval.glo2004.gui.MainWindow;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 
@@ -42,17 +44,6 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
     javax.swing.tree.DefaultMutableTreeNode toitPignonGaucheNode;
     TreeRenderer treeRenderer;
 
-    public static final String _STRING_MURS = "Murs";
-    public static final String _STRING_TOIT = "Toit";
-    public static final String _STRING_MUR_FACADE = "Mur façade";
-    public static final String _STRING_MUR_ARRIERE = "Mur arrière";
-    public static final String _STRING_MUR_DROIT = "Mur droit";
-    public static final String _STRING_MUR_GAUCHE = "Mur gauche";
-    public static final String _STRING_PANNEAU_SUPERIEUR = "Panneau supérieur";
-    public static final String _STRING_RALLONGE_VERTICALE = "Rallonge verticale";
-    public static final String _STRING_PIGNON_DROIT = "Pignon droit";
-    public static final String _STRING_PIGNON_GAUCHE = "Pignon gauche";
-
     public List<AccessoireTreeNode> accessoireNodes = new ArrayList<AccessoireTreeNode>();
 
     private void initComponents() {
@@ -66,37 +57,85 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
         arbreComposantesChalet.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
         chaletNode = new javax.swing.tree.DefaultMutableTreeNode(nom);
-        mursNode = new javax.swing.tree.DefaultMutableTreeNode(_STRING_MURS);
-        toitNode = new javax.swing.tree.DefaultMutableTreeNode(_STRING_TOIT);
-        murFacadeNode = new MurTreeNode(_STRING_MUR_FACADE);
-        murArriereNode = new MurTreeNode(_STRING_MUR_ARRIERE);
-        murDroitNode = new MurTreeNode(_STRING_MUR_DROIT);
-        murGaucheNode = new MurTreeNode(_STRING_MUR_GAUCHE);
-        toitPanneauSuperieurNode = new javax.swing.tree.DefaultMutableTreeNode(_STRING_PANNEAU_SUPERIEUR);
-        toitRallongeVerticaleNode = new javax.swing.tree.DefaultMutableTreeNode(_STRING_RALLONGE_VERTICALE);
-        toitPignonDroitNode = new javax.swing.tree.DefaultMutableTreeNode(_STRING_PIGNON_DROIT);
-        toitPignonGaucheNode = new javax.swing.tree.DefaultMutableTreeNode(_STRING_PIGNON_GAUCHE);
+        mursNode = new javax.swing.tree.DefaultMutableTreeNode(Constants._STRING_MURS);
+        toitNode = new javax.swing.tree.DefaultMutableTreeNode(Constants._STRING_TOIT);
+        murFacadeNode = new MurTreeNode(Constants._STRING_MUR_FACADE);
+        murArriereNode = new MurTreeNode(Constants._STRING_MUR_ARRIERE);
+        murDroitNode = new MurTreeNode(Constants._STRING_MUR_DROIT);
+        murGaucheNode = new MurTreeNode(Constants._STRING_MUR_GAUCHE);
+        toitPanneauSuperieurNode = new javax.swing.tree.DefaultMutableTreeNode(Constants._STRING_PANNEAU_SUPERIEUR);
+        toitRallongeVerticaleNode = new javax.swing.tree.DefaultMutableTreeNode(Constants._STRING_RALLONGE_VERTICALE);
+        toitPignonDroitNode = new javax.swing.tree.DefaultMutableTreeNode(Constants._STRING_PIGNON_DROIT);
+        toitPignonGaucheNode = new javax.swing.tree.DefaultMutableTreeNode(Constants._STRING_PIGNON_GAUCHE);
         treeRenderer = new TreeRenderer(mainWindow);
         arbreComposantesChalet.setCellRenderer(treeRenderer);
 
-        arbreComposantesChalet.addTreeSelectionListener(new TreeSelectionListener() {
+        this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.CHALET, this.getChaletChangeListener());
+        this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.ACCESSOIRE, this.getAccessoireChangeListener());
+        this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.SUPPRIMER_ACCESSOIRE, this.getSupprimerAccessoireListener());
+        this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.AJOUTER_ACCESSOIRE, this.getAjouterAccessoireListener());
+
+        mursNode.add(murFacadeNode);
+        mursNode.add(murArriereNode);
+        mursNode.add(murDroitNode);
+        mursNode.add(murGaucheNode);
+
+        toitNode.add(toitPanneauSuperieurNode);
+        toitNode.add(toitRallongeVerticaleNode);
+        toitNode.add(toitPignonDroitNode);
+        toitNode.add(toitPignonGaucheNode);
+
+        chaletNode.add(mursNode);
+        chaletNode.add(toitNode);
+
+        arbreComposantesChalet.setModel(new javax.swing.tree.DefaultTreeModel(chaletNode));
+        arbreComposantesChalet.setToolTipText("Table des composantes");
+        arbreComposantesChalet.setEditable(true);
+        arbreComposantesChalet.setName("tableDesComposantes"); // NOI18N
+        arbreComposantesChalet.setShowsRootHandles(true);
+        arbreComposantesChalet.getAccessibleContext().setAccessibleName("ArbreDesComposantes");
+        arbreComposantesChalet.getAccessibleContext().setAccessibleDescription("Arbre des composantes");
+        arbreComposantesChalet.setToggleClickCount(0);
+
+        treeScrollPane.setViewportView(arbreComposantesChalet);
+
+        arbreComposantesChalet.addMouseListener(this.getTreeMouseListener());
+        arbreComposantesChalet.addFocusListener(this.getFocusListener());
+        arbreComposantesChalet.addTreeSelectionListener(this.getTreeSelectionListener());
+        
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+
+        layout.setHorizontalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(treeScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE));
+        layout.setVerticalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(treeScrollPane)
+                                .addGap(0, 0, 0)));
+    }
+
+    private TreeSelectionListener getTreeSelectionListener() {
+        return new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
                 TreePath[] treePaths = arbreComposantesChalet.getSelectionPaths();
-                
+
                 if (treePaths == null)
                     return;
 
                 mainWindow.clearAccessoiresSelectionnees();
-                for (TreePath path: treePaths) {
+                for (TreePath path : treePaths) {
                     if (path.getLastPathComponent() instanceof AccessoireTreeNode) {
                         AccessoireTreeNode nodeAcc = (AccessoireTreeNode) path.getLastPathComponent();
                         mainWindow.ajouterAccessoireSelectionnee(nodeAcc.getAccessoireDTO());
                     }
                 }
             }
-        });
-
-        this.mainWindow.getControleur().addPropertyChangeListener("chalet", new PropertyChangeListener() {
+        };
+    }
+    private PropertyChangeListener getChaletChangeListener() {
+        return new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("chalet")) {
                     Chalet.ChaletDTO chaletDTO = (Chalet.ChaletDTO) evt.getNewValue();
@@ -104,15 +143,17 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                     ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeChanged(chaletNode);
                 }
             }
-        });
+        };
+    }
 
-        this.mainWindow.getControleur().addPropertyChangeListener("accessoire", new PropertyChangeListener() {
+    private PropertyChangeListener getAccessoireChangeListener() {
+        return new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("accessoire")) {
                     Accessoire.AccessoireDTO accDto = (Accessoire.AccessoireDTO) evt.getNewValue();
 
                     // System.out.println(accDto.accessoireNom);
-                    
+
                     AccessoireTreeNode accessoireTreeNode = (AccessoireTreeNode) arbreComposantesChalet
                             .getLastSelectedPathComponent();
                     TreePath treePath = arbreComposantesChalet.getNextMatch(
@@ -126,16 +167,21 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                     }
                 }
             }
-        });
+        };
+    }
 
-        this.mainWindow.getControleur().addPropertyChangeListener("supprimerAccessoire", new PropertyChangeListener() {
+    private PropertyChangeListener getSupprimerAccessoireListener() {
+        return new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                // System.out.println("Retirer Accessoire " + ((Accessoire.AccessoireDTO) evt.getNewValue()).accessoireNom);
+                // System.out.println("Retirer Accessoire " + ((Accessoire.AccessoireDTO)
+                // evt.getNewValue()).accessoireNom);
                 mainWindow.showChaletTable();
             }
-        });
+        };
+    }
 
-        this.mainWindow.getControleur().addPropertyChangeListener("ajouterAccessoire", new PropertyChangeListener() {
+    private PropertyChangeListener getAjouterAccessoireListener() {
+        return new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 // System.out.println("ajouterAccessoire");
                 Accessoire.AccessoireDTO accDto = (Accessoire.AccessoireDTO) evt.getNewValue();
@@ -172,49 +218,10 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                 arbreComposantesChalet.invalidate();
                 arbreComposantesChalet.repaint();
             }
-        });
-
-        mursNode.add(murFacadeNode);
-        mursNode.add(murArriereNode);
-        mursNode.add(murDroitNode);
-        mursNode.add(murGaucheNode);
-
-        toitNode.add(toitPanneauSuperieurNode);
-        toitNode.add(toitRallongeVerticaleNode);
-        toitNode.add(toitPignonDroitNode);
-        toitNode.add(toitPignonGaucheNode);
-
-        chaletNode.add(mursNode);
-        chaletNode.add(toitNode);
-
-        arbreComposantesChalet.setModel(new javax.swing.tree.DefaultTreeModel(chaletNode));
-        arbreComposantesChalet.setToolTipText("Table des composantes");
-        arbreComposantesChalet.setEditable(true);
-        arbreComposantesChalet.setName("tableDesComposantes"); // NOI18N
-        arbreComposantesChalet.setShowsRootHandles(true);
-        arbreComposantesChalet.getAccessibleContext().setAccessibleName("ArbreDesComposantes");
-        arbreComposantesChalet.getAccessibleContext().setAccessibleDescription("Arbre des composantes");
-        arbreComposantesChalet.setToggleClickCount(0);
-
-        treeScrollPane.setViewportView(arbreComposantesChalet);
-
-        arbreComposantesChalet.addMouseListener(getTreeMouseListener());
-        arbreComposantesChalet.addFocusListener(this.getFocusListener());
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(treeScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE));
-        layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(treeScrollPane)
-                                .addGap(0, 0, 0)));
+        };
     }
 
-    public MouseAdapter getTreeMouseListener() {
+    private MouseAdapter getTreeMouseListener() {
         return new MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 TreePath path = arbreComposantesChalet.getPathForLocation(evt.getX(), evt.getY());
@@ -251,32 +258,32 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
 
                 if (evt.getClickCount() == 2 && evt.getButton() == java.awt.event.MouseEvent.BUTTON1) {
                     switch (path.getLastPathComponent().toString()) {
-                        case _STRING_MUR_FACADE:
+                        case Constants._STRING_MUR_FACADE:
                             // System.out.println("Mur Facade");
                             mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Facade);
                             break;
-                        case _STRING_MUR_ARRIERE:
+                        case Constants._STRING_MUR_ARRIERE:
                             // System.out.println("Mur Arriere");
                             mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Arriere);
                             break;
-                        case _STRING_MUR_DROIT:
+                        case Constants._STRING_MUR_DROIT:
                             // System.out.println("Mur droit");
                             mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Droite);
                             break;
-                        case _STRING_MUR_GAUCHE:
+                        case Constants._STRING_MUR_GAUCHE:
                             // System.out.println("Mur gauche");
                             mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Gauche);
                             break;
-                        case _STRING_PANNEAU_SUPERIEUR:
+                        case Constants._STRING_PANNEAU_SUPERIEUR:
                             // System.out.println("Panneau supérieur");
                             break;
-                        case _STRING_RALLONGE_VERTICALE:
+                        case Constants._STRING_RALLONGE_VERTICALE:
                             // System.out.println("Rallonge verticale");
                             break;
-                        case _STRING_PIGNON_DROIT:
+                        case Constants._STRING_PIGNON_DROIT:
                             // System.out.println("Pignon droit");
                             break;
-                        case _STRING_PIGNON_GAUCHE:
+                        case Constants._STRING_PIGNON_GAUCHE:
                             // System.out.println("Pignon gauche");
                             break;
                     }
@@ -305,7 +312,7 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
     }
 
     public void rechargerNoeudAccessoire(Accessoire.AccessoireDTO accessoireDTO) {
-        for (AccessoireTreeNode accNode: accessoireNodes) {
+        for (AccessoireTreeNode accNode : accessoireNodes) {
             if (accNode.getAccessoireDTO().accessoireId == accessoireDTO.accessoireId) {
                 // accNode.setUserObject(accessoireDTO);
                 ((DefaultTreeModel) arbreComposantesChalet.getModel()).reload(accNode);

@@ -52,12 +52,12 @@ public class Controleur {
     }
     public void setChalet(Chalet.ChaletDTO chalet) {
         // undoRedoManager.push(projectActif.getChalet());
-        this.pcs.firePropertyChange("chalet", this.projectActif.getChalet().toDTO(), chalet);
+        this.pcs.firePropertyChange(EventType.CHALET, this.projectActif.getChalet().toDTO(), chalet);
         projectActif.getChalet().updateChalet(chalet);
     }
 
     public void setAccessoire(TypeMur mur,Accessoire.AccessoireDTO accessoireDTO){
-        this.pcs.firePropertyChange("accessoire", this.getAccessoire(accessoireDTO.accessoireId), accessoireDTO);// à vérifier si ok
+        this.pcs.firePropertyChange(EventType.ACCESSOIRE, this.getAccessoire(accessoireDTO.accessoireId), accessoireDTO);// à vérifier si ok
         projectActif.getChalet().getMur(mur).getAccessoire(accessoireDTO.accessoireId).updateAccessoire(accessoireDTO);
     }
 
@@ -70,15 +70,14 @@ public class Controleur {
     }
 
     public void ajouterAccessoire(TypeMur mur, TypeAccessoire typeAcc, double[] position, double[] dimension) {
-        
         Accessoire accessoire = projectActif.getChalet().getMur(mur).AjouterAcessoire(typeAcc, position, dimension);
-        this.pcs.firePropertyChange("ajouterAccessoire", null, accessoire.toDTO());
+        this.pcs.firePropertyChange(EventType.AJOUTER_ACCESSOIRE, null, accessoire.toDTO());
     }
 
     public void supprimerAccessoire(TypeMur mur, UUID uuid){
         
         Accessoire accessoire = projectActif.getChalet().getMur(mur).retirerAccessoire(uuid);
-        this.pcs.firePropertyChange("supprimerAccessoire", null, accessoire.toDTO());
+        this.pcs.firePropertyChange(EventType.SUPPRIMER_ACCESSOIRE, null, accessoire.toDTO());
     }
 
     public void addPropertyChangeListener(String property, PropertyChangeListener listener) {
@@ -95,5 +94,12 @@ public class Controleur {
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         this.pcs.removePropertyChangeListener(listener);
+    }
+
+    public static class EventType {
+        public static final String CHALET = "chalet";
+        public static final String ACCESSOIRE = "accessoire";
+        public static final String AJOUTER_ACCESSOIRE = "ajouterAccessoire";
+        public static final String SUPPRIMER_ACCESSOIRE = "supprimerAccessoire";
     }
 }

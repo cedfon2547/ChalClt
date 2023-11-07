@@ -6,7 +6,6 @@ import ca.ulaval.glo2004.gui.MainWindow;
 import javax.swing.*;
 
 public class App {
-
     public static void main(String[] args) {
         Controleur controleur = Controleur.getInstance();
 

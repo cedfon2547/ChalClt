@@ -3,7 +3,6 @@ package ca.ulaval.glo2004.gui;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.JScrollPane;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -45,14 +44,12 @@ public class MainWindow extends javax.swing.JFrame {
     public javax.swing.JPanel sidePanelBottomSection;
 
     public TableChalet tableProprietesChalet;
-
     public TableAccessoire tableProprietesAccessoire;
     public JScrollPane tableContainer;
-
     public DrawingPanel drawingPanel;
     public ArbreDesComposantesChalet arbreDesComposantesChalet;
     public MainWindowTopBarMenu menu;
-    TopButtonPanel topButtonPanel; 
+    public TopButtonPanel topButtonPanel; 
 
     public List<Accessoire.AccessoireDTO> accessoiresSelectionnees = new ArrayList<Accessoire.AccessoireDTO>();
 
@@ -140,6 +137,9 @@ public class MainWindow extends javax.swing.JFrame {
         return controleur;
     }
 
+    /**
+     * Affiche la table des propriétés du chalet.
+     */
     public void showChaletTable() {
         tableProprietesChalet = new TableChalet(this);
         tableContainer.setBorder(tableProprietesChalet.getTitledBorder());
@@ -147,6 +147,11 @@ public class MainWindow extends javax.swing.JFrame {
         tableContainer.setViewportView(tableProprietesChalet);
     }
 
+    /**
+     * Affiche la table des propriétés d'un accessoire.
+     * 
+     * @param dtoAccessoire le DTO de l'accessoire à afficher
+     */
     public void showAccessoireTable(Accessoire.AccessoireDTO dtoAccessoire) {
         if (dtoAccessoire == null) {
             return;
@@ -187,6 +192,11 @@ public class MainWindow extends javax.swing.JFrame {
         topButtonPanel.supprimerAccessoireBtn.setEnabled(false);
     }
 
+    /**
+     * Supprime tous les accessoires sélectionnés dans l'arbre des composantes du chalet.
+     * Cette méthode supprime les accessoires sélectionnés de la liste des accessoires sélectionnés,
+     * supprime les nœuds correspondants de l'arbre des composantes du chalet et recharge l'affichage.
+     */
     public void deleteAllAccessoiresSelectionnees() {
         DefaultTreeModel model = (DefaultTreeModel) arbreDesComposantesChalet.arbreComposantesChalet.getModel();
 
