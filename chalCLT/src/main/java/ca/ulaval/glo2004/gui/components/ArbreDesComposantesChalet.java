@@ -16,6 +16,7 @@ import java.beans.PropertyChangeEvent;
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.gui.MainWindow;
+import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 
 public class ArbreDesComposantesChalet extends javax.swing.JPanel {
     MainWindow mainWindow;
@@ -110,22 +111,14 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                 if (evt.getPropertyName().equals("accessoire")) {
                     Accessoire.AccessoireDTO accDto = (Accessoire.AccessoireDTO) evt.getNewValue();
 
-                    System.out.println(accDto.accessoireNom);
+                    // System.out.println(accDto.accessoireNom);
                     
-                    AccessoireTreeNode node = null;
-                    for (AccessoireTreeNode accNode: accessoireNodes) {
-                        if (accNode.getAccessoireDTO().accessoireId == accDto.accessoireId) {
-                            node = accNode;
-                            break;
-                        }
-                    }
-
                     AccessoireTreeNode accessoireTreeNode = (AccessoireTreeNode) arbreComposantesChalet
                             .getLastSelectedPathComponent();
                     TreePath treePath = arbreComposantesChalet.getNextMatch(
                             ((Accessoire.AccessoireDTO) evt.getOldValue()).accessoireNom, 0, Position.Bias.Forward);
                     if (treePath != null) {
-                        System.out.println(treePath);
+                        // System.out.println(treePath);
                         accessoireTreeNode.setUserObject(accDto);
                         accessoireTreeNode.setAccessoireDTO(accDto);
                         accessoireTreeNode.setNom(accDto.accessoireNom);
@@ -137,14 +130,14 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
 
         this.mainWindow.getControleur().addPropertyChangeListener("supprimerAccessoire", new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                System.out.println("Retirer Accessoire " + ((Accessoire.AccessoireDTO) evt.getNewValue()).accessoireNom);
+                // System.out.println("Retirer Accessoire " + ((Accessoire.AccessoireDTO) evt.getNewValue()).accessoireNom);
                 mainWindow.showChaletTable();
             }
         });
 
         this.mainWindow.getControleur().addPropertyChangeListener("ajouterAccessoire", new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                System.out.println("ajouterAccessoire");
+                // System.out.println("ajouterAccessoire");
                 Accessoire.AccessoireDTO accDto = (Accessoire.AccessoireDTO) evt.getNewValue();
                 AccessoireTreeNode accessoireNode = new AccessoireTreeNode(accDto);
 
@@ -230,7 +223,7 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                     return;
 
                 if (path.getPath().length == 1) {
-                    System.out.println("Projet");
+                    // System.out.println("Projet");
                     mainWindow.showChaletTable();
                     return;
                 }
@@ -259,32 +252,32 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                 if (evt.getClickCount() == 2 && evt.getButton() == java.awt.event.MouseEvent.BUTTON1) {
                     switch (path.getLastPathComponent().toString()) {
                         case _STRING_MUR_FACADE:
-                            System.out.println("Mur Facade");
-                            mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Facade);
+                            // System.out.println("Mur Facade");
+                            mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Facade);
                             break;
                         case _STRING_MUR_ARRIERE:
-                            System.out.println("Mur Arriere");
-                            mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Arriere);
+                            // System.out.println("Mur Arriere");
+                            mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Arriere);
                             break;
                         case _STRING_MUR_DROIT:
-                            System.out.println("Mur droit");
-                            mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Droite);
+                            // System.out.println("Mur droit");
+                            mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Droite);
                             break;
                         case _STRING_MUR_GAUCHE:
-                            System.out.println("Mur gauche");
-                            mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Gauche);
+                            // System.out.println("Mur gauche");
+                            mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Gauche);
                             break;
                         case _STRING_PANNEAU_SUPERIEUR:
-                            System.out.println("Panneau supérieur");
+                            // System.out.println("Panneau supérieur");
                             break;
                         case _STRING_RALLONGE_VERTICALE:
-                            System.out.println("Rallonge verticale");
+                            // System.out.println("Rallonge verticale");
                             break;
                         case _STRING_PIGNON_DROIT:
-                            System.out.println("Pignon droit");
+                            // System.out.println("Pignon droit");
                             break;
                         case _STRING_PIGNON_GAUCHE:
-                            System.out.println("Pignon gauche");
+                            // System.out.println("Pignon gauche");
                             break;
                     }
 
@@ -300,12 +293,12 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
         return new FocusListener() {
             @Override
             public void focusGained(java.awt.event.FocusEvent evt) {
-                System.out.println("focusGained");
+                // System.out.println("focusGained");
             }
 
             @Override
             public void focusLost(java.awt.event.FocusEvent evt) {
-                System.out.println("focusLost");
+                // System.out.println("focusLost");
                 // arbreComposantesChalet.clearSelection();
             }
         };

@@ -1,6 +1,5 @@
 package ca.ulaval.glo2004.gui.components;
 
-import java.util.UUID;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 

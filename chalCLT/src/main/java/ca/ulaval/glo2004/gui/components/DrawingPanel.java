@@ -4,53 +4,36 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
-import java.util.List;
 import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Point;
 
-import ca.ulaval.glo2004.domaine.Accessoire;
-import ca.ulaval.glo2004.domaine.Chalet;
-import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
-import ca.ulaval.glo2004.domaine.TypeAccessoire;
-import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.Rasterizer;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
-import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.gui.MainWindow;
 
 public class DrawingPanel extends javax.swing.JPanel {
     MainWindow mainWindow;
     Afficheur afficheur;
-    Scene scene;
-    Rasterizer rasterizer;
+    
     Object[][] btns = new Object[][] {
-            { "Dessus", TypeDeVue.Dessus.toString(), null },
-            { "Façade", TypeDeVue.Facade.toString(), null },
-            { "Arrière", TypeDeVue.Arriere.toString(), null },
-            { "Droite", TypeDeVue.Droite.toString(), null },
-            { "Gauche", TypeDeVue.Gauche.toString(), null },
+            { "Dessus", Afficheur.TypeDeVue.Dessus.toString(), null },
+            { "Façade", Afficheur.TypeDeVue.Facade.toString(), null },
+            { "Arrière", Afficheur.TypeDeVue.Arriere.toString(), null },
+            { "Droite", Afficheur.TypeDeVue.Droite.toString(), null },
+            { "Gauche", Afficheur.TypeDeVue.Gauche.toString(), null },
     };
-    TypeDeVue vueActive = TypeDeVue.Dessus;
+    Afficheur.TypeDeVue vueActive = Afficheur.TypeDeVue.Dessus;
     javax.swing.JToolBar barreOutils;
 
     public DrawingPanel(MainWindow mainWindow) {
+
         this.mainWindow = mainWindow;
-        //this.afficheur = new Afficheur(this);
-        this.scene = new Scene();
-        this.rasterizer = new Rasterizer(this.scene);
-
-        this.scene.getLight().setPosition(new Vector3D(getWidth(), 200, 0));
-        this.scene.getCamera().setDirection(TypeDeVue.vueDessus());
-        this.scene.getCamera().setScale(2.01);
-
+        this.afficheur = new Afficheur(this.mainWindow.getControleur(),this.getSize());
         initComponents();
         rechargerAffichage();
     }
@@ -59,13 +42,13 @@ public class DrawingPanel extends javax.swing.JPanel {
         return mainWindow;
     }
 
-    public Scene getScene() {
-        return scene;
-    }
+    // public Scene getScene() {
+    //     return scene;
+    // }
 
-    public Rasterizer getRasterizer() {
-        return rasterizer;
-    }
+    // public Rasterizer getRasterizer() {
+    //     return rasterizer;
+    // }
 
     private void initComponents() {
         setBackground(java.awt.Color.BLACK);
@@ -104,11 +87,11 @@ public class DrawingPanel extends javax.swing.JPanel {
 
             btn.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    System.out.println("Vue de " + label + " activée");
+                    // System.out.println("Vue de " + label + " activée");
                     for (Object[] obj : btns) {
                         if (obj[2] == btn) {
                             btn.setBackground(activeBtnColor);
-                            vueActive = TypeDeVue.valueOf((String) obj[1]);
+                            vueActive = Afficheur.TypeDeVue.valueOf((String) obj[1]);
                             changerVue(vueActive);
                         } else {
                             ((javax.swing.JButton) obj[2]).setBackground(null);
@@ -164,7 +147,7 @@ public class DrawingPanel extends javax.swing.JPanel {
 
             @Override
             public void mouseWheelMoved(java.awt.event.MouseWheelEvent e) {
-                Camera camera = scene.getCamera();
+                Camera camera = afficheur.getScene().getCamera();
 
                 if (e.getPreciseWheelRotation() < 0) {
                     camera.zoomInDirection(e.getPoint(), getSize());
@@ -182,14 +165,14 @@ public class DrawingPanel extends javax.swing.JPanel {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 grabFocus();
-                System.out.println("Mouse Clicked");
+                // System.out.println("Mouse Clicked");
 
-                TriangleMesh mesh = rasterizer.getMeshFromPoint(e.getPoint());
-                rasterizer.deselectAllMeshes();
+                TriangleMesh mesh = afficheur.getRasterizer().getMeshFromPoint(e.getPoint());
+                afficheur.getRasterizer().deselectAllMeshes();
 
                 if (mesh != null) {
                     // System.out.println(mesh.getID());
-                    System.out.println(mesh.getHandle());
+                    // System.out.println(mesh.getHandle());
                     mesh.setSelected(true);
                 }
 
@@ -234,13 +217,13 @@ public class DrawingPanel extends javax.swing.JPanel {
                         public void mousePressed(java.awt.event.MouseEvent e) {
                             isDragging = true;
                             initialPoint = e.getPoint();
-                            initialDragCamPosition = scene.getCamera().getPosition();
-                            initialDragCamDirection = scene.getCamera().getDirection();
+                            initialDragCamPosition = afficheur.getScene().getCamera().getPosition();
+                            initialDragCamDirection = afficheur.getScene().getCamera().getDirection();
                         }
 
                         @Override
                         public void mouseReleased(java.awt.event.MouseEvent e) {
-                            System.out.println("Mouse Released " + e.getPoint().toString());
+                            // System.out.println("Mouse Released " + e.getPoint().toString());
                             isDragging = false;
                             initialPoint = null;
                             initialDragCamPosition = null;
@@ -259,8 +242,8 @@ public class DrawingPanel extends javax.swing.JPanel {
 
                     addMouseListener(mouseListener);
                     isDragging = true;
-                    initialDragCamDirection = scene.getCamera().getDirection();
-                    initialDragCamPosition = scene.getCamera().getPosition();
+                    initialDragCamDirection = afficheur.getScene().getCamera().getDirection();
+                    initialDragCamPosition = afficheur.getScene().getCamera().getPosition();
                     initialPoint = e.getPoint();
                     initialized = true;
                 }
@@ -271,6 +254,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                     int diffY = e.getPoint().y - initialPoint.y;
 
                     if (e.isShiftDown()) {
+                        // todo DO NOT DELETE
                         // Rotating instead of translate
                         // Convert the diffX and diffY to radians
                         // double rotateStep = Math.toRadians(1);
@@ -284,9 +268,9 @@ public class DrawingPanel extends javax.swing.JPanel {
                         //     direction.x = -Math.PI / 2;
                         // }
 
-                        // scene.getCamera().setDirection(direction);
+                        // this.afficheur.getScene().getCamera().setDirection(direction);
                     } else {
-                        scene.getCamera().setPosition(initialDragCamPosition.add(new Vector3D(diffX, diffY, 0)));
+                        afficheur.getScene().getCamera().setPosition(initialDragCamPosition.add(new Vector3D(diffX, diffY, 0)));
                     }
 
                     repaint();
@@ -314,8 +298,10 @@ public class DrawingPanel extends javax.swing.JPanel {
 
             @Override
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                double rotateStep = Math.toRadians(5);
-                Camera camera = scene.getCamera();
+
+                // todo DO NOT DELETE
+                // double rotateStep = Math.toRadians(5);
+                // Camera camera = afficheur.getScene().getCamera();
 
                 // switch (evt.getKeyCode()) {
                 //     case java.awt.event.KeyEvent.VK_LEFT:
@@ -362,45 +348,45 @@ public class DrawingPanel extends javax.swing.JPanel {
                 //         break;
                 //     case java.awt.event.KeyEvent.VK_EQUALS:
                 //         if (evt.isShiftDown()) {
-                //             scene.getLight().setIntensity(scene.getLight().getIntensity() + 0.1);
+                //             this.afficheur.getScene().getLight().setIntensity(this.afficheur.getScene().getLight().getIntensity() + 0.1);
                 //         } else {
                 //             camera.zoomInDirection(new java.awt.Point(getWidth() / 2, getHeight() / 2), getSize());
                 //         }
                 //         break;
                 //     case java.awt.event.KeyEvent.VK_MINUS:
                 //         if (evt.isShiftDown()) {
-                //             scene.getLight().setIntensity(scene.getLight().getIntensity() - 0.1);
+                //             this.afficheur.getScene().getLight().setIntensity(this.afficheur.getScene().getLight().getIntensity() - 0.1);
                 //         } else {
                 //             camera.zoomOutDirection(new java.awt.Point(getWidth() / 2, getHeight() / 2), getSize());
                 //         }
                 //         break;
                 //     case java.awt.event.KeyEvent.VK_R:
-                //         scene.getCamera().setDirection(new Vector3D(0, 0, 0));
-                //         scene.getCamera().setPosition(new Vector3D(0, 0, -1000));
+                //         this.afficheur.getScene().getCamera().setDirection(new Vector3D(0, 0, 0));
+                //         this.afficheur.getScene().getCamera().setPosition(new Vector3D(0, 0, -1000));
                 //         break;
                 //     case java.awt.event.KeyEvent.VK_A:
-                //         scene.getLight().setPosition(scene.getLight().getPosition().add(new Vector3D(-10, 0, 0)));
+                //         this.afficheur.getScene().getLight().setPosition(this.afficheur.getScene().getLight().getPosition().add(new Vector3D(-10, 0, 0)));
                 //         break;
                 //     case java.awt.event.KeyEvent.VK_D:
-                //         scene.getLight().setPosition(scene.getLight().getPosition().add(new Vector3D(10, 0, 0)));
+                //         this.afficheur.getScene().getLight().setPosition(this.afficheur.getScene().getLight().getPosition().add(new Vector3D(10, 0, 0)));
                 //         break;
                 //     case java.awt.event.KeyEvent.VK_W:
-                //         scene.getLight().setPosition(scene.getLight().getPosition().add(new Vector3D(0, 10, 0)));
+                //         this.afficheur.getScene().getLight().setPosition(this.afficheur.getScene().getLight().getPosition().add(new Vector3D(0, 10, 0)));
                 //         break;
                 //     case java.awt.event.KeyEvent.VK_S:
-                //         scene.getLight().setPosition(scene.getLight().getPosition().add(new Vector3D(0, -10, 0)));
+                //         this.afficheur.getScene().getLight().setPosition(this.afficheur.getScene().getLight().getPosition().add(new Vector3D(0, -10, 0)));
                 //         break;
                 //     case java.awt.event.KeyEvent.VK_Q:
-                //         scene.getLight().setPosition(scene.getLight().getPosition().add(new Vector3D(0, 0, 10)));
+                //         this.afficheur.getScene().getLight().setPosition(this.afficheur.getScene().getLight().getPosition().add(new Vector3D(0, 0, 10)));
                 //         break;
                 //     case java.awt.event.KeyEvent.VK_E:
-                //         scene.getLight().setPosition(scene.getLight().getPosition().add(new Vector3D(0, 0, -10)));
+                //         this.afficheur.getScene().getLight().setPosition(this.afficheur.getScene().getLight().getPosition().add(new Vector3D(0, 0, -10)));
                 //         break;
                 //     case java.awt.event.KeyEvent.VK_P:
                 //         if (evt.isShiftDown()) {
-                //             scene.getLight().setAmbientIntensity(scene.getLight().getAmbientIntensity() - 0.1);
+                //             this.afficheur.getScene().getLight().setAmbientIntensity(this.afficheur.getScene().getLight().getAmbientIntensity() - 0.1);
                 //         } else {
-                //             scene.getLight().setAmbientIntensity(scene.getLight().getAmbientIntensity() + 0.1);
+                //             this.afficheur.getScene().getLight().setAmbientIntensity(this.afficheur.getScene().getLight().getAmbientIntensity() + 0.1);
                 //         }
                 // }
 
@@ -412,167 +398,23 @@ public class DrawingPanel extends javax.swing.JPanel {
     @Override
     public void paintComponent(java.awt.Graphics g) {
         super.paintComponent(g);
-        this.rasterizer.draw(g, getSize());
+        this.afficheur.draw(g, getSize());
     }
 
-    public void changerVue(TypeDeVue vue) {
-        this.vueActive = vue;
-
-        if (vueActive == TypeDeVue.Dessus) {
-            scene.getCamera().setDirection(TypeDeVue.vueDessus());
-        } else if (vueActive == TypeDeVue.Facade) {
-            scene.getCamera().setDirection(TypeDeVue.vueFacade());
-        } else if (vueActive == TypeDeVue.Arriere) {
-            scene.getCamera().setDirection(TypeDeVue.vueArriere());
-        } else if (vueActive == TypeDeVue.Droite) {
-            scene.getCamera().setDirection(TypeDeVue.vueDroite());
-        } else if (vueActive == TypeDeVue.Gauche) {
-            scene.getCamera().setDirection(TypeDeVue.vueGauche());
-        }
-
-        mainWindow.menu.activerVue(vueActive);
+    public void changerVue(Afficheur.TypeDeVue vue) {
+        afficheur.changerVue(vue);
+        mainWindow.menu.activerVue(afficheur.getVueActive());
         updateToolbarBtns();
         invalidate();
         repaint();
     }
 
+
     public void rechargerAffichage() {
-        Chalet.ChaletDTO chaletDTO = this.mainWindow.getControleur().getChalet();
-        PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = this.mainWindow.getControleur()
-                .getPreferencesUtilisateur();
-        scene.getConfiguration().setShowGridXY(preferencesUtilisateurDTO.afficherGrille);
-        scene.getConfiguration().setShowGridYZ(preferencesUtilisateurDTO.afficherGrille);
-        scene.getConfiguration().setShowGridXZ(preferencesUtilisateurDTO.afficherGrille);
-        scene.clearMeshes();
-
-        TriangleMesh[] meshes = PanelHelper.generateMeshMurs(chaletDTO.largeur, chaletDTO.hauteur, chaletDTO.longueur,
-                chaletDTO.epaisseurMur);
-
-        List<Accessoire.AccessoireDTO> accessoires = this.mainWindow.getControleur().getAccessoires();
-
-        for (Accessoire.AccessoireDTO accessoireDTO : accessoires) {
-            TypeMur typeMur = accessoireDTO.typeMur;
-
-            TriangleMeshGroup accMesh = null;
-
-            if (accessoireDTO.accessoireType == TypeAccessoire.Fenetre) {
-                accMesh = PanelHelper.buildWindow(accessoireDTO.dimensions[0], accessoireDTO.dimensions[1],
-                        new Vector3D(0, 0, 0), 2);
-            } else if (accessoireDTO.accessoireType == TypeAccessoire.Porte) {
-                accMesh = PanelHelper.buildDoor(accessoireDTO.dimensions[0], accessoireDTO.dimensions[1],
-                        new Vector3D(0, 0, 0), 4);
-
-                System.out.println((accMesh.getBounding()[1].y) + " "
-                        + (chaletDTO.hauteur - accMesh.getHeight() - chaletDTO.margeAccessoire));
-
-            }
-
-            double margeAccessoire = mainWindow.getControleur().getChalet().margeAccessoire;
-            switch (typeMur) {
-                case Facade:
-
-                    // Moving the door mesh to the top left corner of the wall
-                    accMesh = accMesh.translate(meshes[0].getCenter());
-                    accMesh = accMesh.translate(new Vector3D(meshes[0].getWidth() / 2 - accMesh.getWidth(),
-                            -meshes[0].getHeight() / 2, -chaletDTO.epaisseurMur));
-                    accMesh = accMesh.translate(new Vector3D(-margeAccessoire - accessoireDTO.position[0],
-                            margeAccessoire + accessoireDTO.position[1], 0));
-                    if (accessoireDTO.accessoireType == TypeAccessoire.Porte) {
-                        accMesh = accMesh.translate(new Vector3D(0,
-                                chaletDTO.hauteur - accMesh.getHeight() - chaletDTO.margeAccessoire, 0));
-                    }
-
-                    break;
-                case Arriere:
-
-                    accMesh = accMesh.rotateY(Math.PI);
-                    accMesh = accMesh.translate(meshes[1].getCenter());
-                    if (accessoireDTO.accessoireType == TypeAccessoire.Fenetre) {
-                        accMesh = accMesh.translate(new Vector3D(0, 0, -accMesh.getDepth() - 1));
-                    }
-                    accMesh = accMesh.translate(new Vector3D(
-                            -meshes[1].getWidth() / 2 + accMesh.getWidth() / 2 + margeAccessoire
-                                    + accessoireDTO.position[0],
-                            -meshes[1].getHeight() / 2 + accMesh.getHeight() / 2 + margeAccessoire
-                                    + accessoireDTO.position[1],
-                            chaletDTO.epaisseurMur + 2));
-                    if (accessoireDTO.accessoireType == TypeAccessoire.Porte) {
-                        accMesh = accMesh.translate(new Vector3D(0,
-                                chaletDTO.hauteur - accMesh.getHeight() - chaletDTO.margeAccessoire, 0));
-                    }
-                    break;
-                case Gauche:
-
-                    accMesh = accMesh.rotateY(-Math.PI / 2);
-                    accMesh = accMesh.translate(meshes[3].getCenter());
-                    if (accessoireDTO.accessoireType == TypeAccessoire.Fenetre) {
-                        accMesh = accMesh.translate(new Vector3D(-accMesh.getWidth() - 1, 0, 0));
-                    }
-                    accMesh = accMesh.translate(new Vector3D(chaletDTO.epaisseurMur + 2,
-                            -meshes[3].getHeight() / 2 + accMesh.getHeight() / 2 + margeAccessoire
-                                    + accessoireDTO.position[1],
-                            meshes[3].getDepth() / 2 - accMesh.getDepth() / 2 - margeAccessoire
-                                    - accessoireDTO.position[0]));
-                    if(accessoireDTO.accessoireType == TypeAccessoire.Porte){
-                        accMesh = accMesh.translate(new Vector3D(0,chaletDTO.hauteur - accMesh.getHeight() - chaletDTO.margeAccessoire,0));
-                    }
-                    break;
-                case Droit:
-
-                    accMesh = accMesh.rotateY(Math.PI / 2);
-                    accMesh = accMesh.translate(meshes[2].getCenter());
-                    if (accessoireDTO.accessoireType == TypeAccessoire.Fenetre) {
-                        accMesh = accMesh.translate(new Vector3D(accMesh.getWidth() + 1, 0, 0));
-                    }
-                    accMesh = accMesh.translate(new Vector3D(-chaletDTO.epaisseurMur - 2,
-                            -meshes[2].getHeight() / 2 + accMesh.getHeight() / 2 + margeAccessoire
-                                    + accessoireDTO.position[1],
-                            -meshes[2].getDepth() / 2 + accMesh.getDepth() / 2 + margeAccessoire
-                                    + accessoireDTO.position[0]));
-                    if(accessoireDTO.accessoireType == TypeAccessoire.Porte){
-                        accMesh = accMesh.translate(new Vector3D(0,chaletDTO.hauteur - accMesh.getHeight() - chaletDTO.margeAccessoire,0));
-                    }
-                    break;
-            }
-
-            this.scene.addMeshes(accMesh.getMeshes());
-            repaint();
-        }
-
-        meshes[0].getMaterial().setColor(java.awt.Color.RED);
-        meshes[1].getMaterial().setColor(java.awt.Color.BLUE);
-        meshes[2].getMaterial().setColor(java.awt.Color.GREEN);
-        meshes[3].getMaterial().setColor(java.awt.Color.YELLOW);
-
-        scene.addMeshes(meshes);
+        
+        afficheur.rechargerAffichage();
         repaint();
     }
 
-    public static enum TypeDeVue {
-        Dessus,
-        Facade,
-        Arriere,
-        Droite,
-        Gauche;
-
-        public static Vector3D vueDessus() {
-            return new Vector3D(-Math.PI / 2, Math.PI, 0);
-        }
-
-        public static Vector3D vueFacade() {
-            return new Vector3D(0, Math.PI, 0);
-        }
-
-        public static Vector3D vueArriere() {
-            return new Vector3D(0, 0, 0);
-        }
-
-        public static Vector3D vueDroite() {
-            return new Vector3D(0, Math.PI / 2, 0);
-        }
-
-        public static Vector3D vueGauche() {
-            return new Vector3D(0, -Math.PI / 2, 0);
-        }
-    }
+    
 }

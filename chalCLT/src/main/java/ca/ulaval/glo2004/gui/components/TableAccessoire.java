@@ -46,8 +46,8 @@ public class TableAccessoire extends JTable {
         this.getModel().addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(javax.swing.event.TableModelEvent evt) {
-                System.out.println("Table changed" + " " + evt.getFirstRow() + " " + evt.getLastRow() + " "
-                        + evt.getColumn() + " " + getValueAt(evt.getFirstRow(), evt.getColumn()));
+                // System.out.println("Table changed" + " " + evt.getFirstRow() + " " + evt.getLastRow() + " "
+                //         + evt.getColumn() + " " + getValueAt(evt.getFirstRow(), evt.getColumn()));
             
                 Accessoire.AccessoireDTO accessoireDTO = mainWindow.getControleur().getAccessoire(dtoAcessoire.accessoireId);
 

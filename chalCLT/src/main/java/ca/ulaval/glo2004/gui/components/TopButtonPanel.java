@@ -1,14 +1,11 @@
 package ca.ulaval.glo2004.gui.components;
 
-import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.domaine.TypeAccessoire;
 import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.gui.MainWindow;
+import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -102,8 +99,8 @@ public class TopButtonPanel extends JPanel {
         creerFenetreBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DrawingPanel.TypeDeVue vueActive = mainWindow.drawingPanel.vueActive;
-                if (vueActive == DrawingPanel.TypeDeVue.Dessus) {
+                Afficheur.TypeDeVue vueActive = mainWindow.drawingPanel.vueActive;
+                if (vueActive == Afficheur.TypeDeVue.Dessus) {
                     return;
                 }
 
@@ -137,8 +134,8 @@ public class TopButtonPanel extends JPanel {
         creerPorteBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DrawingPanel.TypeDeVue vueActive = mainWindow.drawingPanel.vueActive;
-                if (vueActive == DrawingPanel.TypeDeVue.Dessus) {
+                Afficheur.TypeDeVue vueActive = mainWindow.drawingPanel.vueActive;
+                if (vueActive == Afficheur.TypeDeVue.Dessus) {
                     return;
                 }
 
@@ -171,64 +168,8 @@ public class TopButtonPanel extends JPanel {
         supprimerAccessoireBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(mainWindow.getAccessoiresSelectionnees().size());
+                // System.out.println(mainWindow.getAccessoiresSelectionnees().size());
                 mainWindow.deleteAllAccessoiresSelectionnees();
-                
-                // DrawingPanel.TypeDeVue vueActive = mainWindow.drawingPanel.vueActive;
-                // if (vueActive == DrawingPanel.TypeDeVue.Dessus) {
-                //     return;
-                // }
-                // TreePath treePath = mainWindow.arbreDesComposantesChalet.arbreComposantesChalet.getSelectionPath();
-                // if (treePath != null) {
-                //     DefaultMutableTreeNode node = (DefaultMutableTreeNode) mainWindow.arbreDesComposantesChalet.arbreComposantesChalet.getLastSelectedPathComponent();
-
-                //     if (node != null) {
-                //         if (node.getUserObject() instanceof Accessoire.AccessoireDTO) {
-                //             Accessoire.AccessoireDTO accDto = (Accessoire.AccessoireDTO) node.getUserObject();
-                //             mainWindow.getControleur().supprimerAccessoire(accDto.typeMur, accDto.accessoireId);
-                //             mainWindow.drawingPanel.rechargerAffichage();
-                //             mainWindow.showChaletTable();
-                //             // mainWindow.arbreDesComposantesChalet.
-                //             // DefaultTreeModel model = (DefaultTreeModel) mainWindow.arbreDesComposantesChalet.arbreComposantesChalet.getModel();
-                //             //mainWindow.arbreDesComposantesChalet.treeRenderer.invalidate();
-                //             // node.removeFromParent();
-                //             // model.removeNodeFromParent(node);
-                //             // mainWindow.arbreDesComposantesChalet.arbreComposantesChalet.setModel(model);
-                //             // mainWindow.arbreDesComposantesChalet.arbreComposantesChalet.removeSelectionPath(treePath);
-                            
-                //             // node.removeFromParent();
-                //             // DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-                //             // model.reload(root);
-
-                //             // mainWindow.arbreDesComposantesChalet.invalidate();
-                            
-                //             //mainWindow.arbreDesComposantesChalet.treeRenderer.repaint();
-                            
-                //             // mainWindow.arbreDesComposantesChalet.rechargerArbre();
-
-                //         }
-                //     }
-                // }
-                // // Mapping TypeDeVue -> TypeMur
-                // TypeMur typeMur = null;
-
-                // switch (vueActive) {
-                //     case Arriere:
-                //         typeMur = TypeMur.Arriere;
-                //         break;
-                //     case Facade:
-                //         typeMur = TypeMur.Facade;
-                //         break;
-                //     case Gauche:
-                //         typeMur = TypeMur.Gauche;
-                //         break;
-                //     case Droite:
-                //         typeMur = TypeMur.Droit;
-                //         break;
-                //     default:
-                //         return;
-                // }
-
             }
         });
         PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = mainWindow.getControleur()

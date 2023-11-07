@@ -43,8 +43,8 @@ public class TableChalet extends JTable {
         this.getModel().addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(javax.swing.event.TableModelEvent evt) {
-                System.out.println("Table changed" + " " + evt.getFirstRow() + " " + evt.getLastRow() + " "
-                        + evt.getColumn() + " " + getValueAt(evt.getFirstRow(), evt.getColumn()));
+                // System.out.println("Table changed" + " " + evt.getFirstRow() + " " + evt.getLastRow() + " "
+                //         + evt.getColumn() + " " + getValueAt(evt.getFirstRow(), evt.getColumn()));
 
                 Chalet.ChaletDTO chaletDTO = mainWindow.getControleur().getChalet();
                 chaletDTO.nom = (String) getValueAt(0, 1);
@@ -54,7 +54,7 @@ public class TableChalet extends JTable {
                 chaletDTO.epaisseurMur = ImperialDimension.parseFromString((String) getValueAt(4, 1).toString())
                         .toInches();
                 chaletDTO.angleToit = Double.parseDouble(getValueAt(5, 1).toString());
-                chaletDTO.sensToit = TypeSensToit.valueOf((String) getValueAt(6, 1));
+                chaletDTO.sensToit = TypeSensToit.valueOf(getValueAt(6, 1).toString());
                 chaletDTO.margeAccessoire = ImperialDimension.parseFromString((String) getValueAt(7, 1).toString()).toInches();
 
                 mainWindow.getControleur().setChalet(chaletDTO);
@@ -91,12 +91,12 @@ public class TableChalet extends JTable {
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        System.out.println("Setting value at " + rowIndex + "," + columnIndex + " to " + aValue
-                + " (an instance of " + aValue.getClass() + ")");
+        // System.out.println("Setting value at " + rowIndex + "," + columnIndex + " to " + aValue
+        //         + " (an instance of " + aValue.getClass() + ")");
 
         if (rowIndex == 1 || rowIndex == 2 || rowIndex == 3 || rowIndex == 4) {
             ImperialDimension dim = ImperialDimension.parseFromString((String) aValue);
-            System.out.println("Dimension: " + dim);
+            // System.out.println("Dimension: " + dim);
             if (dim == null) {
                 return;
             }

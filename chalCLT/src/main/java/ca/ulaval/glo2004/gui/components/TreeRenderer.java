@@ -3,21 +3,15 @@ package ca.ulaval.glo2004.gui.components;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.util.UUID;
-
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.TypeAccessoire;
 import ca.ulaval.glo2004.gui.MainWindow;
-import difflib.Delta.TYPE;
+
 
 public class TreeRenderer extends DefaultTreeCellRenderer {
 
@@ -83,7 +77,7 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
                     } else {
                         setIcon(porteIcon);
                     }
-                    System.out.println("changement de nom " + accNode.getAccessoireDTO());
+                    // System.out.println("changement de nom " + accNode.getAccessoireDTO());
 
                     Accessoire.AccessoireDTO accDto = mainWindow.getControleur().getAccessoire(accNode.getAccessoireDTO().accessoireId);                    
                     this.setText(accDto.accessoireNom);

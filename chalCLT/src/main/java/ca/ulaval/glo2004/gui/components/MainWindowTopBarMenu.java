@@ -1,6 +1,7 @@
 package ca.ulaval.glo2004.gui.components;
 
 import ca.ulaval.glo2004.gui.MainWindow;
+import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 
 public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     private javax.swing.JMenu affichageMenu;
@@ -315,23 +316,23 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     }
 
     private void vueHautItemActionPerformed(java.awt.event.ActionEvent evt) {
-        mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Dessus);
+        mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Dessus);
     }
 
     private void vueFacadeItemActionPerformed(java.awt.event.ActionEvent evt) {
-        mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Facade);
+        mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Facade);
     }
 
     private void vueArriereItemActionPerformed(java.awt.event.ActionEvent evt) {
-        mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Arriere);
+        mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Arriere);
     }
 
     private void vueDroitItemActionPerformed(java.awt.event.ActionEvent evt) {
-        mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Droite);
+        mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Droite);
     }
 
     private void vueGaucheItemActionPerformed(java.awt.event.ActionEvent evt) {
-        mainWindow.drawingPanel.changerVue(DrawingPanel.TypeDeVue.Gauche);
+        mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Gauche);
     }
 
     private void afficherGrilleItemActionPerformed(java.awt.event.ActionEvent evt) {
@@ -350,8 +351,8 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         // TODO add your handling code here:
     }
 
-    public void activerVue(DrawingPanel.TypeDeVue vue) {
-        System.out.println("activerVue");
+    public void activerVue(Afficheur.TypeDeVue vue) {
+        // System.out.println("activerVue");
         // adhering to DRY, one switch at a time
         vueHautItem.setSelected(false);
         vueFacadeItem.setSelected(false);
