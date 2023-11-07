@@ -99,7 +99,7 @@ public class TopButtonPanel extends JPanel {
         creerFenetreBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Afficheur.TypeDeVue vueActive = mainWindow.drawingPanel.vueActive;
+                Afficheur.TypeDeVue vueActive = mainWindow.drawingPanel.afficheur.getVueActive();
                 if (vueActive == Afficheur.TypeDeVue.Dessus) {
                     return;
                 }
@@ -134,7 +134,7 @@ public class TopButtonPanel extends JPanel {
         creerPorteBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Afficheur.TypeDeVue vueActive = mainWindow.drawingPanel.vueActive;
+                Afficheur.TypeDeVue vueActive = mainWindow.drawingPanel.afficheur.getVueActive();
                 if (vueActive == Afficheur.TypeDeVue.Dessus) {
                     return;
                 }

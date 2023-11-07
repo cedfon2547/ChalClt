@@ -27,7 +27,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             { "Droite", Afficheur.TypeDeVue.Droite.toString(), null },
             { "Gauche", Afficheur.TypeDeVue.Gauche.toString(), null },
     };
-    Afficheur.TypeDeVue vueActive = Afficheur.TypeDeVue.Dessus;
+    //Afficheur.TypeDeVue vueActive = Afficheur.TypeDeVue.Dessus;
     javax.swing.JToolBar barreOutils;
 
     public DrawingPanel(MainWindow mainWindow) {
@@ -91,8 +91,8 @@ public class DrawingPanel extends javax.swing.JPanel {
                     for (Object[] obj : btns) {
                         if (obj[2] == btn) {
                             btn.setBackground(activeBtnColor);
-                            vueActive = Afficheur.TypeDeVue.valueOf((String) obj[1]);
-                            changerVue(vueActive);
+                            afficheur.setVueActive(Afficheur.TypeDeVue.valueOf((String) obj[1]));
+                            changerVue(afficheur.getVueActive());
                         } else {
                             ((javax.swing.JButton) obj[2]).setBackground(null);
                         }
@@ -103,7 +103,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                 }
             });
 
-            if (btn.getName() == vueActive.toString())
+            if (btn.getName() == afficheur.getVueActive().toString())
                 btn.setBackground(activeBtnColor);
 
             barreOutils.add(btn);
@@ -135,7 +135,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             final String name = (String) obj[1];
             final javax.swing.JButton btn = (JButton) obj[2];
 
-            if (name == vueActive.toString())
+            if (name == afficheur.getVueActive().toString())
                 btn.setBackground(Color.LIGHT_GRAY);
             else
                 btn.setBackground(null);
