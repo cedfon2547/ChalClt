@@ -1,6 +1,5 @@
 package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +8,6 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 
 public class Triangle {
     private Vector3D vertex1, vertex2, vertex3; // The vertices of the triangle
-    private Color color = new Color(0, 0, 0); // The color of the triangle
     
     public Triangle(Vector3D vertex1, Vector3D vertex2, Vector3D vertex3) {
         this.vertex1 = vertex1;
