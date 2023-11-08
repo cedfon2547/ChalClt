@@ -6,10 +6,11 @@ import java.util.List;
 
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 
 public class Scene {
     private SceneConfiguration configuration = new SceneConfiguration();
-    private ArrayList<TriangleMesh> meshes = new ArrayList<TriangleMesh>();
+    private ArrayList<TriangleMeshGroup> meshes = new ArrayList<TriangleMeshGroup>();
     // private ArrayList<TriangleMeshGroup> meshesGroups = new ArrayList<TriangleMeshGroup>();
     private Light light = new Light();
     private Camera camera = new Camera();
@@ -18,26 +19,26 @@ public class Scene {
     }
 
     public Scene(ArrayList<TriangleMesh> objects, Light light, Camera camera) {
-        this.meshes = objects;
         this.light = light;
         this.camera = camera;
+        
     }
 
     public SceneConfiguration getConfiguration() {
         return configuration;
     }
 
-    public ArrayList<TriangleMesh> getMeshes() {
+    public ArrayList<TriangleMeshGroup> getMeshes() {
         return meshes;
     }
 
-    public TriangleMesh getMesh(int index) {
+    public TriangleMeshGroup getMesh(int index) {
         return meshes.get(index);
     }
 
-    public TriangleMesh getMesh(String id) {
-        for (TriangleMesh mesh : meshes) {
-            if (mesh.ID.equals(id)) {
+    public TriangleMeshGroup getMesh(String id) {
+        for (TriangleMeshGroup mesh : meshes) {
+            if (mesh.getID().equals(id)) {
                 return mesh;
             }
         }
@@ -52,27 +53,27 @@ public class Scene {
         return camera;
     }
 
-    public void addMesh(TriangleMesh mesh) {
+    public void addMesh(TriangleMeshGroup mesh) {
         meshes.add(mesh);
     }
 
-    public void addMeshes(List<TriangleMesh> meshes) {
-        for (TriangleMesh mesh : meshes) {
+    public void addMeshes(List<TriangleMeshGroup> meshes) {
+        for (TriangleMeshGroup mesh : meshes) {
             this.meshes.add(mesh);
         }
     }
 
-    public void addMeshes(TriangleMesh[] meshes) {
-        for (TriangleMesh mesh : meshes) {
+    public void addMeshes(TriangleMeshGroup[] meshes) {
+        for (TriangleMeshGroup mesh : meshes) {
             this.meshes.add(mesh);
         }
     }
 
-    public void removeMesh(TriangleMesh mesh) {
+    public void removeMesh(TriangleMeshGroup mesh) {
         meshes.remove(mesh);
     }
 
-    public void removeMeshes(List<TriangleMesh> meshes) {
+    public void removeMeshes(List<TriangleMeshGroup> meshes) {
         meshes.removeAll(meshes);
     }
 
@@ -80,7 +81,7 @@ public class Scene {
         meshes.clear();
     }
 
-    public void removeMeshes(TriangleMesh[] meshes) {
+    public void removeMeshes(TriangleMeshGroup[] meshes) {
         this.removeMeshes(Arrays.asList(meshes));
     }
 
@@ -97,5 +98,13 @@ public class Scene {
         topCamera.setPosition(new Vector3D(0, 0, -1000));
         topCamera.setDirection(new Vector3D(Math.PI / 2, Math.PI, 0));
         setCamera(topCamera);
+    }
+
+    public void setSelected(String id, boolean selected) {
+        for (TriangleMeshGroup mesh : meshes) {
+            if (mesh.getID().equals(id)) {
+                mesh.setSelected(selected);
+            }
+        }
     }
 }

@@ -12,7 +12,6 @@ public class TriangleMesh {
     private String componentHandle = ""; // some indicator of what this mesh represents // sorta dupicate of ID
     protected List<Triangle> triangles;
     private Material material = new Material(); // The material of the object
-    private boolean isSelected = false;
 
     public TriangleMesh(List<Triangle> triangles) {
         this.triangles = triangles;
@@ -69,14 +68,6 @@ public class TriangleMesh {
 
     public void setMaterial(Material material) {
         this.material = material;
-    }
-
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    public void setSelected(boolean isSelected) {
-        this.isSelected = isSelected;
     }
 
     /*

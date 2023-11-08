@@ -15,6 +15,7 @@ import ca.ulaval.glo2004.domaine.TypeAccessoire;
 import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.Rasterizer;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.Triangle;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
@@ -93,6 +94,11 @@ public class Afficheur {
 
         TriangleMesh[] meshes = PanelHelper.generateMeshMurs(chaletDTO.largeur, chaletDTO.hauteur, chaletDTO.longueur,
                 chaletDTO.epaisseurMur);
+
+        List<TriangleMeshGroup> groups = new java.util.ArrayList<TriangleMeshGroup>();
+        for (TriangleMesh mesh : meshes) {
+            groups.add(new TriangleMeshGroup(new TriangleMesh[] { mesh }));
+        }
 
         List<Accessoire.AccessoireDTO> accessoires = this.getControleur().getAccessoires();
 
@@ -181,16 +187,16 @@ public class Afficheur {
                     break;
             }
 
-            this.scene.addMeshes(accMesh.getMeshes());
+            this.scene.addMesh(accMesh);
             //repaint();
         }
-
+        
         meshes[0].getMaterial().setColor(java.awt.Color.RED);
         meshes[1].getMaterial().setColor(java.awt.Color.BLUE);
         meshes[2].getMaterial().setColor(java.awt.Color.GREEN);
         meshes[3].getMaterial().setColor(java.awt.Color.YELLOW);
 
-        scene.addMeshes(meshes);
+        scene.addMeshes(groups);
         //repaint();
     }
 

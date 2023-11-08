@@ -13,6 +13,7 @@ import java.awt.Point;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
 import ca.ulaval.glo2004.gui.MainWindow;
 
@@ -167,13 +168,13 @@ public class DrawingPanel extends javax.swing.JPanel {
                 grabFocus();
                 // System.out.println("Mouse Clicked");
 
-                TriangleMesh mesh = afficheur.getRasterizer().getMeshFromPoint(e.getPoint());
+                TriangleMeshGroup mesh = afficheur.getRasterizer().getMeshFromPoint(e.getPoint());
+                
                 afficheur.getRasterizer().deselectAllMeshes();
 
                 if (mesh != null) {
-                    // System.out.println(mesh.getID());
-                    // System.out.println(mesh.getHandle());
-                    mesh.setSelected(true);
+                    System.out.println(mesh.getID() + " selected");
+                    afficheur.getScene().setSelected(mesh.getID(), true);
                 }
 
                 repaint();

@@ -3,11 +3,14 @@ package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 
 public class TriangleMeshGroup {
+    String ID = UUID.randomUUID().toString();
     ArrayList<TriangleMesh> meshes = new ArrayList<TriangleMesh>();
+    private boolean selected = false;
 
     public TriangleMeshGroup() {
     }
@@ -39,6 +42,18 @@ public class TriangleMeshGroup {
         return null;
     }
 
+    public String getID() {
+        return ID;
+    }
+
+    public boolean getSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
     public void addMesh(TriangleMesh mesh) {
         meshes.add(mesh);
     }
@@ -49,6 +64,10 @@ public class TriangleMeshGroup {
 
     public void setMeshes(ArrayList<TriangleMesh> meshes) {
         this.meshes = meshes;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
     public void clear() {
