@@ -313,6 +313,11 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
 
     private void nouveauProjetItemActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+        mainWindow.getControleur().creeProjet();
+        mainWindow.showChaletTable();
+        mainWindow.drawingPanel.rechargerAffichage();
+        mainWindow.clearAccessoiresSelectionnees();
+
     }
 
     private void vueHautItemActionPerformed(java.awt.event.ActionEvent evt) {

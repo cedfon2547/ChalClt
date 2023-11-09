@@ -111,6 +111,19 @@ public class Controleur {
         this.pcs.firePropertyChange(EventType.SUPPRIMER_ACCESSOIRES, null, accessoires);
     }
 
+    public void creeProjet(){
+        if(this.projectActif != null){
+            fermerProjet();
+        }
+        this.projectActif = new ChalCLTProjet(null);
+        this.pcs.firePropertyChange(EventType.CREE_PROJET, null, this.getChalet());
+    }
+
+    public void fermerProjet(){
+        //TODO
+        
+    }
+
     public void undo() {
         this.undoRedoManager.undo();
     }
@@ -122,6 +135,7 @@ public class Controleur {
     public void addPropertyChangeListener(String property, PropertyChangeListener listener) {
         this.pcs.addPropertyChangeListener(property, listener);
     }
+
 
     public void removePropertyChangeListener(String property, PropertyChangeListener listener) {
         this.pcs.removePropertyChangeListener(property, listener);
@@ -141,5 +155,7 @@ public class Controleur {
         public static final String AJOUTER_ACCESSOIRE = "ajouterAccessoire";
         public static final String SUPPRIMER_ACCESSOIRE = "supprimerAccessoire";
         public static final String SUPPRIMER_ACCESSOIRES = "supprimerAccessoires";
+        public static final String CREE_PROJET = "creeProjet";
+        public static final String FERMER_PROJET = "fermerProjet";
     }
 }
