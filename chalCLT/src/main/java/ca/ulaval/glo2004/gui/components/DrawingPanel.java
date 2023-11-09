@@ -412,8 +412,10 @@ public class DrawingPanel extends javax.swing.JPanel {
 
 
     public void rechargerAffichage() {
-        
-        afficheur.rechargerAffichage();
+        try{
+            afficheur.rechargerAffichage();}
+        catch(Exception e){} // TODO manage error
+
         repaint();
     }
 

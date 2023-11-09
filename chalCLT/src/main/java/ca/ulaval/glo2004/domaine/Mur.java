@@ -253,16 +253,16 @@ public class Mur {
     }
 
     /**
-     * Permet de voir la validité de l'accessoire par rapport au autre accessoire
+     * Permet de voir la validité de l'accessoire dont les paramètres passent en entrée par rapport aux autres accessoires
      * 
      * @param p_position  de l'objet qu'on veut verifier
      * @param p_dimension de l'objet qu'on veut verifier
      * @return boolean qui represente sa validite
      */
     public boolean verifierCollisionAcc(double[] p_position, double[] p_dimension, double margeacc) {
-
         Rectangle accrec = new Rectangle((int) (p_position[0] - margeacc), (int) (p_position[1] - margeacc),
                 (int) (p_dimension[0] + 2 * margeacc), (int) (p_dimension[1] + 2 * margeacc));
+
         for (Accessoire accessoire : accessoires) {
             Rectangle inters = new Rectangle((int) accessoire.getPosition()[0], (int) accessoire.getPosition()[1],
                     (int) accessoire.getDimensions()[0], (int) accessoire.getDimensions()[1]);
@@ -294,7 +294,7 @@ public class Mur {
      * @param margeminimal marge minimale du projet
      * @return la validité
      */
-    public boolean VerifierMargeAcc(double[] p_position, double[] p_dimension, double margeminimal) {
+    public boolean verifierMargeAcc(double[] p_position, double[] p_dimension, double margeminimal) {
         return (p_position[0] - margeminimal < 0 && p_dimension[0] + p_position[0] + margeminimal > this.getLargeur())
                 && (p_position[1] - margeminimal < 0
                         && p_dimension[1] + p_position[1] + margeminimal > this.getHauteur());

@@ -76,12 +76,13 @@ public class Accessoire extends Retrait {
      * @param accessoireDTO l'accessoire mis à jour
      */
     public void updateAccessoire(AccessoireDTO accessoireDTO){
-        this.accessoireId = accessoireDTO.accessoireId;
-        this.accessoireNom = accessoireDTO.accessoireNom;
-        this.accessoireType = accessoireDTO.accessoireType;
-        this.typeMur = accessoireDTO.typeMur;
-        this.valide = accessoireDTO.valide;
-        this.update(accessoireDTO);
+        setAccessoireId(accessoireDTO.accessoireId);
+        setAccessoireNom(accessoireDTO.accessoireNom);
+        setAccessoireType(accessoireDTO.accessoireType);
+        setTypeMur(accessoireDTO.typeMur);
+        setValide(accessoireDTO.valide);
+        setDimensions(accessoireDTO.dimensions.clone());
+        setPosition(accessoireDTO.position.clone());
     }
 
     /**
@@ -117,16 +118,6 @@ public class Accessoire extends Retrait {
     public void setTypeMur(TypeMur typeMur) {
         this.typeMur = typeMur;
     }
-
-    /**
-     * Update la position de l'accessoire
-     * @param accessoireDTO
-     */
-    public void update(AccessoireDTO accessoireDTO){
-        this.setDimensions(accessoireDTO.dimensions.clone());
-        this.setPosition(accessoireDTO.position.clone());
-    }
-
 
 
     /**

@@ -78,7 +78,7 @@ public class Afficheur {
         this.vueActive = vueActive;
     }
 
-    public void rechargerAffichage() {
+    public void rechargerAffichage() throws Exception {
 
         Chalet.ChaletDTO chaletDTO = this.getControleur().getChalet();
         PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = this.getControleur()
@@ -114,6 +114,10 @@ public class Afficheur {
                 //         + (chaletDTO.hauteur - accMesh.getHeight() - chaletDTO.margeAccessoire));
 
             }
+
+            if(accMesh==null) throw new Exception("Accessory id is null"); // TODO update exception type
+            accMesh.setValid(accessoireDTO.valide);
+
 
             double margeAccessoire = this.getControleur().getChalet().margeAccessoire;
             switch (typeMur) {

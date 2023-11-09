@@ -12,6 +12,8 @@ public class TriangleMeshGroup {
     ArrayList<TriangleMesh> meshes = new ArrayList<TriangleMesh>();
     private boolean selected = false;
 
+    private boolean valid = true;
+
     public TriangleMeshGroup() {
     }
 
@@ -53,6 +55,10 @@ public class TriangleMeshGroup {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
+
+    public boolean getValid() {return valid;}
+
+    public void setValid(boolean valid) {this.valid = valid;}
 
     public void addMesh(TriangleMesh mesh) {
         meshes.add(mesh);
