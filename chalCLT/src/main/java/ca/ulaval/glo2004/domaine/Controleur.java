@@ -115,7 +115,7 @@ public class Controleur {
         if(this.projectActif != null){
             fermerProjet();
         }
-        this.projectActif = new ChalCLTProjet(null);
+        this.projectActif = new ChalCLTProjet(null, new Chalet(), this.projectActif.getPreferencesUtilisateur());
         this.pcs.firePropertyChange(EventType.CREE_PROJET, null, this.getChalet());
     }
 
