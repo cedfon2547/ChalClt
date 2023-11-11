@@ -313,14 +313,14 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
 
     private void nouveauProjetItemActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-        mainWindow.getControleur().creeProjet();
+        mainWindow.clearAccessoiresSelectionnees();
         mainWindow.showChaletTable();
         mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Dessus);
-        mainWindow.drawingPanel.rechargerAffichage();
-        mainWindow.clearAccessoiresSelectionnees();
-        mainWindow.arbreDesComposantesChalet.arbreComposantesChalet.invalidate();
-        mainWindow.arbreDesComposantesChalet.arbreComposantesChalet.repaint();
 
+        mainWindow.getControleur().creeProjet();
+        // mainWindow.arbreDesComposantesChalet.buildTree();
+        mainWindow.reloadArbreComposantes();
+        mainWindow.drawingPanel.rechargerAffichage();
     }
 
     private void vueHautItemActionPerformed(java.awt.event.ActionEvent evt) {

@@ -7,6 +7,7 @@ import javax.swing.JScrollPane;
 import javax.swing.tree.DefaultTreeModel;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
+import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.Controleur;
 import ca.ulaval.glo2004.gui.components.AccessoireTreeNode;
 import ca.ulaval.glo2004.gui.components.ArbreDesComposantesChalet;
@@ -63,6 +64,9 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     private void initComponents() {
+        Chalet.ChaletDTO chaletDTO = controleur.getChalet();
+        List<Accessoire.AccessoireDTO> accessoireDTOs = controleur.getAccessoires();
+
         mainSection = new javax.swing.JPanel();
         sideSection = new javax.swing.JPanel();
         mainWindowSplitPane = new javax.swing.JSplitPane();
@@ -70,7 +74,7 @@ public class MainWindow extends javax.swing.JFrame {
         sidePanelTopSection = new javax.swing.JPanel();
         sidePanelBottomSection = new javax.swing.JPanel();
         drawingPanel = new DrawingPanel(this);
-        arbreDesComposantesChalet = new ArbreDesComposantesChalet(this);
+        arbreDesComposantesChalet = new ArbreDesComposantesChalet(this, chaletDTO, accessoireDTOs);
         tableContainer = new JScrollPane();
 
         javax.swing.GroupLayout sideSectionLayout = new javax.swing.GroupLayout(sideSection);
@@ -201,9 +205,17 @@ public class MainWindow extends javax.swing.JFrame {
      * supprime les nœuds correspondants de l'arbre des composantes du chalet et recharge l'affichage.
      */
     public void deleteAllAccessoiresSelectionnees() {
-        this.controleur.supprimerAccessoires(accessoiresSelectionnees);
+        this.controleur.retirerAccessoires(accessoiresSelectionnees);
         this.clearAccessoiresSelectionnees();
 
+        this.arbreDesComposantesChalet.rechargerNoeudsAccessoire(controleur.getAccessoires());
         drawingPanel.rechargerAffichage();
+    }
+
+    public void reloadArbreComposantes() {
+        Chalet.ChaletDTO chaletDTO = controleur.getChalet();
+        List<Accessoire.AccessoireDTO> accessoireDTOs = controleur.getAccessoires();
+
+        arbreDesComposantesChalet.reloadTree(chaletDTO, accessoireDTOs);
     }
 }

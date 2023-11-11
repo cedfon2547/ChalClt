@@ -34,6 +34,7 @@ public class TableChalet extends JTable {
                 { "Angle du toit", dtoChalet.angleToit },
                 { "Sens du toit", dtoChalet.sensToit },
                 {" Marge accessoire", ImperialDimension.convertToImperial(dtoChalet.margeAccessoire)},
+                { "Marge supplémentaire", ImperialDimension.convertToImperial(dtoChalet.margeSupplementaireRetrait) },
         };
         model = new javax.swing.table.DefaultTableModel(props, columnNames);
         this.setModel(model);
@@ -56,7 +57,8 @@ public class TableChalet extends JTable {
                 chaletDTO.angleToit = Double.parseDouble(getValueAt(5, 1).toString());
                 chaletDTO.sensToit = TypeSensToit.valueOf(getValueAt(6, 1).toString());
                 chaletDTO.margeAccessoire = ImperialDimension.parseFromString((String) getValueAt(7, 1).toString()).toInches();
-
+                chaletDTO.margeSupplementaireRetrait = ImperialDimension.parseFromString((String) getValueAt(8, 1).toString()).toInches();
+                
                 mainWindow.getControleur().setChalet(chaletDTO);
                 mainWindow.drawingPanel.rechargerAffichage();
             }

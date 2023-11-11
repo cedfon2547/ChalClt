@@ -40,14 +40,6 @@ public class Matrix {
         return multiply(this, matrix);
     }
 
-    public Matrix transpose() {
-        return transpose(this);
-    }
-
-    public Matrix inverse() {
-        return inverse(this);
-    }
-
     /* Static Methods */
     public static Matrix multiply(Matrix m1, Matrix m2) {
         int size = m1.values.length;
@@ -61,91 +53,6 @@ public class Matrix {
         }
 
         return new Matrix(result);
-    }
-
-    public static Matrix transpose(Matrix m) {
-        int rows = m.values.length;
-        int cols = m.values[0].length;
-
-        double[][] result = new double[cols][rows];
-
-        for (int i = 0; i < cols; i++) {
-            for (int j = 0; j < rows; j++)
-                result[i][j] = m.values[j][i];
-        }
-
-        return new Matrix(result);
-    }
-
-    public static Matrix inverse(Matrix m) {
-        int size = m.values.length;
-        double[][] augmentedMatrix = new double[size][size * 2];
-
-        // Create an augmented matrix by appending the identity matrix to the right of
-        // the original matrix
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                augmentedMatrix[i][j] = m.values[i][j];
-            }
-            augmentedMatrix[i][size + i] = 1;
-        }
-
-        // Perform row operations to transform the left side of the augmented matrix
-        // into the identity matrix
-        for (int i = 0; i < size; i++) {
-            // Find the pivot element (the first non-zero element) in the current row
-            double pivot = augmentedMatrix[i][i];
-            int pivotRow = i;
-            for (int j = i + 1; j < size; j++) {
-                if (Math.abs(augmentedMatrix[j][i]) > Math.abs(pivot)) {
-                    pivot = augmentedMatrix[j][i];
-                    pivotRow = j;
-                }
-            }
-
-            // Swap the current row with the row containing the pivot element
-            if (pivotRow != i) {
-                double[] temp = augmentedMatrix[i];
-                augmentedMatrix[i] = augmentedMatrix[pivotRow];
-                augmentedMatrix[pivotRow] = temp;
-            }
-
-            // Scale the current row so that the pivot element is 1
-            double scale = augmentedMatrix[i][i];
-            for (int j = i; j < size * 2; j++) {
-                augmentedMatrix[i][j] /= scale;
-            }
-
-            // Use the current row to eliminate the pivot element in the other rows
-            for (int j = 0; j < size; j++) {
-                if (j != i) {
-                    double factor = augmentedMatrix[j][i];
-                    for (int k = i; k < size * 2; k++) {
-                        augmentedMatrix[j][k] -= factor * augmentedMatrix[i][k];
-                    }
-                }
-            }
-        }
-
-        // Extract the inverse matrix from the right side of the augmented matrix
-        double[][] inverseValues = new double[size][size];
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                inverseValues[i][j] = augmentedMatrix[i][size + j];
-            }
-        }
-
-        return new Matrix(inverseValues);
-    }
-
-    public static Matrix identityMatrix(int size) {
-        double[][] values = new double[size][size];
-
-        for (int i = 0; i < size; i++) {
-            values[i][i] = 1;
-        }
-
-        return new Matrix(values);
     }
 
     public static Matrix translationMatrix(double x, double y, double z) {
@@ -203,20 +110,15 @@ public class Matrix {
         return new Matrix(values);
     }
 
-    public static Matrix axisAngleRotationMatrix(Vector3D axis, double angle) {
-        double[][] values = new double[][] {
-                { Math.cos(angle) + Math.pow(axis.x, 2) * (1 - Math.cos(angle)),
-                        axis.x * axis.y * (1 - Math.cos(angle)) - axis.z * Math.sin(angle),
-                        axis.x * axis.z * (1 - Math.cos(angle)) + axis.y * Math.sin(angle), 0 },
-                { axis.y * axis.x * (1 - Math.cos(angle)) + axis.z * Math.sin(angle),
-                        Math.cos(angle) + Math.pow(axis.y, 2) * (1 - Math.cos(angle)),
-                        axis.y * axis.z * (1 - Math.cos(angle)) - axis.x * Math.sin(angle), 0 },
-                { axis.z * axis.x * (1 - Math.cos(angle)) - axis.y * Math.sin(angle),
-                        axis.z * axis.y * (1 - Math.cos(angle)) + axis.x * Math.sin(angle),
-                        Math.cos(angle) + Math.pow(axis.z, 2) * (1 - Math.cos(angle)), 0 },
-                { 0, 0, 0, 1 },
-        };
+    public static Matrix rotationMatrix(double angleX, double angleY, double angleZ) {
+        return rotationXMatrix(angleX).multiply(rotationYMatrix(angleY)).multiply(rotationZMatrix(angleZ));
+    }
 
-        return new Matrix(values);
+    public static Matrix rotationMatrix(double angleX, double angleY, double angleZ, Vector3D axis) {
+        Matrix translation = translationMatrix(-axis.x, -axis.y, -axis.z);
+        Matrix inverseTranslation = translationMatrix(axis.x, axis.y, axis.z);
+        Matrix rotation = rotationXMatrix(angleX).multiply(rotationYMatrix(angleY)).multiply(rotationZMatrix(angleZ));
+
+        return translation.multiply(rotation).multiply(inverseTranslation);
     }
 }

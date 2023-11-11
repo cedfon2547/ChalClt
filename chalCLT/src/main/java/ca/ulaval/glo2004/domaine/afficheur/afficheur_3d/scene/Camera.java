@@ -101,7 +101,7 @@ public class Camera {
     public void moveLeft(double distance) {
         Vector3D position = this.position;
 
-        Vector3D movement = new Vector3D(-1, 0, 0).multiplyScalar(distance);
+        Vector3D movement = new Vector3D(-1, 0, 0).multiply(distance);
 
         this.position = position.add(movement);
     }
@@ -109,7 +109,7 @@ public class Camera {
     public void moveUp(double distance) {
         Vector3D position = this.position;
 
-        Vector3D movement = new Vector3D(0, 1, 0).multiplyScalar(distance);
+        Vector3D movement = new Vector3D(0, 1, 0).multiply(distance);
 
         this.position = position.add(movement);
     }
@@ -117,7 +117,7 @@ public class Camera {
     public void moveForward(double distance) {
         Vector3D position = this.position;
 
-        Vector3D movement = new Vector3D(0, 0, 1).multiplyScalar(distance);
+        Vector3D movement = new Vector3D(0, 0, 1).multiply(distance);
 
         this.position = position.add(movement);
     }
@@ -148,8 +148,8 @@ public class Camera {
     public Matrix lookAtMatrix(Vector3D target) {
         Vector3D direction = target.sub(this.position).normalize();
         Vector3D up = new Vector3D(0, 1, 0);
-        Vector3D right = direction.crossProduct(up).normalize();
-        up = right.crossProduct(direction).normalize();
+        Vector3D right = direction.cross(up).normalize();
+        up = right.cross(direction).normalize();
         Matrix matrix = new Matrix(new double[][] {
             {right.getX(), up.getX(), -direction.getX(), 0},
             {right.getY(), up.getY(), -direction.getY(), 0},

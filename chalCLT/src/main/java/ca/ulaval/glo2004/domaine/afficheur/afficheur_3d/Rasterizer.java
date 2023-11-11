@@ -7,6 +7,11 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
 
 import com.google.common.collect.Lists;
 
@@ -18,15 +23,12 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Light;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-
 public class Rasterizer {
     private Scene scene;
-    private List<TriangleMesh> tMeshes = Lists.newArrayList();
     private List<TriangleMeshGroup> tMeshGroups = Lists.newArrayList();
+    BufferedImage image;
+    double[] zBuffer;
+    String[] idBuffer;
 
     public Rasterizer() {
         this(new Scene());
@@ -36,8 +38,17 @@ public class Rasterizer {
         this.scene = scene;
     }
 
-    public void clear(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
+    private BufferedImage rasterize(Dimension panelDimension) {
+        image = new BufferedImage((int) panelDimension.getWidth(),
+                (int) panelDimension.getHeight(),
+                BufferedImage.TYPE_INT_ARGB);
+        zBuffer = new double[image.getWidth() * image.getHeight()];
+        Arrays.fill(zBuffer, Double.NEGATIVE_INFINITY);
+
+        idBuffer = new String[image.getWidth() * image.getHeight()];
+        Arrays.fill(idBuffer, null);
+
+        Graphics2D g2 = (Graphics2D) image.createGraphics();
 
         g2.setRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON));
@@ -52,18 +63,11 @@ public class Rasterizer {
         g2.setRenderingHints(new RenderingHints(RenderingHints.KEY_DITHERING,
                 RenderingHints.VALUE_DITHER_ENABLE));
 
+        g2.setComposite(AlphaComposite.SrcOver);
+
         g2.setColor(scene.getConfiguration().getBackgroundColor());
-        g2.fillRect(0, 0, 10000, 10000);
-    }
+        g2.fillRect(0, 0, image.getWidth(), image.getHeight());
 
-    private BufferedImage rasterize(Dimension panelDimension) {
-        BufferedImage canvasBuffer = new BufferedImage((int) panelDimension.getWidth(),
-                (int) panelDimension.getHeight(),
-                BufferedImage.TYPE_4BYTE_ABGR);
-        double[] zBuffer = new double[canvasBuffer.getWidth() * canvasBuffer.getHeight()];
-        Arrays.fill(zBuffer, Double.NEGATIVE_INFINITY);
-
-        this.tMeshes.clear();
         this.tMeshGroups.clear();
 
         Matrix translateToOrigin = Matrix.translationMatrix(panelDimension.getWidth() / 2,
@@ -83,23 +87,27 @@ public class Rasterizer {
                 .multiply(camRotateZ);
 
         Matrix transform = translateToOrigin.multiply(camTransform);
+
         if (scene.getConfiguration().getShowGridXY()) {
-            this.drawGridXY(canvasBuffer, transform);
+            this.drawGridXY(image, transform);
         }
 
         if (scene.getConfiguration().getShowGridXZ()) {
-            this.drawGridXZ(canvasBuffer, transform);
+            this.drawGridXZ(image, transform);
         }
 
         if (scene.getConfiguration().getShowGridYZ()) {
-            this.drawGridYZ(canvasBuffer, transform);
+            this.drawGridYZ(image, transform);
         }
         if (scene.getConfiguration().getShowAxis()) {
-            this.drawAxes(canvasBuffer, transform);
+            this.drawAxes(image, transform);
         }
 
         for (TriangleMeshGroup group : scene.getMeshes()) {
             TriangleMeshGroup transformedGroup = new TriangleMeshGroup();
+            Matrix translationMatrix = Matrix.translationMatrix(group.getPosition().getX(), group.getPosition().getY(),
+                    group.getPosition().getZ());
+            Matrix _transform = transform.multiply(translationMatrix);
 
             for (TriangleMesh obj : group.getMeshes()) {
                 List<Triangle> transformedTriangles = new ArrayList<Triangle>();
@@ -111,18 +119,18 @@ public class Rasterizer {
                     Vector3D vertex2 = new Vector3D(vertices[1]);
                     Vector3D vertex3 = new Vector3D(vertices[2]);
 
-                    vertex1 = vertex1.multiplyMatrix(transform);
-                    vertex2 = vertex2.multiplyMatrix(transform);
-                    vertex3 = vertex3.multiplyMatrix(transform);
+                    vertex1 = vertex1.multiply(_transform);
+                    vertex2 = vertex2.multiply(_transform);
+                    vertex3 = vertex3.multiply(_transform);
 
                     int minX = (int) Math.max(0,
                             Math.ceil(Math.min(vertex1.x, Math.min(vertex2.x, vertex3.x))));
-                    int maxX = (int) Math.min(canvasBuffer.getWidth() - 1,
+                    int maxX = (int) Math.min(image.getWidth() - 1,
                             Math.floor(Math.max(vertex1.x,
                                     Math.max(vertex2.x, vertex3.x))));
                     int minY = (int) Math.max(0,
                             Math.ceil(Math.min(vertex1.y, Math.min(vertex2.y, vertex3.y))));
-                    int maxY = (int) Math.min(canvasBuffer.getHeight() - 1,
+                    int maxY = (int) Math.min(image.getHeight() - 1,
                             Math.floor(Math.max(vertex1.y,
                                     Math.max(vertex2.y, vertex3.y))));
 
@@ -159,18 +167,21 @@ public class Rasterizer {
                                                 .getPosition().z)
                                         + b3 * (vertex3.z - scene.getCamera()
                                                 .getPosition().z);
-                                int zIndex = y * canvasBuffer.getWidth() + x;
+                                int zIndex = y * image.getWidth() + x;
 
                                 if (zBuffer[zIndex] < depth) {
                                     zBuffer[zIndex] = depth;
+                                    idBuffer[zIndex] = group.getIdentifier();
 
-                                    Color finalColor = getPixelColor2(obj,
+                                    Color finalColor = phongModel(obj,
                                             obj.getMaterial().getColor(),
                                             norm,
                                             new Vector3D(x, y, depth));
 
-                                    canvasBuffer.setRGB(x, y, finalColor.getRGB());
-
+                                    // image.setRGB(x, y, finalColor.getRGB());
+                                    g2.setColor(finalColor); // g2.setColor(new Color(finalColor.getRed(),
+                                                             // finalColor.getGreen(), finalColor.getBlue(), 50));
+                                    g2.fillRect(x, y, 1, 1);
                                 }
                             }
                         }
@@ -182,17 +193,68 @@ public class Rasterizer {
             }
 
             transformedGroup.setSelected(group.getSelected());
-            transformedGroup.setID(group.getID());
+            transformedGroup.setValid(group.getValid());
+            transformedGroup.setIdentifier(group.getIdentifier());
             tMeshGroups.add(transformedGroup);
         }
 
+        // g2.setColor(scene.getConfiguration().getSelectionColor());
+        // TODO: Do not remove
+        // for (int y = 0; y < image.getHeight(); y++) {
+        //     for (int x = 0; x < image.getWidth(); x++) {
+        //         final int depth = y * image.getWidth() + x;
+        //         if (idBuffer[depth] != null && scene.getMesh(idBuffer[depth]).getSelected()) {
+        //             // Check if the id of the pixel is the same on top, left, right and bottom.
+        //             // If not, it means that the pixel is on the edge of a mesh.
+        //             // So we draw the pixel in order to create a boundary
+        //             if (depth <= 0)
+        //                 continue;
+        //             if (depth + 1 > image.getWidth() * image.getHeight() - 1)
+        //                 continue;
+
+        //             int topPixelDepth = (y - 1) * image.getWidth() + x;
+        //             int leftPixelDepth = y * image.getWidth() + (x - 1);
+        //             int rightPixelDepth = y * image.getWidth() + (x + 1);
+        //             int bottomPixelDepth = (y + 1) * image.getWidth() + x;
+
+        //             if (topPixelDepth >= 0 && idBuffer[topPixelDepth] != idBuffer[depth]) {
+        //                 g2.drawRect(x, y, 2, 2);
+        //             }
+
+        //             if (leftPixelDepth >= 0 && leftPixelDepth <= idBuffer.length
+        //                     && idBuffer[leftPixelDepth] != idBuffer[depth]) {
+        //                 g2.drawRect(x, y, 2, 2);
+        //             }
+
+        //             if (idBuffer[rightPixelDepth] != idBuffer[depth]) {
+        //                 g2.drawRect(x, y, 2, 2);
+        //             }
+
+        //             if (bottomPixelDepth < idBuffer.length && idBuffer[bottomPixelDepth] != idBuffer[depth]) {
+        //                 g2.drawRect(x, y, 2, 2);
+        //             }
+        //         }
+
+        //         // if (idBuffer[depth] != idBuffer[depth - 1] || idBuffer[depth] !=
+        //         // idBuffer[depth + 1]) {
+        //         // g2.drawRect(x, y, 2, 2);
+        //         // }
+        //     }
+        // }
+
+        this.drawInvalidMeshBounding(g2);
+        this.drawSelectedMeshBounding(g2);
+
+        g2.dispose();
+
+        return image;
+    }
+
+    private void drawSelectedMeshBounding(Graphics2D g2) {
+        g2.setStroke(new BasicStroke((int) scene.getConfiguration().getSelectionStrokeWidth()));
+        g2.setColor(scene.getConfiguration().getSelectionColor());
+
         for (TriangleMeshGroup obj : tMeshGroups) {
-
-            Graphics2D g2 = (Graphics2D) canvasBuffer.getGraphics();
-
-            g2.setColor(scene.getConfiguration().getSelectionColor());
-            g2.setStroke(new BasicStroke(2));
-
             if (obj.getSelected()) {
                 Vector3D[] bounds = obj.getBounding();
                 g2.drawRect((int) bounds[0].getX() - 6, (int) bounds[0].getY() - 6,
@@ -200,11 +262,35 @@ public class Rasterizer {
                         (int) obj.getHeight() + 12);
             }
         }
-
-        return canvasBuffer;
     }
 
-    private Color getPixelColor2(TriangleMesh object, Color color, Vector3D norm, Vector3D pixelPoint) {
+    private void drawInvalidMeshBounding(Graphics2D g2) {
+        g2.setStroke(new BasicStroke(scene.getConfiguration().getSelectionStrokeWidth()));
+
+        int diff = 6 - scene.getConfiguration().getSelectionStrokeWidth();
+        g2.setColor(new Color(255, 0, 0, 150));
+
+        for (TriangleMeshGroup obj : tMeshGroups) {
+            if (!obj.getValid()) {
+                Vector3D[] bounds = obj.getBounding();
+                int x = (int) bounds[0].getX() - diff;
+                int y = (int) bounds[0].getY() - diff;
+                int w = (int) obj.getWidth() + diff * 2;
+                int h = (int) obj.getHeight() + diff * 2;
+
+                g2.drawRect(x, y, w, h);
+                g2.drawLine(x, y, x + w, y + h);
+                g2.drawLine(x + w, y, x, y + h);
+
+                g2.setColor(new Color(255, 0, 0, 75));
+                g2.fillRect((int) bounds[0].getX() - diff, (int) bounds[0].getY() - diff,
+                        (int) obj.getWidth() + diff * 2,
+                        (int) obj.getHeight() + diff * 2);
+            }
+        }
+    }
+
+    private Color phongModel(TriangleMesh object, Color color, Vector3D norm, Vector3D pixelPoint) {
         // Calculate ambient light
         double ambientIntensity = scene.getLight().getAmbientIntensity();
 
@@ -215,7 +301,7 @@ public class Rasterizer {
         // Calculate diffuse light
         Light light = scene.getLight();
         Vector3D lightDir = light.getPosition().sub(pixelPoint).normalize();
-        double dotProduct = Math.max(0, norm.dotProduct(lightDir));
+        double dotProduct = Math.max(0, norm.dot(lightDir));
         double diffuseIntensity = 0.8;
         red += (int) (color.getRed() * dotProduct * diffuseIntensity);
         green += (int) (color.getGreen() * dotProduct * diffuseIntensity);
@@ -223,10 +309,10 @@ public class Rasterizer {
 
         // Calculate specular light
         Vector3D viewDir = scene.getCamera().getPosition().sub(pixelPoint).normalize();
-        Vector3D reflectDir = norm.multiplyScalar(2).multiplyScalar(norm.dotProduct(lightDir)).sub(lightDir)
+        Vector3D reflectDir = norm.multiply(2).multiply(norm.dot(lightDir)).sub(lightDir)
                 .normalize();
         double specularIntensity = 0.5;
-        double specularFactor = Math.pow(Math.max(0, reflectDir.dotProduct(viewDir)), 32);
+        double specularFactor = Math.pow(Math.max(0, reflectDir.dot(viewDir)), 32);
         red += (int) (color.getRed() * specularFactor * specularIntensity);
         green += (int) (color.getGreen() * specularFactor * specularIntensity);
         blue += (int) (color.getBlue() * specularFactor * specularIntensity);
@@ -240,8 +326,6 @@ public class Rasterizer {
     }
 
     public void draw(Graphics g, Dimension panelDimension) {
-        this.clear(g);
-
         BufferedImage canvasBuffer = rasterize(panelDimension);
 
         g.drawImage(canvasBuffer, 0, 0, null);
@@ -250,6 +334,7 @@ public class Rasterizer {
 
     private void drawAxes(BufferedImage image, Matrix transform) {
         Graphics2D g2 = (Graphics2D) image.getGraphics();
+        g2.setStroke(new BasicStroke(scene.getConfiguration().getAxisStrokeWidth()));
 
         Vector3D origin = new Vector3D(0, 0, 0);
         Vector3D xAxis1 = new Vector3D(-500, 0, 0);
@@ -262,14 +347,14 @@ public class Rasterizer {
         Vector3D zAxis2 = new Vector3D(0, 0, 500);
 
         // Draw axis
-        origin = origin.multiplyMatrix(transform);
+        origin = origin.multiply(transform);
 
-        xAxis1 = xAxis1.multiplyMatrix(transform);
-        xAxis2 = xAxis2.multiplyMatrix(transform);
-        yAxis1 = yAxis1.multiplyMatrix(transform);
-        yAxis2 = yAxis2.multiplyMatrix(transform);
-        zAxis1 = zAxis1.multiplyMatrix(transform);
-        zAxis2 = zAxis2.multiplyMatrix(transform);
+        xAxis1 = xAxis1.multiply(transform);
+        xAxis2 = xAxis2.multiply(transform);
+        yAxis1 = yAxis1.multiply(transform);
+        yAxis2 = yAxis2.multiply(transform);
+        zAxis1 = zAxis1.multiply(transform);
+        zAxis2 = zAxis2.multiply(transform);
 
         g2.setColor(Color.RED);
         g2.drawLine((int) xAxis1.x, (int) xAxis1.y, (int) xAxis2.x, (int) xAxis2.y);
@@ -281,7 +366,8 @@ public class Rasterizer {
 
     public void drawGridXY(BufferedImage image, Matrix transform) {
         Graphics2D g2 = (Graphics2D) image.getGraphics();
-        g2.setColor(Color.GRAY);
+        g2.setColor(scene.getConfiguration().getGridColor());
+        g2.setStroke(new BasicStroke(scene.getConfiguration().getGridStrokeWidth()));
 
         int gridStep = scene.getConfiguration().getGridStep();
         int axisLength = gridStep * scene.getConfiguration().getStepCounts();
@@ -292,10 +378,10 @@ public class Rasterizer {
             Vector3D y3 = new Vector3D(-axisLength, i, 0);
             Vector3D y4 = new Vector3D(axisLength, i, 0);
 
-            x3 = x3.multiplyMatrix(transform);
-            x4 = x4.multiplyMatrix(transform);
-            y3 = y3.multiplyMatrix(transform);
-            y4 = y4.multiplyMatrix(transform);
+            x3 = x3.multiply(transform);
+            x4 = x4.multiply(transform);
+            y3 = y3.multiply(transform);
+            y4 = y4.multiply(transform);
 
             g2.drawLine((int) x3.x, (int) x3.y, (int) x4.x, (int) x4.y);
             g2.drawLine((int) y3.x, (int) y3.y, (int) y4.x, (int) y4.y);
@@ -304,7 +390,8 @@ public class Rasterizer {
 
     public void drawGridXZ(BufferedImage image, Matrix transform) {
         Graphics2D g2 = (Graphics2D) image.getGraphics();
-        g2.setColor(Color.GRAY);
+        g2.setColor(scene.getConfiguration().getGridColor());
+        g2.setStroke(new BasicStroke(scene.getConfiguration().getGridStrokeWidth()));
 
         int gridStep = scene.getConfiguration().getGridStep();
         int axisLength = gridStep * scene.getConfiguration().getStepCounts();
@@ -315,10 +402,10 @@ public class Rasterizer {
             Vector3D y1 = new Vector3D(-axisLength, 0, i);
             Vector3D y2 = new Vector3D(axisLength, 0, i);
 
-            x1 = x1.multiplyMatrix(transform);
-            x2 = x2.multiplyMatrix(transform);
-            y1 = y1.multiplyMatrix(transform);
-            y2 = y2.multiplyMatrix(transform);
+            x1 = x1.multiply(transform);
+            x2 = x2.multiply(transform);
+            y1 = y1.multiply(transform);
+            y2 = y2.multiply(transform);
 
             g2.drawLine((int) x1.x, (int) x1.y, (int) x2.x, (int) x2.y);
             g2.drawLine((int) y1.x, (int) y1.y, (int) y2.x, (int) y2.y);
@@ -327,7 +414,8 @@ public class Rasterizer {
 
     public void drawGridYZ(BufferedImage image, Matrix transform) {
         Graphics2D g2 = (Graphics2D) image.getGraphics();
-        g2.setColor(Color.GRAY);
+        g2.setColor(scene.getConfiguration().getGridColor());
+        g2.setStroke(new BasicStroke(scene.getConfiguration().getGridStrokeWidth()));
 
         int gridStep = scene.getConfiguration().getGridStep();
         int axisLength = gridStep * scene.getConfiguration().getStepCounts();
@@ -338,10 +426,10 @@ public class Rasterizer {
             Vector3D y1 = new Vector3D(0, i, -axisLength);
             Vector3D y2 = new Vector3D(0, i, axisLength);
 
-            x1 = x1.multiplyMatrix(transform);
-            x2 = x2.multiplyMatrix(transform);
-            y1 = y1.multiplyMatrix(transform);
-            y2 = y2.multiplyMatrix(transform);
+            x1 = x1.multiply(transform);
+            x2 = x2.multiply(transform);
+            y1 = y1.multiply(transform);
+            y2 = y2.multiply(transform);
 
             g2.drawLine((int) x1.x, (int) x1.y, (int) x2.x, (int) x2.y);
             g2.drawLine((int) y1.x, (int) y1.y, (int) y2.x, (int) y2.y);
@@ -373,29 +461,10 @@ public class Rasterizer {
     }
 
     public TriangleMeshGroup getMeshFromPoint(Point point) {
-        // Sorting meshes by z-index
-        tMeshGroups.sort((a, b) -> {
-            double aZ = a.getBounding()[0].getZ();
-            double bZ = b.getBounding()[0].getZ();
-
-            if (aZ < bZ) {
-                return 1;
-            } else if (aZ > bZ) {
-                return -1;
-            } else {
-                return 0;
-            }
-        });
-
-        for (TriangleMeshGroup tMesh : tMeshGroups) {
-            if (tMesh.getBounding()[0].getX() <= point.getX()
-                    && tMesh.getBounding()[0].getY() <= point.getY()
-                    && tMesh.getBounding()[1].getX() >= point.getX()
-                    && tMesh.getBounding()[1].getY() >= point.getY()) {
-                return scene.getMesh(tMesh.getID());
-            }
+        int depth = point.y * image.getWidth() + point.x;
+        if (idBuffer[depth] != null) {
+            return scene.getMesh(idBuffer[depth]);
         }
-
         return null;
     }
 

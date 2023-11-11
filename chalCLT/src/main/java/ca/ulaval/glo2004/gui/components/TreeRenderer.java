@@ -13,17 +13,11 @@ import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.TypeAccessoire;
 import ca.ulaval.glo2004.gui.MainWindow;
 
-
 public class TreeRenderer extends DefaultTreeCellRenderer {
-
     private MainWindow mainWindow;
-
     private ImageIcon chaletIcon;
-
     private ImageIcon murIcon;
-
     private ImageIcon fenetreIcon;
-
     private ImageIcon porteIcon;
 
     public TreeRenderer(MainWindow mainWindow) {
@@ -42,8 +36,8 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
         Image porteImg = tk.getImage(porteImgURL);
         Image murImg = tk.getImage(murImgURL);
         Image chaletImg = tk.getImage(chaletImgURL);
-        
-        //URL iconUrl = this.getClass().getResource("\\icons\\fenetre_tree.png");
+
+        // URL iconUrl = this.getClass().getResource("\\icons\\fenetre_tree.png");
         this.fenetreIcon = new ImageIcon(fenetreImg);
         this.fenetreIcon.setImage(this.fenetreIcon.getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
         this.porteIcon = new ImageIcon(porteImg);
@@ -78,30 +72,32 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
 
         DefaultMutableTreeNode tempDefaultMutableTreeNode = (DefaultMutableTreeNode) value;
 
+        // Identifying the type of the node and assigning appropriate icon
         if (tempDefaultMutableTreeNode.isRoot()) {
             setIcon(chaletIcon);
-        }
-        
-        try {
-            if (value instanceof MurTreeNode) {
-                setIcon(murIcon);
-            } else if (value instanceof AccessoireTreeNode) {
-                AccessoireTreeNode accNode = (AccessoireTreeNode) value;
-                if (accNode.getParent() instanceof MurTreeNode) {
-                    if (accNode.getTypeAccessoire() == TypeAccessoire.Fenetre) {
-                        setIcon(fenetreIcon);
-                    } else {
-                        setIcon(porteIcon);
-                    }
-                    // System.out.println("changement de nom " + accNode.getAccessoireDTO());
-
-                    Accessoire.AccessoireDTO accDto = mainWindow.getControleur().getAccessoire(accNode.getAccessoireDTO().accessoireId);
-                    this.setText(accDto.accessoireNom);
-                    this.setPreferredSize(new Dimension(100, 20));
+        }  else if (value instanceof MurTreeNode) {
+            setIcon(murIcon);
+        } else if (value instanceof AccessoireTreeNode) {
+            AccessoireTreeNode accNode = (AccessoireTreeNode) value;
+            if (accNode.getParent() instanceof MurTreeNode) {
+                if (accNode.getTypeAccessoire() == TypeAccessoire.Fenetre) {
+                    setIcon(fenetreIcon);
+                } else {
+                    setIcon(porteIcon);
                 }
 
+                Accessoire.AccessoireDTO accDto = mainWindow.getControleur()
+                        .getAccessoire(accNode.getAccessoireDTO().accessoireId);
+
+                // Set the text of the node to the name of the accessory
+                this.setText(accDto.accessoireNom);
+                // this.setPreferredSize(new Dimension(100, 20));
             }
-        } finally {
+
+        } else if (tempDefaultMutableTreeNode.getUserObject() instanceof String) {
+            setIcon(null);
+        } else {
+            setIcon(null);
         }
 
         return this;

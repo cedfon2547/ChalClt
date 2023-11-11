@@ -1,6 +1,6 @@
 package ca.ulaval.glo2004.domaine;
 
-import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -207,32 +207,50 @@ public class Mur {
      * @param p_dimension qui représente la dimensions de l'objet
      * @return
      */
-    public Accessoire ajouterAccessoire(TypeAccessoire p_type, double[] p_position, double[] p_dimension) {
-        // Test de depart juste pour double verification
-        if (p_position.length != 2) {
+    public Accessoire ajouterAccessoire(Accessoire accessoire) {
+        double[] position = accessoire.getPosition(), dimension = accessoire.getDimension();
+
+        if (position.length != 2) {
             throw new IllegalArgumentException("mauvais nombre de position");
         }
-        if (p_dimension.length != 2) {
+        if (dimension.length != 2) {
             throw new IllegalArgumentException("mauvais nombre de dimension");
         }
         for (int i = 0; i < 2; i++) {
-            if (p_position[i] < 0) {
+            if (position[i] < 0) {
                 throw new IllegalArgumentException("position negative");
             }
 
-            if (p_dimension[i] < 0) {
+            if (dimension[i] < 0) {
                 throw new IllegalArgumentException("dimensions negative ou 0");
             }
-        } // fin du test
-        Accessoire p_accessoire = new Accessoire(p_type, this.type, p_position, p_dimension);
-        accessoires.add(p_accessoire);
+        }
 
-        return p_accessoire;
+        if (accessoire.getAccessoireType() == TypeAccessoire.Porte) {
+            // Mettre a jour la valeur de la position Y afin que l'accessoire soit aligné avec le bas du mur.
+            double newPositionY = this.getHauteur() - accessoire.getDimension()[1];
+            accessoire.setPosition(new double[] { accessoire.getPosition()[0], newPositionY });
+        }
+
+        accessoires.add(accessoire);
+        return accessoire;
     }
 
-    public Accessoire ajouterAccessoire(Accessoire acc) {
-        accessoires.add(acc);
-        return acc;
+    public Accessoire ajouterAccessoire(TypeAccessoire p_type, double[] p_position, double[] p_dimension) {
+        Accessoire accessoire = new Accessoire(p_type, this.type, p_position, p_dimension);
+        return ajouterAccessoire(accessoire);
+    }
+
+    public Accessoire updateAccessoire(Accessoire.AccessoireDTO accessoireDTO) {
+        Accessoire accessoire = this.getAccessoire(accessoireDTO.accessoireId);
+        accessoire.updateAccessoire(accessoireDTO);
+
+        if (accessoireDTO.accessoireType == TypeAccessoire.Porte) {
+            double newPositionY = this.getHauteur() - accessoireDTO.dimensions[1];
+            accessoire.setPosition(new double[] { accessoireDTO.position[0], newPositionY });
+        }
+
+        return accessoire;
     }
 
     /**
@@ -253,23 +271,62 @@ public class Mur {
     }
 
     /**
-     * Permet de voir la validité de l'accessoire dont les paramètres passent en entrée par rapport aux autres accessoires
+     * Permet de voir la validité de l'accessoire dont les paramètres passent en
+     * entrée par rapport aux autres accessoires
      * 
-     * @param p_position  de l'objet qu'on veut verifier
-     * @param p_dimension de l'objet qu'on veut verifier
+     * @param position  de l'objet qu'on veut verifier
+     * @param dimension de l'objet qu'on veut verifier
      * @return boolean qui represente sa validite
      */
-    public boolean verifierCollisionAcc(double[] p_position, double[] p_dimension, double margeacc) {
-        Rectangle accrec = new Rectangle((int) (p_position[0] - margeacc), (int) (p_position[1] - margeacc),
-                (int) (p_dimension[0] + 2 * margeacc), (int) (p_dimension[1] + 2 * margeacc));
+    public boolean verifierCollisionAcc(Accessoire.AccessoireDTO accessoire, double margeAcc) {
+        double[] position = accessoire.position;
+        double[] dimension = accessoire.dimensions;
+
+        Rectangle2D accRect = new Rectangle2D.Double((position[0] - margeAcc), (position[1] - margeAcc),
+                (dimension[0] + 2 * margeAcc), (dimension[1] + 2 * margeAcc));
+
+        for (Accessoire otherAcc : accessoires) {
+            if (accessoire.accessoireId == otherAcc.getAccessoireId())
+                continue;
+
+            Rectangle2D otherAccRectangle2d = new Rectangle2D.Double(otherAcc.getPosition()[0],
+                    otherAcc.getPosition()[1],
+                    otherAcc.getDimension()[0], otherAcc.getDimension()[1]);
+
+            boolean intersect = accRect.intersects(otherAccRectangle2d);
+
+            if (intersect)
+                return true;
+        }
+
+        return false;
+    }
+
+    public boolean verifierCollisionAcc(Accessoire accessoire, double margeAcc) {
+        return this.verifierCollisionAcc(accessoire.toDTO(), margeAcc);
+    }
+
+    /**
+     * Permet de voir la validité de l'accessoire dont les paramètres passent en
+     * entrée par rapport aux autres accessoires
+     * 
+     * @param position  de l'objet qu'on veut verifier
+     * @param dimension de l'objet qu'on veut verifier
+     * @return boolean qui represente sa validite
+     */
+    public boolean verifierCollisionAcc(double[] position, double[] dimension, double margeAcc) {
+        Rectangle2D accrec = new Rectangle2D.Double((position[0] - margeAcc), (position[1] - margeAcc),
+                (dimension[0] + 2 * margeAcc), (dimension[1] + 2 * margeAcc));
 
         for (Accessoire accessoire : accessoires) {
-            Rectangle inters = new Rectangle((int) accessoire.getPosition()[0], (int) accessoire.getPosition()[1],
-                    (int) accessoire.getDimensions()[0], (int) accessoire.getDimensions()[1]);
+            Rectangle2D inters = new Rectangle2D.Double(accessoire.getPosition()[0], accessoire.getPosition()[1],
+                    accessoire.getDimension()[0], accessoire.getDimension()[1]);
+
             boolean intersect = accrec.intersects(inters);
             if (intersect)
                 return true;
         }
+
         return false;
     }
 
@@ -291,32 +348,75 @@ public class Mur {
      * 
      * @param p_position   position de l'accessoire
      * @param p_dimension  dimensions de l'accessoire
-     * @param margeminimal marge minimale du projet
+     * @param margeMinimal marge minimale du projet
      * @return la validité
      */
-    public boolean verifierMargeAcc(double[] p_position, double[] p_dimension, double margeminimal) {
-        return (p_position[0] - margeminimal < 0 && p_dimension[0] + p_position[0] + margeminimal > this.getLargeur())
-                && (p_position[1] - margeminimal < 0
-                        && p_dimension[1] + p_position[1] + margeminimal > this.getHauteur());
-    }
-    /*
-     * pour affichage si jamais
-     * public static double[] getPosition(TypeMur type, double hauteur, double
-     * largeur, double longeur){
-     * switch(type){
-     * // Les positions sont relatif sont au chalet sans les margess
-     * case Droit:
-     * return new double[]{largeur, hauteur, 0};
-     * case Gauche:
-     * return new double[]{0, hauteur, longeur};
-     * case Facade:
-     * return new double[]{0,hauteur,0};
-     * case Arriere:
-     * return new double[]{largeur, hauteur, longeur};
-     * default:
-     * throw new IllegalArgumentException("Type de mur invalide");
-     * }
-     * }
-     */
+    public boolean verifierMargeAcc(Accessoire.AccessoireDTO accessoire, double margeMinimal) {
+        double[] position = accessoire.position;
+        double[] dimension = accessoire.dimensions;
 
+        Rectangle2D murLessMarginRect = new Rectangle2D.Double(margeMinimal, margeMinimal,
+                this.getLargeur() - 2 * margeMinimal, this.getHauteur() - 2 * margeMinimal);
+
+        Rectangle2D accRect = new Rectangle2D.Double(position[0], position[1], dimension[0], dimension[1]);
+
+        return murLessMarginRect.contains(accRect);
+
+        // return (p_position[0] - margeMinimal < 0 && p_dimension[0] + p_position[0] +
+        // margeMinimal > this.getLargeur())
+        // && (p_position[1] - margeMinimal < 0
+        // && p_dimension[1] + p_position[1] + margeMinimal > this.getHauteur());
+    }
+
+    public boolean verifierMargeAcc(Accessoire accessoire, double margeMinimal) {
+        return this.verifierMargeAcc(accessoire.toDTO(), margeMinimal);
+    }
+
+    public double[] getAccessoireMargin(Accessoire accessoire) {
+        return accessoire.getMarginWithRect(new double[] { 0, 0 }, new double[] { getLargeur(), getHauteur() });
+    }
+
+    public double[] getAccessoireMargin(Accessoire.AccessoireDTO accessoireDTO) {
+        return Accessoire.fromDTO(accessoireDTO).getMarginWithRect(new double[] { 0, 0 },
+                new double[] { getLargeur(), getHauteur() });
+    }
+
+    public boolean verifierValiditeAccessoire(Accessoire.AccessoireDTO accessoire, double margeMinimal) {
+        boolean isColliding = this.verifierCollisionAcc(accessoire, margeMinimal);
+
+        if (isColliding) {
+            return false; // Invalide
+        }
+
+        double[] margins = Accessoire.getMarginWithRect(accessoire, new double[] { 0, 0 },
+                new double[] { getLargeur(), getHauteur() });
+
+        if (accessoire.accessoireType == TypeAccessoire.Porte) {
+            // Bottom margin is always 0 for a door
+            // Only need to check left, top and right margins
+            if (margins[0] < margeMinimal || margins[1] < margeMinimal || margins[2] < margeMinimal) {
+                return false; // Invalide
+            }
+
+            return true;
+        }
+
+        // If not a door, check all margins
+        if (margins[0] < margeMinimal || margins[1] < margeMinimal || margins[2] < margeMinimal
+                || margins[3] < margeMinimal) {
+            return false; // Invalide
+        }
+
+        return true;
+    }
+
+    public boolean verifierValiditeAccessoire(Accessoire accessoire, double margeMinimal) {
+        return this.verifierValiditeAccessoire(accessoire.toDTO(), margeMinimal);        
+    }
+
+    public void updateValiditeAccessoires(double margeMinimal) {
+        for (Accessoire accessoire : accessoires) {
+            accessoire.setValide(verifierValiditeAccessoire(accessoire, margeMinimal));
+        }
+    }
 }

@@ -71,6 +71,10 @@ public class Accessoire extends Retrait {
      */
     public boolean getValide(){return valide;}
 
+    public boolean isValide() {
+        return valide == true;
+    }
+
     /**
      * mis à jour de l'accessoire. 
      * @param accessoireDTO l'accessoire mis à jour
@@ -117,6 +121,34 @@ public class Accessoire extends Retrait {
 
     public void setTypeMur(TypeMur typeMur) {
         this.typeMur = typeMur;
+    }
+
+    /**
+     * Retourne la marge entre cet accessoire et un rectangle spécifié.
+     * 
+     * La valeur retournée est une liste de 4 doubles, représentant respectivement la marge à gauche, la marge en haut, la marge à droite et la marge en bas.
+     * [gauche, haut, droite, bas]
+     * 
+     * @param position
+     * @param dimension
+     * @return
+     */
+    public double[] getMarginWithRect(double[] position, double[] dimension) {
+        double marginLeft = Math.abs(position[0] - this.getPosition()[0]);
+        double marginTop = Math.abs(position[1] - this.getPosition()[1]);
+        double marginRight = Math.abs((this.getPosition()[0] + this.getDimension()[0]) - (position[0] + dimension[0]));
+        double marginBottom = Math.abs((this.getPosition()[1] + this.getDimension()[1]) - (position[1] + dimension[1]));
+
+        return new double[] { marginLeft, marginTop, marginRight, marginBottom };
+    }
+
+    public static double[] getMarginWithRect(Accessoire.AccessoireDTO accessoireDTO, double[] position, double[] dimension) {
+        double marginLeft = Math.abs(position[0] - accessoireDTO.position[0]);
+        double marginTop = Math.abs(position[1] - accessoireDTO.position[1]);
+        double marginRight = Math.abs((accessoireDTO.position[0] + accessoireDTO.dimensions[0]) - (position[0] + dimension[0]));
+        double marginBottom = Math.abs((accessoireDTO.position[1] + accessoireDTO.dimensions[1]) - (position[1] + dimension[1]));
+
+        return new double[] { marginLeft, marginTop, marginRight, marginBottom };
     }
 
 

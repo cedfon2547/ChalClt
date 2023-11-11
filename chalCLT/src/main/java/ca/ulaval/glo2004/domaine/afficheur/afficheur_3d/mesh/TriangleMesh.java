@@ -51,7 +51,7 @@ public class TriangleMesh {
     }
 
     public void setHandle(String handle) {
-        componentHandle=handle;
+        componentHandle = handle;
     }
 
     public List<Triangle> getTriangles() {
@@ -118,7 +118,23 @@ public class TriangleMesh {
 
     public Vector3D getCenter() {
         Vector3D[] bounding = this.getBounding();
-        return new Vector3D((bounding[0].getX() + bounding[1].getX()) / 2, (bounding[0].getY() + bounding[1].getY()) / 2, (bounding[0].getZ() + bounding[1].getZ()) / 2);
+        return new Vector3D((bounding[0].getX() + bounding[1].getX()) / 2,
+                (bounding[0].getY() + bounding[1].getY()) / 2, (bounding[0].getZ() + bounding[1].getZ()) / 2);
+    }
+
+    public double getWidth() {
+        Vector3D[] bounding = this.getBounding();
+        return bounding[1].getX() - bounding[0].getX();
+    }
+
+    public double getHeight() {
+        Vector3D[] bounding = this.getBounding();
+        return bounding[1].getY() - bounding[0].getY();
+    }
+
+    public double getDepth() {
+        Vector3D[] bounding = this.getBounding();
+        return bounding[1].getZ() - bounding[0].getZ();
     }
 
     public TriangleMesh copy() {
@@ -136,7 +152,7 @@ public class TriangleMesh {
 
     public TriangleMesh translate(Vector3D translation) {
         List<Triangle> newTriangles = new ArrayList<Triangle>();
-        
+
         for (Triangle triangle : triangles) {
             newTriangles.add(triangle.translate(translation));
         }
@@ -146,7 +162,7 @@ public class TriangleMesh {
 
     public TriangleMesh scale(Vector3D scale) {
         List<Triangle> newTriangles = new ArrayList<Triangle>();
-        
+
         for (Triangle triangle : triangles) {
             newTriangles.add(triangle.scale(scale));
         }
@@ -169,7 +185,7 @@ public class TriangleMesh {
         Vector3D center = getCenter();
 
         for (Triangle triangle : triangles) {
-            newTriangles.add(triangle.translate(center.multiplyScalar(-1)).rotateX(angle).translate(center));
+            newTriangles.add(triangle.translate(center.multiply(-1)).rotateX(angle).translate(center));
         }
 
         return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
@@ -190,7 +206,7 @@ public class TriangleMesh {
         Vector3D center = getCenter();
 
         for (Triangle triangle : triangles) {
-            newTriangles.add(triangle.translate(center.multiplyScalar(-1)).rotateY(angle).translate(center));
+            newTriangles.add(triangle.translate(center.multiply(-1)).rotateY(angle).translate(center));
         }
 
         return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
@@ -211,25 +227,20 @@ public class TriangleMesh {
         Vector3D center = getCenter();
 
         for (Triangle triangle : triangles) {
-            newTriangles.add(triangle.translate(center.multiplyScalar(-1)).rotateZ(angle).translate(center));
+            newTriangles.add(triangle.translate(center.multiply(-1)).rotateZ(angle).translate(center));
         }
 
         return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
     }
 
-    public double getWidth() {
-        Vector3D[] bounding = this.getBounding();
-        return bounding[1].getX() - bounding[0].getX();
-    }
+    public TriangleMesh rotate(double xAngle, double yAngle, double zAngle, Vector3D axis) {
+        List<Triangle> newTriangles = new ArrayList<Triangle>();
 
-    public double getHeight() {
-        Vector3D[] bounding = this.getBounding();
-        return bounding[1].getY() - bounding[0].getY();
-    }
+        for (Triangle triangle : triangles) {
+            newTriangles.add(triangle.rotate(xAngle, yAngle, zAngle, axis));
+        }
 
-    public double getDepth() {
-        Vector3D[] bounding = this.getBounding();
-        return bounding[1].getZ() - bounding[0].getZ();
+        return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
     }
 
     public TriangleMesh subdivideTriangles(int count) {
@@ -253,10 +264,18 @@ public class TriangleMesh {
         List<Triangle> triangleList = new ArrayList<>();
 
         for (double[][] triangle : triangles) {
-            triangleList.add(new Triangle(new Vector3D(triangle[0][0], triangle[0][1], triangle[0][2]), new Vector3D(triangle[1][0], triangle[1][1], triangle[1][2]), new Vector3D(triangle[2][0], triangle[2][1], triangle[2][2])));
+            triangleList.add(new Triangle(new Vector3D(triangle[0][0], triangle[0][1], triangle[0][2]),
+                    new Vector3D(triangle[1][0], triangle[1][1], triangle[1][2]),
+                    new Vector3D(triangle[2][0], triangle[2][1], triangle[2][2])));
         }
 
         return new TriangleMesh(triangleList);
+    }
+
+    public static TriangleMesh fromDoubleList(List<double[][]> triangles, Material material) {
+        TriangleMesh mesh = fromDoubleList(triangles);
+        mesh.setMaterial(material);
+        return mesh;
     }
 
 }

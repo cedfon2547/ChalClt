@@ -79,6 +79,11 @@ public class Triangle {
         return transform(rotationMatrix);
     }
 
+    public Triangle rotate(double angleX, double angleY, double angleZ, Vector3D axis) {
+        Matrix rotationMatrix = Matrix.rotationMatrix(angleX, angleY, angleZ, axis);
+        return transform(rotationMatrix);
+    } 
+
     public Triangle copy() {
         return new Triangle(vertex1.copy(), vertex2.copy(), vertex3.copy());
     }
@@ -91,7 +96,7 @@ public class Triangle {
     public static Vector3D getNormal(Triangle triangle) {
         Vector3D v1v2 = triangle.vertex2.sub(triangle.vertex1);
         Vector3D v1v3 = triangle.vertex3.sub(triangle.vertex1);
-        return v1v2.crossProduct(v1v3).normalize();
+        return v1v2.cross(v1v3).normalize();
     }
 
     public static double getArea(Triangle triangle) {
@@ -112,14 +117,14 @@ public class Triangle {
 
     public static double getDistance(Triangle triangle, Vector3D point) {
         Vector3D normal = getNormal(triangle);
-        return Math.abs(Vector3D.dotProduct(normal, point.sub(triangle.vertex1)));
+        return Math.abs(Vector3D.dot(normal, point.sub(triangle.vertex1)));
     }
 
     public static Triangle transform(Triangle triangle, Matrix transformMatrix) {
         return new Triangle(
-                triangle.vertex1.multiplyMatrix(transformMatrix),
-                triangle.vertex2.multiplyMatrix(transformMatrix),
-                triangle.vertex3.multiplyMatrix(transformMatrix));
+                triangle.vertex1.multiply(transformMatrix),
+                triangle.vertex2.multiply(transformMatrix),
+                triangle.vertex3.multiply(transformMatrix));
     }
 
     public static Triangle[] subdivide(Triangle triangle) {

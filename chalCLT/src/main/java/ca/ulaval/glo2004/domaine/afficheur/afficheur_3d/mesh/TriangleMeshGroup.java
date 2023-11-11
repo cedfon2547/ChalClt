@@ -8,12 +8,11 @@ import java.util.UUID;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 
 public class TriangleMeshGroup {
-    String ID = UUID.randomUUID().toString();
-    ArrayList<TriangleMesh> meshes = new ArrayList<TriangleMesh>();
+    String identifier = UUID.randomUUID().toString();
+    List<TriangleMesh> meshes = new ArrayList<TriangleMesh>();
     private boolean selected = false;
-
     private boolean valid = true;
-
+    private Vector3D position = new Vector3D(0, 0, 0);
     public TriangleMeshGroup() {
     }
 
@@ -25,6 +24,10 @@ public class TriangleMeshGroup {
         for (TriangleMesh mesh : meshes) {
             this.meshes.add(mesh);
         }
+    }
+
+    public Vector3D getPosition() {
+        return position;
     }
 
     public List<TriangleMesh> getMeshes() {
@@ -44,21 +47,21 @@ public class TriangleMeshGroup {
         return null;
     }
 
-    public String getID() {
-        return ID;
+    public String getIdentifier() {
+        return identifier;
     }
 
     public boolean getSelected() {
         return selected;
     }
 
-    public void setSelected(boolean selected) {
-        this.selected = selected;
+    public boolean getValid() {
+        return valid;
     }
 
-    public boolean getValid() {return valid;}
-
-    public void setValid(boolean valid) {this.valid = valid;}
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
 
     public void addMesh(TriangleMesh mesh) {
         meshes.add(mesh);
@@ -68,12 +71,20 @@ public class TriangleMeshGroup {
         this.meshes.addAll(meshes);
     }
 
-    public void setMeshes(ArrayList<TriangleMesh> meshes) {
+    public void setMeshes(List<TriangleMesh> meshes) {
         this.meshes = meshes;
     }
 
-    public void setID(String ID) {
-        this.ID = ID;
+    public void setIdentifier(String ID) {
+        this.identifier = ID;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public void setPosition(Vector3D position) {
+        this.position = position;
     }
 
     public void clear() {
@@ -157,7 +168,7 @@ public class TriangleMeshGroup {
         Vector3D groupCenter = this.getCenter();
 
         for (TriangleMesh mesh : meshes) {
-            newGroup.addMesh(mesh.translate(groupCenter.multiplyScalar(-1)).rotateX(angle));
+            newGroup.addMesh(mesh.translate(groupCenter.multiply(-1)).rotateX(angle));
         }
 
         return newGroup;
@@ -168,7 +179,7 @@ public class TriangleMeshGroup {
         Vector3D groupCenter = this.getCenter();
 
         for (TriangleMesh mesh : meshes) {
-            newGroup.addMesh(mesh.translate(groupCenter.multiplyScalar(-1)).rotateY(angle));
+            newGroup.addMesh(mesh.translate(groupCenter.multiply(-1)).rotateY(angle));
         }
 
         return newGroup;
@@ -179,10 +190,26 @@ public class TriangleMeshGroup {
         Vector3D groupCenter = this.getCenter();
 
         for (TriangleMesh mesh : meshes) {
-            newGroup.addMesh(mesh.translate(groupCenter.multiplyScalar(-1)).rotateZ(angle));
+            newGroup.addMesh(mesh.translate(groupCenter.multiply(-1)).rotateZ(angle));
         }
 
         return newGroup;
+    }
+
+    public TriangleMeshGroup rotate(double angleX, double angleY, double angleZ, Vector3D axis) {
+        TriangleMeshGroup newGroup = new TriangleMeshGroup();
+        Vector3D groupCenter = this.getCenter();
+
+        for (TriangleMesh mesh : meshes) {
+            newGroup.addMesh(mesh.translate(groupCenter.multiply(-1)).rotate(angleX, angleY, angleZ, axis)
+                    .translate(groupCenter));
+        }
+
+        return newGroup;
+    }
+
+    public TriangleMeshGroup rotate(double angleX, double angleY, double angleZ) {
+        return this.rotate(angleX, angleY, angleZ, new Vector3D(0, 0, 0));
     }
 
     public TriangleMeshGroup translate(Vector3D translation) {

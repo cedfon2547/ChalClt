@@ -3,15 +3,18 @@ package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene;
 import java.awt.Color;
 
 public class SceneConfiguration {
-    Color backgroundColor = Color.DARK_GRAY;
-    Color selectionColor = Color.CYAN;
+    Color backgroundColor = new Color(75, 75, 75, 255);
+    Color gridColor = new Color(150, 150, 150, 255);
+    Color selectionColor = new Color(0, 225, 255, 150);
     int SelectionStrokeWidth = 3;
     boolean showAxis = true;
     boolean showGridXY = true;
     boolean showGridXZ = true;
     boolean showGridYZ = true;
-    int stepCounts = 1000;
+    int stepCounts = 30;
     int gridStep = 30;
+    int gridStrokeWidth = 2;
+    int axisStrokeWidth = 2;
     boolean showLight = true;
     boolean showBoundingBox = true;
     boolean showTriangles = false;
@@ -20,6 +23,18 @@ public class SceneConfiguration {
  
     public SceneConfiguration() {
  
+    }
+
+    public int getAxisStrokeWidth() {
+        return axisStrokeWidth;
+    }
+
+    public int getGridStrokeWidth() {
+        return gridStrokeWidth;
+    }
+
+    public Color getGridColor() {
+        return gridColor;
     }
  
     public Color getBackgroundColor() {
@@ -76,6 +91,18 @@ public class SceneConfiguration {
  
     public int getGridStep() {
         return gridStep;
+    }
+
+    public void setAxisStrokeWidth(int axisStrokeWidth) {
+        this.axisStrokeWidth = axisStrokeWidth;
+    }
+
+    public void setGridStrokeWidth(int gridStrokeWidth) {
+        this.gridStrokeWidth = gridStrokeWidth;
+    }
+
+    public void setGridColor(Color gridColor) {
+        this.gridColor = gridColor;
     }
  
     public void setBackgroundColor(Color backgroundColor) {

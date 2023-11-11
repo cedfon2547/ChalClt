@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import ca.ulaval.glo2004.domaine.utils.UndoRedoManager;
+import java.util.stream.Collectors;
 
 public class Controleur {
     private static Controleur instance = null;
@@ -26,15 +27,14 @@ public class Controleur {
         return instance;
     }
 
-
     public Chalet.ChaletDTO getChalet() {
         return projectActif.getChalet().toDTO(); /* Return DTO */
     }
 
-    public Accessoire.AccessoireDTO getAccessoire(UUID uuid){
-        for (Mur mur: this.projectActif.getChalet().getMurs()){
-            for(Accessoire accessoire: mur.getAccessoires()){
-                if(accessoire.getAccessoireId().equals(uuid)){
+    public Accessoire.AccessoireDTO getAccessoire(UUID uuid) {
+        for (Mur mur : this.projectActif.getChalet().getMurs()) {
+            for (Accessoire accessoire : mur.getAccessoires()) {
+                if (accessoire.getAccessoireId().equals(uuid)) {
                     return accessoire.toDTO();
                 }
             }
@@ -44,45 +44,20 @@ public class Controleur {
 
     public List<Accessoire.AccessoireDTO> getAccessoires() {
         List<Accessoire.AccessoireDTO> accessoires = new ArrayList<>();
-        for (Mur mur: this.projectActif.getChalet().getMurs()) {
-            for (Accessoire accessoire: mur.getAccessoires()) {
+        for (Mur mur : this.projectActif.getChalet().getMurs()) {
+            for (Accessoire accessoire : mur.getAccessoires()) {
                 accessoires.add(accessoire.toDTO());
             }
         }
 
         return accessoires;
     }
+
     public void setChalet(Chalet.ChaletDTO chalet) {
         Chalet.ChaletDTO chaletDTO = this.projectActif.getChalet().toDTO();
         this.pcs.firePropertyChange(EventType.CHALET, chaletDTO, chalet);
 
-        /*undoRedoManager.addUndoRedoAction(() -> {
-            this.projectActif.getChalet().updateChalet(chaletDTO);
-        }, () -> {
-            this.projectActif.getChalet().updateChalet(chalet);
-        });*/
-
-       
         projectActif.getChalet().updateChalet(chalet);
-    }
-
-    public void setAccessoire(Accessoire.AccessoireDTO accessoireDTO){
-
-        this.pcs.firePropertyChange(EventType.ACCESSOIRE, this.getAccessoire(accessoireDTO.accessoireId), accessoireDTO);// à vérifier si ok
-        accessoireDTO.valide=
-                projectActif.getChalet().getMur(accessoireDTO.typeMur).verifierCollisionAcc(accessoireDTO.position, accessoireDTO.dimensions, getChalet().margeAccessoire) &&
-                projectActif.getChalet().getMur(accessoireDTO.typeMur).verifierMargeAcc(accessoireDTO.position, accessoireDTO.dimensions, getChalet().margeAccessoire);
-        this.pcs.firePropertyChange(EventType.ACCESSOIRE_INVALIDE, false, true);
-        projectActif.getChalet().getMur(accessoireDTO.typeMur).getAccessoire(accessoireDTO.accessoireId).updateAccessoire(accessoireDTO);
-
-
-
-        // undoRedoManager.addUndoRedoAction(() -> {
-            
-        // }, () -> {
-
-        // });
-
     }
 
     public PreferencesUtilisateur.PreferencesUtilisateurDTO getPreferencesUtilisateur() {
@@ -93,43 +68,55 @@ public class Controleur {
         projectActif.getPreferencesUtilisateur().update(preferencesUtilisateur);
     }
 
-    public void ajouterAccessoire(TypeMur mur, TypeAccessoire typeAcc, double[] position, double[] dimension) {
-        Accessoire accessoire = projectActif.getChalet().getMur(mur).ajouterAccessoire(typeAcc, position, dimension);
+    public void setAccessoire(Accessoire.AccessoireDTO accessoireDTO) {
+        Accessoire accessoire = this.projectActif.getChalet().updateAccessoire(accessoireDTO);
+
+        this.pcs.firePropertyChange(EventType.ACCESSOIRE, accessoireDTO, accessoire.toDTO());
+
+        if (!accessoire.isValide()) {
+            this.pcs.firePropertyChange(EventType.ACCESSOIRE_INVALIDE, accessoireDTO.valide, accessoire.getValide());
+        }
+    }
+
+    public void ajouterAccessoire(TypeMur typeMur, TypeAccessoire typeAcc, double[] position, double[] dimension) {
+        Accessoire accessoire = this.projectActif.getChalet().ajouterAccessoire(typeMur, typeAcc, position, dimension);
+
         this.pcs.firePropertyChange(EventType.AJOUTER_ACCESSOIRE, null, accessoire.toDTO());
 
-        // undoRedoManager.addUndoRedoAction(() -> {
-        //     projectActif.getChalet().getMur(mur).retirerAccessoire(accessoire.getAccessoireId());
-        //     pcs.firePropertyChange(EventType.SUPPRIMER_ACCESSOIRE, null, accessoire.toDTO());
-        // }, () -> {
-        //     projectActif.getChalet().getMur(mur).ajouterAccessoire(accessoire);
-        //     pcs.firePropertyChange(EventType.AJOUTER_ACCESSOIRE, null, accessoire.toDTO());
-        // });
-    }
-
-    public void supprimerAccessoire(TypeMur mur, UUID uuid){   
-        Accessoire accessoire = projectActif.getChalet().getMur(mur).retirerAccessoire(uuid);
-        this.pcs.firePropertyChange(EventType.SUPPRIMER_ACCESSOIRE, null, accessoire.toDTO());
-    }
-
-    public void supprimerAccessoires(List<Accessoire.AccessoireDTO> accessoires) {
-        for (Accessoire.AccessoireDTO accessoire : accessoires) {
-            this.projectActif.getChalet().getMur(accessoire.typeMur).retirerAccessoire(accessoire.accessoireId);
+        if (!accessoire.isValide()) {
+            this.pcs.firePropertyChange(EventType.ACCESSOIRE_INVALIDE, false, true);
         }
-
-        this.pcs.firePropertyChange(EventType.SUPPRIMER_ACCESSOIRES, null, accessoires);
     }
 
-    public void creeProjet(){
-        if(this.projectActif != null){
+    public void retirerAccessoire(TypeMur typeMur, UUID uuid) {
+        Accessoire accessoire = this.projectActif.getChalet().retirerAccessoire(typeMur, uuid);
+        this.pcs.firePropertyChange(EventType.RETIRER_ACCESSOIRE, null, accessoire.toDTO());
+    }
+
+    public void retirerAccessoire(UUID uuid) {
+        Accessoire accessoire = this.projectActif.getChalet().retirerAccessoire(uuid);
+        this.pcs.firePropertyChange(EventType.RETIRER_ACCESSOIRE, null, accessoire.toDTO());
+    }
+
+    public void retirerAccessoires(List<Accessoire.AccessoireDTO> accessoires) {
+        List<Accessoire> removed = this.projectActif.getChalet().retirerAccessoires(accessoires);
+        List<Accessoire.AccessoireDTO> removedDTOs = removed.stream().map((accessoire) -> accessoire.toDTO()).collect(Collectors.toList());
+
+        this.pcs.firePropertyChange(EventType.SUPPRIMER_ACCESSOIRES, null, removedDTOs);
+    }
+
+    public void creeProjet() {
+        if (this.projectActif != null) {
             fermerProjet();
         }
+        
         this.projectActif = new ChalCLTProjet(null, new Chalet(), this.projectActif.getPreferencesUtilisateur());
         this.pcs.firePropertyChange(EventType.CREE_PROJET, null, this.getChalet());
     }
 
-    public void fermerProjet(){
-        //TODO
-        
+    public void fermerProjet() {
+        // TODO
+
     }
 
     public void undo() {
@@ -143,7 +130,6 @@ public class Controleur {
     public void addPropertyChangeListener(String property, PropertyChangeListener listener) {
         this.pcs.addPropertyChangeListener(property, listener);
     }
-
 
     public void removePropertyChangeListener(String property, PropertyChangeListener listener) {
         this.pcs.removePropertyChangeListener(property, listener);
@@ -161,7 +147,7 @@ public class Controleur {
         public static final String CHALET = "chalet";
         public static final String ACCESSOIRE = "accessoire";
         public static final String AJOUTER_ACCESSOIRE = "ajouterAccessoire";
-        public static final String SUPPRIMER_ACCESSOIRE = "supprimerAccessoire";
+        public static final String RETIRER_ACCESSOIRE = "supprimerAccessoire";
         public static final String SUPPRIMER_ACCESSOIRES = "supprimerAccessoires";
         public static final String CREE_PROJET = "creeProjet";
         public static final String FERMER_PROJET = "fermerProjet";

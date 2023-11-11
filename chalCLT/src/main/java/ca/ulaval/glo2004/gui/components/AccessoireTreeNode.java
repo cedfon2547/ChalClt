@@ -8,28 +8,22 @@ import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.TypeAccessoire;
 
 public class AccessoireTreeNode extends DefaultMutableTreeNode {
-    private String nom;
-    private TypeAccessoire typeAccessoire;
-    private UUID uuid;
     private Accessoire.AccessoireDTO accessoireDTO;
 
     public AccessoireTreeNode(Accessoire.AccessoireDTO accessoireDTO) {
-        this.nom = accessoireDTO.accessoireNom;
-        this.typeAccessoire = accessoireDTO.accessoireType;
-        this.uuid = accessoireDTO.accessoireId;
         this.accessoireDTO = accessoireDTO;
     }
 
     public String getNom() {
-        return nom;
+        return accessoireDTO.accessoireNom;
     }
 
     public TypeAccessoire getTypeAccessoire() {
-        return typeAccessoire;
+        return accessoireDTO.accessoireType;
     }
 
     public UUID getUuid() {
-        return uuid;
+        return accessoireDTO.accessoireId;
     }
 
     public Accessoire.AccessoireDTO getAccessoireDTO() {
@@ -38,14 +32,6 @@ public class AccessoireTreeNode extends DefaultMutableTreeNode {
 
     public void setAccessoireDTO(Accessoire.AccessoireDTO accessoireDTO) {
         this.accessoireDTO = accessoireDTO;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
     }
 
     public boolean equals(AccessoireTreeNode node) {

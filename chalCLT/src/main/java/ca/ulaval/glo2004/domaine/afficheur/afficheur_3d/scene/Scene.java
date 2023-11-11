@@ -11,7 +11,6 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 public class Scene {
     private SceneConfiguration configuration = new SceneConfiguration();
     private ArrayList<TriangleMeshGroup> meshes = new ArrayList<TriangleMeshGroup>();
-    // private ArrayList<TriangleMeshGroup> meshesGroups = new ArrayList<TriangleMeshGroup>();
     private Light light = new Light();
     private Camera camera = new Camera();
 
@@ -38,7 +37,7 @@ public class Scene {
 
     public TriangleMeshGroup getMesh(String id) {
         for (TriangleMeshGroup mesh : meshes) {
-            if (mesh.getID().equals(id)) {
+            if (mesh.getIdentifier().equals(id)) {
                 return mesh;
             }
         }
@@ -102,9 +101,29 @@ public class Scene {
 
     public void setSelected(String id, boolean selected) {
         for (TriangleMeshGroup mesh : meshes) {
-            if (mesh.getID().equals(id)) {
+            if (mesh.getIdentifier().equals(id)) {
                 mesh.setSelected(selected);
             }
+        }
+    }
+
+    public void setValid(String id, boolean valid) {
+        for (TriangleMeshGroup mesh: meshes) {
+            if (mesh.getIdentifier().equals(id)) {
+                mesh.setValid(valid);
+            }
+        }
+    }
+
+    public void clearAllSelection() {
+        for (TriangleMeshGroup mesh : meshes) {
+            mesh.setSelected(false);
+        }
+    }
+
+    public void clearAllValide() {
+        for (TriangleMeshGroup mesh : meshes) {
+            mesh.setValid(true);
         }
     }
 }

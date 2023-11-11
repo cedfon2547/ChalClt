@@ -54,7 +54,7 @@ public class Retrait {
      * Retourne les dimensions du retrait.
      * @return Les dimensions du retrait.
      */
-    public double[] getDimensions() {
+    public double[] getDimension() {
         return dimensions;
     }
 
