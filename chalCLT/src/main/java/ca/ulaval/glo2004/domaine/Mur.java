@@ -398,7 +398,7 @@ public class Mur {
                 return false; // Invalide
             }
 
-            return true;
+            return validationPositionAccSurMur(accessoire.accessoireId);
         }
 
         // If not a door, check all margins
@@ -407,7 +407,7 @@ public class Mur {
             return false; // Invalide
         }
 
-        return true;
+        return validationPositionAccSurMur(accessoire.accessoireId);
     }
 
     public boolean verifierValiditeAccessoire(Accessoire accessoire, double margeMinimal) {
@@ -418,5 +418,23 @@ public class Mur {
         for (Accessoire accessoire : accessoires) {
             accessoire.setValide(verifierValiditeAccessoire(accessoire, margeMinimal));
         }
+    }
+    
+    /**
+     * Vérifie si l'accessoire est placé à une position valide
+     * @param 
+     * @return vrai si la position de l'accessoire est valide
+     */
+    public boolean validationPositionAccSurMur(UUID accessoireID) {
+        double posX = this.getAccessoire(accessoireID).getPosition()[0];
+        double posY = this.getAccessoire(accessoireID).getPosition()[1];
+        double largeur = this.getAccessoire(accessoireID).getDimension()[0];
+        double hauteur = this.getAccessoire(accessoireID).getDimension()[1];
+        double largeurMur = this.dimensions[0];
+        double hauteurMur = this.dimensions[1];
+        if ((posX > 0) && (posX + largeur < largeurMur))
+            if ((posY > 0) && (posY + hauteur < hauteurMur))
+                return true;
+        return false;
     }
 }
