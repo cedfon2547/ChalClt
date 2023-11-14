@@ -61,15 +61,22 @@ public class Accessoire extends Retrait {
         return accessoireNom;
     }
 
+    /**
+     * Retourne le mur sur lequel l'accessoire est placé
+     * @return Le mur sur lequel l'accessoire est placé (Arrière, Droit, Façade, Gauche)
+     */
     public TypeMur getTypeMur() {
         return typeMur;
     }
 
     /**
      * Retourne la validité de l'accessoire
-     * @return valide
+     * @return vrai si l'accessoire est placé à une position valide
      */
-    public boolean getValide(){return valide;}
+    public boolean getValide(){
+        
+        return valide;
+    }
 
     public boolean isValide() {
         return valide == true;
