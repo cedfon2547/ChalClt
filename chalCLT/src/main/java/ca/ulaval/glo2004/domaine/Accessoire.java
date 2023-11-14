@@ -74,7 +74,6 @@ public class Accessoire extends Retrait {
      * @return vrai si l'accessoire est placé à une position valide
      */
     public boolean getValide(){
-        
         return valide;
     }
 
@@ -125,6 +124,52 @@ public class Accessoire extends Retrait {
      * @param p_validiterEtat
      */
     public void setValide(boolean p_validiterEtat){this.valide = p_validiterEtat;}
+    
+    /**
+     * Vérifie si l'accessoire est placé à une position valide
+     * @return vrai si la position de l'accessoire est valide
+     */
+    public boolean validationSurMur() {
+        double posX = this.getPosition()[0];
+        double posY = this.getPosition()[1];
+        double largeur = this.getDimension()[0];
+        double hauteur = this.getDimension()[1];
+        double largeurMur;
+        if ((this.typeMur == TypeMur.Facade) || (this.typeMur == TypeMur.Arriere))
+            largeurMur = Controleur.getInstance().getChalet().largeur;
+        else
+            largeurMur = Controleur.getInstance().getChalet().longueur;
+        double hauteurMur = Controleur.getInstance().getChalet().hauteur;
+        if ((posX > 0) && (posX + largeur < largeurMur))
+            if ((posY > 0) && (posY + hauteur < hauteurMur))
+                return true;
+        return false;
+    }
+    
+    /**
+     * Vérifie si l'accessoire est placé à une position ou un autre accessoire est situé
+     * @return vrai si aucun autre accessoire ne bloque l'accessoire en question
+     */
+    public boolean validationSurAutres() {
+        double posX = this.getPosition()[0];
+        double posY = this.getPosition()[1];
+        double largeur = this.getDimension()[0];
+        double hauteur = this.getDimension()[1];
+        for (AccessoireDTO other : Controleur.getInstance().getAccessoires()) {
+            if (other.typeMur == this.typeMur) {
+                double otherX = other.position[0];
+                double otherY = other.position[1];
+                double otherL = other.dimensions[0];
+                double otherH = other.dimensions[1];
+                if (((posX <= otherX) && (posX + largeur >= otherX)) || 
+                        ((posX <= otherX + otherL) && (posX + largeur >= otherX + otherL)))
+                    if (((posY <= otherY) && (posY + hauteur >= otherY)) || 
+                        ((posY <= otherY + otherH) && (posX + hauteur >= otherY + otherH)))
+                        return false;
+            }
+        }
+        return true;
+    }
 
     public void setTypeMur(TypeMur typeMur) {
         this.typeMur = typeMur;
