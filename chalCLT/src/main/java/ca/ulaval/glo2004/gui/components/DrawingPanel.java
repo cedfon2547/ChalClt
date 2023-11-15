@@ -150,9 +150,9 @@ public class DrawingPanel extends javax.swing.JPanel {
                 Camera camera = afficheur.getScene().getCamera();
 
                 if (e.getPreciseWheelRotation() < 0) {
-                    camera.zoomInDirection(e.getPoint(), getSize());
+                    camera.zoomInDirection(e.getPoint(), getSize(), e.isShiftDown());
                 } else {
-                    camera.zoomOutDirection(e.getPoint(), getSize());
+                    camera.zoomOutDirection(e.getPoint(), getSize(), e.isShiftDown());
                 }
 
                 repaint();
@@ -258,7 +258,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                         // Rotating instead of translate
                         // Convert the diffX and diffY to radians
                         double rotateStep = Math.toRadians(1);
-                        double rotateX = rotateStep * diffY / 3;
+                        double rotateX = rotateStep * -diffY / 3; // negated Ydiff to fix the inverted y axis
                         double rotateY = rotateStep * diffX / 3;
 
                         Vector3D direction = initialDragCamDirection.add(new Vector3D(rotateX, rotateY, 0));

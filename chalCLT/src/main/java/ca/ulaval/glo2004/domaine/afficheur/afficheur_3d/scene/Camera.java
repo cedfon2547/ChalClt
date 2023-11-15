@@ -11,6 +11,9 @@ public class Camera {
     private Vector3D direction = new Vector3D(0, 0, 0);
     public double scale = 1;
 
+
+    public static final double _ZOOM_FAC_PER_TICK= 0.03;
+
     public Camera() {
     }
 
@@ -62,20 +65,27 @@ public class Camera {
         this.scale = scale;
     }
 
-    public void zoomInDirection(Point mousePosition, Dimension viewportDimension) {
-        double zoomFactor = 1 * 1.01; // Define the zoom factor
-        // move cam in direction of mouse by scale*
-        this.position = position.add(new Vector3D((mousePosition.x-viewportDimension.width/2) * (1-zoomFactor),(mousePosition.y-viewportDimension.height/2) * (1-zoomFactor),0));
+    private void zoom(Point mousePosition, Dimension viewportDimension, boolean precise, int fac) { // 1 = in, -1 = out
+        double zoomFactor = 1 + (_ZOOM_FAC_PER_TICK * (precise?0.1:1)); // Define the zoom factor
+        double trueFactor = (fac>0?zoomFactor:1/zoomFactor); // account for the possibility of zooming out
 
-        this.scale = this.scale * zoomFactor;
+        // reduce clutter during testing and also now I guess
+        Vector3D mousePos = new Vector3D(mousePosition.x-(double)viewportDimension.width/2,mousePosition.y-(double)viewportDimension.height/2,0);
 
+        // solution: for trueFactor = S', added value to pos = A, this.position = pos, mousePos = mouse
+        // A = (S'-1)(mouse-pos); a lot of maths went into that ok @-@
+
+        this.position = position.add(new Vector3D(-(trueFactor-1)*(mousePos.x-position.x), -(trueFactor-1)*(mousePos.y-position.y), 0));
+
+        this.scale = this.scale * trueFactor;
     }
 
-    public void zoomOutDirection(Point mousePosition, Dimension viewportDimension) {
-        double zoomFactor = 1 / 1.01; // Define the zoom factor
+    public void zoomInDirection(Point mousePosition, Dimension viewportDimension, boolean precise){
+        zoom(mousePosition, viewportDimension, precise, 1);
+    }
 
-        this.position = position.add(new Vector3D((mousePosition.x-viewportDimension.width/2) * (1-zoomFactor),(mousePosition.y-viewportDimension.height/2) * (1-zoomFactor),0));
-        this.scale = this.scale * zoomFactor;
+    public void zoomOutDirection(Point mousePosition, Dimension viewportDimension, boolean precise) {
+        zoom(mousePosition, viewportDimension, precise, -1);
     }
 
     public Camera copy() {

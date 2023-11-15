@@ -240,7 +240,7 @@ public class PanelHelper {
                 }
 
                 // Si on doit retirer la marge, on fait -m, sinon on fait +m
-                // m = -m;
+                m = -m;
                 // largeur -= m * 2;
 
                 double[] p1 = new double[] { x0, y0, z0 };
