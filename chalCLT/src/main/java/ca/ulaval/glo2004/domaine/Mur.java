@@ -381,7 +381,7 @@ public class Mur {
                 new double[] { getLargeur(), getHauteur() });
     }
 
-    public boolean verifierValiditeAccessoire(Accessoire.AccessoireDTO accessoire, double margeMinimal) {
+    public boolean verifierValiditeAccessoire(Accessoire.AccessoireDTO accessoire, double margeMinimal, double epaisseurMur) {
         boolean isColliding = this.verifierCollisionAcc(accessoire, margeMinimal);
 
         if (isColliding) {
@@ -394,47 +394,40 @@ public class Mur {
         if (accessoire.accessoireType == TypeAccessoire.Porte) {
             // Bottom margin is always 0 for a door
             // Only need to check left, top and right margins
-            if (margins[0] < margeMinimal || margins[1] < margeMinimal || margins[2] < margeMinimal) {
+            if (margins[0] < margeMinimal + epaisseurMur/2  || margins[2] < margeMinimal + epaisseurMur/2 || margins[1] < margeMinimal
+            ) {
                 return false; // Invalide
             }
+            // Condition pour exterieur du mur a retouche au besion
+           if(margins[0] > getLargeur() - epaisseurMur/2 - accessoire.dimensions[0]){
+                return false;
+            }
 
-            return validationPositionAccSurMur(accessoire.accessoireId);
+            return true;
         }
 
+        // revoir l'utilite de
         // If not a door, check all margins
-        if (margins[0] < margeMinimal || margins[1] < margeMinimal || margins[2] < margeMinimal
-                || margins[3] < margeMinimal) {
+        if (margins[0] < margeMinimal + epaisseurMur/2  || margins[2] < margeMinimal + epaisseurMur/2 || margins[1] < margeMinimal || margins[3] < margeMinimal) {
             return false; // Invalide
         }
 
-        return validationPositionAccSurMur(accessoire.accessoireId);
+        if (margins[0] > getLargeur() - epaisseurMur/2 - accessoire.dimensions[0] || margins[1] > getHauteur() - accessoire.dimensions[1]){
+            return false;
+        }
+
+
+        return true;
     }
 
-    public boolean verifierValiditeAccessoire(Accessoire accessoire, double margeMinimal) {
-        return this.verifierValiditeAccessoire(accessoire.toDTO(), margeMinimal);        
+    public boolean verifierValiditeAccessoire(Accessoire accessoire, double margeMinimal, double epaisseurMur) {
+        return this.verifierValiditeAccessoire(accessoire.toDTO(), margeMinimal, epaisseurMur);
     }
 
-    public void updateValiditeAccessoires(double margeMinimal) {
+    public void updateValiditeAccessoires(double margeMinimal, double epaisseurMur) {
         for (Accessoire accessoire : accessoires) {
-            accessoire.setValide(verifierValiditeAccessoire(accessoire, margeMinimal));
+            accessoire.setValide(verifierValiditeAccessoire(accessoire, margeMinimal, epaisseurMur));
         }
     }
-    
-    /**
-     * Vérifie si l'accessoire est placé à une position valide
-     * @param 
-     * @return vrai si la position de l'accessoire est valide
-     */
-    public boolean validationPositionAccSurMur(UUID accessoireID) {
-        double posX = this.getAccessoire(accessoireID).getPosition()[0];
-        double posY = this.getAccessoire(accessoireID).getPosition()[1];
-        double largeur = this.getAccessoire(accessoireID).getDimension()[0];
-        double hauteur = this.getAccessoire(accessoireID).getDimension()[1];
-        double largeurMur = this.dimensions[0];
-        double hauteurMur = this.dimensions[1];
-        if ((posX > 0) && (posX + largeur < largeurMur))
-            if ((posY > 0) && (posY + hauteur < hauteurMur))
-                return true;
-        return false;
-    }
+
 }

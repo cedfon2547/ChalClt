@@ -1,5 +1,7 @@
 package ca.ulaval.glo2004.domaine;
 
+import java.awt.geom.Rectangle2D;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -17,10 +19,11 @@ public class Chalet {
 
 
     // TODO: rallon, pignon
-    private Mur[] murs = new Mur[] { new Mur(TypeMur.Facade, hauteur, largeur), new Mur(TypeMur.Arriere, hauteur, largeur), new Mur(TypeMur.Droit, hauteur, longueur), new Mur(TypeMur.Gauche, hauteur, longueur) };
+    private Mur[] murs = new Mur[]{new Mur(TypeMur.Facade, hauteur, largeur), new Mur(TypeMur.Arriere, hauteur, largeur), new Mur(TypeMur.Droit, hauteur, longueur), new Mur(TypeMur.Gauche, hauteur, longueur)};
     // private Toit toit = new Toit();
 
-    public Chalet() {}
+    public Chalet() {
+    }
 
     public Chalet(String nom, double hauteur, double largeur, double longueur, double epaisseurMur, TypeSensToit sensToit, double angleToit, double margeAccessoire, double margeSupplementaireRetrait) {
         this.nom = nom;
@@ -62,8 +65,8 @@ public class Chalet {
         this.margeAccessoire = dtoChalet.margeAccessoire;
         this.margeSupplementaireRetrait = dtoChalet.margeSupplementaireRetrait;
 
-        for (Mur mur: this.getMurs()) {
-            mur.updateValiditeAccessoires(margeAccessoire);
+        for (Mur mur : this.getMurs()) {
+            mur.updateValiditeAccessoires(margeAccessoire, epaisseurMur);
         }
     }
 
@@ -80,14 +83,14 @@ public class Chalet {
 
     public Accessoire ajouterAccessoire(TypeMur typeMur, TypeAccessoire typeAccessoire, double[] position, double[] dimension) {
         Accessoire accessoire = new Accessoire(typeAccessoire, typeMur, position, dimension);
-        
+
         // By default, translate the accessory to the margin specified in the chalet
-        accessoire.setPosition(new double[] { margeAccessoire, margeAccessoire });
+        accessoire.setPosition(new double[]{margeAccessoire, margeAccessoire});
 
         Mur mur = getMur(accessoire.getTypeMur());
 
         mur.ajouterAccessoire(accessoire);
-        mur.updateValiditeAccessoires(margeAccessoire);
+        mur.updateValiditeAccessoires(margeAccessoire, epaisseurMur);
 
         return accessoire;
     }
@@ -95,15 +98,15 @@ public class Chalet {
     public Accessoire updateAccessoire(Accessoire.AccessoireDTO accessoireDTO) {
         Mur mur = getMur(accessoireDTO.typeMur);
         Accessoire accessoire = mur.updateAccessoire(accessoireDTO);
-        mur.updateValiditeAccessoires(margeAccessoire);
+        mur.updateValiditeAccessoires(margeAccessoire, epaisseurMur);
 
         return accessoire;
-    } 
+    }
 
     public Accessoire retirerAccessoire(TypeMur typeMur, UUID uuid) {
         Mur mur = getMur(typeMur);
         Accessoire accessoire = mur.retirerAccessoire(uuid);
-        mur.updateValiditeAccessoires(margeAccessoire);
+        mur.updateValiditeAccessoires(margeAccessoire, epaisseurMur);
 
         return accessoire;
     }
@@ -116,15 +119,15 @@ public class Chalet {
     public List<Accessoire> retirerAccessoires(List<Accessoire.AccessoireDTO> accessoireDTOs) {
         List<Accessoire> accessoires = new ArrayList<Accessoire>();
 
-        for (Accessoire.AccessoireDTO accessoireDTO: accessoireDTOs) {
+        for (Accessoire.AccessoireDTO accessoireDTO : accessoireDTOs) {
             Accessoire removed = getMur(accessoireDTO.typeMur).retirerAccessoire(accessoireDTO.accessoireId);
             if (removed != null) {
                 accessoires.add(removed);
             }
         }
 
-        for (Mur mur: getMurs()) {
-            mur.updateValiditeAccessoires(margeAccessoire);
+        for (Mur mur : getMurs()) {
+            mur.updateValiditeAccessoires(margeAccessoire, epaisseurMur);
         }
 
         return accessoires;
@@ -194,3 +197,4 @@ public class Chalet {
         return new Chalet(dto);
     }
 }
+
