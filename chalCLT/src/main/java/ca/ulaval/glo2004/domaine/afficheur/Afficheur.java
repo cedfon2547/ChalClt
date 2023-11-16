@@ -18,6 +18,7 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
+import ca.ulaval.glo2004.gui.Constants;
 
 public class Afficheur {
     // private BufferedImage bufImage = new BufferedImage(500, 500,
@@ -123,6 +124,11 @@ public class Afficheur {
                                 chaletDTO.epaisseurMur, chaletDTO.margeSupplementaireRetrait, sideTruncate),
                         murGaucheMaterial),
         });
+
+        murFacadeGroup.getMesh(0).setHandle(Constants._STRING_MUR_FACADE);
+        murArriereGroup.getMesh(0).setHandle(Constants._STRING_MUR_ARRIERE);
+        murDroitGroup.getMesh(0).setHandle(Constants._STRING_MUR_DROIT);
+        murGaucheGroup.getMesh(0).setHandle(Constants._STRING_MUR_GAUCHE);
 
         murFacadeGroup = murFacadeGroup.translate(murFacadeGroup.getCenter().multiply(-1));
         murArriereGroup = murArriereGroup.translate(murArriereGroup.getCenter().multiply(-1));
@@ -262,6 +268,10 @@ public class Afficheur {
         } else if (vueActive == TypeDeVue.Gauche) {
             this.getScene().getCamera().setDirection(TypeDeVue.vueGauche());
         }
+    }
+
+    public void weakChangerVue(TypeDeVue vue) {
+        this.vueActive = vue;
     }
 
     public static enum TypeDeVue {

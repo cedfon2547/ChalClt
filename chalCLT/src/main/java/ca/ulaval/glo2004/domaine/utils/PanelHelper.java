@@ -7,6 +7,8 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.shapes.RectCuboid;
+import ca.ulaval.glo2004.gui.Constants;
+
 import java.awt.Color;
 import java.awt.Dimension;
 
@@ -320,10 +322,10 @@ public class PanelHelper {
                 TriangleMesh murDroite = TriangleMesh.fromDoubleList(trianglesDroite);
                 TriangleMesh murGauche = TriangleMesh.fromDoubleList(trianglesGauche);
 
-                murFacade.setHandle("facade");
-                murArriere.setHandle("arriere");
-                murDroite.setHandle("droite");
-                murGauche.setHandle("gauche");
+                murFacade.setHandle(Constants._STRING_MUR_FACADE);
+                murArriere.setHandle(Constants._STRING_MUR_ARRIERE);
+                murDroite.setHandle(Constants._STRING_MUR_DROIT);
+                murGauche.setHandle(Constants._STRING_MUR_GAUCHE);
 
                 Vector3D murFacadeCenter = murFacade.getCenter().copy();
                 Vector3D murArriereCenter = murArriere.getCenter().copy();

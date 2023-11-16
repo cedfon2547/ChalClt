@@ -17,6 +17,7 @@ import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
+import ca.ulaval.glo2004.gui.Constants;
 import ca.ulaval.glo2004.gui.MainWindow;
 import ca.ulaval.glo2004.domaine.Accessoire;
 
@@ -172,6 +173,48 @@ public class DrawingPanel extends javax.swing.JPanel {
                 // System.out.println("Mouse Clicked");
 
                 TriangleMeshGroup mesh = afficheur.getRasterizer().getMeshFromPoint(e.getPoint());
+
+                if(mesh!=null && e.getClickCount()>=2){
+                    String handle = mesh.getMesh(0).getHandle();
+                    Vector3D currentDirection = afficheur.getScene().getCamera().getDirection();
+                    // check if we are in an intended view direction
+                    boolean strongChange = false;
+                    if(currentDirection.equals(Afficheur.TypeDeVue.vueArriere()) ||
+                            currentDirection.equals(Afficheur.TypeDeVue.vueFacade()) ||
+                            currentDirection.equals(Afficheur.TypeDeVue.vueDroite()) ||
+                            currentDirection.equals(Afficheur.TypeDeVue.vueGauche()) ||
+                            currentDirection.equals(Afficheur.TypeDeVue.vueDessus()))
+                        strongChange = true;
+
+                    switch(handle) {
+                        case Constants._STRING_MUR_FACADE:
+                            if(strongChange)
+                                changerVue(Afficheur.TypeDeVue.Facade);
+                            else
+                                weakChangerVue(Afficheur.TypeDeVue.Facade);
+                            return;
+                        case Constants._STRING_MUR_ARRIERE:
+                            if(strongChange)
+                                changerVue(Afficheur.TypeDeVue.Arriere);
+                            else
+                                weakChangerVue(Afficheur.TypeDeVue.Arriere);
+                            return;
+                        case Constants._STRING_MUR_DROIT:
+                            if(strongChange)
+                                changerVue(Afficheur.TypeDeVue.Droite);
+                            else
+                                weakChangerVue(Afficheur.TypeDeVue.Droite);
+                            return;
+                        case Constants._STRING_MUR_GAUCHE:
+                            if(strongChange)
+                                changerVue(Afficheur.TypeDeVue.Gauche);
+                            else
+                                weakChangerVue(Afficheur.TypeDeVue.Gauche);
+                            return;
+                        default:
+                            // nop, fall through
+                    }
+                }
 
                 afficheur.getRasterizer().deselectAllMeshes();
 
@@ -438,6 +481,14 @@ public class DrawingPanel extends javax.swing.JPanel {
         updateToolbarBtns();
         invalidate();
         repaint();
+    }
+
+    public void weakChangerVue(Afficheur.TypeDeVue vue) {
+        afficheur.weakChangerVue(vue); // update seulement les flags
+        mainWindow.menu.activerVue(afficheur.getVueActive());
+        updateToolbarBtns();
+        //invalidate(); // redundant when not updating camera
+        //repaint();
     }
 
     public void rechargerAffichage() {
