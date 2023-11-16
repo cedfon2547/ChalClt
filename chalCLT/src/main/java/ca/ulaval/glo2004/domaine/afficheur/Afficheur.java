@@ -171,8 +171,6 @@ public class Afficheur {
             if (accMesh == null)
                 throw new Exception("Accessory id is null"); // TODO update exception type
 
-            accMesh.setValid(accessoireDTO.valide);
-
             switch (typeMur) {
                 case Facade:
 
@@ -237,6 +235,9 @@ public class Afficheur {
                     // }
                     break;
             }
+            
+            accMesh.setIdentifier(accessoireDTO.accessoireId.toString());
+            accMesh.setValid(accessoireDTO.valide);
             
             this.scene.addMesh(accMesh);
             this.scene.setValid(accMesh.getIdentifier(), accessoireDTO.valide);

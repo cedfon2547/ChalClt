@@ -4,6 +4,9 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
+import java.util.List;
+import java.util.UUID;
+
 import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
@@ -15,6 +18,7 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
 import ca.ulaval.glo2004.gui.MainWindow;
+import ca.ulaval.glo2004.domaine.Accessoire;
 
 public class DrawingPanel extends javax.swing.JPanel {
     MainWindow mainWindow;
@@ -172,8 +176,22 @@ public class DrawingPanel extends javax.swing.JPanel {
                 afficheur.getRasterizer().deselectAllMeshes();
 
                 if (mesh != null) {
+                    Accessoire.AccessoireDTO accDto = mainWindow.getControleur().getAccessoire(UUID.fromString(mesh.getIdentifier()));
+                    
+                    if (accDto != null) {
+                        mainWindow.clearAccessoiresSelectionnees();
+                        mainWindow.ajouterAccessoireSelectionnee(accDto);
+                        mainWindow.showAccessoireTable(accDto);
+                    } else {
+                        mainWindow.clearAccessoiresSelectionnees();
+                        mainWindow.showChaletTable();
+                    }
+
                     System.out.println(mesh.getIdentifier() + " selected");
                     afficheur.getScene().setSelected(mesh.getIdentifier(), true);
+                } else {
+                    mainWindow.clearAccessoiresSelectionnees();
+                    mainWindow.showChaletTable();
                 }
 
                 repaint();
