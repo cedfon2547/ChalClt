@@ -1,8 +1,11 @@
 package ca.ulaval.glo2004.gui.components;
 
+
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelListener;
+
 
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.Chalet.ChaletDTO;
@@ -14,32 +17,42 @@ public class TableChalet extends JTable {
     private MainWindow mainWindow;
     private ChaletDTO dtoChalet;
     private String[] columnNames;
-    private Object[][] props;
+    private String[][] props;
     private javax.swing.table.DefaultTableModel model;
     private TitledBorder titledBorder;
+    private ChaletTableCellEditor chaletTableCellEditor;
 
     public TableChalet(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
         this.dtoChalet = mainWindow.getControleur().getChalet();
+        this.chaletTableCellEditor = new ChaletTableCellEditor(this);
+        
+        //this.setCellEditor(new DefaultCellEditor(sensToitComboBox)); 
+        
         this.columnNames = new String[] {
                 "Propriété",
                 "Valeur"
         };
-        this.props = new Object[][] {
+        this.props = new String[][] {
                 { "Nom", dtoChalet.nom },
-                { "Hauteur", ImperialDimension.convertToImperial(dtoChalet.hauteur) },
-                { "Largeur", ImperialDimension.convertToImperial(dtoChalet.largeur) },
-                { "Longueur", ImperialDimension.convertToImperial(dtoChalet.longueur) },
-                { "Épaisseur panneaux", ImperialDimension.convertToImperial(dtoChalet.epaisseurMur) },
-                { "Angle du toit", dtoChalet.angleToit },
-                { "Sens du toit", dtoChalet.sensToit },
-                {" Marge accessoire", ImperialDimension.convertToImperial(dtoChalet.margeAccessoire)},
-                { "Marge supplémentaire", ImperialDimension.convertToImperial(dtoChalet.margeSupplementaireRetrait) },
+                { "Hauteur", ImperialDimension.convertToImperial(dtoChalet.hauteur).toString() },
+                { "Largeur", ImperialDimension.convertToImperial(dtoChalet.largeur).toString() },
+                { "Longueur", ImperialDimension.convertToImperial(dtoChalet.longueur).toString()  },
+                { "Épaisseur panneaux", ImperialDimension.convertToImperial(dtoChalet.epaisseurMur).toString()  },
+                { "Angle du toit", String.format("%s", dtoChalet.angleToit)},
+                { "Sens du toit", String.format("%s", dtoChalet.sensToit)},
+                {" Marge accessoire", ImperialDimension.convertToImperial(dtoChalet.margeAccessoire).toString() },
+                { "Marge supplémentaire", ImperialDimension.convertToImperial(dtoChalet.margeSupplementaireRetrait).toString()  },
         };
+        
+        
+       
         model = new javax.swing.table.DefaultTableModel(props, columnNames);
         this.setModel(model);
+        this.getColumnModel().getColumn(1).setCellEditor(chaletTableCellEditor);
         titledBorder = javax.swing.BorderFactory.createTitledBorder("Propriétés du chalet");
         this.setTableHeader(this.getTableHeader());
+        this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         this.getModel().addTableModelListener(new TableModelListener() {
             @Override
@@ -103,14 +116,19 @@ public class TableChalet extends JTable {
             model.fireTableCellUpdated(rowIndex, columnIndex);
             return;
         }
+        if(rowIndex == 6){
+            props[rowIndex][columnIndex] = chaletTableCellEditor.sensToitComboBox.getSelectedItem().toString();
+            model.fireTableCellUpdated(rowIndex,columnIndex);
+            return;
+        }
 
-        props[rowIndex][columnIndex] = aValue;
+        props[rowIndex][columnIndex] = (String)aValue;
         model.fireTableCellUpdated(rowIndex, columnIndex);
     }
 
     @Override
     public boolean isCellEditable(int row, int column) {
-        return column == 1;
+        return column == 1; //&& row != 6;
     }
 
     public TitledBorder getTitledBorder() {
