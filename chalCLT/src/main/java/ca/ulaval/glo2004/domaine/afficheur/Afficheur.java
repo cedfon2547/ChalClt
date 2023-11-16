@@ -99,7 +99,7 @@ public class Afficheur {
         murDroitMaterial.setColor(java.awt.Color.GREEN);
         murGaucheMaterial.setColor(java.awt.Color.YELLOW);
 
-        boolean sideTruncate = chaletDTO.sensToit == TypeSensToit.Est || chaletDTO.sensToit == TypeSensToit.Ouest;
+        boolean sideTruncate = chaletDTO.sensToit == TypeSensToit.Nord || chaletDTO.sensToit == TypeSensToit.Sud;
 
         TriangleMeshGroup murFacadeGroup = new TriangleMeshGroup(new TriangleMesh[] {
                 TriangleMesh.fromDoubleList(PanelHelper.buildWall2(new double[] { 0, 0, 0 },
