@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JScrollPane;
-import javax.swing.tree.DefaultTreeModel;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
@@ -50,7 +49,7 @@ public class MainWindow extends javax.swing.JFrame {
     public DrawingPanel drawingPanel;
     public ArbreDesComposantesChalet arbreDesComposantesChalet;
     public MainWindowTopBarMenu menu;
-    public TopButtonPanel topButtonPanel; 
+    public TopButtonPanel topButtonPanel;
 
     public List<Accessoire.AccessoireDTO> accessoiresSelectionnees = new ArrayList<Accessoire.AccessoireDTO>();
 
@@ -141,8 +140,9 @@ public class MainWindow extends javax.swing.JFrame {
         return controleur;
     }
 
-    //todo
-    public void rechargerMainWindow(){}
+    // todo
+    public void rechargerMainWindow() {
+    }
 
     /**
      * Affiche la table des propriétés du chalet.
@@ -175,34 +175,35 @@ public class MainWindow extends javax.swing.JFrame {
 
     public void ajouterAccessoireSelectionnee(Accessoire.AccessoireDTO accessoireDTO) {
         accessoiresSelectionnees.add(accessoireDTO);
-        if(accessoiresSelectionnees.size() == 0){
-             topButtonPanel.supprimerAccessoireBtn.setEnabled(false);
-        }else{
-             topButtonPanel.supprimerAccessoireBtn.setEnabled(true);
+        if (accessoiresSelectionnees.size() == 0) {
+            topButtonPanel.supprimerAccessoireBtn.setEnabled(false);
+        } else {
+            topButtonPanel.supprimerAccessoireBtn.setEnabled(true);
         }
     }
 
     public void retirerAccessoireSelectionnee(Accessoire.AccessoireDTO accessoireDTO) {
         accessoiresSelectionnees.remove(accessoireDTO);
-        if(accessoiresSelectionnees.size() == 0){
-             topButtonPanel.supprimerAccessoireBtn.setEnabled(false);
-        }else{
-             topButtonPanel.supprimerAccessoireBtn.setEnabled(true);
+        if (accessoiresSelectionnees.size() == 0) {
+            topButtonPanel.supprimerAccessoireBtn.setEnabled(false);
+        } else {
+            topButtonPanel.supprimerAccessoireBtn.setEnabled(true);
         }
-
-    
     }
 
     public void clearAccessoiresSelectionnees() {
         accessoiresSelectionnees.clear();
-        
+
         topButtonPanel.supprimerAccessoireBtn.setEnabled(false);
     }
 
     /**
-     * Supprime tous les accessoires sélectionnés dans l'arbre des composantes du chalet.
-     * Cette méthode supprime les accessoires sélectionnés de la liste des accessoires sélectionnés,
-     * supprime les nœuds correspondants de l'arbre des composantes du chalet et recharge l'affichage.
+     * Supprime tous les accessoires sélectionnés dans l'arbre des composantes du
+     * chalet.
+     * Cette méthode supprime les accessoires sélectionnés de la liste des
+     * accessoires sélectionnés,
+     * supprime les nœuds correspondants de l'arbre des composantes du chalet et
+     * recharge l'affichage.
      */
     public void deleteAllAccessoiresSelectionnees() {
         this.controleur.retirerAccessoires(accessoiresSelectionnees);

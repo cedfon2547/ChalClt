@@ -3,13 +3,10 @@ package ca.ulaval.glo2004.gui.components;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 
-import javax.naming.ldap.Control;
-import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeCellEditor;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.text.Position;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -92,6 +89,19 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
         treeScrollPane = new javax.swing.JScrollPane();
         arbreComposantesChalet = new javax.swing.JTree();
 
+        arbreComposantesChalet.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                // System.out.println("focusGained");
+            }
+
+            @Override
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                // System.out.println("focusLost");
+                arbreComposantesChalet.clearSelection();
+            }
+        });
+        
         arbreComposantesChalet.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
         chaletNode = new javax.swing.tree.DefaultMutableTreeNode();

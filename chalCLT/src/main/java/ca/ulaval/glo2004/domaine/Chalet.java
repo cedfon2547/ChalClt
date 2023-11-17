@@ -19,7 +19,7 @@ public class Chalet {
 
 
     // TODO: rallon, pignon
-    private Mur[] murs = new Mur[]{new Mur(TypeMur.Facade, hauteur, largeur), new Mur(TypeMur.Arriere, hauteur, largeur), new Mur(TypeMur.Droit, hauteur, longueur), new Mur(TypeMur.Gauche, hauteur, longueur)};
+    private Mur[] murs = new Mur[]{new Mur(TypeMur.Facade, this), new Mur(TypeMur.Arriere, this), new Mur(TypeMur.Droit, this), new Mur(TypeMur.Gauche, this)};
     // private Toit toit = new Toit();
 
     public Chalet() {
@@ -54,6 +54,42 @@ public class Chalet {
         return murs;
     }
 
+    public double getAngleToit() {
+        return angleToit;
+    }
+
+    public double getEpaisseurMur() {
+        return epaisseurMur;
+    }
+
+    public double getHauteur() {
+        return hauteur;
+    }
+
+    public double getLargeur() {
+        return largeur;
+    }
+
+    public double getLongueur() {
+        return longueur;
+    }
+    
+    public double getMargeAccessoire() {
+        return margeAccessoire;
+    }
+
+    public double getMargeSupplementaireRetrait() {
+        return margeSupplementaireRetrait;
+    }
+    
+    public String getNom() {
+        return nom;
+    }
+    
+    public TypeSensToit getSensToit() {
+        return sensToit;
+    }
+    
     public void updateChalet(ChaletDTO dtoChalet) {
         this.nom = dtoChalet.nom;
         this.hauteur = dtoChalet.hauteur;

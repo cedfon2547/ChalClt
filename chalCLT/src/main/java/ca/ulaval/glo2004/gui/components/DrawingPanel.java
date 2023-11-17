@@ -171,7 +171,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 grabFocus();
                 // System.out.println("Mouse Clicked");
-
+                
                 TriangleMeshGroup mesh = afficheur.getRasterizer().getMeshFromPoint(e.getPoint());
 
                 if(mesh!=null && e.getClickCount()>=2){
@@ -491,6 +491,7 @@ public class DrawingPanel extends javax.swing.JPanel {
         //repaint();
     }
 
+    
     public void rechargerAffichage() {
         try {
             afficheur.rechargerAffichage();
