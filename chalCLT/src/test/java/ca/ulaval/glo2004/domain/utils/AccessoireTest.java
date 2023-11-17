@@ -76,9 +76,14 @@ public class AccessoireTest {
         double[] pos = {4.0, 3.0};
         double[] dim = {7.0,2.0};
         Accessoire accessoire = new Accessoire(typeAccessoire, typeMur,pos, dim);
+        double[] pos2 = {5.0, 2.0};
+        double[] dim2 = {3.0, 4.0};
+        double[] result = accessoire.getMarginWithRect(pos2, dim2);
 
-       // DOTO
-
+        assertEquals(1.0, result[0], 0);
+        assertEquals(1.0, result[1], 0);
+        assertEquals(3.0, result[2], 0);
+        assertEquals(1.0, result[3], 0);
     }
 
 }
