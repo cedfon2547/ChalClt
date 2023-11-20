@@ -4,19 +4,56 @@ import ca.ulaval.glo2004.domaine.*;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
+import java.util.List;
 
 public class MurTest {
 
+    private final double margeAccessoire = 0.1;
+    private final double epaisseurMur = 1.0;
+
+   // Mur et accessoire pour test pour eviter redondance
+    public Mur setTest(){
+        TypeMur typeMur = TypeMur.Facade;
+        Chalet chalet = new Chalet("nom", 10.0, 10.0, 10.0, epaisseurMur, TypeSensToit.Est, 30.0, margeAccessoire, 0.1);
+        return new Mur(typeMur, chalet);
+    }
+
+    // Accessoire de base pour eviter redondance
+    public Accessoire accessoireTrue1(){
+        TypeAccessoire typeAccessoire = TypeAccessoire.Fenetre;
+        TypeMur typeMur = TypeMur.Facade;
+        double[] pos = {3.0, 3.0};
+        double[] dim = {1.0,1.0};
+        return new Accessoire(typeAccessoire, typeMur, pos, dim);
+    }
+
+   // Accessoire qui colisionne pour eviter redondance
+    public Accessoire accessoireTrue2(){
+        TypeAccessoire typeAccessoire2 = TypeAccessoire.Fenetre;
+        TypeMur typeMur2 = TypeMur.Facade;
+        double[] pos2 = {2.0, 3.0};
+        double[] dim2 = {2.0,1.0};
+        return new Accessoire(typeAccessoire2, typeMur2, pos2, dim2);
+    }
+
+    // Accessoire qui ne colisionne pas pour eviter redondance
+    public Accessoire accessoireFalse(){
+        TypeAccessoire typeAccessoire2 = TypeAccessoire.Porte;
+        TypeMur typeMur2 = TypeMur.Facade;
+        double[] pos2 = {7.0, 8.0};
+        double[] dim2 = {1.0,2.0};
+        return new Accessoire(typeAccessoire2, typeMur2, pos2, dim2);
+    }
+
+    // Test
     @Test
     public void InstanceTest(){
-        TypeMur typeMur = TypeMur.Facade;
-        Chalet chalet = new Chalet("nom", 3.0, 3.0, 3.0, 1.0, TypeSensToit.Est, 30.0, 0.1, 0.1);
-        Mur mur = new Mur(typeMur, chalet);
+        Mur mur = setTest();
         assertEquals(TypeMur.Facade, mur.getType());
+        // assertEquals(chalet, mur.getChalet());
     }
 
     @Test
@@ -24,12 +61,10 @@ public class MurTest {
 
         TypeAccessoire typeAccessoire = TypeAccessoire.Fenetre;
         TypeMur typeMur = TypeMur.Facade;
-        double[] pos = {2.0, 3.0};
         double[] dim = {1.0,2.0};
         double[] mauvaise_pos = {-1.0 , -2.0};
-        Accessoire accessoire = new Accessoire(typeAccessoire, typeMur, pos, dim);
-        Chalet chalet = new Chalet("nom", 3.0, 3.0, 3.0, 1.0, TypeSensToit.Est, 30.0, 0.1, 0.1);
-        Mur mur = new Mur(typeMur, chalet);
+        Accessoire accessoire = accessoireTrue1();
+        Mur mur = setTest();
 
         mur.ajouterAccessoire(accessoire);
 
@@ -39,25 +74,18 @@ public class MurTest {
         try {
             mur.ajouterAccessoire(accessoireMauvaisePosition);
             fail("Devrait lever une IllegalArgumentException pour la mauvaise position");
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException ignored) {
         }
     }
 
-
     @Test
     public void RetirerAccessoireTest(){
-        TypeAccessoire typeAccessoire = TypeAccessoire.Fenetre;
-        TypeMur typeMur = TypeMur.Facade;
-        double[] pos = {2.0, 3.0};
-        double[] dim = {1.0,2.0};
-        Accessoire accessoire = new Accessoire(typeAccessoire, typeMur, pos, dim);
-        Chalet chalet = new Chalet("nom", 3.0, 3.0, 3.0, 1.0, TypeSensToit.Est, 30.0, 0.1, 0.1);
-        Mur mur = new Mur(typeMur, chalet);
+        Accessoire accessoire = accessoireTrue1();
+        Mur mur = setTest();
 
         mur.ajouterAccessoire(accessoire);
         UUID uuid = accessoire.getAccessoireId();
         Accessoire accessoireretirer = mur.retirerAccessoire(uuid);
-
         assertEquals(accessoire, accessoireretirer);
 
         // Test si l'accessoire ne se retrouve pas dans la liste
@@ -68,53 +96,69 @@ public class MurTest {
     @Test
     public void verifierCollisionTrueTest(){
         //Accessoire 1
-        TypeAccessoire typeAccessoire = TypeAccessoire.Fenetre;
-        TypeMur typeMur = TypeMur.Facade;
-        double[] pos = {2.0, 3.0};
-        double[] dim = {3.0,2.0};
-        Accessoire accessoire = new Accessoire(typeAccessoire, typeMur, pos, dim);
+        Accessoire accessoire = accessoireTrue1();
 
         //Accessoire 2
-        TypeAccessoire typeAccessoire2 = TypeAccessoire.Porte;
-        TypeMur typeMur2 = TypeMur.Facade;
-        double[] pos2 = {3.0, 4.0};
-        double[] dim2 = {1.0,2.0};
-        Accessoire accessoire2 = new Accessoire(typeAccessoire2, typeMur2, pos2, dim2);
+        Accessoire accessoire2 = accessoireTrue2();
 
-        Chalet chalet = new Chalet("nom", 10.0, 9.0, 10.0, 1.0, TypeSensToit.Est, 30.0, 0.1, 0.1);
-        Mur mur = new Mur(typeMur, chalet);
+        Mur mur = setTest();
         mur.ajouterAccessoire(accessoire);  // Insertion 1 element
 
         // Comparaison avec tout les accessoires
-        assertTrue(mur.verifierCollisionAcc(accessoire2, chalet.getMargeAccessoire()));
+        assertTrue(mur.verifierCollisionAcc(accessoire2, margeAccessoire));
     }
 
     @Test
     public void verifierCollisionFalseTest(){
         //Accessoire 1
-        TypeAccessoire typeAccessoire = TypeAccessoire.Fenetre;
-        TypeMur typeMur = TypeMur.Facade;
-        double[] pos = {2.0, 3.0};
-        double[] dim = {3.0,2.0};
-        Accessoire accessoire = new Accessoire(typeAccessoire, typeMur, pos, dim);
+        Accessoire accessoire = accessoireTrue1();
 
         //Accessoire 2
-        TypeAccessoire typeAccessoire2 = TypeAccessoire.Porte;
-        TypeMur typeMur2 = TypeMur.Facade;
-        double[] pos2 = {7.0, 8.0};
-        double[] dim2 = {1.0,2.0};
-        Accessoire accessoire2 = new Accessoire(typeAccessoire2, typeMur2, pos2, dim2);
+        Accessoire accessoire2 = accessoireFalse();
 
-        Chalet chalet = new Chalet("nom", 10.0, 9.0, 10.0, 1.0, TypeSensToit.Est, 30.0, 0.1, 0.1);
-        Mur mur = new Mur(typeMur, chalet);
+        Mur mur = setTest();
         mur.ajouterAccessoire(accessoire);  // Insertion 1 element
 
         // Comparaison avec tout les accessoires
-        assertFalse(mur.verifierCollisionAcc(accessoire2, chalet.getMargeAccessoire()));
+        assertFalse(mur.verifierCollisionAcc(accessoire2, margeAccessoire));
     }
 
     @Test
-    public void verifierValiditerAccessoireTest(){
+    public void verifierValiditerAccessoireTrueTest(){
         //DOTO
+        Mur mur = setTest();
+        Accessoire accessoire = accessoireTrue1();
+        mur.ajouterAccessoire(accessoire);
+        Accessoire accessoire2 = accessoireFalse();
+        boolean validite = mur.verifierValiditeAccessoire(accessoire2, margeAccessoire, epaisseurMur);
+        assertTrue(validite);
     }
+
+    @Test
+    public void verifierValiditerAccessoireFalseTest(){
+        //DOTO
+        Mur mur = setTest();
+
+        Accessoire accessoire = accessoireTrue1();
+        mur.ajouterAccessoire(accessoire);
+        Accessoire accessoire2 = accessoireTrue2();
+        boolean validite = mur.verifierValiditeAccessoire(accessoire2, margeAccessoire, epaisseurMur);
+        assertFalse(validite);
+    }
+
+    @Test
+    public void setAccessoireTest(){
+        TypeAccessoire typeAccessoire = TypeAccessoire.Fenetre;
+        Mur mur = setTest();
+        double[] pos = {2.0, 3.0};
+        double[] dim = {1.0,2.0};
+        Accessoire accessoire = new Accessoire(typeAccessoire, mur.getType(), pos, dim);
+
+        List<Accessoire> accessoireList = new ArrayList<>();
+        accessoireList.add(accessoire);
+
+        mur.setAccessoires(accessoireList);
+        assertEquals(accessoireList, mur.getAccessoires());
+    }
+
 }

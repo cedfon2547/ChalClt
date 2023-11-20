@@ -7,8 +7,7 @@ import org.junit.Test;
 
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class AccessoireTest {
 
@@ -46,28 +45,45 @@ public class AccessoireTest {
         assertEquals(2, accessoire.getDimension()[1], 0);
     }
 
-    @Test
-    public void SetTest(){
+    // methode pour eviter la redondance du code
+    public Accessoire setTest() {
         TypeAccessoire typeAccessoire = TypeAccessoire.Porte;
         TypeMur typeMur = TypeMur.Droit;
         double[] pos = {4.0, 3.0};
-        double[] dim = {7.0,2.0};
-        UUID uuid = UUID.randomUUID();
-        String nom = "NomRandom101";
-        Accessoire accessoire = new Accessoire(typeAccessoire, typeMur,pos, dim);
+        double[] dim = {7.0, 2.0};
+        return new Accessoire(typeAccessoire, typeMur, pos, dim);
+    }
 
+
+    @Test
+    public void setTypeTest(){
+        Accessoire accessoire = setTest();
         accessoire.setAccessoireType(TypeAccessoire.Fenetre);
         assertEquals(TypeAccessoire.Fenetre, accessoire.getAccessoireType());
+    }
 
+    @Test
+    public void setIdTest(){
+        Accessoire accessoire = setTest();
+        UUID uuid = UUID.randomUUID();
         accessoire.setAccessoireId(uuid);
         assertEquals(uuid, accessoire.getAccessoireId());
-
+    }
+    @Test
+    public void setNomTest(){
+        Accessoire accessoire = setTest();
+        String nom = "NomRandom101";
         accessoire.setAccessoireNom(nom);
         assertEquals(nom, accessoire.getAccessoireNom());
-
-        accessoire.setValide(true);
-        assertTrue(accessoire.getValide());
     }
+
+    @Test
+    public void setValideTest(){
+        Accessoire accessoire = setTest();
+        accessoire.setValide(false);
+        assertFalse(accessoire.getValide());
+    }
+
 
     @Test
     public void getMarginWithRectTest(){
