@@ -85,4 +85,46 @@ public class PreferencesUtilisateurTest {
         
         assertEquals(80, test.getGridSpacing(), 0);
     }
+    
+    @Test
+    public void ConstructeurDTO() {
+        PreferencesUtilisateur test = new PreferencesUtilisateur();
+        PreferencesUtilisateur.PreferencesUtilisateurDTO testDTO = new 
+        PreferencesUtilisateur.PreferencesUtilisateurDTO(test);
+        
+        assertEquals(test.getAfficherGrille(), testDTO.afficherGrille);
+        assertEquals(test.getAfficherVoisinSelection(), testDTO.afficherVoisinSelection);
+        assertEquals(test.getBackgroundColor(), testDTO.backgroundColor);
+        assertEquals(test.getGridColor(), testDTO.gridColor);
+        assertEquals(test.getGridSpacing(), testDTO.gridSpacing, 0);      
+    }
+    
+    @Test
+    public void ToDTO() {
+        PreferencesUtilisateur test = new PreferencesUtilisateur();
+        PreferencesUtilisateur.PreferencesUtilisateurDTO testDTO = test.toDTO();
+        
+        assertEquals(test.getAfficherGrille(), testDTO.afficherGrille);
+        assertEquals(test.getAfficherVoisinSelection(), testDTO.afficherVoisinSelection);
+        assertEquals(test.getBackgroundColor(), testDTO.backgroundColor);
+        assertEquals(test.getGridColor(), testDTO.gridColor);
+        assertEquals(test.getGridSpacing(), testDTO.gridSpacing, 0);
+    }
+    
+    @Test
+    public void Update() {
+        PreferencesUtilisateur test = new PreferencesUtilisateur();
+        PreferencesUtilisateur modele = new PreferencesUtilisateur(true, true);
+        modele.setBackgroundColor(java.awt.Color.BLUE);
+        modele.setGridColor(java.awt.Color.RED);
+        modele.setGridSpacing(80);
+        PreferencesUtilisateur.PreferencesUtilisateurDTO modeleDTO = modele.toDTO();
+        test.update(modeleDTO);
+        
+        assertEquals(modele.getAfficherGrille(), test.getAfficherGrille());
+        assertEquals(modele.getAfficherVoisinSelection(), test.getAfficherVoisinSelection());
+        assertEquals(modele.getBackgroundColor(), test.getBackgroundColor());
+        assertEquals(modele.getGridColor(), test.getGridColor());
+        assertEquals(modele.getGridSpacing(), test.getGridSpacing(), 0);
+    }
 }
