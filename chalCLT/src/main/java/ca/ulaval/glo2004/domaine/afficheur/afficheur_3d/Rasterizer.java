@@ -210,52 +210,52 @@ public class Rasterizer {
             tMeshGroups.add(transformedGroup);
         }
 
-        // g2.setColor(scene.getConfiguration().getSelectionColor());
+         g2.setColor(scene.getConfiguration().getSelectionColor());
         // TODO: Do not remove
-        // for (int y = 0; y < image.getHeight(); y++) {
-        //     for (int x = 0; x < image.getWidth(); x++) {
-        //         final int depth = y * image.getWidth() + x;
-        //         if (idBuffer[depth] != null && scene.getMesh(idBuffer[depth]).getSelected()) {
-        //             // Check if the id of the pixel is the same on top, left, right and bottom.
-        //             // If not, it means that the pixel is on the edge of a mesh.
-        //             // So we draw the pixel in order to create a boundary
-        //             if (depth <= 0)
-        //                 continue;
-        //             if (depth + 1 > image.getWidth() * image.getHeight() - 1)
-        //                 continue;
+         for (int y = 0; y < image.getHeight(); y++) {
+             for (int x = 0; x < image.getWidth(); x++) {
+                 final int depth = y * image.getWidth() + x;
+                 if (idBuffer[depth] != null && scene.getMesh(idBuffer[depth]).getSelected()) {
+                     // Check if the id of the pixel is the same on top, left, right and bottom.
+                     // If not, it means that the pixel is on the edge of a mesh.
+                     // So we draw the pixel in order to create a boundary
+                     if (depth <= 0)
+                         continue;
+                     if (depth + 1 > image.getWidth() * image.getHeight() - 1)
+                         continue;
 
-        //             int topPixelDepth = (y - 1) * image.getWidth() + x;
-        //             int leftPixelDepth = y * image.getWidth() + (x - 1);
-        //             int rightPixelDepth = y * image.getWidth() + (x + 1);
-        //             int bottomPixelDepth = (y + 1) * image.getWidth() + x;
+                     int topPixelDepth = (y - 1) * image.getWidth() + x;
+                     int leftPixelDepth = y * image.getWidth() + (x - 1);
+                     int rightPixelDepth = y * image.getWidth() + (x + 1);
+                     int bottomPixelDepth = (y + 1) * image.getWidth() + x;
 
-        //             if (topPixelDepth >= 0 && idBuffer[topPixelDepth] != idBuffer[depth]) {
-        //                 g2.drawRect(x, y, 2, 2);
-        //             }
+                     if (topPixelDepth >= 0 && idBuffer[topPixelDepth] != idBuffer[depth]) {
+                         g2.drawRect(x, y, 2, 2);
+                     }
 
-        //             if (leftPixelDepth >= 0 && leftPixelDepth <= idBuffer.length
-        //                     && idBuffer[leftPixelDepth] != idBuffer[depth]) {
-        //                 g2.drawRect(x, y, 2, 2);
-        //             }
+                     if (leftPixelDepth >= 0 && leftPixelDepth <= idBuffer.length
+                             && idBuffer[leftPixelDepth] != idBuffer[depth]) {
+                         g2.drawRect(x, y, 2, 2);
+                     }
 
-        //             if (idBuffer[rightPixelDepth] != idBuffer[depth]) {
-        //                 g2.drawRect(x, y, 2, 2);
-        //             }
+                     if (idBuffer[rightPixelDepth] != idBuffer[depth]) {
+                         g2.drawRect(x, y, 2, 2);
+                     }
 
-        //             if (bottomPixelDepth < idBuffer.length && idBuffer[bottomPixelDepth] != idBuffer[depth]) {
-        //                 g2.drawRect(x, y, 2, 2);
-        //             }
-        //         }
+                     if (bottomPixelDepth < idBuffer.length && idBuffer[bottomPixelDepth] != idBuffer[depth]) {
+                         g2.drawRect(x, y, 2, 2);
+                     }
+                 }
 
-        //         // if (idBuffer[depth] != idBuffer[depth - 1] || idBuffer[depth] !=
-        //         // idBuffer[depth + 1]) {
-        //         // g2.drawRect(x, y, 2, 2);
-        //         // }
-        //     }
-        // }
+                 // if (idBuffer[depth] != idBuffer[depth - 1] || idBuffer[depth] !=
+                 // idBuffer[depth + 1]) {
+                 // g2.drawRect(x, y, 2, 2);
+                 // }
+             }
+         }
 
         this.drawInvalidMeshBounding(g2);
-        this.drawSelectedMeshBounding(g2);
+        //this.drawSelectedMeshBounding(g2);
 
         g2.dispose();
 
