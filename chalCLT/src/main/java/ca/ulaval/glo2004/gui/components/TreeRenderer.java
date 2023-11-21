@@ -23,10 +23,10 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
     public TreeRenderer(MainWindow mainWindow) {
         super();
         this.mainWindow = mainWindow;
-        String fenetreImgName = "/icons/fenetre_tree.png";
-        String porteImgName = "/icons/porte_tree.png";
-        String murImgName = "/icons/mur_icon.png";
-        String chaletImgName = "/icons/chalet_icon.png";
+        String fenetreImgName = "/icons/dark/fenetre_tree.png";
+        String porteImgName = "/icons/dark/porte_tree.png";
+        String murImgName = "/icons/dark/mur_icon.png";
+        String chaletImgName = "/icons/dark/chalet_icon.png";
         URL fenetreImgURL = App.class.getResource(fenetreImgName);
         URL porteImgURL = App.class.getResource(porteImgName);
         URL murImgURL = App.class.getResource(murImgName);
