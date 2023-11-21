@@ -50,11 +50,11 @@ public class TopButtonPanel extends JPanel {
         grilleToggleBtn.setPreferredSize(new Dimension(75, 50));
         voisinToggleBtn.setPreferredSize(new Dimension(75, 50));
 
-        String fenetreImgName = "/icons/fenetre_1.png";
-        String porteImgName = "/icons/door_1.png";
-        String supprimerImgName = "/icons/supprimer_1.png";
-        String grilleImgName = "/icons/grille_1.png";
-        String voisinImgName = "/icons/voisin_1.png";
+        String fenetreImgName = "/icons/dark/fenetre_1.png";
+        String porteImgName = "/icons/dark/door_1.png";
+        String supprimerImgName = "/icons/dark/supprimer_1.png";
+        String grilleImgName = "/icons/dark/grille_1.png";
+        String voisinImgName = "/icons/dark/voisin_1.png";
 
         URL fenetreImgURL = App.class.getResource(fenetreImgName);
         URL porteImgURL = App.class.getResource(porteImgName);
