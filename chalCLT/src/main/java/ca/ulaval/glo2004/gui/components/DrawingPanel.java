@@ -230,9 +230,10 @@ public class DrawingPanel extends javax.swing.JPanel {
                         mainWindow.clearAccessoiresSelectionnees();
                         mainWindow.showChaletTable();
                     }
-
-                    System.out.println(mesh.getIdentifier() + " selected");
-                    afficheur.getScene().setSelected(mesh.getIdentifier(), true);
+                    if(mesh.getSelectable()) {
+                        System.out.println(mesh.getIdentifier() + " selected");
+                        afficheur.getScene().setSelected(mesh.getIdentifier(), true);
+                    }
                 } else {
                     mainWindow.clearAccessoiresSelectionnees();
                     mainWindow.showChaletTable();

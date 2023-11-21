@@ -116,6 +116,8 @@ public class Rasterizer {
         }
 
         for (TriangleMeshGroup group : scene.getMeshes()) {
+            if(!group.getVisible())
+                continue;
             TriangleMeshGroup transformedGroup = new TriangleMeshGroup();
             Matrix translationMatrix = Matrix.translationMatrix(group.getPosition().getX(), group.getPosition().getY(),
                     group.getPosition().getZ());
