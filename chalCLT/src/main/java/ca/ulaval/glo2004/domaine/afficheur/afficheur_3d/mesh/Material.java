@@ -3,7 +3,7 @@ import java.awt.Color;
 
 public class Material {
     private Color color = Color.ORANGE;
-    private double ambient = 0.5;
+    private double ambient = 1;
     private double diffuse = 0.5;
     private double specular = 0.5;
     private double shininess = 1;

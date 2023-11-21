@@ -3,8 +3,11 @@ package ca.ulaval.glo2004.domaine.afficheur;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 
+import ca.ulaval.glo2004.App;
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.Controleur;
@@ -83,7 +86,8 @@ public class Afficheur {
     }
 
     public void rechargerAffichage() throws Exception {
-         System.out.println("RENDERING");
+        // System.out.println("RENDERING");
+
         Chalet.ChaletDTO chaletDTO = this.getControleur().getChalet();
         PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = this.getControleur()
                 .getPreferencesUtilisateur();
@@ -259,16 +263,23 @@ public class Afficheur {
 
         }
 
-        /*
+
+
         // Pour tester l'importation d'objets à partir de fichiers .obj
-        TriangleMesh mesh = ObjectImporter.importObject("objets\\bunny.obj");
-        mesh.getMaterial().setColor(Color.ORANGE);
+        URI url = App.class.getResource("/objets/floor.obj").toURI();
+        System.out.println(url);
+        TriangleMesh mesh = ObjectImporter.importObject(url); //bnnuy
+        mesh = mesh.scale(new Vector3D(15,15,15));
+        mesh.getMaterial().setColor(Color.GRAY);
+        mesh.getMaterial().setShininess(0);
+        mesh.getMaterial().setSpecular(0);
+        mesh.getMaterial().setAmbient(2);
         
         TriangleMeshGroup meshGroup = new TriangleMeshGroup(new TriangleMesh[] { mesh });
         meshGroup = meshGroup.rotateZ(Math.toRadians(180));
 
         scene.addMesh(meshGroup);
-        */
+
     }
 
     public void draw(Graphics g, Dimension dimension) {

@@ -394,6 +394,7 @@ public class DrawingPanel extends javax.swing.JPanel {
         try {
             afficheur.rechargerAffichage();
         } catch (Exception e) {
+            System.out.println("Error rendering main panel");
         } // TODO manage error
 
         repaint();

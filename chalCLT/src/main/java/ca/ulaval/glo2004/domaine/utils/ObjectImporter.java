@@ -1,6 +1,7 @@
 package ca.ulaval.glo2004.domaine.utils;
 
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -37,11 +38,30 @@ public class ObjectImporter {
     }
 
     public static TriangleMesh importObject(String pathname) {
+        try{
+            File file = new File(pathname);
+            return importObject(file);
+        } catch (Exception err) {
+            System.out.println(err);
+        }
+        return null;
+    }
+
+    public static TriangleMesh importObject(URI url) {
+        try{
+            File file = new File(url);
+            return importObject(file);
+        } catch (Exception err) {
+            System.out.println(err);
+        }
+        return null;
+    }
+
+    public static TriangleMesh importObject(File file) {
         List<Vector3D> vertices = new ArrayList<Vector3D>();
         List<Face> faces = new ArrayList<Face>();
 
         try {
-            File file = new File(pathname);
             Scanner scanner = new Scanner(file);
 
             while (scanner.hasNextLine()) {

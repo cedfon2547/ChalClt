@@ -292,7 +292,7 @@ public class Rasterizer {
 
     private Color phongModel(TriangleMesh object, Color color, Vector3D norm, Vector3D pixelPoint) {
         // Calculate ambient light
-        double ambientIntensity = scene.getLight().getAmbientIntensity();
+        double ambientIntensity = scene.getLight().getAmbientIntensity() * object.getMaterial().getAmbient();
 
         int red = (int) Math.min(255, color.getRed() * ambientIntensity);
         int green = (int) Math.min(255, color.getGreen() * ambientIntensity);
