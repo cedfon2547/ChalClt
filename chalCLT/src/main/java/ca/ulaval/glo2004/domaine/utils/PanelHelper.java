@@ -282,8 +282,8 @@ public class PanelHelper {
                 triangles.add(new double[][] { p1, p8, p16 });
 
                 // Back (1 face, 2 triangles)
-                triangles.add(new double[][] { p4, p5, p13 });
-                triangles.add(new double[][] { p12, p4, p13 });
+                triangles.add(new double[][] { p4, p13, p5  });
+                triangles.add(new double[][] { p12, p13, p4  });
 
                 // Faces (3 faces, 6 triangles) Rainure 1
                 triangles.add(new double[][] { p10, p2, p9 });

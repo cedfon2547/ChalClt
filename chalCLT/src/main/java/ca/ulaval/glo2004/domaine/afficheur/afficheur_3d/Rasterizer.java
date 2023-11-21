@@ -302,7 +302,7 @@ public class Rasterizer {
         Light light = scene.getLight();
         Vector3D lightDir = light.getPosition().sub(pixelPoint).normalize();
         double dotProduct = Math.max(0, norm.dot(lightDir));
-        double diffuseIntensity = 0.8;
+        double diffuseIntensity = object.getMaterial().getDiffuse();
         red += (int) (color.getRed() * dotProduct * diffuseIntensity);
         green += (int) (color.getGreen() * dotProduct * diffuseIntensity);
         blue += (int) (color.getBlue() * dotProduct * diffuseIntensity);
@@ -311,7 +311,7 @@ public class Rasterizer {
         Vector3D viewDir = scene.getCamera().getPosition().sub(pixelPoint).normalize();
         Vector3D reflectDir = norm.multiply(2).multiply(norm.dot(lightDir)).sub(lightDir)
                 .normalize();
-        double specularIntensity = 0.5;
+        double specularIntensity = object.getMaterial().getSpecular();
         double specularFactor = Math.pow(Math.max(0, reflectDir.dot(viewDir)), 32);
         red += (int) (color.getRed() * specularFactor * specularIntensity);
         green += (int) (color.getGreen() * specularFactor * specularIntensity);
