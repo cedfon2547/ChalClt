@@ -65,6 +65,7 @@ public class Rasterizer {
 
         g2.setComposite(AlphaComposite.SrcOver);
 
+        // TODO gradient sky
         g2.setColor(scene.getConfiguration().getBackgroundColor());
         g2.fillRect(0, 0, image.getWidth(), image.getHeight());
 
