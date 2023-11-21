@@ -254,7 +254,7 @@ public class Afficheur {
 
 
         // Pour tester l'importation d'objets à partir de fichiers .obj
-        // TriangleMesh mesh = ObjectImporter.importObject("C:\\Users\\Cédric\\Desktop\\ChalCLT_repo\\commits_versions\\A23-Equipe11\\chalCLT\\src\\main\\java\\ca\\ulaval\\glo2004\\domaine\\utils\\objets\\coffee_table_001.obj");
+        // TriangleMesh mesh = ObjectImporter.importObject("src\\main\\java\\ca\\ulaval\\glo2004\\domaine\\utils\\objets\\UtahTeapot.obj");
         // mesh.getMaterial().setColor(Color.ORANGE);
         
         // TriangleMeshGroup meshGroup = new TriangleMeshGroup(new TriangleMesh[] { mesh });
