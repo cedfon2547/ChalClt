@@ -22,7 +22,7 @@ public class MurTest {
     }
 
     // Accessoire de base pour eviter redondance
-    public Accessoire accessoireTrue1(){
+    public static Accessoire accessoireTrue1(){
         TypeAccessoire typeAccessoire = TypeAccessoire.Fenetre;
         TypeMur typeMur = TypeMur.Facade;
         double[] pos = {3.0, 3.0};
@@ -31,7 +31,7 @@ public class MurTest {
     }
 
    // Accessoire qui colisionne pour eviter redondance
-    public Accessoire accessoireTrue2(){
+    public static Accessoire accessoireTrue2(){
         TypeAccessoire typeAccessoire2 = TypeAccessoire.Fenetre;
         TypeMur typeMur2 = TypeMur.Facade;
         double[] pos2 = {2.0, 3.0};
@@ -40,7 +40,7 @@ public class MurTest {
     }
 
     // Accessoire qui ne colisionne pas pour eviter redondance
-    public Accessoire accessoireFalse(){
+    public static Accessoire accessoireFalse(){
         TypeAccessoire typeAccessoire2 = TypeAccessoire.Porte;
         TypeMur typeMur2 = TypeMur.Facade;
         double[] pos2 = {7.0, 8.0};
