@@ -12,6 +12,8 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GradientPaint;
+import java.awt.Paint;
 
 import com.google.common.collect.Lists;
 
@@ -22,6 +24,8 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Light;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
+import java.awt.GradientPaint;
+import java.awt.Paint;
 
 public class Rasterizer {
     private Scene scene;
@@ -64,9 +68,16 @@ public class Rasterizer {
                 RenderingHints.VALUE_DITHER_ENABLE));
 
         g2.setComposite(AlphaComposite.SrcOver);
+        
+        //g2.setColor(java.awt.Color.WHITE);
+        //g2.fillRect(0, 0, image.getWidth(), image.getHeight());
 
         // TODO gradient sky
-        g2.setColor(scene.getConfiguration().getBackgroundColor());
+        Color skyColorTransparent = new Color(116, 147, 170, 255);
+        Color skyColorOpaque = new Color(49, 73, 111, 255);
+        Paint skyColor = new GradientPaint(180.0f, 0.0f, skyColorTransparent,
+       image.getWidth(), image.getHeight(), skyColorOpaque, true);
+        g2.setPaint(skyColor);
         g2.fillRect(0, 0, image.getWidth(), image.getHeight());
 
         this.tMeshGroups.clear();
