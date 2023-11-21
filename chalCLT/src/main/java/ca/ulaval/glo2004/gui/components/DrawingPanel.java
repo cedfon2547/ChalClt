@@ -24,6 +24,9 @@ public class DrawingPanel extends javax.swing.JPanel {
     MainWindow mainWindow;
     Afficheur afficheur;
 
+    public static final Color activeBtnColor = Color.DARK_GRAY;
+    public static final Color inactiveBtnColor = Color.BLACK;
+
     Object[][] btns = new Object[][] {
             { "Dessus", Afficheur.TypeDeVue.Dessus.toString(), null },
             { "Façade", Afficheur.TypeDeVue.Facade.toString(), null },
@@ -66,7 +69,6 @@ public class DrawingPanel extends javax.swing.JPanel {
     }
 
     private void buildToolbar() {
-        final Color activeBtnColor = Color.LIGHT_GRAY;
 
         barreOutils = new javax.swing.JToolBar("Barre d'outils");
 
@@ -98,7 +100,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                             afficheur.setVueActive(Afficheur.TypeDeVue.valueOf((String) obj[1]));
                             changerVue(afficheur.getVueActive());
                         } else {
-                            ((javax.swing.JButton) obj[2]).setBackground(null);
+                            ((javax.swing.JButton) obj[2]).setBackground(inactiveBtnColor);
                         }
 
                     }
@@ -140,9 +142,9 @@ public class DrawingPanel extends javax.swing.JPanel {
             final javax.swing.JButton btn = (JButton) obj[2];
 
             if (name == afficheur.getVueActive().toString())
-                btn.setBackground(Color.LIGHT_GRAY);
+                btn.setBackground(activeBtnColor);
             else
-                btn.setBackground(null);
+                btn.setBackground(inactiveBtnColor);
         }
     }
 

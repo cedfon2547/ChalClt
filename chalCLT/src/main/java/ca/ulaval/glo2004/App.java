@@ -8,6 +8,7 @@ import javax.swing.*;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -183,7 +184,7 @@ class Acc {
 
 public class App {
     public static void main(String[] args) {
-        FlatDarkLaf.setup();
+        FlatMacDarkLaf.setup();
         Controleur controleur = Controleur.getInstance();
 
         MainWindow mainWindow = new MainWindow(controleur);

@@ -37,7 +37,7 @@ public class Afficheur {
         this.dimension = dimension;
         this.scene = new Scene();
         this.rasterizer = new Rasterizer(this.scene);
-        this.scene.getLight().setPosition(new Vector3D(dimension.getWidth(), 200, 0));
+        this.scene.getLight().setPosition(new Vector3D(0,0,1000));
         this.scene.getCamera().setDirection(TypeDeVue.vueDessus());
         this.scene.getCamera().setScale(2.01);
     }
@@ -83,12 +83,12 @@ public class Afficheur {
     }
 
     public void rechargerAffichage() throws Exception {
-        // System.out.println("RENDERING");
+         System.out.println("RENDERING");
         Chalet.ChaletDTO chaletDTO = this.getControleur().getChalet();
         PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = this.getControleur()
                 .getPreferencesUtilisateur();
-        scene.getConfiguration().setShowGridXY(preferencesUtilisateurDTO.afficherGrille);
-        scene.getConfiguration().setShowGridYZ(preferencesUtilisateurDTO.afficherGrille);
+        //scene.getConfiguration().setShowGridXY(preferencesUtilisateurDTO.afficherGrille);
+        //scene.getConfiguration().setShowGridYZ(preferencesUtilisateurDTO.afficherGrille);
         scene.getConfiguration().setShowGridXZ(preferencesUtilisateurDTO.afficherGrille);
         scene.clearMeshes();
 
@@ -151,6 +151,12 @@ public class Afficheur {
         murArriereGroup = murArriereGroup.translate(new Vector3D(0, 0, -chaletDTO.epaisseurMur / 2));
         murDroitGroup = murDroitGroup.translate(new Vector3D(chaletDTO.epaisseurMur / 2, 0, 0));
         murGaucheGroup = murGaucheGroup.translate(new Vector3D(-chaletDTO.epaisseurMur / 2, 0, 0));
+
+        // mettre le chalet sur le plancher
+        murFacadeGroup = murFacadeGroup.translate(new Vector3D(0, -chaletDTO.hauteur/2, 0));
+        murArriereGroup = murArriereGroup.translate(new Vector3D(0, -chaletDTO.hauteur/2, 0));
+        murDroitGroup = murDroitGroup.translate(new Vector3D(0, -chaletDTO.hauteur/2, 0));
+        murGaucheGroup = murGaucheGroup.translate(new Vector3D(0, -chaletDTO.hauteur/2, 0));
 
         scene.addMesh(murFacadeGroup);
         scene.addMesh(murArriereGroup);
@@ -243,6 +249,7 @@ public class Afficheur {
                     // }
                     break;
             }
+            accMesh = accMesh.translate(new Vector3D(0, -chaletDTO.hauteur/2, 0));
             
             accMesh.setIdentifier(accessoireDTO.accessoireId.toString());
             accMesh.setValid(accessoireDTO.valide);
@@ -252,15 +259,16 @@ public class Afficheur {
 
         }
 
-
+        /*
         // Pour tester l'importation d'objets à partir de fichiers .obj
-        // TriangleMesh mesh = ObjectImporter.importObject("src\\main\\java\\ca\\ulaval\\glo2004\\domaine\\utils\\objets\\UtahTeapot.obj");
-        // mesh.getMaterial().setColor(Color.ORANGE);
+        TriangleMesh mesh = ObjectImporter.importObject("objets\\bunny.obj");
+        mesh.getMaterial().setColor(Color.ORANGE);
         
-        // TriangleMeshGroup meshGroup = new TriangleMeshGroup(new TriangleMesh[] { mesh });
-        // meshGroup = meshGroup.rotateZ(Math.toRadians(180));
+        TriangleMeshGroup meshGroup = new TriangleMeshGroup(new TriangleMesh[] { mesh });
+        meshGroup = meshGroup.rotateZ(Math.toRadians(180));
 
-        // scene.addMesh(meshGroup);
+        scene.addMesh(meshGroup);
+        */
     }
 
     public void draw(Graphics g, Dimension dimension) {
@@ -281,6 +289,10 @@ public class Afficheur {
         } else if (vueActive == TypeDeVue.Gauche) {
             this.getScene().getCamera().setDirection(TypeDeVue.vueGauche());
         }
+
+        this.getScene().getCamera().setPosition(new Vector3D(this.scene.getCamera().getPosition().x,
+                    (vueActive == TypeDeVue.Dessus)?0:controleur.getChalet().hauteur/2,
+                                            this.scene.getCamera().getPosition().z));
     }
 
     public void weakChangerVue(TypeDeVue vue) {
