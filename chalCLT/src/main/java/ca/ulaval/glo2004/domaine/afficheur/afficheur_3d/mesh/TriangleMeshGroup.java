@@ -11,6 +11,8 @@ public class TriangleMeshGroup {
     String identifier = UUID.randomUUID().toString();
     List<TriangleMesh> meshes = new ArrayList<TriangleMesh>();
     private boolean selected = false;
+    private boolean selectable = true;
+    private boolean visible = true;
     private boolean valid = true;
     private Vector3D position = new Vector3D(0, 0, 0);
     public TriangleMeshGroup() {
@@ -82,6 +84,14 @@ public class TriangleMeshGroup {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
+    public void setSelectable(boolean selectable) {
+        this.selectable = selectable;
+    }
+    public boolean getSelectable() {return this.selectable;}
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+    public boolean getVisible() {return this.visible;}
 
     public void setPosition(Vector3D position) {
         this.position = position;

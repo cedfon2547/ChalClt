@@ -277,6 +277,7 @@ public class Afficheur {
         
         TriangleMeshGroup meshGroup = new TriangleMeshGroup(new TriangleMesh[] { mesh });
         meshGroup = meshGroup.rotateZ(Math.toRadians(180));
+        meshGroup.setSelectable(false);
 
         scene.addMesh(meshGroup);
 
