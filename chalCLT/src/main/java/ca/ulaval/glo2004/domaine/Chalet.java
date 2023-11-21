@@ -1,7 +1,5 @@
 package ca.ulaval.glo2004.domaine;
 
-import java.awt.geom.Rectangle2D;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

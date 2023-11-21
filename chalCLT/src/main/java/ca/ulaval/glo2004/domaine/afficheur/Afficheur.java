@@ -1,5 +1,6 @@
 package ca.ulaval.glo2004.domaine.afficheur;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.List;
@@ -17,6 +18,7 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.Material;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
+import ca.ulaval.glo2004.domaine.utils.ObjectImporter;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.gui.Constants;
 
@@ -81,7 +83,7 @@ public class Afficheur {
     }
 
     public void rechargerAffichage() throws Exception {
-        System.out.println("RENDERING");
+        // System.out.println("RENDERING");
         Chalet.ChaletDTO chaletDTO = this.getControleur().getChalet();
         PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = this.getControleur()
                 .getPreferencesUtilisateur();
@@ -247,7 +249,18 @@ public class Afficheur {
             
             this.scene.addMesh(accMesh);
             this.scene.setValid(accMesh.getIdentifier(), accessoireDTO.valide);
+
         }
+
+
+        // Pour tester l'importation d'objets à partir de fichiers .obj
+        // TriangleMesh mesh = ObjectImporter.importObject("C:\\Users\\Cédric\\Desktop\\ChalCLT_repo\\commits_versions\\A23-Equipe11\\chalCLT\\src\\main\\java\\ca\\ulaval\\glo2004\\domaine\\utils\\objets\\coffee_table_001.obj");
+        // mesh.getMaterial().setColor(Color.ORANGE);
+        
+        // TriangleMeshGroup meshGroup = new TriangleMeshGroup(new TriangleMesh[] { mesh });
+        // meshGroup = meshGroup.rotateZ(Math.toRadians(180));
+
+        // scene.addMesh(meshGroup);
     }
 
     public void draw(Graphics g, Dimension dimension) {

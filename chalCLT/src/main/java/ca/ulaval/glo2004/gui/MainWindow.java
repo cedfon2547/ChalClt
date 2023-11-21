@@ -8,7 +8,6 @@ import javax.swing.JScrollPane;
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.Controleur;
-import ca.ulaval.glo2004.gui.components.AccessoireTreeNode;
 import ca.ulaval.glo2004.gui.components.ArbreDesComposantesChalet;
 import ca.ulaval.glo2004.gui.components.DrawingPanel;
 import ca.ulaval.glo2004.gui.components.MainWindowTopBarMenu;

@@ -4,7 +4,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
-import java.util.List;
 import java.util.UUID;
 
 import javax.swing.JButton;
@@ -361,110 +360,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             @Override
             public void keyPressed(java.awt.event.KeyEvent evt) {
 
-                // todo DO NOT DELETE
-                // double rotateStep = Math.toRadians(5);
-                // Camera camera = afficheur.getScene().getCamera();
-
-                // switch (evt.getKeyCode()) {
-                // case java.awt.event.KeyEvent.VK_LEFT:
-                // if (evt.isShiftDown()) {
-                // camera.rotateX(rotateStep);
-                // } else {
-                // camera.moveLeft(-10);
-                // }
-                // break;
-                // case java.awt.event.KeyEvent.VK_RIGHT:
-                // if (evt.isShiftDown()) {
-                // camera.rotateX(-rotateStep);
-                // } else {
-                // camera.moveLeft(10);
-                // }
-                // break;
-                // case java.awt.event.KeyEvent.VK_UP:
-                // if (evt.isShiftDown()) {
-                // camera.rotateY(rotateStep);
-                // } else {
-                // camera.moveUp(10);
-                // }
-                // break;
-                // case java.awt.event.KeyEvent.VK_DOWN:
-                // if (evt.isShiftDown()) {
-                // camera.rotateY(-rotateStep);
-                // } else {
-                // camera.moveUp(-10);
-                // }
-                // break;
-                // case java.awt.event.KeyEvent.VK_Z:
-                // if (evt.isShiftDown()) {
-                // camera.rotateZ(rotateStep);
-                // } else {
-                // camera.moveForward(10);
-                // }
-                // break;
-                // case java.awt.event.KeyEvent.VK_X:
-                // if (evt.isShiftDown()) {
-                // camera.rotateZ(-rotateStep);
-                // } else {
-                // camera.moveForward(-10);
-                // }
-                // break;
-                // case java.awt.event.KeyEvent.VK_EQUALS:
-                // if (evt.isShiftDown()) {
-                // this.afficheur.getScene().getLight().setIntensity(this.afficheur.getScene().getLight().getIntensity()
-                // + 0.1);
-                // } else {
-                // camera.zoomInDirection(new java.awt.Point(getWidth() / 2, getHeight() / 2),
-                // getSize());
-                // }
-                // break;
-                // case java.awt.event.KeyEvent.VK_MINUS:
-                // if (evt.isShiftDown()) {
-                // this.afficheur.getScene().getLight().setIntensity(this.afficheur.getScene().getLight().getIntensity()
-                // - 0.1);
-                // } else {
-                // camera.zoomOutDirection(new java.awt.Point(getWidth() / 2, getHeight() / 2),
-                // getSize());
-                // }
-                // break;
-                // case java.awt.event.KeyEvent.VK_R:
-                // this.afficheur.getScene().getCamera().setDirection(new Vector3D(0, 0, 0));
-                // this.afficheur.getScene().getCamera().setPosition(new Vector3D(0, 0, -1000));
-                // break;
-                // case java.awt.event.KeyEvent.VK_A:
-                // this.afficheur.getScene().getLight().setPosition(this.afficheur.getScene().getLight().getPosition().add(new
-                // Vector3D(-10, 0, 0)));
-                // break;
-                // case java.awt.event.KeyEvent.VK_D:
-                // this.afficheur.getScene().getLight().setPosition(this.afficheur.getScene().getLight().getPosition().add(new
-                // Vector3D(10, 0, 0)));
-                // break;
-                // case java.awt.event.KeyEvent.VK_W:
-                // this.afficheur.getScene().getLight().setPosition(this.afficheur.getScene().getLight().getPosition().add(new
-                // Vector3D(0, 10, 0)));
-                // break;
-                // case java.awt.event.KeyEvent.VK_S:
-                // this.afficheur.getScene().getLight().setPosition(this.afficheur.getScene().getLight().getPosition().add(new
-                // Vector3D(0, -10, 0)));
-                // break;
-                // case java.awt.event.KeyEvent.VK_Q:
-                // this.afficheur.getScene().getLight().setPosition(this.afficheur.getScene().getLight().getPosition().add(new
-                // Vector3D(0, 0, 10)));
-                // break;
-                // case java.awt.event.KeyEvent.VK_E:
-                // this.afficheur.getScene().getLight().setPosition(this.afficheur.getScene().getLight().getPosition().add(new
-                // Vector3D(0, 0, -10)));
-                // break;
-                // case java.awt.event.KeyEvent.VK_P:
-                // if (evt.isShiftDown()) {
-                // this.afficheur.getScene().getLight().setAmbientIntensity(this.afficheur.getScene().getLight().getAmbientIntensity()
-                // - 0.1);
-                // } else {
-                // this.afficheur.getScene().getLight().setAmbientIntensity(this.afficheur.getScene().getLight().getAmbientIntensity()
-                // + 0.1);
-                // }
-                // }
-
-                repaint();
+                // repaint();
             }
         };
     }
@@ -491,7 +387,7 @@ public class DrawingPanel extends javax.swing.JPanel {
         //repaint();
     }
 
-    
+
     public void rechargerAffichage() {
         try {
             afficheur.rechargerAffichage();
