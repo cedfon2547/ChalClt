@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 
 public class LightTest {
 
-    public Light setUp(){
+    public static Light setUp(){
         Vector3D position = new Vector3D(200, 300, 200);
         Color color = Color.WHITE;
         double intensity = 2.0;
