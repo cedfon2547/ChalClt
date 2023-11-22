@@ -84,8 +84,4 @@ public class ChaletTest {
         assertEquals(accessoire, accessoireRetire);
         assertFalse(mur.getAccessoires().contains(accessoire));
     }
-
-
-
-
 }
