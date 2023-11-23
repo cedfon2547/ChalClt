@@ -27,7 +27,7 @@ public class SceneConfigurationTest {
 
     @Test
     public void setGridColorTest(){
-        Color gridColor = new Color(75, 75, 75, 255);;
+        Color gridColor = new Color(75, 75, 75, 255);
         SceneConfiguration sceneConfiguration = new SceneConfiguration();
         sceneConfiguration.setGridColor(gridColor);
         assertEquals(gridColor, sceneConfiguration.getGridColor());
@@ -35,7 +35,7 @@ public class SceneConfigurationTest {
 
     @Test
     public void setBackgroundColorTest(){
-        Color backgroundColor = new Color(30, 75, 100, 255);;
+        Color backgroundColor = new Color(30, 75, 100, 255);
         SceneConfiguration sceneConfiguration = new SceneConfiguration();
         sceneConfiguration.setBackgroundColor(backgroundColor);
         assertEquals(backgroundColor, sceneConfiguration.getBackgroundColor());
@@ -106,7 +106,7 @@ public class SceneConfigurationTest {
 
     @Test
     public void setSelectionColorTest(){
-        Color selectionColor = new Color(35, 85, 140, 205);;
+        Color selectionColor = new Color(35, 85, 140, 205);
         SceneConfiguration sceneConfiguration = new SceneConfiguration();
         sceneConfiguration.setSelectionColor(selectionColor);
         assertEquals(selectionColor, sceneConfiguration.getSelectionColor());
