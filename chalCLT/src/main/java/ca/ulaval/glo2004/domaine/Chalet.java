@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public class Chalet {
     private String nom = "ChaletDefault";
-    private double margeSupplementaireRetrait = 0.0;
+    private double margeSupplementaireRetrait = 0.5;
     private double hauteur = 96;
     private double largeur = 120;
     private double longueur = 120;

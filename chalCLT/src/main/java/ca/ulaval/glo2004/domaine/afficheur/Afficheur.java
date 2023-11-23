@@ -117,23 +117,23 @@ public class Afficheur {
         boolean sideTruncate = chaletDTO.sensToit == TypeSensToit.Nord || chaletDTO.sensToit == TypeSensToit.Sud;
 
         murFacadeGroup = new TriangleMeshGroup(new TriangleMesh[] {
-                TriangleMesh.fromDoubleList(PanelHelper.buildWall2(new double[] { 0, 0, 0 },
+                TriangleMesh.fromDoubleList(PanelHelper.buildWall(new double[] { 0, 0, 0 },
                         new Dimension((int) chaletDTO.largeur, (int) chaletDTO.hauteur), chaletDTO.epaisseurMur,
                         chaletDTO.margeSupplementaireRetrait, !sideTruncate), murFacadeMaterial),
         });
         murArriereGroup = new TriangleMeshGroup(new TriangleMesh[] {
-                TriangleMesh.fromDoubleList(PanelHelper.buildWall2(new double[] { 0, 0, 0 },
+                TriangleMesh.fromDoubleList(PanelHelper.buildWall(new double[] { 0, 0, 0 },
                         new Dimension((int) chaletDTO.largeur, (int) chaletDTO.hauteur), chaletDTO.epaisseurMur,
                         chaletDTO.margeSupplementaireRetrait, !sideTruncate), murArriereMaterial),
         });
         murDroitGroup = new TriangleMeshGroup(new TriangleMesh[] {
-                TriangleMesh.fromDoubleList(PanelHelper.buildWall2(new double[] { 0, 0, 0 },
+                TriangleMesh.fromDoubleList(PanelHelper.buildWall(new double[] { 0, 0, 0 },
                         new Dimension((int) chaletDTO.longueur, (int) chaletDTO.hauteur), chaletDTO.epaisseurMur,
                         chaletDTO.margeSupplementaireRetrait, sideTruncate), murDroitMaterial),
         });
         murGaucheGroup = new TriangleMeshGroup(new TriangleMesh[] {
                 TriangleMesh.fromDoubleList(
-                        PanelHelper.buildWall2(new double[] { 0, 0, 0 },
+                        PanelHelper.buildWall(new double[] { 0, 0, 0 },
                                 new Dimension((int) chaletDTO.longueur, (int) chaletDTO.hauteur),
                                 chaletDTO.epaisseurMur, chaletDTO.margeSupplementaireRetrait, sideTruncate),
                         murGaucheMaterial),
@@ -170,63 +170,63 @@ public class Afficheur {
         murDroitGroup = murDroitGroup.translate(new Vector3D(0, -chaletDTO.hauteur / 2, 0));
         murGaucheGroup = murGaucheGroup.translate(new Vector3D(0, -chaletDTO.hauteur / 2, 0));
 
-        // List<STLTools.Triangle> stlTriangles = new ArrayList<STLTools.Triangle>();
-        // for (Triangle tri : murFacadeGroup.getMesh(0).getTriangles()) {
-        //     double[] normal = tri.getNormal().toArray();
-        //     double[] vertex1 = tri.getVertice(0).toArray();
-        //     double[] vertex2 = tri.getVertice(1).toArray();
-        //     double[] vertex3 = tri.getVertice(2).toArray();
+        List<STLTools.Triangle> stlTriangles = new ArrayList<STLTools.Triangle>();
+        for (Triangle tri : murFacadeGroup.getMesh(0).getTriangles()) {
+             double[] normal = tri.getNormal().toArray();
+             double[] vertex1 = tri.getVertice(0).toArray();
+             double[] vertex2 = tri.getVertice(1).toArray();
+             double[] vertex3 = tri.getVertice(2).toArray();
 
-        //     stlTriangles
-        //             .add(new STLTools.Triangle(new float[] { (float) normal[0], (float) normal[1], (float) normal[2] },
-        //                     new float[] { (float) vertex1[0], (float) vertex1[1], (float) vertex1[2] },
-        //                     new float[] { (float) vertex2[0], (float) vertex2[1], (float) vertex2[2] },
-        //                     new float[] { (float) vertex3[0], (float) vertex3[1], (float) vertex3[2] }));
-        // }
+             stlTriangles
+                     .add(new STLTools.Triangle(new float[] { (float) normal[0], (float) normal[1], (float) normal[2] },
+                             new float[] { (float) vertex1[0], (float) vertex1[1], (float) vertex1[2] },
+                             new float[] { (float) vertex2[0], (float) vertex2[1], (float) vertex2[2] },
+                             new float[] { (float) vertex3[0], (float) vertex3[1], (float) vertex3[2] }));
+         }
 
-        // for (Triangle tri : murArriereGroup.getMesh(0).getTriangles()) {
-        //     double[] normal = tri.getNormal().toArray();
-        //     double[] vertex1 = tri.getVertice(0).toArray();
-        //     double[] vertex2 = tri.getVertice(1).toArray();
-        //     double[] vertex3 = tri.getVertice(2).toArray();
+         for (Triangle tri : murArriereGroup.getMesh(0).getTriangles()) {
+             double[] normal = tri.getNormal().toArray();
+             double[] vertex1 = tri.getVertice(0).toArray();
+             double[] vertex2 = tri.getVertice(1).toArray();
+             double[] vertex3 = tri.getVertice(2).toArray();
 
-        //     stlTriangles
-        //             .add(new STLTools.Triangle(new float[] { (float) normal[0], (float) normal[1], (float) normal[2] },
-        //                     new float[] { (float) vertex1[0], (float) vertex1[1], (float) vertex1[2] },
-        //                     new float[] { (float) vertex2[0], (float) vertex2[1], (float) vertex2[2] },
-        //                     new float[] { (float) vertex3[0], (float) vertex3[1], (float) vertex3[2] }));
-        // }
+             stlTriangles
+                     .add(new STLTools.Triangle(new float[] { (float) normal[0], (float) normal[1], (float) normal[2] },
+                             new float[] { (float) vertex1[0], (float) vertex1[1], (float) vertex1[2] },
+                             new float[] { (float) vertex2[0], (float) vertex2[1], (float) vertex2[2] },
+                             new float[] { (float) vertex3[0], (float) vertex3[1], (float) vertex3[2] }));
+         }
 
-        // for (Triangle tri : murDroitGroup.getMesh(0).getTriangles()) {
-        //     double[] normal = tri.getNormal().toArray();
-        //     double[] vertex1 = tri.getVertice(0).toArray();
-        //     double[] vertex2 = tri.getVertice(1).toArray();
-        //     double[] vertex3 = tri.getVertice(2).toArray();
+         for (Triangle tri : murDroitGroup.getMesh(0).getTriangles()) {
+             double[] normal = tri.getNormal().toArray();
+             double[] vertex1 = tri.getVertice(0).toArray();
+             double[] vertex2 = tri.getVertice(1).toArray();
+             double[] vertex3 = tri.getVertice(2).toArray();
 
-        //     stlTriangles
-        //             .add(new STLTools.Triangle(new float[] { (float) normal[0], (float) normal[1], (float) normal[2] },
-        //                     new float[] { (float) vertex1[0], (float) vertex1[1], (float) vertex1[2] },
-        //                     new float[] { (float) vertex2[0], (float) vertex2[1], (float) vertex2[2] },
-        //                     new float[] { (float) vertex3[0], (float) vertex3[1], (float) vertex3[2] }));
-        // }
+             stlTriangles
+                     .add(new STLTools.Triangle(new float[] { (float) normal[0], (float) normal[1], (float) normal[2] },
+                             new float[] { (float) vertex1[0], (float) vertex1[1], (float) vertex1[2] },
+                             new float[] { (float) vertex2[0], (float) vertex2[1], (float) vertex2[2] },
+                             new float[] { (float) vertex3[0], (float) vertex3[1], (float) vertex3[2] }));
+         }
 
-        // for (Triangle tri : murGaucheGroup.getMesh(0).getTriangles()) {
-        //     double[] normal = tri.getNormal().toArray();
-        //     double[] vertex1 = tri.getVertice(0).toArray();
-        //     double[] vertex2 = tri.getVertice(1).toArray();
-        //     double[] vertex3 = tri.getVertice(2).toArray();
+         for (Triangle tri : murGaucheGroup.getMesh(0).getTriangles()) {
+             double[] normal = tri.getNormal().toArray();
+             double[] vertex1 = tri.getVertice(0).toArray();
+             double[] vertex2 = tri.getVertice(1).toArray();
+             double[] vertex3 = tri.getVertice(2).toArray();
 
-        //     stlTriangles
-        //             .add(new STLTools.Triangle(new float[] { (float) normal[0], (float) normal[1], (float) normal[2] },
-        //                     new float[] { (float) vertex1[0], (float) vertex1[1], (float) vertex1[2] },
-        //                     new float[] { (float) vertex2[0], (float) vertex2[1], (float) vertex2[2] },
-        //                     new float[] { (float) vertex3[0], (float) vertex3[1], (float) vertex3[2] }));
-        // }
+             stlTriangles
+                     .add(new STLTools.Triangle(new float[] { (float) normal[0], (float) normal[1], (float) normal[2] },
+                             new float[] { (float) vertex1[0], (float) vertex1[1], (float) vertex1[2] },
+                             new float[] { (float) vertex2[0], (float) vertex2[1], (float) vertex2[2] },
+                             new float[] { (float) vertex3[0], (float) vertex3[1], (float) vertex3[2] }));
+         }
 
-        // STLTools.writeSTL(stlTriangles, "test.stl");
+         STLTools.writeSTL(stlTriangles, "test.stl");
 
         // murFacadeGroup.setVisible(false);
-        murArriereGroup.setVisible(false);
+        // murArriereGroup.setVisible(false);
 
         scene.addMesh(murFacadeGroup);
         scene.addMesh(murArriereGroup);

@@ -288,7 +288,51 @@ public class Rasterizer {
     private void drawInvalidMeshBounding(Graphics2D g2) {
         g2.setStroke(new BasicStroke(scene.getConfiguration().getSelectionStrokeWidth()));
 
-        int diff = 6 - scene.getConfiguration().getSelectionStrokeWidth();
+
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                final int depth = y * image.getWidth() + x;
+                if (idBuffer[depth] != null && !scene.getMesh(idBuffer[depth]).getValid()) {
+                    // Check if the id of the pixel is the same on top, left, right and bottom.
+                    // If not, it means that the pixel is on the edge of a mesh.
+                    // So we draw the pixel in order to create a boundary
+                    if (depth <= 0)
+                        continue;
+                    if (depth + 1 > image.getWidth() * image.getHeight() - 1)
+                        continue;
+
+                    int topPixelDepth = (y - 1) * image.getWidth() + x;
+                    int leftPixelDepth = y * image.getWidth() + (x - 1);
+                    int rightPixelDepth = y * image.getWidth() + (x + 1);
+                    int bottomPixelDepth = (y + 1) * image.getWidth() + x;
+
+                    // draw border
+                    g2.setColor(new Color(255, 0, 0, 150));
+                    if (topPixelDepth >= 0 && idBuffer[topPixelDepth] != idBuffer[depth]) {
+                        g2.drawRect(x, y, 2, 2);
+                    }
+
+                    if (leftPixelDepth >= 0 && leftPixelDepth <= idBuffer.length
+                            && idBuffer[leftPixelDepth] != idBuffer[depth]) {
+                        g2.drawRect(x, y, 2, 2);
+                    }
+
+                    if (idBuffer[rightPixelDepth] != idBuffer[depth]) {
+                        g2.drawRect(x, y, 2, 2);
+                    }
+
+                    if (bottomPixelDepth < idBuffer.length && idBuffer[bottomPixelDepth] != idBuffer[depth]) {
+                        g2.drawRect(x, y, 2, 2);
+                    }
+                    // fill invalid accessories
+                    g2.setColor(new Color(255, 0, 0, 75));
+                    g2.fillRect(x, y, 1, 1);
+
+                }
+            }
+        }
+
+        /*int diff = 6 - scene.getConfiguration().getSelectionStrokeWidth();
         g2.setColor(new Color(255, 0, 0, 150));
 
         for (TriangleMeshGroup obj : tMeshGroups) {
@@ -308,7 +352,7 @@ public class Rasterizer {
                         (int) obj.getWidth() + diff * 2,
                         (int) obj.getHeight() + diff * 2);
             }
-        }
+        }*/
     }
 
     private Color phongModel(TriangleMesh object, Color color, Vector3D norm, Vector3D pixelPoint, Vector3D lightPos) {
