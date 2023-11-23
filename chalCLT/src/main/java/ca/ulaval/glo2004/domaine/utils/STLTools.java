@@ -35,6 +35,7 @@ public class STLTools {
             DataInputStream in = new DataInputStream(file);
 
             byte[] header = new byte[80];
+
             in.read(header);
 
             int nbTriangles = Integer.reverseBytes(in.readInt());
@@ -111,6 +112,7 @@ public class STLTools {
     }
 
     // A method to write a list of triangles to an STL file in ASCII format
+    // Rubbish
     public static void writeAsciiSTL(String filename, List<Triangle> triangles) throws IOException {
         // Create a file writer
         FileWriter fw = new FileWriter(filename);

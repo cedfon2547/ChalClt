@@ -333,17 +333,17 @@ public class Afficheur {
         }
 
         // Pour tester l'importation d'objets à partir de fichiers .obj
-        URI url = App.class.getResource("/objets/floor.obj").toURI();
+        URI url = App.class.getResource("/objets/floor_single.obj").toURI();
         System.out.println(url);
-        TriangleMesh mesh = ObjectImporter.importObject(url); // bnnuy
-        mesh = mesh.scale(new Vector3D(15, 15, 15));
+        TriangleMesh mesh = ObjectImporter.importObject(url); // shaep
+        //mesh = mesh.scale(new Vector3D(1, 1, 1));
         mesh.getMaterial().setColor(Color.GRAY);
         mesh.getMaterial().setShininess(0);
         mesh.getMaterial().setSpecular(0);
         mesh.getMaterial().setAmbient(2);
 
         TriangleMeshGroup meshGroup = new TriangleMeshGroup(new TriangleMesh[] { mesh });
-        meshGroup = meshGroup.rotateZ(Math.toRadians(180));
+        meshGroup = meshGroup.scale(new Vector3D(1,1,-1)); // flip the z axis the right way around
         meshGroup.setSelectable(false);
 
         scene.addMesh(meshGroup);
