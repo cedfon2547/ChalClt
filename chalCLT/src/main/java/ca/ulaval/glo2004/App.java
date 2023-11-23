@@ -25,6 +25,7 @@ class Line {
     double x2 = 0;
     double y2 = 0;
 
+
     public Line(double x1, double y1, double x2, double y2) {
         this.x1 = x1; this.y1 = y1;
         this.x2 = x2; this.y2 = y2;
@@ -83,6 +84,7 @@ class CustomRect {
         g.drawRect(x, y, width, height);
 
         List<Line> lines = new ArrayList<Line>();
+        List<Point> points = new ArrayList<>();
 
         for (Acc acc : accs) {
             acc.draw(g);
@@ -96,7 +98,7 @@ class CustomRect {
             lines.add(line3);
             lines.add(line4);
 
-            for (Line _line: lines) {
+            for (Line _line : lines) {
                 // Draw oval at intersection
                 // if (line1.intersects(_line)) {
                 //     g.setColor(Color.RED);
@@ -106,22 +108,34 @@ class CustomRect {
 
                 Point p = line1.intersectionPoint(_line);
                 if (p != null) {
-                    g.fillOval((int)p.getX() - 5, (int)p.getY() - 5, 10, 10);
+                    if(!points.contains(p) && p.x > 0 && p.y > 0) {
+                            points.add(p);
+                            g.fillOval((int) p.getX() - 5, (int) p.getY() - 5, 10, 10);
+                    }
                 }
 
                 Point p2 = line2.intersectionPoint(_line);
                 if (p2 != null) {
-                    g.fillOval((int)p2.getX() - 5, (int)p2.getY() - 5, 10, 10);
+                    if(!points.contains(p2) && p2.x > 0 && p2.y > 0) {
+                        points.add(p2);
+                        g.fillOval((int) p2.getX() - 5, (int) p2.getY() - 5, 10, 10);
+                    }
                 }
 
                 Point p3 = line3.intersectionPoint(_line);
                 if (p3 != null) {
-                    g.fillOval((int)p3.getX() - 5, (int)p3.getY() - 5, 10, 10);
+                    if(!points.contains(p3) && p3.x > 0 && p3.y > 0) {
+                        points.add(p3);
+                        g.fillOval((int) p3.getX() - 5, (int) p3.getY() - 5, 10, 10);
+                    }
                 }
 
                 Point p4 = line4.intersectionPoint(_line);
                 if (p4 != null) {
-                    g.fillOval((int)p4.getX() - 5, (int)p4.getY() - 5, 10, 10);
+                    if(!points.contains(p4) && p4.x > 0 && p4.y > 0) {
+                        points.add(p4);
+                        g.fillOval((int) p4.getX() - 5, (int) p4.getY() - 5, 10, 10);
+                    }
                 }
 
                 // Draw line
@@ -129,7 +143,67 @@ class CustomRect {
 
             }
         }
+        System.out.println(points.size());
     }
+
+//    public List<Point> getIntersection(Graphics g) {
+//
+//        List<Line> lines = new ArrayList<Line>();
+//        List<Point> points = new ArrayList<>();
+//
+//        for (Acc acc : accs) {
+//            acc.draw(g);
+//            Line line1 = new Line(acc.x - 1000, acc.y, acc.x + 1000, acc.y);
+//            Line line2 = new Line(acc.x - 1000, acc.y + acc.height, acc.x + 1000, acc.y + acc.height);
+//            Line line3 = new Line(acc.x, acc.y - 1000, acc.x, acc.y + 1000);
+//            Line line4 = new Line(acc.x + acc.width, acc.y - 1000, acc.x + acc.width, acc.y + 1000);
+//
+//            lines.add(line1);
+//            lines.add(line2);
+//            lines.add(line3);
+//            lines.add(line4);
+//
+//            for (Line _line: lines) {
+//                // Draw oval at intersection
+//                // if (line1.intersects(_line)) {
+//                //     g.setColor(Color.RED);
+//                //     g.fillOval((int)line1.x1 - 5, (int)line1.y1 - 5, 10, 10);
+//                // }
+//                g.setColor(Color.CYAN);
+//
+//                Point p = line1.intersectionPoint(_line);
+//                if (p != null) {
+//
+//                        points.add(p);
+//                        //g.fillOval((int)p.getX() - 5, (int)p.getY() - 5, 10, 10);
+//                }
+//
+//                Point p2 = line2.intersectionPoint(_line);
+//                if (p2 != null) {
+//                    points.add(p2);
+//                    //g.fillOval((int)p2.getX() - 5, (int)p2.getY() - 5, 10, 10);
+//                }
+//
+//                Point p3 = line3.intersectionPoint(_line);
+//                if (p3 != null) {
+//                    points.add(p3);
+//                    //g.fillOval((int)p3.getX() - 5, (int)p3.getY() - 5, 10, 10);
+//                }
+//
+//                Point p4 = line4.intersectionPoint(_line);
+//                if (p4 != null) {
+//                    points.add(p4);
+//                    //g.fillOval((int)p4.getX() - 5, (int)p4.getY() - 5, 10, 10);
+//                }
+//
+//                // Draw line
+//                // g.setColor(Color.WHITE);
+//
+//
+//            }
+//        }
+//        return points;
+//    }
 
     public void addAcc(Acc acc) {
         accs.add(acc);
@@ -195,39 +269,39 @@ public class App {
         mainWindow.setSize(800, 600);
         mainWindow.setVisible(true);
 
-        // double rectWidth = 500;
-        // double rectHeight = 350;
-        // double rectX = 50;
-        // double rectY = 50;
+        /* double rectWidth = 500;
+         double rectHeight = 350;
+         double rectX = 50;
+         double rectY = 50;
 
-        // CustomRect rect = new CustomRect((int)rectX, (int)rectY, (int)rectWidth, (int)rectHeight);
+         CustomRect rect = new CustomRect((int)rectX, (int)rectY, (int)rectWidth, (int)rectHeight);
 
-        // Acc acc1 = new Acc(100, 100, 100, 100);
-        // Acc acc2 = new Acc(280, 100, 100, 100);
-        // Acc acc3 = new Acc(150, 250, 150, 100);
-        // Acc acc4 = new Acc(450, 150, 50, 200);
+         Acc acc1 = new Acc(100, 100, 100, 100);
+         Acc acc2 = new Acc(280, 100, 100, 100);
+         Acc acc3 = new Acc(150, 250, 150, 100);
+         Acc acc4 = new Acc(450, 150, 50, 200);
 
-        // rect.addAcc(acc1);
-        // rect.addAcc(acc2);
-        // rect.addAcc(acc3);
-        // rect.addAcc(acc4);
+         rect.addAcc(acc1);
+         rect.addAcc(acc2);
+         rect.addAcc(acc3);
+         rect.addAcc(acc4);
 
-        // JFrame frame = new JFrame("JFrame Example");
-        // JPanel panel = new JPanel() {
-        //     @Override
-        //     public void paintComponent(Graphics g) {
-        //         super.paintComponent(g);
+         JFrame frame = new JFrame("JFrame Example");
+         JPanel panel = new JPanel() {
+             @Override
+             public void paintComponent(Graphics g) {
+                 super.paintComponent(g);
 
-        //         g.setColor(Color.BLACK);
-        //         g.fillRect(0, 0, getWidth(), getHeight());
+                 g.setColor(Color.BLACK);
+                 g.fillRect(0, 0, getWidth(), getHeight());
 
-        //         rect.draw(g);
-        //     }
-        // };
+                 rect.draw(g);
+             }
+         };
     
-        // frame.getContentPane().add(panel);
-        // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // frame.setSize(800, 600);
-        // frame.setVisible(true);
+         frame.getContentPane().add(panel);
+         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         frame.setSize(800, 600);
+         frame.setVisible(true);*/
     }
 }
