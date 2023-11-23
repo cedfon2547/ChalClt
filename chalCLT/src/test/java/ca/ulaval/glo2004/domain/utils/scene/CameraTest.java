@@ -86,12 +86,108 @@ public class CameraTest {
         Point point = new Point(3,3);
         Dimension dimension = new Dimension(1, 1);
         camera.zoomInDirection(point,dimension, false);
-        Vector3D result = new Vector3D(-0.0075, -0.0075,-1000);
+        Vector3D result = new Vector3D(-0.075, -0.075,-1000);
 
         // A finir
+        assertEquals(result.x, camera.getPosition().x, 0.0001);
+        assertEquals(result.y, camera.getPosition().y, 0.0001);
+        assertEquals(result.z, camera.getPosition().z, 0.0001);
         assertEquals(1.03, camera.getScale(),0);
+    }
 
+    @Test
+    public void zoomoutTest1(){
+        Camera camera = setUp();
+        Point point = new Point(3,3);
+        Dimension dimension = new Dimension(1, 1);
+        camera.zoomOutDirection(point,dimension, true );
+        Vector3D result = new Vector3D(0.0075, 0.0075,-1000);
+
+        assertEquals(result.x, camera.getPosition().x, 0.0001);
+        assertEquals(result.y, camera.getPosition().y, 0.0001);
+        assertEquals(result.z, camera.getPosition().z, 0.0001);
+        assertEquals(0.997, camera.getScale(),0.0001);
 
     }
 
+    @Test
+    public void zoomoutTest2(){
+        Camera camera = setUp();
+        Point point = new Point(3,3);
+        Dimension dimension = new Dimension(1, 1);
+        camera.zoomOutDirection(point,dimension, false );
+        Vector3D result = new Vector3D(0.0728, 0.0728,-1000);
+
+        assertEquals(result.x, camera.getPosition().x, 0.0001);
+        assertEquals(result.y, camera.getPosition().y, 0.0001);
+        assertEquals(result.z, camera.getPosition().z, 0.0001);
+        assertEquals(0.97, camera.getScale(),0.001);
+
+    }
+
+    @Test
+    public void copyTest(){
+        Camera camera = setUp();
+        Camera cameraCopy = camera.copy();
+        assertEquals(camera.getId(), cameraCopy.getId());
+        assertEquals(camera.getPosition(), cameraCopy.getPosition());
+        assertEquals(camera.getDirection(), cameraCopy.getDirection());
+    }
+
+    @Test
+    public void moveLeft(){
+        Camera camera = setUp();
+        double distance = 2.0;
+        double resultat = camera.getPosition().x;
+        camera.moveLeft(distance);
+        assertEquals(resultat-2.0, camera.getPosition().x, 0);
+    }
+
+    @Test
+    public void moveUpTest(){
+        Camera camera = setUp();
+        double distance = 2.0;
+        double resultat = camera.getPosition().y;
+        camera.moveUp(distance);
+        assertEquals(resultat+2.0, camera.getPosition().y, 0);
+    }
+
+    @Test
+    public void moveForwardTest(){
+        Camera camera = setUp();
+        double distance = 2.0;
+        double resultat = camera.getPosition().z;
+        camera.moveForward(distance);
+        assertEquals(resultat+2.0, camera.getPosition().z, 0);
+    }
+
+    @Test
+    public void rotateXTest(){
+        Camera camera = setUp();
+        double angle = 30.0;
+        double resultat = camera.getDirection().x;
+        camera.rotateX(angle);
+        assertEquals(resultat+angle, camera.getDirection().x, 0);
+    }
+
+    @Test
+    public void rotateYTest(){
+        Camera camera = setUp();
+        double angle = 35.0;
+        double resultat = camera.getDirection().y;
+        camera.rotateY(angle);
+        assertEquals(resultat+angle, camera.getDirection().y, 0);
+    }
+
+    @Test
+    public void rotateZTest(){
+        Camera camera = setUp();
+        double angle = 45.0;
+        double resultat = camera.getDirection().z;
+        camera.rotateZ(angle);
+        assertEquals(resultat+angle, camera.getDirection().z, 0);
+    }
+
+
+    // Completer les dernier tests si il sont necessaire
 }
