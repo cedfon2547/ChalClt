@@ -5,7 +5,6 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Light;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.SceneConfiguration;
 import org.junit.Test;
 
 import java.awt.*;
@@ -68,11 +67,11 @@ public class SceneTest {
         TriangleMeshGroup testMesh = new TriangleMeshGroup();
         TriangleMeshGroup testMesh2 = new TriangleMeshGroup();
         TriangleMeshGroup testMesh3 = new TriangleMeshGroup();
-        List<TriangleMeshGroup> listeMesh = new ArrayList<TriangleMeshGroup>();
-        listeMesh.add(testMesh);
-        listeMesh.add(testMesh2);
-        listeMesh.add(testMesh3);
-        scene.addMeshes(listeMesh);
+        List<TriangleMeshGroup> listMesh = new ArrayList<>();
+        listMesh.add(testMesh);
+        listMesh.add(testMesh2);
+        listMesh.add(testMesh3);
+        scene.addMeshes(listMesh);
 
         //Verifie si il la mesh est a l'interieur avant de l'enlever
         assertTrue(scene.getMeshes().contains(testMesh));
@@ -152,7 +151,7 @@ public class SceneTest {
         TriangleMeshGroup testMesh = new TriangleMeshGroup();
         TriangleMeshGroup testMesh2 = new TriangleMeshGroup();
         TriangleMeshGroup testMesh3 = new TriangleMeshGroup();
-        List<TriangleMeshGroup> listeMesh = new ArrayList<TriangleMeshGroup>();
+        List<TriangleMeshGroup> listeMesh = new ArrayList<>();
         listeMesh.add(testMesh);
         listeMesh.add(testMesh2);
         listeMesh.add(testMesh3);
@@ -170,7 +169,7 @@ public class SceneTest {
         TriangleMeshGroup testMesh = new TriangleMeshGroup();
         TriangleMeshGroup testMesh2 = new TriangleMeshGroup();
         TriangleMeshGroup testMesh3 = new TriangleMeshGroup();
-        List<TriangleMeshGroup> listeMesh = new ArrayList<TriangleMeshGroup>();
+        List<TriangleMeshGroup> listeMesh = new ArrayList<>();
         listeMesh.add(testMesh);
         listeMesh.add(testMesh2);
         listeMesh.add(testMesh3);
