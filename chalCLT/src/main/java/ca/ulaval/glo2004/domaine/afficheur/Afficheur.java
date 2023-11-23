@@ -268,12 +268,12 @@ public class Afficheur {
         // Pour tester l'importation d'objets à partir de fichiers .obj
         URI url = App.class.getResource("/objets/floor.obj").toURI();
         System.out.println(url);
-        TriangleMesh mesh = ObjectImporter.importObject(url); //bnnuy
+        TriangleMesh mesh = ObjectImporter.importObject(url); // floor for now
         mesh = mesh.scale(new Vector3D(15,15,15));
         mesh.getMaterial().setColor(Color.GRAY);
         mesh.getMaterial().setShininess(0);
-        mesh.getMaterial().setSpecular(0);
-        mesh.getMaterial().setAmbient(2);
+        mesh.getMaterial().setSpecular(5);
+        mesh.getMaterial().setAmbient(0);
         
         TriangleMeshGroup meshGroup = new TriangleMeshGroup(new TriangleMesh[] { mesh });
         meshGroup = meshGroup.rotateZ(Math.toRadians(180));

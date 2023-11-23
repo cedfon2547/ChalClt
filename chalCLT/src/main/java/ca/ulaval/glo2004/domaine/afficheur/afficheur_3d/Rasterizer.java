@@ -100,6 +100,14 @@ public class Rasterizer {
 
         Matrix transform = translateToOrigin.multiply(camTransform);
 
+        // potential inverse transform matrix
+        // [ux uy uz -dot(u,t)]
+        // [vx vy vz -dot(v,t)]
+        // [wx wy wz -dot(w,t)]
+        // [ 0  0  0     1    ]
+        // Vector3D modifiedLightPos = scene.getLight().getPosition().multiply(transform);
+        Vector3D modifiedLightPos = scene.getLight().getPosition();
+
         if (scene.getConfiguration().getShowGridXY()) {
             this.drawGridXY(image, transform);
         }
@@ -190,7 +198,7 @@ public class Rasterizer {
                                     Color finalColor = phongModel(obj,
                                             obj.getMaterial().getColor(),
                                             norm,
-                                            new Vector3D(x, y, depth));
+                                            new Vector3D(x, y, depth), modifiedLightPos);
 
                                     // image.setRGB(x, y, finalColor.getRGB());
                                     g2.setColor(finalColor); // g2.setColor(new Color(finalColor.getRed(),
@@ -304,7 +312,7 @@ public class Rasterizer {
         }
     }
 
-    private Color phongModel(TriangleMesh object, Color color, Vector3D norm, Vector3D pixelPoint) {
+    private Color phongModel(TriangleMesh object, Color color, Vector3D norm, Vector3D pixelPoint, Vector3D lightPos) {
         // Calculate ambient light
         double ambientIntensity = scene.getLight().getAmbientIntensity() * object.getMaterial().getAmbient();
 
@@ -313,8 +321,8 @@ public class Rasterizer {
         int blue = (int) Math.min(255, color.getBlue() * ambientIntensity);
 
         // Calculate diffuse light
-        Light light = scene.getLight();
-        Vector3D lightDir = light.getPosition().sub(pixelPoint).normalize();
+        //Light light = scene.getLight();
+        Vector3D lightDir = lightPos.sub(pixelPoint).normalize();
         double dotProduct = Math.max(0, norm.dot(lightDir));
         double diffuseIntensity = object.getMaterial().getDiffuse();
         red += (int) (color.getRed() * dotProduct * diffuseIntensity);
