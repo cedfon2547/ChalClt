@@ -139,20 +139,24 @@ public class Afficheur {
                         murGaucheMaterial),
         });
 
+        // get mesh
         murFacadeGroup.getMesh(0).setHandle(Constants._STRING_MUR_FACADE);
         murArriereGroup.getMesh(0).setHandle(Constants._STRING_MUR_ARRIERE);
         murDroitGroup.getMesh(0).setHandle(Constants._STRING_MUR_DROIT);
         murGaucheGroup.getMesh(0).setHandle(Constants._STRING_MUR_GAUCHE);
 
+        // uh??
         murFacadeGroup = murFacadeGroup.translate(murFacadeGroup.getCenter().multiply(-1));
         murArriereGroup = murArriereGroup.translate(murArriereGroup.getCenter().multiply(-1));
         murDroitGroup = murDroitGroup.translate(murDroitGroup.getCenter().multiply(-1));
         murGaucheGroup = murGaucheGroup.translate(murGaucheGroup.getCenter().multiply(-1));
 
+        // rotate walls all around
         murArriereGroup = murArriereGroup.rotate(0, Math.PI, 0);
         murDroitGroup = murDroitGroup.rotate(0, Math.PI / 2, 0);
         murGaucheGroup = murGaucheGroup.rotate(0, -Math.PI / 2, 0);
 
+        // shift the walls into position
         murFacadeGroup = murFacadeGroup.translate(new Vector3D(0, 0, -chaletDTO.longueur / 2));
         murArriereGroup = murArriereGroup.translate(new Vector3D(0, 0, chaletDTO.longueur / 2));
         murDroitGroup = murDroitGroup.translate(new Vector3D(-chaletDTO.largeur / 2, 0, 0));
@@ -170,60 +174,62 @@ public class Afficheur {
         murDroitGroup = murDroitGroup.translate(new Vector3D(0, -chaletDTO.hauteur / 2, 0));
         murGaucheGroup = murGaucheGroup.translate(new Vector3D(0, -chaletDTO.hauteur / 2, 0));
 
-        List<STLTools.Triangle> stlTriangles = new ArrayList<STLTools.Triangle>();
+        // little detour through STL land
+        // in order for this to show up properly in e.g. blender, we're just gonna set x=-x, y=z, z=-y; it makes sense ok
+        List<STLTools.Triangle> stlTriangles = new ArrayList<>();
         for (Triangle tri : murFacadeGroup.getMesh(0).getTriangles()) {
-             double[] normal = tri.getNormal().toArray();
-             double[] vertex1 = tri.getVertice(0).toArray();
-             double[] vertex2 = tri.getVertice(1).toArray();
-             double[] vertex3 = tri.getVertice(2).toArray();
+            double[] normal = tri.getNormal().toArray();
+            double[] vertex1 = tri.getVertice(0).toArray();
+            double[] vertex2 = tri.getVertice(1).toArray();
+            double[] vertex3 = tri.getVertice(2).toArray();
 
-             stlTriangles
-                     .add(new STLTools.Triangle(new float[] { (float) normal[0], (float) normal[1], (float) normal[2] },
-                             new float[] { (float) vertex1[0], (float) vertex1[1], (float) vertex1[2] },
-                             new float[] { (float) vertex2[0], (float) vertex2[1], (float) vertex2[2] },
-                             new float[] { (float) vertex3[0], (float) vertex3[1], (float) vertex3[2] }));
-         }
+            stlTriangles
+                    .add(new STLTools.Triangle(new float[] { -(float) normal[0], (float) normal[2], -(float) normal[1] },
+                            new float[] { -(float) vertex1[0], (float) vertex1[2], -(float) vertex1[1] },
+                            new float[] { -(float) vertex2[0], (float) vertex2[2], -(float) vertex2[1] },
+                            new float[] { -(float) vertex3[0], (float) vertex3[2], -(float) vertex3[1] }));
+        }
 
-         for (Triangle tri : murArriereGroup.getMesh(0).getTriangles()) {
-             double[] normal = tri.getNormal().toArray();
-             double[] vertex1 = tri.getVertice(0).toArray();
-             double[] vertex2 = tri.getVertice(1).toArray();
-             double[] vertex3 = tri.getVertice(2).toArray();
+        for (Triangle tri : murArriereGroup.getMesh(0).getTriangles()) {
+            double[] normal = tri.getNormal().toArray();
+            double[] vertex1 = tri.getVertice(0).toArray();
+            double[] vertex2 = tri.getVertice(1).toArray();
+            double[] vertex3 = tri.getVertice(2).toArray();
 
-             stlTriangles
-                     .add(new STLTools.Triangle(new float[] { (float) normal[0], (float) normal[1], (float) normal[2] },
-                             new float[] { (float) vertex1[0], (float) vertex1[1], (float) vertex1[2] },
-                             new float[] { (float) vertex2[0], (float) vertex2[1], (float) vertex2[2] },
-                             new float[] { (float) vertex3[0], (float) vertex3[1], (float) vertex3[2] }));
-         }
+            stlTriangles
+                    .add(new STLTools.Triangle(new float[] { -(float) normal[0], (float) normal[2], -(float) normal[1] },
+                            new float[] { -(float) vertex1[0], (float) vertex1[2], -(float) vertex1[1] },
+                            new float[] { -(float) vertex2[0], (float) vertex2[2], -(float) vertex2[1] },
+                            new float[] { -(float) vertex3[0], (float) vertex3[2], -(float) vertex3[1] }));
+        }
 
-         for (Triangle tri : murDroitGroup.getMesh(0).getTriangles()) {
-             double[] normal = tri.getNormal().toArray();
-             double[] vertex1 = tri.getVertice(0).toArray();
-             double[] vertex2 = tri.getVertice(1).toArray();
-             double[] vertex3 = tri.getVertice(2).toArray();
+        for (Triangle tri : murDroitGroup.getMesh(0).getTriangles()) {
+            double[] normal = tri.getNormal().toArray();
+            double[] vertex1 = tri.getVertice(0).toArray();
+            double[] vertex2 = tri.getVertice(1).toArray();
+            double[] vertex3 = tri.getVertice(2).toArray();
 
-             stlTriangles
-                     .add(new STLTools.Triangle(new float[] { (float) normal[0], (float) normal[1], (float) normal[2] },
-                             new float[] { (float) vertex1[0], (float) vertex1[1], (float) vertex1[2] },
-                             new float[] { (float) vertex2[0], (float) vertex2[1], (float) vertex2[2] },
-                             new float[] { (float) vertex3[0], (float) vertex3[1], (float) vertex3[2] }));
-         }
+            stlTriangles
+                    .add(new STLTools.Triangle(new float[] { -(float) normal[0], (float) normal[2], -(float) normal[1] },
+                            new float[] { -(float) vertex1[0], (float) vertex1[2], -(float) vertex1[1] },
+                            new float[] { -(float) vertex2[0], (float) vertex2[2], -(float) vertex2[1] },
+                            new float[] { -(float) vertex3[0], (float) vertex3[2], -(float) vertex3[1] }));
+        }
 
-         for (Triangle tri : murGaucheGroup.getMesh(0).getTriangles()) {
-             double[] normal = tri.getNormal().toArray();
-             double[] vertex1 = tri.getVertice(0).toArray();
-             double[] vertex2 = tri.getVertice(1).toArray();
-             double[] vertex3 = tri.getVertice(2).toArray();
+        for (Triangle tri : murGaucheGroup.getMesh(0).getTriangles()) {
+            double[] normal = tri.getNormal().toArray();
+            double[] vertex1 = tri.getVertice(0).toArray();
+            double[] vertex2 = tri.getVertice(1).toArray();
+            double[] vertex3 = tri.getVertice(2).toArray();
 
-             stlTriangles
-                     .add(new STLTools.Triangle(new float[] { (float) normal[0], (float) normal[1], (float) normal[2] },
-                             new float[] { (float) vertex1[0], (float) vertex1[1], (float) vertex1[2] },
-                             new float[] { (float) vertex2[0], (float) vertex2[1], (float) vertex2[2] },
-                             new float[] { (float) vertex3[0], (float) vertex3[1], (float) vertex3[2] }));
-         }
+            stlTriangles
+                    .add(new STLTools.Triangle(new float[] { -(float) normal[0], (float) normal[2], -(float) normal[1] },
+                            new float[] { -(float) vertex1[0], (float) vertex1[2], -(float) vertex1[1] },
+                            new float[] { -(float) vertex2[0], (float) vertex2[2], -(float) vertex2[1] },
+                            new float[] { -(float) vertex3[0], (float) vertex3[2], -(float) vertex3[1] }));
+        }
 
-         STLTools.writeSTL(stlTriangles, "test.stl");
+        STLTools.writeSTL(stlTriangles, "test.stl");
 
         // murFacadeGroup.setVisible(false);
         // murArriereGroup.setVisible(false);
