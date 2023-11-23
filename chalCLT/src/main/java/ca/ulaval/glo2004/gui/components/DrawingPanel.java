@@ -7,12 +7,14 @@ import java.awt.event.MouseWheelListener;
 import java.util.UUID;
 
 import javax.swing.JButton;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Point;
 
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
+import ca.ulaval.glo2004.domaine.afficheur.Afficheur.TypeDeVue;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
@@ -362,8 +364,35 @@ public class DrawingPanel extends javax.swing.JPanel {
 
             @Override
             public void keyPressed(java.awt.event.KeyEvent evt) {
+                Vector3D lightPosition = afficheur.getScene().getLight().getPosition();
 
-                // repaint();
+                switch(evt.getKeyCode()) {
+                    case java.awt.event.KeyEvent.VK_UP:
+                        lightPosition.y += 1;
+                        afficheur.getScene().getLight().setPosition(lightPosition);
+                        break;
+                    case java.awt.event.KeyEvent.VK_DOWN:
+                        lightPosition.y -= 1;
+                        afficheur.getScene().getLight().setPosition(lightPosition);
+                        break;
+                    case java.awt.event.KeyEvent.VK_LEFT:
+                        lightPosition.x -= 1;
+                        afficheur.getScene().getLight().setPosition(lightPosition);
+                        break;
+                    case java.awt.event.KeyEvent.VK_RIGHT:
+                        lightPosition.x += 1;
+                        afficheur.getScene().getLight().setPosition(lightPosition);
+                        break;
+                    case java.awt.event.KeyEvent.VK_Z:
+                        lightPosition.z += 1;
+                        afficheur.getScene().getLight().setPosition(lightPosition);
+                        break;
+                    case java.awt.event.KeyEvent.VK_X:
+                        lightPosition.z -= 1;
+                        afficheur.getScene().getLight().setPosition(lightPosition);
+                        break;
+                }
+                repaint();
             }
         };
     }
@@ -400,5 +429,4 @@ public class DrawingPanel extends javax.swing.JPanel {
 
         repaint();
     }
-
 }
