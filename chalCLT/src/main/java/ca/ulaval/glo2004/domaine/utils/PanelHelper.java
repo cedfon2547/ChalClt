@@ -34,36 +34,100 @@ public class PanelHelper {
          *         les différentes faces du mur
          */
         public static List<double[][]> buildWall(double[] position, Dimension dimension, double epaisseurMur,
-                                                 double margeSupplementaire, boolean truncate) {
+                        double margeSupplementaire, boolean truncate) {
                 double x0 = position[0], y0 = position[1], z0 = position[2];
                 double largeur = dimension.getWidth(), hauteur = dimension.getHeight();
                 double d = epaisseurMur;
                 double m = margeSupplementaire / 2;
-                
+
                 // Si truncate == vrai, marge pleine retirée sur une partie de la rainure
                 double mTrunc = 0.0;
-                if (truncate)
-                    mTrunc = m;
-                
-                double[] p1 = new double[] { x0 + mTrunc, y0, z0 };
-                double[] p2 = new double[] { x0 + mTrunc, y0, z0 + (d/2) - m };
-                double[] p3 = new double[] { x0 + (d/2) + m + mTrunc, y0, z0 + (d/2) - m };
-                double[] p4 = new double[] { x0 + (d/2) + m + mTrunc, y0, z0 + d };
-                double[] p5 = new double[] { x0 + largeur - (d/2) - m - mTrunc, y0, z0 + d };
-                double[] p6 = new double[] { x0 + largeur - (d/2) - m - mTrunc, y0, z0 + (d/2) - m };
-                double[] p7 = new double[] { x0 + largeur - mTrunc, y0, z0 + (d/2) - m };
-                double[] p8 = new double[] { x0 + largeur - mTrunc, y0, z0 };
+                if (truncate) {
+                        largeur -= d;
 
-                double[] p9 = new double[] { x0 + mTrunc, y0 + hauteur, z0 };
-                double[] p10 = new double[] { x0 + mTrunc, y0 + hauteur, z0 + (d/2) - m };
-                double[] p11 = new double[] { x0 + (d/2) + m + mTrunc, y0 + hauteur, z0 + (d/2) - m };
-                double[] p12 = new double[] { x0 + (d/2) + m + mTrunc, y0 + hauteur, z0 + d };
-                double[] p13 = new double[] { x0 + largeur - (d/2) - m - mTrunc, y0 + hauteur, z0 + d };
-                double[] p14 = new double[] { x0 + largeur - (d/2) - m - mTrunc, y0 + hauteur, z0 + (d/2) - m };
-                double[] p15 = new double[] { x0 + largeur - mTrunc, y0 + hauteur, z0 + (d/2) - m };
-                double[] p16 = new double[] { x0 + largeur - mTrunc, y0 + hauteur, z0 };
+                }
+                
+
+                // double[] p1 = new double[] { x0 + mTrunc, y0, z0 };
+                // double[] p2 = new double[] { x0 + mTrunc, y0, z0 + (d/2) - m };
+                // double[] p3 = new double[] { x0 + (d/2) + m + mTrunc, y0, z0 + (d/2) - m };
+                // double[] p4 = new double[] { x0 + (d/2) + m + mTrunc, y0, z0 + d };
+                // double[] p5 = new double[] { x0 + largeur - (d/2) - m - mTrunc, y0, z0 + d };
+                // double[] p6 = new double[] { x0 + largeur - (d/2) - m - mTrunc, y0, z0 +
+                // (d/2) - m };
+                // double[] p7 = new double[] { x0 + largeur - mTrunc, y0, z0 + (d/2) - m };
+                // double[] p8 = new double[] { x0 + largeur - mTrunc, y0, z0 };
+
+                // double[] p9 = new double[] { x0 + mTrunc, y0 + hauteur, z0 };
+                // double[] p10 = new double[] { x0 + mTrunc, y0 + hauteur, z0 + (d/2) - m };
+                // double[] p11 = new double[] { x0 + (d/2) + m + mTrunc, y0 + hauteur, z0 +
+                // (d/2) - m };
+                // double[] p12 = new double[] { x0 + (d/2) + m + mTrunc, y0 + hauteur, z0 + d
+                // };
+                // double[] p13 = new double[] { x0 + largeur - (d/2) - m - mTrunc, y0 +
+                // hauteur, z0 + d };
+                // double[] p14 = new double[] { x0 + largeur - (d/2) - m - mTrunc, y0 +
+                // hauteur, z0 + (d/2) - m };
+                // double[] p15 = new double[] { x0 + largeur - mTrunc, y0 + hauteur, z0 + (d/2)
+                // - m };
+                // double[] p16 = new double[] { x0 + largeur - mTrunc, y0 + hauteur, z0 };
+
+                double[] p1 = new double[] { x0, y0, z0 };
+                double[] p2 = new double[] { x0, y0, z0 + d / 2 + m };
+                double[] p3 = new double[] { x0 + d / 2 - m, y0, z0 + d / 2 + m };
+                double[] p4 = new double[] { x0 + d / 2 - m, y0, z0 + d };
+                double[] p5 = new double[] { x0 + largeur - d / 2 + m, y0, z0 + d };
+                double[] p6 = new double[] { x0 + largeur - d / 2 + m, y0, z0 + d / 2 + m };
+                double[] p7 = new double[] { x0 + largeur, y0, z0 + d / 2 + m };
+                double[] p8 = new double[] { x0 + largeur, y0, z0 };
+
+                double[] p9 = new double[] { x0, y0 + hauteur, z0 };
+                double[] p10 = new double[] { x0, y0 + hauteur, z0 + d / 2 + m };
+                double[] p11 = new double[] { x0 + d / 2 - m, y0 + hauteur, z0 + d / 2 + m };
+                double[] p12 = new double[] { x0 + d / 2 - m, y0 + hauteur, z0 + d };
+                double[] p13 = new double[] { x0 + largeur - d / 2 + m, y0 + hauteur, z0 + d };
+                double[] p14 = new double[] { x0 + largeur - d / 2 + m, y0 + hauteur, z0 + d / 2 + m };
+                double[] p15 = new double[] { x0 + largeur, y0 + hauteur, z0 + d / 2 + m };
+                double[] p16 = new double[] { x0 + largeur, y0 + hauteur, z0 };
 
                 List<double[][]> triangles = new ArrayList<>();
+                if (truncate) {
+
+                        p1 = new double[] { x0 + m/2, y0, z0 };
+                        p2 = new double[] { x0 + m/2, y0, z0 + d / 2 - m/2 };
+                        p3 = new double[] { x0 + d / 2 +m, y0, z0 + d / 2 - m/2 };
+                        p4 = new double[] { x0 + d / 2 +m, y0, z0 + d };
+                        p5 = new double[] { x0 + largeur - d / 2 - m, y0, z0 + d };
+                        p6 = new double[] { x0 + largeur - d / 2 - m, y0, z0 + d / 2 - m/2 };
+                        p7 = new double[] { x0 + largeur - m/2, y0, z0 + d / 2 - m/2 };
+                        p8 = new double[] { x0 + largeur - m/2, y0, z0 };
+                        p9 = new double[] { x0 + m/2, y0 + hauteur, z0 };
+                        p10 = new double[] { x0 + m/2, y0 + hauteur, z0 + d / 2 - m/2 };
+                        p11 = new double[] { x0 + d / 2 +m, y0 + hauteur, z0 + d / 2 - m/2 };
+                        p12 = new double[] { x0 + d / 2 +m, y0 + hauteur, z0 + d };
+                        p13 = new double[] { x0 + largeur - d / 2 - m, y0 + hauteur, z0 + d };
+                        p14 = new double[] { x0 + largeur - d / 2 - m, y0 + hauteur, z0 + d / 2 - m/2 };
+                        p15 = new double[] { x0 + largeur - m/2, y0 + hauteur, z0 + d / 2 - m/2 };
+                        p16 = new double[] { x0 + largeur - m/2, y0 + hauteur, z0 };
+
+                } else {
+                        p1 = new double[] { x0, y0, z0 };
+                        p2 = new double[] { x0, y0, z0 + d / 2 - m/2 };
+                        p3 = new double[] { x0 + d / 2 + m/2, y0, z0 + d / 2 - m/2 };
+                        p4 = new double[] { x0 + d / 2 + m/2, y0, z0 + d  };
+                        p5 = new double[] { x0 + largeur - d / 2 -m/2, y0, z0 + d };
+                        p6 = new double[] { x0 + largeur - d / 2 -m/2, y0, z0 + d / 2 -m/2 };
+                        p7 = new double[] { x0 + largeur, y0, z0 + d / 2 - m/2 };
+                        p8 = new double[] { x0 + largeur, y0, z0 };
+                        p9 = new double[] { x0, y0 + hauteur, z0 };
+                        p10 = new double[] { x0, y0 + hauteur, z0 + d / 2 - m/2 };
+                        p11 = new double[] { x0 + d / 2 + m/2, y0 + hauteur, z0 + d / 2 - m/2 };
+                        p12 = new double[] { x0 + d / 2 + m/2, y0 + hauteur, z0 + d  };
+                        p13 = new double[] { x0 + largeur - d / 2 -m/2, y0 + hauteur, z0 + d };
+                        p14 = new double[] { x0 + largeur - d / 2 -m/2, y0 + hauteur, z0 + d / 2 -m/2 };
+                        p15 = new double[] { x0 + largeur, y0 + hauteur, z0 + d / 2 - m/2 };
+                        p16 = new double[] { x0 + largeur, y0 + hauteur, z0 };
+                }
 
                 // Top (2 faces, 4 triangles)
                 triangles.add(new double[][] { p1, p2, p8 });
@@ -82,8 +146,8 @@ public class PanelHelper {
                 triangles.add(new double[][] { p1, p8, p16 });
 
                 // Back (1 face, 2 triangles)
-                triangles.add(new double[][] { p4, p13, p5  });
-                triangles.add(new double[][] { p12, p13, p4  });
+                triangles.add(new double[][] { p4, p13, p5 });
+                triangles.add(new double[][] { p12, p13, p4 });
 
                 // Faces (3 faces, 6 triangles) Rainure 1
                 triangles.add(new double[][] { p10, p2, p9 });

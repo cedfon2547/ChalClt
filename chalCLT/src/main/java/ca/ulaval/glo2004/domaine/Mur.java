@@ -15,7 +15,7 @@ public class Mur {
      */
     private final TypeMur type;
     private final Chalet chalet;
-    
+
     /**
      * La liste des accessoires du mur.
      */
@@ -109,7 +109,7 @@ public class Mur {
     public void setLargeur(double largeur) {
         Chalet.ChaletDTO chaletDTO = this.chalet.toDTO();
         chaletDTO.largeur = largeur;
-        this.chalet.updateChalet(chaletDTO);   
+        this.chalet.updateChalet(chaletDTO);
     }
 
     /**
@@ -179,12 +179,12 @@ public class Mur {
      * @return Le mur correspondant au DTO.
      */
     // public static Mur fromDTO(MurDTO dto) {
-    //     List<Accessoire> accessoires = new ArrayList<Accessoire>();
-    //     for (Accessoire.AccessoireDTO accessoireDTO : dto.accessoires) {
-    //         accessoires.add(Accessoire.fromDTO(accessoireDTO));
-    //     }
-        
-    //     return new Mur(dto.type, dto.hauteur, dto.largeur, accessoires);
+    // List<Accessoire> accessoires = new ArrayList<Accessoire>();
+    // for (Accessoire.AccessoireDTO accessoireDTO : dto.accessoires) {
+    // accessoires.add(Accessoire.fromDTO(accessoireDTO));
+    // }
+
+    // return new Mur(dto.type, dto.hauteur, dto.largeur, accessoires);
     // }
 
     /**
@@ -357,7 +357,8 @@ public class Mur {
     }
 
     public double[] getAccessoireMargin(Accessoire accessoire) {
-        return accessoire.getMarginWithRect(new double[] { 0, 0 }, new double[] { this.chalet.getLargeur(), this.chalet.getHauteur() });
+        return accessoire.getMarginWithRect(new double[] { 0, 0 },
+                new double[] { this.chalet.getLargeur(), this.chalet.getHauteur() });
     }
 
     public double[] getAccessoireMargin(Accessoire.AccessoireDTO accessoireDTO) {
@@ -367,6 +368,8 @@ public class Mur {
 
     public boolean verifierValiditeAccessoire(Accessoire accessoire, double margeMinimal,
             double epaisseurMur) {
+        double largeur = this.type == TypeMur.Facade || this.type == TypeMur.Arriere ? this.chalet.getLargeur()
+                : this.chalet.getLongueur();
         boolean isColliding = this.verifierCollisionAcc(accessoire, margeMinimal);
         if (accessoire.getAccessoireType() == TypeAccessoire.Porte) {
             // Mettre a jour la valeur de la position Y afin que l'accessoire soit aligné
@@ -380,19 +383,19 @@ public class Mur {
         }
 
         double[] margins = Accessoire.getMarginWithRect(accessoire.toDTO(), new double[] { 0, 0 },
-                new double[] { this.chalet.getLargeur(), this.chalet.getHauteur() });
+                new double[] { largeur, this.chalet.getHauteur() });
 
         if (accessoire.getAccessoireType() == TypeAccessoire.Porte) {
             System.out.println(margins[3]);
 
             // Bottom margin is always 0 for a door
             // Only need to check left, top and right margins
-            if (margins[0] < margeMinimal + epaisseurMur / 2 || margins[2] < margeMinimal + epaisseurMur / 2
+            if (margins[0] < margeMinimal + epaisseurMur || margins[2] < margeMinimal + epaisseurMur
                     || margins[1] < margeMinimal) {
                 return false; // Invalide
             }
             // Condition pour exterieur du mur a retouche au besion
-            if (margins[0] > chalet.getLargeur() - epaisseurMur / 2 - accessoire.getDimension()[0]) {
+            if (margins[0] > largeur - epaisseurMur - accessoire.getDimension()[0]) {
                 return false;
             }
 
@@ -401,12 +404,12 @@ public class Mur {
 
         // revoir l'utilite de
         // If not a door, check all margins
-        if (margins[0] < margeMinimal + epaisseurMur / 2 || margins[2] < margeMinimal + epaisseurMur / 2
+        if (margins[0] < margeMinimal + epaisseurMur || margins[2] < margeMinimal + epaisseurMur
                 || margins[1] < margeMinimal || margins[3] < margeMinimal) {
             return false; // Invalide
         }
 
-        if (margins[0] > this.chalet.getLargeur() - epaisseurMur / 2 - accessoire.getDimension()[0]
+        if (margins[0] > largeur - epaisseurMur - accessoire.getDimension()[0]
                 || margins[1] > this.chalet.getHauteur() - accessoire.getDimension()[1]) {
             return false;
         }

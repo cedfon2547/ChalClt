@@ -165,15 +165,15 @@ public class Afficheur {
         murGaucheGroup = murGaucheGroup.translate(new Vector3D(chaletDTO.largeur / 2, 0, 0));
 
         // Connecter les murs entre eux
-        if (sideTruncate) {
+        // if (sideTruncate) {
             murDroitGroup = murDroitGroup.translate(new Vector3D(chaletDTO.epaisseurMur / 2, 0, 0));
             murGaucheGroup = murGaucheGroup.translate(new Vector3D(-chaletDTO.epaisseurMur / 2, 0, 0));
-        }
+        // }
         
-        else {
+        // else {
             murFacadeGroup = murFacadeGroup.translate(new Vector3D(0, 0, chaletDTO.epaisseurMur / 2));
             murArriereGroup = murArriereGroup.translate(new Vector3D(0, 0, -chaletDTO.epaisseurMur / 2));
-        }
+        // }
 
         // mettre le chalet sur le plancher
         murFacadeGroup = murFacadeGroup.translate(new Vector3D(0, -chaletDTO.hauteur / 2, 0));

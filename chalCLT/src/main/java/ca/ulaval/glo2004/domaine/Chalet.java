@@ -119,7 +119,7 @@ public class Chalet {
         Accessoire accessoire = new Accessoire(typeAccessoire, typeMur, position, dimension);
 
         // By default, translate the accessory to the margin specified in the chalet
-        accessoire.setPosition(new double[]{margeAccessoire, margeAccessoire});
+        accessoire.setPosition(new double[]{margeAccessoire + this.epaisseurMur, margeAccessoire});
 
         Mur mur = getMur(accessoire.getTypeMur());
 
