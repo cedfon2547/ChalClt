@@ -24,8 +24,6 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Light;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
-import java.awt.GradientPaint;
-import java.awt.Paint;
 
 public class Rasterizer {
     private Scene scene;
@@ -68,15 +66,15 @@ public class Rasterizer {
                 RenderingHints.VALUE_DITHER_ENABLE));
 
         g2.setComposite(AlphaComposite.SrcOver);
-        
-        //g2.setColor(java.awt.Color.WHITE);
-        //g2.fillRect(0, 0, image.getWidth(), image.getHeight());
+
+        // g2.setColor(java.awt.Color.WHITE);
+        // g2.fillRect(0, 0, image.getWidth(), image.getHeight());
 
         // TODO gradient sky
         Color skyColorTransparent = new Color(116, 147, 170, 255);
         Color skyColorOpaque = new Color(49, 73, 111, 255);
         Paint skyColor = new GradientPaint(180.0f, 0.0f, skyColorTransparent,
-       image.getWidth(), image.getHeight(), skyColorOpaque, true);
+                image.getWidth(), image.getHeight(), skyColorOpaque, true);
         g2.setPaint(skyColor);
         g2.fillRect(0, 0, image.getWidth(), image.getHeight());
 
@@ -100,6 +98,14 @@ public class Rasterizer {
 
         Matrix transform = translateToOrigin.multiply(camTransform);
 
+        // potential inverse transform matrix
+        // [ux uy uz -dot(u,t)]
+        // [vx vy vz -dot(v,t)]
+        // [wx wy wz -dot(w,t)]
+        // [ 0  0  0     1    ]
+        // Vector3D modifiedLightPos = scene.getLight().getPosition().multiply(transform);
+        Vector3D modifiedLightPos = scene.getLight().getPosition();
+
         if (scene.getConfiguration().getShowGridXY()) {
             this.drawGridXY(image, transform);
         }
@@ -116,8 +122,9 @@ public class Rasterizer {
         }
 
         for (TriangleMeshGroup group : scene.getMeshes()) {
-            if(!group.getVisible())
+            if (!group.getVisible())
                 continue;
+            
             TriangleMeshGroup transformedGroup = new TriangleMeshGroup();
             Matrix translationMatrix = Matrix.translationMatrix(group.getPosition().getX(), group.getPosition().getY(),
                     group.getPosition().getZ());
@@ -190,7 +197,7 @@ public class Rasterizer {
                                     Color finalColor = phongModel(obj,
                                             obj.getMaterial().getColor(),
                                             norm,
-                                            new Vector3D(x, y, depth));
+                                            new Vector3D(x, y, depth), modifiedLightPos);
 
                                     // image.setRGB(x, y, finalColor.getRGB());
                                     g2.setColor(finalColor); // g2.setColor(new Color(finalColor.getRed(),
@@ -212,52 +219,52 @@ public class Rasterizer {
             tMeshGroups.add(transformedGroup);
         }
 
-         g2.setColor(scene.getConfiguration().getSelectionColor());
+        g2.setColor(scene.getConfiguration().getSelectionColor());
         // TODO: Do not remove
-         for (int y = 0; y < image.getHeight(); y++) {
-             for (int x = 0; x < image.getWidth(); x++) {
-                 final int depth = y * image.getWidth() + x;
-                 if (idBuffer[depth] != null && scene.getMesh(idBuffer[depth]).getSelected()) {
-                     // Check if the id of the pixel is the same on top, left, right and bottom.
-                     // If not, it means that the pixel is on the edge of a mesh.
-                     // So we draw the pixel in order to create a boundary
-                     if (depth <= 0)
-                         continue;
-                     if (depth + 1 > image.getWidth() * image.getHeight() - 1)
-                         continue;
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                final int depth = y * image.getWidth() + x;
+                if (idBuffer[depth] != null && scene.getMesh(idBuffer[depth]).getSelected()) {
+                    // Check if the id of the pixel is the same on top, left, right and bottom.
+                    // If not, it means that the pixel is on the edge of a mesh.
+                    // So we draw the pixel in order to create a boundary
+                    if (depth <= 0)
+                        continue;
+                    if (depth + 1 > image.getWidth() * image.getHeight() - 1)
+                        continue;
 
-                     int topPixelDepth = (y - 1) * image.getWidth() + x;
-                     int leftPixelDepth = y * image.getWidth() + (x - 1);
-                     int rightPixelDepth = y * image.getWidth() + (x + 1);
-                     int bottomPixelDepth = (y + 1) * image.getWidth() + x;
+                    int topPixelDepth = (y - 1) * image.getWidth() + x;
+                    int leftPixelDepth = y * image.getWidth() + (x - 1);
+                    int rightPixelDepth = y * image.getWidth() + (x + 1);
+                    int bottomPixelDepth = (y + 1) * image.getWidth() + x;
 
-                     if (topPixelDepth >= 0 && idBuffer[topPixelDepth] != idBuffer[depth]) {
-                         g2.drawRect(x, y, 2, 2);
-                     }
+                    if (topPixelDepth >= 0 && idBuffer[topPixelDepth] != idBuffer[depth]) {
+                        g2.drawRect(x, y, 2, 2);
+                    }
 
-                     if (leftPixelDepth >= 0 && leftPixelDepth <= idBuffer.length
-                             && idBuffer[leftPixelDepth] != idBuffer[depth]) {
-                         g2.drawRect(x, y, 2, 2);
-                     }
+                    if (leftPixelDepth >= 0 && leftPixelDepth <= idBuffer.length
+                            && idBuffer[leftPixelDepth] != idBuffer[depth]) {
+                        g2.drawRect(x, y, 2, 2);
+                    }
 
-                     if (idBuffer[rightPixelDepth] != idBuffer[depth]) {
-                         g2.drawRect(x, y, 2, 2);
-                     }
+                    if (idBuffer[rightPixelDepth] != idBuffer[depth]) {
+                        g2.drawRect(x, y, 2, 2);
+                    }
 
-                     if (bottomPixelDepth < idBuffer.length && idBuffer[bottomPixelDepth] != idBuffer[depth]) {
-                         g2.drawRect(x, y, 2, 2);
-                     }
-                 }
+                    if (bottomPixelDepth < idBuffer.length && idBuffer[bottomPixelDepth] != idBuffer[depth]) {
+                        g2.drawRect(x, y, 2, 2);
+                    }
+                }
 
-                 // if (idBuffer[depth] != idBuffer[depth - 1] || idBuffer[depth] !=
-                 // idBuffer[depth + 1]) {
-                 // g2.drawRect(x, y, 2, 2);
-                 // }
-             }
-         }
+                // if (idBuffer[depth] != idBuffer[depth - 1] || idBuffer[depth] !=
+                // idBuffer[depth + 1]) {
+                // g2.drawRect(x, y, 2, 2);
+                // }
+            }
+        }
 
         this.drawInvalidMeshBounding(g2);
-        //this.drawSelectedMeshBounding(g2);
+        // this.drawSelectedMeshBounding(g2);
 
         g2.dispose();
 
@@ -281,7 +288,51 @@ public class Rasterizer {
     private void drawInvalidMeshBounding(Graphics2D g2) {
         g2.setStroke(new BasicStroke(scene.getConfiguration().getSelectionStrokeWidth()));
 
-        int diff = 6 - scene.getConfiguration().getSelectionStrokeWidth();
+
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                final int depth = y * image.getWidth() + x;
+                if (idBuffer[depth] != null && !scene.getMesh(idBuffer[depth]).getValid()) {
+                    // Check if the id of the pixel is the same on top, left, right and bottom.
+                    // If not, it means that the pixel is on the edge of a mesh.
+                    // So we draw the pixel in order to create a boundary
+                    if (depth <= 0)
+                        continue;
+                    if (depth + 1 > image.getWidth() * image.getHeight() - 1)
+                        continue;
+
+                    int topPixelDepth = (y - 1) * image.getWidth() + x;
+                    int leftPixelDepth = y * image.getWidth() + (x - 1);
+                    int rightPixelDepth = y * image.getWidth() + (x + 1);
+                    int bottomPixelDepth = (y + 1) * image.getWidth() + x;
+
+                    // draw border
+                    g2.setColor(new Color(255, 0, 0, 150));
+                    if (topPixelDepth >= 0 && idBuffer[topPixelDepth] != idBuffer[depth]) {
+                        g2.drawRect(x, y, 2, 2);
+                    }
+
+                    if (leftPixelDepth >= 0 && leftPixelDepth <= idBuffer.length
+                            && idBuffer[leftPixelDepth] != idBuffer[depth]) {
+                        g2.drawRect(x, y, 2, 2);
+                    }
+
+                    if (idBuffer[rightPixelDepth] != idBuffer[depth]) {
+                        g2.drawRect(x, y, 2, 2);
+                    }
+
+                    if (bottomPixelDepth < idBuffer.length && idBuffer[bottomPixelDepth] != idBuffer[depth]) {
+                        g2.drawRect(x, y, 2, 2);
+                    }
+                    // fill invalid accessories
+                    g2.setColor(new Color(255, 0, 0, 75));
+                    g2.fillRect(x, y, 1, 1);
+
+                }
+            }
+        }
+
+        /*int diff = 6 - scene.getConfiguration().getSelectionStrokeWidth();
         g2.setColor(new Color(255, 0, 0, 150));
 
         for (TriangleMeshGroup obj : tMeshGroups) {
@@ -301,10 +352,10 @@ public class Rasterizer {
                         (int) obj.getWidth() + diff * 2,
                         (int) obj.getHeight() + diff * 2);
             }
-        }
+        }*/
     }
 
-    private Color phongModel(TriangleMesh object, Color color, Vector3D norm, Vector3D pixelPoint) {
+    private Color phongModel(TriangleMesh object, Color color, Vector3D norm, Vector3D pixelPoint, Vector3D lightPos) {
         // Calculate ambient light
         double ambientIntensity = scene.getLight().getAmbientIntensity() * object.getMaterial().getAmbient();
 
@@ -313,8 +364,8 @@ public class Rasterizer {
         int blue = (int) Math.min(255, color.getBlue() * ambientIntensity);
 
         // Calculate diffuse light
-        Light light = scene.getLight();
-        Vector3D lightDir = light.getPosition().sub(pixelPoint).normalize();
+        //Light light = scene.getLight();
+        Vector3D lightDir = lightPos.sub(pixelPoint).normalize();
         double dotProduct = Math.max(0, norm.dot(lightDir));
         double diffuseIntensity = object.getMaterial().getDiffuse();
         red += (int) (color.getRed() * dotProduct * diffuseIntensity);

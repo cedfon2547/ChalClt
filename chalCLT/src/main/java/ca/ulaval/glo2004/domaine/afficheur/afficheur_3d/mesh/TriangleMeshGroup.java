@@ -15,6 +15,7 @@ public class TriangleMeshGroup {
     private boolean visible = true;
     private boolean valid = true;
     private Vector3D position = new Vector3D(0, 0, 0);
+    
     public TriangleMeshGroup() {
     }
 
