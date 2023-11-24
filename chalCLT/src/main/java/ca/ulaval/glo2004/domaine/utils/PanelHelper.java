@@ -232,8 +232,11 @@ public class PanelHelper {
                         double margeSupplementaire, boolean truncate) {
                 double x0 = position[0], y0 = position[1], z0 = position[2];
                 double largeur = dimension.getWidth(), hauteur = dimension.getHeight();
-                double d = epaisseurMur, m = margeSupplementaire;
+                //double d = epaisseurMur, m = margeSupplementaire;
+                double d = epaisseurMur;
 
+                /*
+                // Code de Cédric Fontaine
                 // Si truncate, la longueur du mur est diminuée de l'epaisseur du mur
                 // et on décale le mur de d/2
                 if (truncate) {
@@ -262,6 +265,32 @@ public class PanelHelper {
                 double[] p14 = new double[] { x0 + largeur - d / 2 + m, y0 + hauteur, z0 + d / 2 + m };
                 double[] p15 = new double[] { x0 + largeur, y0 + hauteur, z0 + d / 2 + m };
                 double[] p16 = new double[] { x0 + largeur, y0 + hauteur, z0 };
+                */
+                
+                double m = margeSupplementaire / 2;
+                
+                // Si truncate == vrai, marge pleine retirée sur une partie de la rainure
+                double mTrunc = 0.0;
+                if (truncate)
+                    mTrunc = m;
+                
+                double[] p1 = new double[] { x0 + mTrunc, y0, z0 };
+                double[] p2 = new double[] { x0 + mTrunc, y0, z0 + (d/2) - m };
+                double[] p3 = new double[] { x0 + (d/2) + m + mTrunc, y0, z0 + (d/2) - m };
+                double[] p4 = new double[] { x0 + (d/2) + m + mTrunc, y0, z0 + d };
+                double[] p5 = new double[] { x0 + largeur - (d/2) - m - mTrunc, y0, z0 + d };
+                double[] p6 = new double[] { x0 + largeur - (d/2) - m - mTrunc, y0, z0 + (d/2) - m };
+                double[] p7 = new double[] { x0 + largeur - mTrunc, y0, z0 + (d/2) - m };
+                double[] p8 = new double[] { x0 + largeur - mTrunc, y0, z0 };
+
+                double[] p9 = new double[] { x0 + mTrunc, y0 + hauteur, z0 };
+                double[] p10 = new double[] { x0 + mTrunc, y0 + hauteur, z0 + (d/2) - m };
+                double[] p11 = new double[] { x0 + (d/2) + m + mTrunc, y0 + hauteur, z0 + (d/2) - m };
+                double[] p12 = new double[] { x0 + (d/2) + m + mTrunc, y0 + hauteur, z0 + d };
+                double[] p13 = new double[] { x0 + largeur - (d/2) - m - mTrunc, y0 + hauteur, z0 + d };
+                double[] p14 = new double[] { x0 + largeur - (d/2) - m - mTrunc, y0 + hauteur, z0 + (d/2) - m };
+                double[] p15 = new double[] { x0 + largeur - mTrunc, y0 + hauteur, z0 + (d/2) - m };
+                double[] p16 = new double[] { x0 + largeur - mTrunc, y0 + hauteur, z0 };
 
                 List<double[][]> triangles = new ArrayList<>();
 

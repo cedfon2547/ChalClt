@@ -107,6 +107,8 @@ public class Afficheur {
         murGaucheMaterial.setColor(java.awt.Color.YELLOW);
 
         boolean sideTruncate = chaletDTO.sensToit == TypeSensToit.Nord || chaletDTO.sensToit == TypeSensToit.Sud;
+        // sideTruncate indique que si le toit pointe vers les murs Façade ou Arrière,
+        // ce sont les autres murs qu'il faut truncate et vice versa
 
         TriangleMeshGroup murFacadeGroup = new TriangleMeshGroup(new TriangleMesh[] {
                 TriangleMesh.fromDoubleList(PanelHelper.buildWall2(new double[] { 0, 0, 0 },
@@ -151,10 +153,15 @@ public class Afficheur {
         murGaucheGroup = murGaucheGroup.translate(new Vector3D(chaletDTO.largeur / 2, 0, 0));
 
         // Connecter les murs entre eux
-        murFacadeGroup = murFacadeGroup.translate(new Vector3D(0, 0, chaletDTO.epaisseurMur / 2));
-        murArriereGroup = murArriereGroup.translate(new Vector3D(0, 0, -chaletDTO.epaisseurMur / 2));
-        murDroitGroup = murDroitGroup.translate(new Vector3D(chaletDTO.epaisseurMur / 2, 0, 0));
-        murGaucheGroup = murGaucheGroup.translate(new Vector3D(-chaletDTO.epaisseurMur / 2, 0, 0));
+        if (sideTruncate) {
+            murDroitGroup = murDroitGroup.translate(new Vector3D(chaletDTO.epaisseurMur / 2, 0, 0));
+            murGaucheGroup = murGaucheGroup.translate(new Vector3D(-chaletDTO.epaisseurMur / 2, 0, 0));
+        }
+        
+        else {
+            murFacadeGroup = murFacadeGroup.translate(new Vector3D(0, 0, chaletDTO.epaisseurMur / 2));
+            murArriereGroup = murArriereGroup.translate(new Vector3D(0, 0, -chaletDTO.epaisseurMur / 2));
+        }
 
         // mettre le chalet sur le plancher
         murFacadeGroup = murFacadeGroup.translate(new Vector3D(0, -chaletDTO.hauteur/2, 0));

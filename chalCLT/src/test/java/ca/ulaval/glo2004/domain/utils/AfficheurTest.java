@@ -3,7 +3,7 @@ package ca.ulaval.glo2004.domain.utils;
 import ca.ulaval.glo2004.domaine.Controleur;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.BeforeEach;
 
 import java.awt.*;
 
