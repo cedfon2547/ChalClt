@@ -362,6 +362,7 @@ public class Rasterizer {
         int red = (int) Math.min(255, color.getRed() * ambientIntensity);
         int green = (int) Math.min(255, color.getGreen() * ambientIntensity);
         int blue = (int) Math.min(255, color.getBlue() * ambientIntensity);
+        int alpha = color.getAlpha();
 
         // Calculate diffuse light
         //Light light = scene.getLight();
@@ -387,7 +388,7 @@ public class Rasterizer {
         green = Math.max(0, Math.min(255, green));
         blue = Math.max(0, Math.min(255, blue));
 
-        return new Color(red, green, blue);
+        return new Color(red, green, blue, alpha);
     }
 
     public void draw(Graphics g, Dimension panelDimension) {
@@ -423,8 +424,8 @@ public class Rasterizer {
 
         g2.setColor(Color.RED);
         g2.drawLine((int) xAxis1.x, (int) xAxis1.y, (int) xAxis2.x, (int) xAxis2.y);
-        g2.setColor(Color.GREEN);
-        g2.drawLine((int) yAxis1.x, (int) yAxis1.y, (int) yAxis2.x, (int) yAxis2.y);
+        //g2.setColor(Color.GREEN);
+        //g2.drawLine((int) yAxis1.x, (int) yAxis1.y, (int) yAxis2.x, (int) yAxis2.y);
         g2.setColor(Color.BLUE);
         g2.drawLine((int) zAxis1.x, (int) zAxis1.y, (int) zAxis2.x, (int) zAxis2.y);
     }

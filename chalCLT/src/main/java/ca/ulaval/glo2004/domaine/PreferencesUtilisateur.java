@@ -8,11 +8,19 @@ public class PreferencesUtilisateur {
     private java.awt.Color gridColor = java.awt.Color.GRAY;
     private int gridSpacing = 50;
 
+    private boolean afficherPlancher = true;
+
     public PreferencesUtilisateur() {}
 
     public PreferencesUtilisateur(boolean afficherGrille, boolean afficherVoisinSelection) {
         this.afficherGrille = afficherGrille;
         this.afficherVoisinSelection = afficherVoisinSelection;
+    }
+
+    public boolean getAfficherPlancher(){return afficherPlancher;}
+
+    public void setAfficherPlancher(boolean afficherPlancher) {
+        this.afficherPlancher = afficherPlancher;
     }
 
     public boolean getAfficherGrille() {
@@ -73,6 +81,7 @@ public class PreferencesUtilisateur {
         public java.awt.Color backgroundColor = java.awt.Color.BLACK;
         public java.awt.Color gridColor = java.awt.Color.GRAY;
         public int gridSpacing = 50;
+        public boolean afficherPlancher = false;
 
         public PreferencesUtilisateurDTO(PreferencesUtilisateur preferencesUtilisateur) {
             this.afficherGrille = preferencesUtilisateur.afficherGrille;
@@ -80,6 +89,7 @@ public class PreferencesUtilisateur {
             this.backgroundColor = preferencesUtilisateur.backgroundColor;
             this.gridColor = preferencesUtilisateur.gridColor;
             this.gridSpacing = preferencesUtilisateur.gridSpacing;
+            this.afficherPlancher = preferencesUtilisateur.afficherPlancher;
         }
     }
 }

@@ -367,21 +367,22 @@ public class Afficheur {
         }
 
         // Pour tester l'importation d'objets à partir de fichiers .obj
-        URI url = App.class.getResource("/objets/floor_single.obj").toURI();
-        System.out.println(url);
-        TriangleMesh mesh = ObjectImporter.importObject(url); // shaep
-        //mesh = mesh.scale(new Vector3D(1, 1, 1));
-        mesh.getMaterial().setColor(Color.GRAY);
-        mesh.getMaterial().setShininess(0);
-        mesh.getMaterial().setSpecular(0);
-        mesh.getMaterial().setAmbient(2);
+        if(getControleur().getPreferencesUtilisateur().afficherPlancher){
+            URI url = App.class.getResource("/objets/floor_single.obj").toURI();
+            System.out.println(url);
+            TriangleMesh mesh = ObjectImporter.importObject(url); // shaep
+            //mesh = mesh.scale(new Vector3D(1, 1, 1));
+            mesh.getMaterial().setColor(new Color(114, 114, 114, 255));
+            mesh.getMaterial().setShininess(0);
+            mesh.getMaterial().setSpecular(0);
+            mesh.getMaterial().setAmbient(2);
 
-        TriangleMeshGroup meshGroup = new TriangleMeshGroup(new TriangleMesh[] { mesh });
-        meshGroup = meshGroup.scale(new Vector3D(1,1,-1)); // flip the z axis the right way around
-        meshGroup.setSelectable(false);
+            TriangleMeshGroup meshGroup = new TriangleMeshGroup(new TriangleMesh[] { mesh });
+            meshGroup = meshGroup.scale(new Vector3D(1,1,-1)); // flip the z axis the right way around
+            meshGroup.setSelectable(false);
 
-        scene.addMesh(meshGroup);
-
+            scene.addMesh(meshGroup);
+        }
     }
 
     public void draw(Graphics g, Dimension dimension) {

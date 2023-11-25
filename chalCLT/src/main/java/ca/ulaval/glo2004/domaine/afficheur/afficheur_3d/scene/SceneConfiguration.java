@@ -4,7 +4,7 @@ import java.awt.Color;
 
 public class SceneConfiguration {
     Color backgroundColor = new Color(75, 75, 75, 255);
-    Color gridColor = new Color(150, 150, 150, 255);
+    Color gridColor = new Color(114, 114, 114, 255);
     Color selectionColor = new Color(0, 225, 255, 255);
     int SelectionStrokeWidth = 3;
     boolean showAxis = true;

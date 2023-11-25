@@ -1,5 +1,6 @@
 package ca.ulaval.glo2004.gui.components;
 
+import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.gui.MainWindow;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 
@@ -345,6 +346,12 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
 
     private void afficherGrilleItemActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+        PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = mainWindow.getControleur()
+                .getPreferencesUtilisateur();
+        preferencesUtilisateurDTO.afficherGrille = !preferencesUtilisateurDTO.afficherGrille;
+        mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO);
+        mainWindow.drawingPanel.updateViewGrid();
+        mainWindow.drawingPanel.rechargerAffichage();
     }
 
     private void afficherMursVoisinsItemActionPerformed(java.awt.event.ActionEvent evt) {
