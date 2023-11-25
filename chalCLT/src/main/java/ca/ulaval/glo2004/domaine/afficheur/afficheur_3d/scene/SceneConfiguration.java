@@ -8,9 +8,9 @@ public class SceneConfiguration {
     Color selectionColor = new Color(0, 225, 255, 255);
     int SelectionStrokeWidth = 3;
     boolean showAxis = true;
-    boolean showGridXY = false;
+    boolean showGridXY = true;
     boolean showGridXZ = true;
-    boolean showGridYZ = false;
+    boolean showGridYZ = true;
     int stepCounts = 30;
     int gridStep = 30;
     int gridStrokeWidth = 2;

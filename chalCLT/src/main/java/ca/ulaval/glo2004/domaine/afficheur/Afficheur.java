@@ -99,10 +99,31 @@ public class Afficheur {
         Chalet.ChaletDTO chaletDTO = this.getControleur().getChalet();
         PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = this.getControleur()
                 .getPreferencesUtilisateur();
-        // scene.getConfiguration().setShowGridXY(preferencesUtilisateurDTO.afficherGrille);
-        // scene.getConfiguration().setShowGridYZ(preferencesUtilisateurDTO.afficherGrille);
+        //scene.getConfiguration().setShowGridXY(preferencesUtilisateurDTO.afficherGrille);
+        //scene.getConfiguration().setShowGridYZ(preferencesUtilisateurDTO.afficherGrille);
         scene.getConfiguration().setShowGridXZ(preferencesUtilisateurDTO.afficherGrille);
         scene.clearMeshes();
+
+//        PreferencesUtilisateur.PreferencesUtilisateurDTO preferUser = getControleur().getPreferencesUtilisateur();
+//        Vector3D direction = scene.getCamera().getDirection();
+//        System.out.println(direction);
+//
+//        if (preferUser.afficherGrille) {
+//            if (direction.equals(TypeDeVue.getDirection(TypeDeVue.Facade)) || direction.equals(TypeDeVue.getDirection(TypeDeVue.Arriere)) || direction.equals(TypeDeVue.getDirection(TypeDeVue.Droite)) ||direction.equals(TypeDeVue.getDirection(TypeDeVue.Gauche))) {
+//                getScene().getConfiguration().setShowGridXZ(true);
+//                getScene().getConfiguration().setShowGridYZ(true);
+//                getScene().getConfiguration().setShowGridXY(true);
+//            }
+//            else {
+//                getScene().getConfiguration().setShowGridYZ(false);
+//                getScene().getConfiguration().setShowGridXY(false);
+//            }
+//        }
+//        else {
+//            getScene().getConfiguration().setShowGridXZ(false);
+//            getScene().getConfiguration().setShowGridYZ(false);
+//            getScene().getConfiguration().setShowGridXY(false);
+//        }
 
         Material murFacadeMaterial = new Material();
         Material murArriereMaterial = new Material();

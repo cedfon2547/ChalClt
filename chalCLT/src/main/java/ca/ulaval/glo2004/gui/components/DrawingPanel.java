@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Point;
 
+import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur.TypeDeVue;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
@@ -106,6 +107,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                         }
 
                     }
+                    updateViewGrid();
                     invalidate();
                     repaint();
                 }
@@ -332,8 +334,9 @@ public class DrawingPanel extends javax.swing.JPanel {
                         } else if (direction.x < -Math.PI / 2) {
                             direction.x = -Math.PI / 2;
                         }
-
                         afficheur.getScene().getCamera().setDirection(direction);
+                        updateViewGrid();
+
                     } else {
                         afficheur.getScene().getCamera()
                                 .setPosition(initialDragCamPosition.add(new Vector3D(diffX, diffY, 0)));
@@ -348,6 +351,28 @@ public class DrawingPanel extends javax.swing.JPanel {
                 // TODO Auto-generated method stub
             }
         };
+    }
+
+    public void updateViewGrid() {
+        PreferencesUtilisateur.PreferencesUtilisateurDTO preferUser = mainWindow.getControleur().getPreferencesUtilisateur();
+        Vector3D direction = afficheur.getScene().getCamera().getDirection();
+
+        if (preferUser.afficherGrille) {
+            if (direction.equals(TypeDeVue.getDirection(TypeDeVue.Facade)) || direction.equals(TypeDeVue.getDirection(TypeDeVue.Arriere)) || direction.equals(TypeDeVue.getDirection(TypeDeVue.Droite)) ||direction.equals(TypeDeVue.getDirection(TypeDeVue.Gauche))) {
+                afficheur.getScene().getConfiguration().setShowGridXZ(true);
+                afficheur.getScene().getConfiguration().setShowGridYZ(true);
+                afficheur.getScene().getConfiguration().setShowGridXY(true);
+            }
+            else {
+                afficheur.getScene().getConfiguration().setShowGridYZ(false);
+                afficheur.getScene().getConfiguration().setShowGridXY(false);
+            }
+        }
+        else {
+            afficheur.getScene().getConfiguration().setShowGridXZ(false);
+            afficheur.getScene().getConfiguration().setShowGridYZ(false);
+            afficheur.getScene().getConfiguration().setShowGridXY(false);
+        }
     }
 
     public KeyListener keyListener() {
