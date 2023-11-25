@@ -226,8 +226,8 @@ public class TopButtonPanel extends JPanel {
         add(creerFenetreBtn);
         add(creerPorteBtn);
         add(supprimerAccessoireBtn);
-        add(grilleToggleBtn);
         add(voisinToggleBtn);
+        add(grilleToggleBtn);
         mainWindow.drawingPanel.rechargerAffichage();
     }
 

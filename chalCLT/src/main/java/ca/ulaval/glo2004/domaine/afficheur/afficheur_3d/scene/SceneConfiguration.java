@@ -11,7 +11,7 @@ public class SceneConfiguration {
     boolean showGridXY = true;
     boolean showGridXZ = true;
     boolean showGridYZ = true;
-    int stepCounts = 30;
+    int stepCounts = 24;
     int gridStep = 30;
     int gridStrokeWidth = 2;
     int axisStrokeWidth = 2;

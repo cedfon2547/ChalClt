@@ -44,9 +44,12 @@ public class DrawingPanel extends javax.swing.JPanel {
 
         this.mainWindow = mainWindow;
         this.afficheur = new Afficheur(this.mainWindow.getControleur(), this.getSize());
+        centeringLight();
         initComponents();
         rechargerAffichage();
     }
+
+    public void centeringLight(){this.afficheur.getScene().getLight().setPosition(new Vector3D((int) (this.getWidth()/2), 500, 0));}
 
     public MainWindow getMainWindow() {
         return mainWindow;
@@ -425,6 +428,8 @@ public class DrawingPanel extends javax.swing.JPanel {
     @Override
     public void paintComponent(java.awt.Graphics g) {
         super.paintComponent(g);
+        // Enleve le controle de la lumiere
+        centeringLight();
         this.afficheur.draw(g, getSize());
     }
 
