@@ -23,10 +23,10 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
     public TreeRenderer(MainWindow mainWindow) {
         super();
         this.mainWindow = mainWindow;
-        String fenetreImgName = "/icons/dark/fenetre_tree.png";
+        String fenetreImgName = "/icons/dark/fenetre_1.png";
         String porteImgName = "/icons/dark/porte_tree.png";
-        String murImgName = "/icons/dark/mur_icon.png";
-        String chaletImgName = "/icons/dark/chalet_icon.png";
+        String murImgName = "/icons/dark/mur_icon_2.png";
+        String chaletImgName = "/icons/dark/chalet_icon_2.png";
         URL fenetreImgURL = App.class.getResource(fenetreImgName);
         URL porteImgURL = App.class.getResource(porteImgName);
         URL murImgURL = App.class.getResource(murImgName);
@@ -39,7 +39,7 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
 
         // URL iconUrl = this.getClass().getResource("\\icons\\fenetre_tree.png");
         this.fenetreIcon = new ImageIcon(fenetreImg);
-        this.fenetreIcon.setImage(this.fenetreIcon.getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+        this.fenetreIcon.setImage(this.fenetreIcon.getImage().getScaledInstance(19, 19, Image.SCALE_DEFAULT));
         this.porteIcon = new ImageIcon(porteImg);
         this.porteIcon.setImage(this.porteIcon.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT));
         this.murIcon = new ImageIcon(murImg);
