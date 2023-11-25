@@ -200,6 +200,25 @@ public class Accessoire extends Retrait {
         return new Accessoire(dto);
     }
 
+    public void updateWithHauteur (double oldHauteur, double newHauteur) {
+        double posY = this.getPosition()[1];
+        double h = this.getDimension()[1];
+        
+        double posWithinWall = (posY + (h/2)) / oldHauteur;
+        double newPosY = (posWithinWall * newHauteur) - (h/2);
+        double[] newPos = {this.getPosition()[0], newPosY};
+        this.setPosition(newPos);
+    }
+    
+    public void updateWithLongueur (double oldLongueur, double newLongueur) {
+        double posX = this.getPosition()[0];
+        double l = this.getDimension()[0];
+        
+        double posWithinWall = (posX + (l/2)) / oldLongueur;
+        double newPosX = (posWithinWall * newLongueur) - (l/2);
+        double[] newPos = {newPosX, this.getPosition()[1]};
+        this.setPosition(newPos);
+    }
 }
 
 

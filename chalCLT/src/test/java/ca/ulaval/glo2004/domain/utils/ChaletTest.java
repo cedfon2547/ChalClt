@@ -84,4 +84,130 @@ public class ChaletTest {
         assertEquals(accessoire, accessoireRetire);
         assertFalse(mur.getAccessoires().contains(accessoire));
     }
+    
+    @Test
+    public void updatePorteWithHauteur() {
+        Chalet chalet = chaletTest();
+        double[] pos = {4.0, 5.0};
+        double[] dim = {2.0, 3.0};
+        Accessoire porte = chalet.ajouterAccessoire(TypeMur.Facade, TypeAccessoire.Porte, pos, dim);
+        porte.setPosition(pos);
+        Accessoire.AccessoireDTO porteDTO = porte.toDTO();
+        double bottomMargin = porte.getMarginWithRect(porteDTO.position, porteDTO.dimensions)[3];
+        Chalet.ChaletDTO test = chalet.toDTO();
+        test.hauteur = 16.0;
+        chalet.updateChalet(test);
+        
+        assertEquals(test.hauteur - bottomMargin - porteDTO.dimensions[1], chalet.getAccessoire(porteDTO.accessoireId).getPosition()[1], 0.0);
+    }
+    
+    @Test
+    public void updatePorteWithLongueur() {
+        Chalet chalet = chaletTest();
+        double[] pos = {4.0, 5.0};
+        double[] dim = {2.0, 3.0};
+        Accessoire porte1 = chalet.ajouterAccessoire(TypeMur.Gauche, TypeAccessoire.Porte, pos, dim);
+        porte1.setPosition(pos);
+        Accessoire.AccessoireDTO porte1DTO = porte1.toDTO();
+        
+        Accessoire porte2 = chalet.ajouterAccessoire(TypeMur.Facade, TypeAccessoire.Porte, pos, dim);
+        porte2.setPosition(pos);
+        Accessoire.AccessoireDTO porte2DTO = porte2.toDTO();
+        
+        Chalet.ChaletDTO test = chalet.toDTO();
+        double newLongueur = 16.0;
+        double expectedNewPosX = (((pos[0] + (dim[0]/2)) * newLongueur) / test.longueur) - (dim[0]/2);
+        test.longueur = 16.0;
+        chalet.updateChalet(test);
+        
+        assertEquals(expectedNewPosX, chalet.getAccessoire(porte1DTO.accessoireId).getPosition()[0], 0.0);
+        assertEquals(porte2DTO.position[0], chalet.getAccessoire(porte2DTO.accessoireId).getPosition()[0], 0.0);
+    }
+    
+     @Test
+    public void updatePorteWithLargeur() {
+        Chalet chalet = chaletTest();
+        double[] pos = {4.0, 5.0};
+        double[] dim = {2.0, 3.0};
+        Accessoire porte1 = chalet.ajouterAccessoire(TypeMur.Facade, TypeAccessoire.Porte, pos, dim);
+        porte1.setPosition(pos);
+        Accessoire.AccessoireDTO porte1DTO = porte1.toDTO();
+        
+        Accessoire porte2 = chalet.ajouterAccessoire(TypeMur.Gauche, TypeAccessoire.Porte, pos, dim);
+        porte2.setPosition(pos);
+        Accessoire.AccessoireDTO porte2DTO = porte2.toDTO();
+        
+        Chalet.ChaletDTO test = chalet.toDTO();
+        double newLargeur = 16.0;
+        double expectedNewPosX = (((pos[0] + (dim[0]/2)) * newLargeur) / test.largeur) - (dim[0]/2);
+        test.largeur = 16.0;
+        chalet.updateChalet(test);
+        
+        assertEquals(expectedNewPosX, chalet.getAccessoire(porte1DTO.accessoireId).getPosition()[0], 0.0);
+        assertEquals(porte2DTO.position[0], chalet.getAccessoire(porte2DTO.accessoireId).getPosition()[0], 0.0);
+    }
+    
+    @Test
+    public void updateFenetreWithHauteur() {
+        Chalet chalet = chaletTest();
+        double[] pos = {2.0, 2.0};
+        double[] dim = {2.0, 2.0};
+        Accessoire fenetre = chalet.ajouterAccessoire(TypeMur.Facade, TypeAccessoire.Fenetre, pos, dim);
+        fenetre.setPosition(pos);
+        Accessoire.AccessoireDTO fenetreDTO = fenetre.toDTO();
+        
+        Chalet.ChaletDTO test = chalet.toDTO();
+        double newHauteur = 16.0;
+        double expectedNewPosY = (((pos[1] + (dim[1]/2)) * newHauteur) / test.hauteur) - (dim[1]/2);
+        test.hauteur = 16.0;
+        chalet.updateChalet(test);
+        
+        assertEquals(expectedNewPosY, chalet.getAccessoire(fenetreDTO.accessoireId).getPosition()[1], 0.0);
+    }
+    
+    @Test
+    public void updateFenetreWithLongueur() {
+        Chalet chalet = chaletTest();
+        double[] pos = {2.0, 2.0};
+        double[] dim = {2.0, 2.0};
+        Accessoire fenetre1 = chalet.ajouterAccessoire(TypeMur.Gauche, TypeAccessoire.Fenetre, pos, dim);
+        fenetre1.setPosition(pos);
+        Accessoire.AccessoireDTO fenetre1DTO = fenetre1.toDTO();
+        
+        Accessoire fenetre2 = chalet.ajouterAccessoire(TypeMur.Facade, TypeAccessoire.Fenetre, pos, dim);
+        fenetre2.setPosition(pos);
+        Accessoire.AccessoireDTO fenetre2DTO = fenetre2.toDTO();
+        
+        Chalet.ChaletDTO test = chalet.toDTO();
+        double newLongueur = 16.0;
+        double expectedNewPosX = (((pos[0] + (dim[0]/2)) * newLongueur) / test.longueur) - (dim[0]/2);
+        test.longueur = 16.0;
+        chalet.updateChalet(test);
+        
+        assertEquals(expectedNewPosX, chalet.getAccessoire(fenetre1DTO.accessoireId).getPosition()[0], 0.0);
+        assertEquals(fenetre2DTO.position[0], chalet.getAccessoire(fenetre2DTO.accessoireId).getPosition()[0], 0.0);
+    }
+    
+    @Test
+    public void updateFenetreWithLargeur() {
+        Chalet chalet = chaletTest();
+        double[] pos = {2.0, 2.0};
+        double[] dim = {2.0, 2.0};
+        Accessoire fenetre1 = chalet.ajouterAccessoire(TypeMur.Facade, TypeAccessoire.Fenetre, pos, dim);
+        fenetre1.setPosition(pos);
+        Accessoire.AccessoireDTO fenetre1DTO = fenetre1.toDTO();
+        
+        Accessoire fenetre2 = chalet.ajouterAccessoire(TypeMur.Gauche, TypeAccessoire.Fenetre, pos, dim);
+        fenetre2.setPosition(pos);
+        Accessoire.AccessoireDTO fenetre2DTO = fenetre2.toDTO();
+        
+        Chalet.ChaletDTO test = chalet.toDTO();
+        double newLargeur = 16.0;
+        double expectedNewPosX = (((pos[0] + (dim[0]/2)) * newLargeur) / test.largeur) - (dim[0]/2);
+        test.largeur = 16.0;
+        chalet.updateChalet(test);
+        
+        assertEquals(expectedNewPosX, chalet.getAccessoire(fenetre1DTO.accessoireId).getPosition()[0], 0.0);
+        assertEquals(fenetre2DTO.position[0], chalet.getAccessoire(fenetre2DTO.accessoireId).getPosition()[0], 0.0);
+    }
 }

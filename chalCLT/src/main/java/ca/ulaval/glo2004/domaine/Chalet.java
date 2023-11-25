@@ -89,6 +89,10 @@ public class Chalet {
     }
     
     public void updateChalet(ChaletDTO dtoChalet) {
+        double oldLargeur = this.largeur;
+        double oldLongueur = this.longueur;
+        double oldHauteur = this.hauteur;
+        
         this.nom = dtoChalet.nom;
         this.hauteur = dtoChalet.hauteur;
         this.largeur = dtoChalet.largeur;
@@ -98,6 +102,27 @@ public class Chalet {
         this.angleToit = dtoChalet.angleToit;
         this.margeAccessoire = dtoChalet.margeAccessoire;
         this.margeSupplementaireRetrait = dtoChalet.margeSupplementaireRetrait;
+        
+        if (this.longueur - oldLongueur != 0.0) {
+            for (Accessoire a : this.getMur(TypeMur.Gauche).getAccessoires())
+                a.updateWithLongueur(oldLongueur, this.longueur);
+            for (Accessoire a : this.getMur(TypeMur.Droit).getAccessoires())
+                a.updateWithLongueur(oldLongueur, this.longueur);
+        }
+        
+        if (this.largeur - oldLargeur != 0.0) {
+            for (Accessoire a : this.getMur(TypeMur.Facade).getAccessoires())
+                a.updateWithLongueur(oldLargeur, this.largeur);
+            for (Accessoire a : this.getMur(TypeMur.Arriere).getAccessoires())
+                a.updateWithLongueur(oldLargeur, this.largeur);
+        }
+        
+        if (this.hauteur - oldHauteur != 0.0) {
+            for (Mur m : this.getMurs())
+                for (Accessoire a : m.getAccessoires())
+                    if (a.getAccessoireType() != TypeAccessoire.Porte) // Les portes restent collées au sol
+                        a.updateWithHauteur(oldHauteur, this.hauteur);
+        }
 
         for (Mur mur : this.getMurs()) {
             mur.updateValiditeAccessoires(margeAccessoire, epaisseurMur);
