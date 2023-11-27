@@ -1,33 +1,26 @@
 package ca.ulaval.glo2004.domaine.afficheur;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.ulaval.glo2004.App;
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.Controleur;
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
-import ca.ulaval.glo2004.domaine.TypeAccessoire;
 import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.domaine.TypeSensToit;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.Rasterizer;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.Material;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.Triangle;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
-import ca.ulaval.glo2004.domaine.utils.ObjectImporter;
-import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper.MurTriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper.OutputType;
+import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.domaine.utils.STLTools;
-import ca.ulaval.glo2004.gui.Constants;
 
 public class Afficheur {
     // private BufferedImage bufImage = new BufferedImage(500, 500,
@@ -147,8 +140,9 @@ public class Afficheur {
         this.scene.getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
         this.scene.getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
 
-        // **La responsabilité du rendu à été transferer vers la classe MurTriangleMeshGroup**
-        
+        // **La responsabilité du rendu à été transferer vers la classe
+        // MurTriangleMeshGroup**
+
         // PreferencesUtilisateur.PreferencesUtilisateurDTO preferUser =
         // getControleur().getPreferencesUtilisateur();
         // Vector3D direction = scene.getCamera().getDirection();
@@ -477,42 +471,120 @@ public class Afficheur {
         // TODO: Ajouter le plancher
     }
 
-    public void exportSTL() {
-        List<STLTools.Triangle> stlTrianglesFini = new ArrayList<>();
-        List<STLTools.Triangle> stlTrianglesRetraits = new ArrayList<>();
+    public void exportStlFini(String directoryPath, String nomChalet) {
+        boolean facadeInitialComputeHoles = murFacadeGroup.getComputeHoles();
+        boolean arriereInitialComputeHoles = murArriereGroup.getComputeHoles();
+        boolean gaucheInitialComputeHoles = murGaucheGroup.getComputeHoles();
+        boolean droitInitialComputeHoles = murDroitGroup.getComputeHoles();
 
-        for (Triangle tri : murFacadeGroup.getMeshFini().getTriangles()) {
-            double[] normal = tri.getNormal().toArray();
-            double[] vertex1 = tri.getVertice(0).toArray();
-            double[] vertex2 = tri.getVertice(1).toArray();
-            double[] vertex3 = tri.getVertice(2).toArray();
+        murFacadeGroup.setComputeHoles(true);
+        murArriereGroup.setComputeHoles(true);
+        murGaucheGroup.setComputeHoles(true);
+        murDroitGroup.setComputeHoles(true);
 
-            stlTrianglesFini
-                    .add(new STLTools.Triangle(
-                            new float[] { -(float) normal[0], (float) normal[2], -(float) normal[1] },
-                            new float[] { -(float) vertex1[0], (float) vertex1[2], -(float) vertex1[1] },
-                            new float[] { -(float) vertex2[0], (float) vertex2[2], -(float) vertex2[1] },
-                            new float[] { -(float) vertex3[0], (float) vertex3[2], -(float) vertex3[1] }));
+        List<STLTools.Triangle> facadeStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(murFacadeGroup.getMeshFini().getTriangles());
+        List<STLTools.Triangle> arriereStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(murArriereGroup.getMeshFini().getTriangles());
+        List<STLTools.Triangle> gaucheStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(murGaucheGroup.getMeshFini().getTriangles());
+        List<STLTools.Triangle> droitStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(murDroitGroup.getMeshFini().getTriangles());
+
+        murFacadeGroup.setComputeHoles(facadeInitialComputeHoles);
+        murArriereGroup.setComputeHoles(arriereInitialComputeHoles);
+        murGaucheGroup.setComputeHoles(gaucheInitialComputeHoles);
+        murDroitGroup.setComputeHoles(droitInitialComputeHoles);
+
+        String facadeFileName = String.format("\\%s_Fini_F.stl", nomChalet);
+        String arriereFileName = String.format("\\%s_Fini_A.stl", nomChalet);
+        String gaucheFileName = String.format("\\%s_Fini_G.stl", nomChalet);
+        String droitFileName = String.format("\\%s_Fini_D.stl", nomChalet);
+
+        STLTools.writeSTL(facadeStlTriangles, directoryPath + facadeFileName);
+        STLTools.writeSTL(arriereStlTriangles, directoryPath + arriereFileName);
+        STLTools.writeSTL(gaucheStlTriangles, directoryPath + gaucheFileName);
+        STLTools.writeSTL(droitStlTriangles, directoryPath + droitFileName);
+    }
+
+    public void exportStlBrut(String directoryPath, String nomChalet) {
+        List<STLTools.Triangle> facadeStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(murFacadeGroup.getMeshBrut().getTriangles());
+        List<STLTools.Triangle> arriereStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(murArriereGroup.getMeshBrut().getTriangles());
+        List<STLTools.Triangle> gaucheStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(murGaucheGroup.getMeshBrut().getTriangles());
+        List<STLTools.Triangle> droitStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(murDroitGroup.getMeshBrut().getTriangles());
+
+        String facadeBrutFileName = String.format("\\%s_Brut_F.stl", nomChalet);
+        String arriereBrutFileName = String.format("\\%s_Brut_A.stl", nomChalet);
+        String gaucheBrutFileName = String.format("\\%s_Brut_G.stl", nomChalet);
+        String droitBrutFileName = String.format("\\%s_Brut_D.stl", nomChalet);
+
+        STLTools.writeSTL(facadeStlTriangles, directoryPath + facadeBrutFileName);
+        STLTools.writeSTL(arriereStlTriangles, directoryPath + arriereBrutFileName);
+        STLTools.writeSTL(gaucheStlTriangles, directoryPath + gaucheBrutFileName);
+        STLTools.writeSTL(droitStlTriangles, directoryPath + droitBrutFileName);
+    }
+
+    public void exportStlRetraits(String directoryPath, String nomChalet) {
+        List<STLTools.Triangle> facadeStlTriangles = new ArrayList<>();
+        List<STLTools.Triangle> arriereStlTriangles = new ArrayList<>();
+        List<STLTools.Triangle> gaucheStlTriangles = new ArrayList<>();
+        List<STLTools.Triangle> droitStlTriangles = new ArrayList<>();
+
+        for (TriangleMesh mesh: murFacadeGroup.getMeshRetraits().getMeshes()) {
+            facadeStlTriangles.addAll(PanelHelper.convertMeshTrianglesToStlTriangles(mesh.getTriangles()));
+        }
+        for (TriangleMesh mesh: murArriereGroup.getMeshRetraits().getMeshes()) {
+            arriereStlTriangles.addAll(PanelHelper.convertMeshTrianglesToStlTriangles(mesh.getTriangles()));
+        }
+        for (TriangleMesh mesh: murGaucheGroup.getMeshRetraits().getMeshes()) {
+            gaucheStlTriangles.addAll(PanelHelper.convertMeshTrianglesToStlTriangles(mesh.getTriangles()));
+        }
+        for (TriangleMesh mesh: murDroitGroup.getMeshRetraits().getMeshes()) {
+            droitStlTriangles.addAll(PanelHelper.convertMeshTrianglesToStlTriangles(mesh.getTriangles()));
         }
 
-        for (TriangleMesh mesh : murFacadeGroup.getMeshRetraits().getMeshes()) {
-            for (Triangle tri : mesh.getTriangles()) {
-                double[] normal = tri.getNormal().toArray();
-                double[] vertex1 = tri.getVertice(0).toArray();
-                double[] vertex2 = tri.getVertice(1).toArray();
-                double[] vertex3 = tri.getVertice(2).toArray();
+        String facadeRetraitsFileName = String.format("\\%s_Retrait_F.stl", nomChalet);
+        String arriereRetraitsFileName = String.format("\\%s_Retrait_A.stl", nomChalet);
+        String gaucheRetraitsFileName = String.format("\\%s_Retrait_G.stl", nomChalet);
+        String droitRetraitsFileName = String.format("\\%s_Retrait_D.stl", nomChalet);
 
-                stlTrianglesRetraits
-                        .add(new STLTools.Triangle(
-                                new float[] { -(float) normal[0], (float) normal[2], -(float) normal[1] },
-                                new float[] { -(float) vertex1[0], (float) vertex1[2], -(float) vertex1[1] },
-                                new float[] { -(float) vertex2[0], (float) vertex2[2], -(float) vertex2[1] },
-                                new float[] { -(float) vertex3[0], (float) vertex3[2], -(float) vertex3[1] }));
-            }
+        STLTools.writeSTL(facadeStlTriangles, directoryPath + facadeRetraitsFileName);
+        STLTools.writeSTL(arriereStlTriangles, directoryPath + arriereRetraitsFileName);
+        STLTools.writeSTL(gaucheStlTriangles, directoryPath + gaucheRetraitsFileName);
+        STLTools.writeSTL(droitStlTriangles, directoryPath + droitRetraitsFileName);
+    }
+
+    public void exportSTL(String directoryPath, PanelHelper.OutputType exportType) {
+        Chalet.ChaletDTO chaletDTO = this.getControleur().getChalet();
+
+        switch (exportType) {
+            case Fini:
+                exportStlFini(directoryPath, chaletDTO.nom);
+                break;
+            case Brut:
+                exportStlBrut(directoryPath, chaletDTO.nom);
+                break;
+            case Retraits:
+                exportStlRetraits(directoryPath, chaletDTO.nom);
+                break;
+            default:
+                throw new IllegalArgumentException("Unexpected value: " + exportType);
         }
 
-        STLTools.writeSTL(stlTrianglesFini, "test_1_fini.stl");
-        STLTools.writeSTL(stlTrianglesRetraits, "test_1_retraits.stl");
+        // for (TriangleMesh mesh : murFacadeGroup.getMeshRetraits().getMeshes()) {
+        // for (Triangle tri : mesh.getTriangles()) {
+        // double[] normal = tri.getNormal().toArray();
+        // double[] vertex1 = tri.getVertice(0).toArray();
+        // double[] vertex2 = tri.getVertice(1).toArray();
+        // double[] vertex3 = tri.getVertice(2).toArray();
+
+        // facadeStlTrianglesRetraits
+        // .add(new STLTools.Triangle(
+        // new float[] { -(float) normal[0], (float) normal[2], -(float) normal[1] },
+        // new float[] { -(float) vertex1[0], (float) vertex1[2], -(float) vertex1[1] },
+        // new float[] { -(float) vertex2[0], (float) vertex2[2], -(float) vertex2[1] },
+        // new float[] { -(float) vertex3[0], (float) vertex3[2], -(float) vertex3[1]
+        // }));
+        // }
+        // }
+
+        
     }
 
     public void draw(Graphics g, Dimension dimension) {

@@ -9,6 +9,7 @@ import javax.swing.SwingUtilities;
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.gui.MainWindow;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
+import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 
 public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     private javax.swing.JMenu affichageMenu;
@@ -402,9 +403,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         System.out.println("Exporter Bruts");
         ExportationDirectoryFileChoose exportationDirectoryFileChoose = new ExportationDirectoryFileChoose((path) -> {
             System.out.println("Path: " + path);
-            SwingUtilities.invokeLater(() -> {
-                System.out.println("SwingUtilities.invokeLater");
-            });
+            mainWindow.drawingPanel.afficheur.exportSTL(path, PanelHelper.OutputType.Brut);
             return true;
         });
     }
@@ -415,6 +414,8 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         System.out.println("Exporter Fini");
         ExportationDirectoryFileChoose exportationDirectoryFileChoose = new ExportationDirectoryFileChoose((path) -> {
             System.out.println("Path: " + path);
+            mainWindow.drawingPanel.afficheur.exportSTL(path, PanelHelper.OutputType.Fini);
+        
             return true;
         });
 
@@ -426,6 +427,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         System.out.println("Exporter Retraits");
         ExportationDirectoryFileChoose exportationDirectoryFileChoose = new ExportationDirectoryFileChoose((path) -> {
             System.out.println("Path: " + path);
+            mainWindow.drawingPanel.afficheur.exportSTL(path, PanelHelper.OutputType.Retraits);
             return true;
         });
     }

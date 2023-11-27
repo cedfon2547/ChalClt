@@ -373,7 +373,7 @@ public class PanelHelper {
         public TriangleMesh getMeshFini() {
             return meshFini;
         }
-        
+
         public TriangleMeshGroup getMeshRetraits() {
             return meshRetraits;
         }
@@ -911,11 +911,11 @@ public class PanelHelper {
                     this.getMeshes().clear();
                     this.getMeshes().addAll(this.meshRetraits.getMeshes());
                     break;
-                case FiniWithRetraits:
-                    this.getMeshes().clear();
-                    this.getMeshes().addAll(this.meshRetraits.getMeshes());
-                    this.getMeshes().add(this.meshFini);
-                    break;
+                // case FiniWithRetraits:
+                // this.getMeshes().clear();
+                // this.getMeshes().addAll(this.meshRetraits.getMeshes());
+                // this.getMeshes().add(this.meshFini);
+                // break;
                 // case FiniWithAccessoires:
                 // this.getMeshes().clear();
                 // this.getMeshes().add(this.meshFini);
@@ -932,8 +932,6 @@ public class PanelHelper {
         Brut,
         Fini,
         Retraits,
-        FiniWithRetraits,
-        FiniWithAccessoires,
     }
 
     /*
@@ -1219,6 +1217,25 @@ public class PanelHelper {
 
             return tris;
         }
+    }
 
+    public static List<STLTools.Triangle> convertMeshTrianglesToStlTriangles(List<Triangle> meshTriangles) {
+        List<STLTools.Triangle> stlTriangles = new ArrayList<>();
+
+        for (Triangle tri : meshTriangles) {
+            double[] normal = tri.getNormal().toArray();
+            double[] vertex1 = tri.getVertice(0).toArray();
+            double[] vertex2 = tri.getVertice(1).toArray();
+            double[] vertex3 = tri.getVertice(2).toArray();
+
+            stlTriangles
+                    .add(new STLTools.Triangle(
+                            new float[] { -(float) normal[0], (float) normal[2], -(float) normal[1] },
+                            new float[] { -(float) vertex1[0], (float) vertex1[2], -(float) vertex1[1] },
+                            new float[] { -(float) vertex2[0], (float) vertex2[2], -(float) vertex2[1] },
+                            new float[] { -(float) vertex3[0], (float) vertex3[2], -(float) vertex3[1] }));
+        }
+
+        return stlTriangles;
     }
 }
