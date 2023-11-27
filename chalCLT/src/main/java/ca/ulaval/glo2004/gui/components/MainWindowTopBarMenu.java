@@ -1,5 +1,11 @@
 package ca.ulaval.glo2004.gui.components;
 
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
+
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.gui.MainWindow;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
@@ -12,6 +18,10 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     private javax.swing.JMenu changerVueMenu;
     private javax.swing.JMenu editionMenu;
     private javax.swing.JMenuItem enregistrerItem;
+    private javax.swing.JMenu exportItemMenu;
+    private javax.swing.JMenuItem exporterBrutItem;
+    private javax.swing.JMenuItem exporterFiniItem;
+    private javax.swing.JMenuItem exporterRetraitsItem;
     private javax.swing.JMenu fichierMenu;
     private javax.swing.JMenuItem ajouterAccessoire;
     private javax.swing.JMenuItem jMenuItem2;
@@ -26,6 +36,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     private javax.swing.JRadioButtonMenuItem vueHautItem;
 
     private MainWindow mainWindow;
+
     /**
      * Creates main TopBarMenu component
      */
@@ -42,6 +53,16 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         nouveauProjetItem = new javax.swing.JMenuItem("Nouveau");
         ouvrirFichierItem = new javax.swing.JMenuItem("Ouvrir");
         enregistrerItem = new javax.swing.JMenuItem("Enregistrer");
+        
+        exportItemMenu = new javax.swing.JMenu("Exporter");
+        exporterBrutItem = new javax.swing.JMenuItem("Panneaux bruts");
+        exporterFiniItem = new javax.swing.JMenuItem("Panneaux finis");
+        exporterRetraitsItem = new javax.swing.JMenuItem("Panneaux retraits");
+        
+        exportItemMenu.add(exporterBrutItem);
+        exportItemMenu.add(exporterFiniItem);
+        exportItemMenu.add(exporterRetraitsItem);
+
         // `Edition` menu
         editionMenu = new javax.swing.JMenu("Edition");
         // `Edition` menu subitem
@@ -71,16 +92,21 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         fichierMenu.add(nouveauProjetItem);
         fichierMenu.add(ouvrirFichierItem);
         fichierMenu.add(enregistrerItem);
+        fichierMenu.add(exportItemMenu);
+
         editionMenu.add(annulerItem);
         editionMenu.add(retablirItem);
+
         changerVueMenu.add(vueHautItem);
         changerVueMenu.add(vueFacadeItem);
         changerVueMenu.add(vueArriereItem);
         changerVueMenu.add(vueDroitItem);
         changerVueMenu.add(vueGaucheItem);
+
         affichageMenu.add(changerVueMenu);
         affichageMenu.add(afficherGrilleItem);
         affichageMenu.add(afficherMursVoisinsItem);
+
         selectionMenu.add(ajouterAccessoire);
         selectionMenu.add(jMenuItem2);
 
@@ -119,6 +145,24 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         enregistrerItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 enregistrerItemActionPerformed(evt);
+            }
+        });
+
+        exporterFiniItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exporterFiniItemActionPerformed(evt);
+            }
+        });
+
+        exporterBrutItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exporterBrutItemActionPerformed(evt);
+            }
+        });
+
+        exporterRetraitsItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exporterRetraitsItemActionPerformed(evt);
             }
         });
 
@@ -196,6 +240,12 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         nouveauProjetItem.setToolTipText("Nouveau");
         ouvrirFichierItem.setToolTipText("Ouvrir");
         enregistrerItem.setToolTipText("Enregistrer");
+
+        exportItemMenu.setToolTipText("Exporter");
+        exporterBrutItem.setToolTipText("Panneaux bruts");
+        exporterFiniItem.setToolTipText("Panneaux finis");
+        exporterRetraitsItem.setToolTipText("Panneaux retraits");
+
         editionMenu.setToolTipText("Edition");
         annulerItem.setToolTipText("Annuler");
         retablirItem.setToolTipText("Rétablir");
@@ -229,6 +279,18 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
 
         enregistrerItem.getAccessibleContext().setAccessibleName("Enregistrer");
         enregistrerItem.getAccessibleContext().setAccessibleDescription("Enregistrer");
+
+        exportItemMenu.getAccessibleContext().setAccessibleName("Exporter");
+        exportItemMenu.getAccessibleContext().setAccessibleDescription("Exporter");
+
+        exporterBrutItem.getAccessibleContext().setAccessibleName("Exporter brut");
+        exporterBrutItem.getAccessibleContext().setAccessibleDescription("Exporter brut");
+
+        exporterFiniItem.getAccessibleContext().setAccessibleName("Exporter fini");
+        exporterFiniItem.getAccessibleContext().setAccessibleDescription("Exporter fini");
+
+        exporterRetraitsItem.getAccessibleContext().setAccessibleName("Exporter retraits");
+        exporterRetraitsItem.getAccessibleContext().setAccessibleDescription("Exporter retraits");
 
         editionMenu.getAccessibleContext().setAccessibleName("Edition");
         editionMenu.getAccessibleContext().setAccessibleDescription("Edition");
@@ -284,6 +346,16 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
                 java.awt.event.InputEvent.CTRL_DOWN_MASK));
         enregistrerItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S,
                 java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        
+        // exportItemMenu.setMnemonic(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E,
+        //         java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        exporterBrutItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B,
+                java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        exporterFiniItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F,
+                java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        exporterRetraitsItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R,
+                java.awt.event.InputEvent.CTRL_DOWN_MASK));
+
         annulerItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z,
                 java.awt.event.InputEvent.CTRL_DOWN_MASK));
         retablirItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z,
@@ -322,6 +394,40 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         // mainWindow.arbreDesComposantesChalet.buildTree();
         mainWindow.reloadArbreComposantes();
         mainWindow.drawingPanel.rechargerAffichage();
+    }
+
+    private void exporterBrutItemActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+        // exporterItemActionPerformed(evt);
+        System.out.println("Exporter Bruts");
+        ExportationDirectoryFileChoose exportationDirectoryFileChoose = new ExportationDirectoryFileChoose((path) -> {
+            System.out.println("Path: " + path);
+            SwingUtilities.invokeLater(() -> {
+                System.out.println("SwingUtilities.invokeLater");
+            });
+            return true;
+        });
+    }
+
+    private void exporterFiniItemActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+        // exporterItemActionPerformed(evt);
+        System.out.println("Exporter Fini");
+        ExportationDirectoryFileChoose exportationDirectoryFileChoose = new ExportationDirectoryFileChoose((path) -> {
+            System.out.println("Path: " + path);
+            return true;
+        });
+
+    }
+
+    private void exporterRetraitsItemActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+        // exporterItemActionPerformed(evt);
+        System.out.println("Exporter Retraits");
+        ExportationDirectoryFileChoose exportationDirectoryFileChoose = new ExportationDirectoryFileChoose((path) -> {
+            System.out.println("Path: " + path);
+            return true;
+        });
     }
 
     private void vueHautItemActionPerformed(java.awt.event.ActionEvent evt) {
@@ -396,6 +502,88 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
             case Gauche:
                 vueGaucheItem.setSelected(true);
                 break;
+        }
+    }
+
+    @FunctionalInterface
+    public static interface ExportationDirectoryFileChooseListener {
+        public boolean onSelect(String path);
+    }
+    
+    public class ExportationDirectoryFileChoose extends javax.swing.JFrame {
+        private JFileChooser fileChooser;
+        // private JInternalFrame internalFrame;
+        private ExportationDirectoryFileChooseListener listener;
+
+        public ExportationDirectoryFileChoose(ExportationDirectoryFileChooseListener listener) {
+            this.listener = listener;
+            initComponents();
+        }
+
+        private void initComponents() {
+            // internalFrame = new JInternalFrame();
+            fileChooser = new JFileChooser();
+
+            fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+            // fileChooser.addChoosableFileFilter(choosableFileFilter());
+            // internalFrame.setVisible(true);
+
+            // javax.swing.GroupLayout jInternalFrame1Layout = new javax.swing.GroupLayout(
+            //         internalFrame.getContentPane());
+            // internalFrame.getContentPane().setLayout(jInternalFrame1Layout);
+            // jInternalFrame1Layout.setHorizontalGroup(
+            //         jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            //                 .addGap(0, 147, Short.MAX_VALUE));
+            // jInternalFrame1Layout.setVerticalGroup(
+            //         jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            //                 .addGap(0, 86, Short.MAX_VALUE));
+
+            setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+            fileChooser.setApproveButtonText("Sélectionner");
+            fileChooser.setApproveButtonToolTipText("sélectionner");
+            fileChooser.setDialogTitle("Sélectionner le dossier de destination");
+            fileChooser.setToolTipText("Sélectionner le dossier de destination");
+            fileChooser.setName("ExportDestionationFileChooser"); // NOI18N
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fileChooser.setMultiSelectionEnabled(false);
+            fileChooser.setOpaque(true);
+            fileChooser.setVisible(true);
+            fileChooser.setDialogTitle("Sélectionner le dossier de destination");
+
+            fileChooser.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    System.out.println(evt.getActionCommand());
+                    if (evt.getActionCommand().equals("ApproveSelection")) {
+                        System.out.println("ApproveSelection");
+                        boolean isValid = listener.onSelect(fileChooser.getSelectedFile().getAbsolutePath());
+                        
+                        // if the listener return false, the path is not valid and we should display the error and let the user choose a different one.
+                        if (isValid) {
+                            fileChooser.setVisible(false);
+                            dispose();
+                        } else {
+                            
+                        }
+
+                    } else if (evt.getActionCommand().equals("CancelSelection")) {
+                        System.out.println("CancelSelection");
+                        fileChooser.setVisible(false);
+                        dispose();
+                    }
+                }
+            });
+
+            fileChooser.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+                public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                    System.out.println("Property Change" + evt.getPropertyName() + " " + evt.getNewValue());
+                }
+            });
+
+            getContentPane().add(fileChooser, java.awt.BorderLayout.CENTER);
+
+            pack();
+            setVisible(true);
         }
     }
 }

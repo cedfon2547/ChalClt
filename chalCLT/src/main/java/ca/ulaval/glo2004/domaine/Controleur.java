@@ -53,6 +53,16 @@ public class Controleur {
         return accessoires;
     }
 
+    public List<Accessoire.AccessoireDTO> getAccessoires(TypeMur typeMur) {
+        Mur mur = this.projectActif.getChalet().getMur(typeMur);
+        List<Accessoire.AccessoireDTO> accessoires = new ArrayList<>();
+        for (Accessoire accessoire : mur.getAccessoires()) {
+            accessoires.add(accessoire.toDTO());
+        }
+
+        return accessoires;
+    }
+
     public void setChalet(Chalet.ChaletDTO chalet) {
         Chalet.ChaletDTO chaletDTO = this.projectActif.getChalet().toDTO();
         this.pcs.firePropertyChange(EventType.CHALET, chaletDTO, chalet);

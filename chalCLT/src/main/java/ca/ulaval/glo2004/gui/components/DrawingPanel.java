@@ -7,7 +7,6 @@ import java.awt.event.MouseWheelListener;
 import java.util.UUID;
 
 import javax.swing.JButton;
-import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -19,6 +18,7 @@ import ca.ulaval.glo2004.domaine.afficheur.Afficheur.TypeDeVue;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
+import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.gui.Constants;
 import ca.ulaval.glo2004.gui.MainWindow;
 import ca.ulaval.glo2004.domaine.Accessoire;
@@ -182,46 +182,66 @@ public class DrawingPanel extends javax.swing.JPanel {
                 
                 TriangleMeshGroup mesh = afficheur.getRasterizer().getMeshFromPoint(e.getPoint());
 
-                if(mesh!=null && e.getClickCount()>=2){
-                    String handle = mesh.getMesh(0).getHandle();
-                    Vector3D currentDirection = afficheur.getScene().getCamera().getDirection();
-                    // check if we are in an intended view direction
-                    boolean strongChange = false;
-                    if(currentDirection.equals(Afficheur.TypeDeVue.vueArriere()) ||
-                            currentDirection.equals(Afficheur.TypeDeVue.vueFacade()) ||
-                            currentDirection.equals(Afficheur.TypeDeVue.vueDroite()) ||
-                            currentDirection.equals(Afficheur.TypeDeVue.vueGauche()) ||
-                            currentDirection.equals(Afficheur.TypeDeVue.vueDessus()))
-                        strongChange = true;
-
-                    switch(handle) {
-                        case Constants._STRING_MUR_FACADE:
-                            if(strongChange)
+                if(mesh != null && e.getClickCount() == 2) {
+                    if (mesh instanceof PanelHelper.MurTriangleMeshGroup) {
+                        System.out.println("Double clicked on a wall");
+                        switch (((PanelHelper.MurTriangleMeshGroup) mesh).getTypeMur()) {
+                            case Facade:
                                 changerVue(Afficheur.TypeDeVue.Facade);
-                            else
-                                weakChangerVue(Afficheur.TypeDeVue.Facade);
-                            return;
-                        case Constants._STRING_MUR_ARRIERE:
-                            if(strongChange)
+                                return;
+                            case Arriere:
                                 changerVue(Afficheur.TypeDeVue.Arriere);
-                            else
-                                weakChangerVue(Afficheur.TypeDeVue.Arriere);
-                            return;
-                        case Constants._STRING_MUR_DROIT:
-                            if(strongChange)
+                                return;
+                            case Droit:
                                 changerVue(Afficheur.TypeDeVue.Droite);
-                            else
-                                weakChangerVue(Afficheur.TypeDeVue.Droite);
-                            return;
-                        case Constants._STRING_MUR_GAUCHE:
-                            if(strongChange)
+                                return;
+                            case Gauche:
                                 changerVue(Afficheur.TypeDeVue.Gauche);
-                            else
-                                weakChangerVue(Afficheur.TypeDeVue.Gauche);
-                            return;
-                        default:
-                            // nop, fall through
+                                return;
+                            default:
+                                // nop, fall through
+                        }
                     }
+
+                    // String handle = mesh.getMesh(0).getHandle();
+                    // Vector3D currentDirection = afficheur.getScene().getCamera().getDirection();
+                    // // check if we are in an intended view direction
+                    // boolean strongChange = false;
+                    // if(currentDirection.equals(Afficheur.TypeDeVue.vueArriere()) ||
+                    //         currentDirection.equals(Afficheur.TypeDeVue.vueFacade()) ||
+                    //         currentDirection.equals(Afficheur.TypeDeVue.vueDroite()) ||
+                    //         currentDirection.equals(Afficheur.TypeDeVue.vueGauche()) ||
+                    //         currentDirection.equals(Afficheur.TypeDeVue.vueDessus()))
+                    //     strongChange = true;
+
+                    // switch(handle) {
+                    //     case Constants._STRING_MUR_FACADE:
+                    //         if(strongChange)
+                    //             changerVue(Afficheur.TypeDeVue.Facade);
+                    //         else
+                    //             weakChangerVue(Afficheur.TypeDeVue.Facade);
+                    //         return;
+                    //     case Constants._STRING_MUR_ARRIERE:
+                    //         if(strongChange)
+                    //             changerVue(Afficheur.TypeDeVue.Arriere);
+                    //         else
+                    //             weakChangerVue(Afficheur.TypeDeVue.Arriere);
+                    //         return;
+                    //     case Constants._STRING_MUR_DROIT:
+                    //         if(strongChange)
+                    //             changerVue(Afficheur.TypeDeVue.Droite);
+                    //         else
+                    //             weakChangerVue(Afficheur.TypeDeVue.Droite);
+                    //         return;
+                    //     case Constants._STRING_MUR_GAUCHE:
+                    //         if(strongChange)
+                    //             changerVue(Afficheur.TypeDeVue.Gauche);
+                    //         else
+                    //             weakChangerVue(Afficheur.TypeDeVue.Gauche);
+                    //         return;
+                    //     default:
+                    //         // nop, fall through
+                    // }
                 }
 
                 afficheur.getRasterizer().deselectAllMeshes();
