@@ -23,6 +23,8 @@ import java.util.regex.Pattern;
  */
 public class ImperialDimension {
 
+    public static final Pattern patternImperial = Pattern.compile(
+            "((?<Pied>[0-9]+)?[ ?]*'[ ?]*)?((?<Pouce>[0-9]+)?[ ?]*\"[ ?]*)?((?<A>[0-9]+)/(?<B>[0-9]+)[ ?]*$)?");
     /**
      * Le nombre de pieds dans la dimension.
      */

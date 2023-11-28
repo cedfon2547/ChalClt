@@ -16,11 +16,15 @@ public class TableAccessoire extends JTable {
     private String[] columnNames;
     private Object[][] props;
     private javax.swing.table.DefaultTableModel model;
+    private AccessoireTableCellEditor accessoireTableCellEditor;
+    private AccessoireTableCellRenderer accessoireTableCellRenderer;
     private TitledBorder titledBorder;
 
     public TableAccessoire(MainWindow mainWindow,Accessoire.AccessoireDTO dtoAcessoire) {
         this.mainWindow = mainWindow;
         this.dtoAcessoire = dtoAcessoire;
+        this.accessoireTableCellEditor = new AccessoireTableCellEditor();
+        this.accessoireTableCellRenderer = new AccessoireTableCellRenderer();
         
         columnNames = new String[] {
                 "Propriété",
@@ -41,6 +45,8 @@ public class TableAccessoire extends JTable {
 
         model = new javax.swing.table.DefaultTableModel(props, columnNames);
         this.setModel(model);
+        this.getColumnModel().getColumn(1).setCellEditor(accessoireTableCellEditor);
+        this.getColumnModel().getColumn(1).setCellRenderer(accessoireTableCellRenderer);
         titledBorder = javax.swing.BorderFactory.createTitledBorder("Propriétés de l'accessoire");
 
         this.getModel().addTableModelListener(new TableModelListener() {
