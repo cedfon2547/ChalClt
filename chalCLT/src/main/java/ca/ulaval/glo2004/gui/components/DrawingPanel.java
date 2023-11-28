@@ -178,7 +178,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                     preferencesUtilisateurDTO.afficherGrille);
 
             JPanel gridStepContainer = new JPanel();
-            JLabel gridStepLabel = new JLabel("Step: ");
+            JLabel gridStepLabel = new JLabel("Taille: ");
             GridStepSpinner gridStepSpinner = new GridStepSpinner();
 
             JPanel voisinContainer = new JPanel();
