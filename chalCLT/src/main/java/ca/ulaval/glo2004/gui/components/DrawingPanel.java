@@ -34,14 +34,14 @@ import ca.ulaval.glo2004.domaine.Controleur;
 
 class GridStepSpinner extends JSpinner {
     public GridStepSpinner() {
-        this(0.0f);
+        this(0.1f);
     }
 
     public GridStepSpinner(float value) {
         super();
         // this.setModel(new javax.swing.SpinnerNumberModel((float) value, 0.0f, 100.0f, 0.5f));
         setValue(value);
-        this.setModel(new SpinnerNumberModel((float) value, 0.0f, 100.0f, 0.5f));
+        this.setModel(new SpinnerNumberModel((float) value, 0.1f, 100.0f, 0.5f));
         ((SpinnerNumberModel) this.getModel()).setStepSize(0.1);
         ((JSpinner.DefaultEditor) this.getEditor()).getTextField().setColumns(3);
         ((JSpinner.DefaultEditor) this.getEditor()).getTextField().setHorizontalAlignment(JLabel.CENTER);

@@ -158,6 +158,6 @@ public class SceneConfiguration {
     }
  
     public void setGridStep(double gridStep) {
-        this.gridStep = gridStep;
+        this.gridStep = Math.max(gridStep,0.1);
     }
 }

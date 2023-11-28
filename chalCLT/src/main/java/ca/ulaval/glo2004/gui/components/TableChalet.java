@@ -21,12 +21,13 @@ public class TableChalet extends JTable {
     private javax.swing.table.DefaultTableModel model;
     private TitledBorder titledBorder;
     private ChaletTableCellEditor chaletTableCellEditor;
+    private ChaletTableCellRenderer chaletTableCellRenderer;
 
     public TableChalet(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
         this.dtoChalet = mainWindow.getControleur().getChalet();
         this.chaletTableCellEditor = new ChaletTableCellEditor(this);
-        
+        this.chaletTableCellRenderer = new ChaletTableCellRenderer(chaletTableCellEditor);
         //this.setCellEditor(new DefaultCellEditor(sensToitComboBox)); 
         
         this.columnNames = new String[] {
@@ -50,6 +51,7 @@ public class TableChalet extends JTable {
         model = new javax.swing.table.DefaultTableModel(props, columnNames);
         this.setModel(model);
         this.getColumnModel().getColumn(1).setCellEditor(chaletTableCellEditor);
+        this.getColumnModel().getColumn(1).setCellRenderer(chaletTableCellRenderer);
         titledBorder = javax.swing.BorderFactory.createTitledBorder("Propriétés du chalet");
         this.setTableHeader(this.getTableHeader());
         this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
