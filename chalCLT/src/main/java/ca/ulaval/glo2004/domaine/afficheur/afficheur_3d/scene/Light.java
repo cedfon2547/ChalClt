@@ -5,7 +5,7 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 
 public class Light {
     private double intensity = 1;
-    private double ambientIntensity = 0.5;
+    private double ambientIntensity = 0.60;
     private Vector3D position = new Vector3D(150, 250, 50);
     private Vector3D direction = new Vector3D(150, 150, -100);
     private Color color = Color.WHITE;
