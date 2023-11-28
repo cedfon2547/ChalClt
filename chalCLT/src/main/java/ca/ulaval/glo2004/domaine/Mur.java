@@ -386,8 +386,6 @@ public class Mur {
                 new double[] { largeur, this.chalet.getHauteur() });
 
         if (accessoire.getAccessoireType() == TypeAccessoire.Porte) {
-            System.out.println(margins[3]);
-
             // Bottom margin is always 0 for a door
             // Only need to check left, top and right margins
             if (margins[0] < margeMinimal + epaisseurMur || margins[2] < margeMinimal + epaisseurMur

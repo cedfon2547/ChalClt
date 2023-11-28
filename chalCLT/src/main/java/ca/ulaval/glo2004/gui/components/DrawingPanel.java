@@ -172,7 +172,6 @@ public class DrawingPanel extends javax.swing.JPanel {
             PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = mainWindow.getControleur()
                     .getPreferencesUtilisateur();
 
-            System.out.println("Grille: " + preferencesUtilisateurDTO.afficherGrille);
             JPanel gridContainer = new JPanel();
             JLabel gridLabel = new JLabel("Grille: ");
             SwitchToggleButton switchGrid = new SwitchToggleButton(SwitchToggleButton.Size.XSMALL,
@@ -348,7 +347,7 @@ public class DrawingPanel extends javax.swing.JPanel {
 
                 if (mesh != null && e.getClickCount() == 2) {
                     if (mesh instanceof PanelHelper.MurTriangleMeshGroup) {
-                        System.out.println("Double clicked on a wall");
+                        // System.out.println("Double clicked on a wall");
                         switch (((PanelHelper.MurTriangleMeshGroup) mesh).getTypeMur()) {
                             case Facade:
                                 changerVue(Afficheur.TypeDeVue.Facade);
@@ -423,7 +422,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                         mainWindow.showChaletTable();
                     }
                     if (mesh.getSelectable()) {
-                        System.out.println(mesh.getIdentifier() + " selected");
+                        // System.out.println(mesh.getIdentifier() + " selected");
                         afficheur.getScene().setSelected(mesh.getIdentifier(), true);
                     }
                 } else {
@@ -616,7 +615,7 @@ public class DrawingPanel extends javax.swing.JPanel {
     public void paintComponent(java.awt.Graphics g) {
         super.paintComponent(g);
         // Enleve le controle de la lumiere
-        centeringLight();
+        // centeringLight();
         this.afficheur.draw(g, getSize());
     }
 
@@ -640,7 +639,8 @@ public class DrawingPanel extends javax.swing.JPanel {
         try {
             afficheur.rechargerAffichage();
         } catch (Exception e) {
-            System.out.println("Error rendering main panel");
+            // System.out.println("Error rendering main panel");
+            e.printStackTrace();
         } // TODO manage error
 
         repaint();

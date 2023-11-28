@@ -197,7 +197,7 @@ public class Rasterizer {
                                     Color finalColor = phongModel(obj,
                                             obj.getMaterial().getColor(),
                                             norm,
-                                            new Vector3D(x, y, depth), modifiedLightPos);
+                                            new Vector3D(x, y, depth), scene.getLight().getPosition());
 
                                     // image.setRGB(x, y, finalColor.getRGB());
                                     g2.setColor(finalColor); // g2.setColor(new Color(finalColor.getRed(),

@@ -329,11 +329,11 @@ public class PanelHelper {
         TriangleMesh meshBrut;
         TriangleMesh meshFini;
         TriangleMeshGroup meshRetraits;
-        List<TriangleMeshGroup> accessoiresMeshes = new ArrayList<TriangleMeshGroup>();
+        List<TriangleMeshGroup> meshAccessoires = new ArrayList<TriangleMeshGroup>();
 
         boolean truncate = false;
-        boolean computeHoles = true;
         OutputType activeOutput = OutputType.Brut;
+        boolean computeHoles = false;
 
         public MurTriangleMeshGroup(Chalet.ChaletDTO chaletDTO, TypeMur typeMur,
                 List<Accessoire.AccessoireDTO> accessoireDTOs) {
@@ -351,7 +351,7 @@ public class PanelHelper {
         }
 
         public List<TriangleMeshGroup> getAccessoiresMeshes() {
-            return accessoiresMeshes;
+            return meshAccessoires;
         }
 
         public boolean getComputeHoles() {
@@ -376,6 +376,10 @@ public class PanelHelper {
 
         public TriangleMeshGroup getMeshRetraits() {
             return meshRetraits;
+        }
+
+        public List<Accessoire.AccessoireDTO> getAccessoireDTOs() {
+            return accessoireDTOs;
         }
 
         public void setComputeHoles(boolean computeHoles) {
@@ -568,8 +572,7 @@ public class PanelHelper {
         }
 
         private void buildRetraits() {
-            double largeur = this.typeMur == TypeMur.Facade || this.typeMur == TypeMur.Arriere
-                    ? this.chaletDTO.largeur
+            double largeur = this.typeMur == TypeMur.Facade || this.typeMur == TypeMur.Arriere ? this.chaletDTO.largeur
                     : this.chaletDTO.longueur;
             double hauteur = this.chaletDTO.hauteur;
             double d = this.chaletDTO.epaisseurMur;
@@ -578,7 +581,13 @@ public class PanelHelper {
             TriangleMeshGroup meshRetraits = new TriangleMeshGroup(new TriangleMesh[] {});
 
             for (Accessoire.AccessoireDTO accessoireDTO : this.accessoireDTOs) {
+                // System.out.println("Accessoire : " + accessoireDTO.accessoireId);
+
                 double x0 = largeur - accessoireDTO.position[0] - accessoireDTO.dimensions[0];
+                // if (truncate) {
+                // x0 -= d / 2;
+                // }
+
                 double y0 = accessoireDTO.position[1] - hauteur;
                 double z0 = 0;
                 double largeurAcc = accessoireDTO.dimensions[0];
@@ -587,6 +596,9 @@ public class PanelHelper {
 
                 TriangleMesh rectCuboid = new RectCuboid(new Vector3D(x0, y0, z0),
                         new Vector3D(largeurAcc, hauteurAcc, dAcc));
+
+                rectCuboid.ID = accessoireDTO.accessoireId.toString();
+                rectCuboid.setHandle(accessoireDTO.accessoireId.toString());
 
                 meshRetraits.addMesh(rectCuboid);
             }
@@ -643,7 +655,7 @@ public class PanelHelper {
 
                 TriangleMesh rainure1 = TriangleMesh.fromDoubleList(triangles);
                 TriangleMesh rainure2 = rainure1.rotateZOnPlace(Math.PI)
-                        .translate(new Vector3D(chaletDTO.largeur - d - m, 0, 0));
+                        .translate(new Vector3D(largeur - d - m, 0, 0));
 
                 meshRetraits.addMesh(rainure1);
                 meshRetraits.addMesh(rainure2);
@@ -685,17 +697,15 @@ public class PanelHelper {
                 triangles.add(new double[][] { p6, p7, p3 });
 
                 TriangleMesh rainure1 = TriangleMesh.fromDoubleList(triangles);
-                TriangleMesh rainure2 = rainure1
-                        .translate(new Vector3D(chaletDTO.largeur - d / 2 - m, 0, 0));
+                TriangleMesh rainure2 = rainure1.translate(new Vector3D(largeur - d / 2 - m, 0, 0));
 
                 meshRetraits.addMesh(rainure1);
                 meshRetraits.addMesh(rainure2);
             }
 
             // meshRetraits = meshRetraits.translate(meshRetraits.getCenter().multiply(-1));
-            meshRetraits = meshRetraits
-                    .translate(new Vector3D(-this.chaletDTO.largeur / 2, 0,
-                            -this.chaletDTO.longueur / 2));
+            // meshRetraits = meshRetraits
+            //         .translate(new Vector3D(-chaletDTO.longueur / 2, 0, -largeur / 2));
             this.meshRetraits = meshRetraits;
         }
 
@@ -782,7 +792,7 @@ public class PanelHelper {
 
                 accMesh.setIdentifier(accessoireDTO.accessoireId.toString());
                 accMesh.setValid(accessoireDTO.valide);
-                this.accessoiresMeshes.add(accMesh);
+                this.meshAccessoires.add(accMesh);
             }
         }
 
@@ -799,9 +809,9 @@ public class PanelHelper {
                             new Vector3D(0, 0, -this.chaletDTO.longueur / 2));
 
                     this.meshFini = this.meshFini.translate(
-                            new Vector3D(0, 0, -this.chaletDTO.longueur / 2
-                                    + this.chaletDTO.epaisseurMur / 2));
+                            new Vector3D(0, 0, -this.chaletDTO.longueur / 2 + this.chaletDTO.epaisseurMur / 2));
 
+                    this.meshRetraits = this.meshRetraits.translate(new Vector3D(-this.chaletDTO.largeur / 2, 0, -this.chaletDTO.longueur / 2));
                     break;
                 case Arriere:
                     this.meshBrut = this.meshBrut.rotateYOnPlace(Math.PI);
@@ -810,10 +820,11 @@ public class PanelHelper {
 
                     this.meshFini = this.meshFini.rotateYOnPlace(Math.PI);
                     this.meshFini = this.meshFini.translate(
-                            new Vector3D(0, 0, this.chaletDTO.longueur / 2
-                                    - this.chaletDTO.epaisseurMur / 2));
+                            new Vector3D(0, 0, this.chaletDTO.longueur / 2 - this.chaletDTO.epaisseurMur / 2));
 
                     this.meshRetraits = this.meshRetraits.rotate(0, Math.PI, 0);
+                    this.meshRetraits = this.meshRetraits.translate(new Vector3D(this.chaletDTO.largeur / 2, 0, this.chaletDTO.longueur / 2));
+
                     break;
                 case Droit:
                     this.meshBrut = this.meshBrut.rotateYOnPlace(Math.PI / 2);
@@ -822,10 +833,10 @@ public class PanelHelper {
 
                     this.meshFini = this.meshFini.rotateYOnPlace(Math.PI / 2);
                     this.meshFini = this.meshFini.translate(
-                            new Vector3D(-this.chaletDTO.largeur / 2
-                                    + this.chaletDTO.epaisseurMur / 2, 0, 0));
+                            new Vector3D(-this.chaletDTO.largeur / 2 + this.chaletDTO.epaisseurMur / 2, 0, 0));
 
                     this.meshRetraits = this.meshRetraits.rotate(0, Math.PI / 2, 0);
+                    this.meshRetraits = this.meshRetraits.translate(new Vector3D(-this.chaletDTO.largeur / 2, 0, this.chaletDTO.longueur / 2));
                     break;
                 case Gauche:
                     this.meshBrut = this.meshBrut.rotateYOnPlace(Math.PI / 2);
@@ -834,10 +845,10 @@ public class PanelHelper {
 
                     this.meshFini = this.meshFini.rotateYOnPlace(-Math.PI / 2);
                     this.meshFini = this.meshFini.translate(
-                            new Vector3D(this.chaletDTO.largeur / 2
-                                    - this.chaletDTO.epaisseurMur / 2, 0, 0));
+                            new Vector3D(this.chaletDTO.largeur / 2 - this.chaletDTO.epaisseurMur / 2, 0, 0));
 
                     this.meshRetraits = this.meshRetraits.rotate(0, -Math.PI / 2, 0);
+                    this.meshRetraits = this.meshRetraits.translate(new Vector3D(this.chaletDTO.largeur / 2, 0, -this.chaletDTO.longueur / 2));
                     break;
             }
         }
@@ -893,11 +904,40 @@ public class PanelHelper {
             this.buildRetraits();
             this.buildAccessoires();
             this.setMaterial();
+            this.setActiveOuput(this.activeOutput);
             this.transformMesh();
         }
 
         public void setActiveOuput(OutputType outputType) {
             // this.rebuild();
+            // switch (outputType) {
+            // case Brut:
+            // this.getMeshes().clear();
+            // this.getMeshes().add(this.meshBrut);
+            // break;
+            // case Fini:
+            // this.getMeshes().clear();
+            // this.getMeshes().add(this.meshFini);
+            // break;
+            // case Retraits:
+            // this.getMeshes().clear();
+            // this.getMeshes().addAll(this.meshRetraits.getMeshes());
+            // break;
+            // // case FiniWithRetraits:
+            // // this.getMeshes().clear();
+            // // this.getMeshes().addAll(this.meshRetraits.getMeshes());
+            // // this.getMeshes().add(this.meshFini);
+            // // break;
+            // // case FiniWithAccessoires:
+            // // this.getMeshes().clear();
+            // // this.getMeshes().add(this.meshFini);
+            // // System.out.println("Accessoires : " + this.meshAccessoires.size());
+            // // this.getMeshes().addAll(this.meshAccessoires);
+            // // break;
+            // default:
+            // break;
+            // }
+
             switch (outputType) {
                 case Brut:
                     this.getMeshes().clear();

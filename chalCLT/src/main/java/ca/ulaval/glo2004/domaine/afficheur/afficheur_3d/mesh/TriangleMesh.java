@@ -12,6 +12,10 @@ public class TriangleMesh {
     private String componentHandle = ""; // some indicator of what this mesh represents // sorta dupicate of ID
     protected List<Triangle> triangles;
     private Material material = new Material(); // The material of the object
+    private boolean selected = false;
+    private boolean selectable = true;
+    private boolean visible = true;
+    private boolean valid = true;
 
     public TriangleMesh(List<Triangle> triangles) {
         this.triangles = triangles;
@@ -41,8 +45,40 @@ public class TriangleMesh {
         this.componentHandle = handle;
     }
 
-    public String getID() {
+    public String getIdentifier() {
         return ID;
+    }
+    
+    public boolean getSelected() {
+        return selected;
+    }
+
+    public boolean getSelectable() {
+        return selectable;
+    }
+
+    public boolean getVisible() {
+        return visible;
+    }
+
+    public boolean getValid() {
+        return valid;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public void setSelectable(boolean selectable) {
+        this.selectable = selectable;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
     }
 
     // feel free to fix, this is a bodge
@@ -157,7 +193,15 @@ public class TriangleMesh {
             newTriangles.add(triangle.translate(translation));
         }
 
-        return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+        TriangleMesh newMesh = new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+        newMesh.ID = this.ID;
+        newMesh.componentHandle = this.componentHandle;
+        newMesh.valid = this.valid;
+        newMesh.visible = this.visible;
+        newMesh.selectable = this.selectable;
+        newMesh.selected = this.selected;
+
+        return newMesh;
     }
 
     public TriangleMesh scale(Vector3D scale) {
@@ -167,7 +211,15 @@ public class TriangleMesh {
             newTriangles.add(triangle.scale(scale));
         }
 
-        return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+        TriangleMesh newMesh = new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+        newMesh.ID = this.ID;
+        newMesh.componentHandle = this.componentHandle;
+        newMesh.valid = this.valid;
+        newMesh.visible = this.visible;
+        newMesh.selectable = this.selectable;
+        newMesh.selected = this.selected;
+        
+        return newMesh;
     }
 
     public TriangleMesh rotateX(double angle) {
@@ -177,7 +229,16 @@ public class TriangleMesh {
             newTriangles.add(triangle.rotateX(angle));
         }
 
-        return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+        TriangleMesh newMesh = new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+
+        newMesh.ID = this.ID;
+        newMesh.componentHandle = this.componentHandle;
+        newMesh.valid = this.valid;
+        newMesh.visible = this.visible;
+        newMesh.selectable = this.selectable;
+        newMesh.selected = this.selected;
+
+        return newMesh;
     }
 
     public TriangleMesh rotateXOnPlace(double angle) {
@@ -188,7 +249,16 @@ public class TriangleMesh {
             newTriangles.add(triangle.translate(center.multiply(-1)).rotateX(angle).translate(center));
         }
 
-        return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+        TriangleMesh newMesh = new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+
+        newMesh.ID = this.ID;
+        newMesh.componentHandle = this.componentHandle;
+        newMesh.valid = this.valid;
+        newMesh.visible = this.visible;
+        newMesh.selectable = this.selectable;
+        newMesh.selected = this.selected;
+
+        return newMesh;
     }
 
     public TriangleMesh rotateY(double angle) {
@@ -198,7 +268,16 @@ public class TriangleMesh {
             newTriangles.add(triangle.rotateY(angle));
         }
 
-        return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+        TriangleMesh newMesh = new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+
+        newMesh.ID = this.ID;
+        newMesh.componentHandle = this.componentHandle;
+        newMesh.valid = this.valid;
+        newMesh.visible = this.visible;
+        newMesh.selectable = this.selectable;
+        newMesh.selected = this.selected;
+
+        return newMesh;
     }
 
     public TriangleMesh rotateYOnPlace(double angle) {
@@ -209,7 +288,16 @@ public class TriangleMesh {
             newTriangles.add(triangle.translate(center.multiply(-1)).rotateY(angle).translate(center));
         }
 
-        return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+        TriangleMesh newMesh = new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+
+        newMesh.ID = this.ID;
+        newMesh.componentHandle = this.componentHandle;
+        newMesh.valid = this.valid;
+        newMesh.visible = this.visible;
+        newMesh.selectable = this.selectable;
+        newMesh.selected = this.selected;
+
+        return newMesh;
     }
 
     public TriangleMesh rotateZ(double angle) {
@@ -219,7 +307,16 @@ public class TriangleMesh {
             newTriangles.add(triangle.rotateZ(angle));
         }
 
-        return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+        TriangleMesh newMesh = new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+
+        newMesh.ID = this.ID;
+        newMesh.componentHandle = this.componentHandle;
+        newMesh.valid = this.valid;
+        newMesh.visible = this.visible;
+        newMesh.selectable = this.selectable;
+        newMesh.selected = this.selected;
+
+        return newMesh;
     }
 
     public TriangleMesh rotateZOnPlace(double angle) {
@@ -230,7 +327,16 @@ public class TriangleMesh {
             newTriangles.add(triangle.translate(center.multiply(-1)).rotateZ(angle).translate(center));
         }
 
-        return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+        TriangleMesh newMesh = new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+
+        newMesh.ID = this.ID;
+        newMesh.componentHandle = this.componentHandle;
+        newMesh.valid = this.valid;
+        newMesh.visible = this.visible;
+        newMesh.selectable = this.selectable;
+        newMesh.selected = this.selected;
+
+        return newMesh;
     }
 
     public TriangleMesh rotate(double xAngle, double yAngle, double zAngle, Vector3D axis) {
@@ -240,7 +346,16 @@ public class TriangleMesh {
             newTriangles.add(triangle.rotate(xAngle, yAngle, zAngle, axis));
         }
 
-        return new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+        TriangleMesh newMesh = new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+
+        newMesh.ID = this.ID;
+        newMesh.componentHandle = this.componentHandle;
+        newMesh.valid = this.valid;
+        newMesh.visible = this.visible;
+        newMesh.selectable = this.selectable;
+        newMesh.selected = this.selected;
+
+        return newMesh;
     }
 
     public TriangleMesh subdivideTriangles(int count) {

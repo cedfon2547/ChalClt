@@ -35,8 +35,8 @@ SplitPane   ---------         Section         |
  */
 public class MainWindow extends javax.swing.JFrame {
     // ===== OPTIONS =====
-    public static final boolean ACTIVE_NOTIFICATION_ALERT = false;
-    public static final boolean SHOW_DRAWING_PANEL_TOOLS_SWITCHES = false;
+    public static final boolean ACTIVE_NOTIFICATION_ALERT = true;
+    public static final boolean SHOW_DRAWING_PANEL_TOOLS_SWITCHES = true;
 
     private Controleur controleur;
 

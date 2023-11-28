@@ -37,6 +37,8 @@ public class Afficheur {
     public MurTriangleMeshGroup murDroitGroup;
     public MurTriangleMeshGroup murGaucheGroup;
 
+    public OutputType renduVisuel = OutputType.Fini;
+
     public Afficheur(Controleur controleur, Dimension dimension) {
         this.controleur = controleur;
         this.dimension = dimension;
@@ -120,15 +122,16 @@ public class Afficheur {
         // Si true, des trous sont formés dans les murs pour les accessoires
         // Présentement à false puisque les accessoires sont des objets 3D
         // Nécessaire pour les exportations
+
         murFacadeGroup.setComputeHoles(false);
         murArriereGroup.setComputeHoles(false);
         murDroitGroup.setComputeHoles(false);
         murGaucheGroup.setComputeHoles(false);
 
-        murFacadeGroup.setActiveOuput(OutputType.Fini);
-        murArriereGroup.setActiveOuput(OutputType.Fini);
-        murGaucheGroup.setActiveOuput(OutputType.Fini);
-        murDroitGroup.setActiveOuput(OutputType.Fini);
+        murFacadeGroup.setActiveOuput(this.renduVisuel);
+        murArriereGroup.setActiveOuput(this.renduVisuel);
+        murGaucheGroup.setActiveOuput(this.renduVisuel);
+        murDroitGroup.setActiveOuput(this.renduVisuel);
 
         this.scene.addMesh(murFacadeGroup);
         this.scene.addMesh(murArriereGroup);
@@ -140,6 +143,8 @@ public class Afficheur {
         this.scene.getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
         this.scene.getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
 
+        // murFacadeGroup.rebuild();
+        // murArriereGroup.rebuild();
         // **La responsabilité du rendu à été transferer vers la classe
         // MurTriangleMeshGroup**
 

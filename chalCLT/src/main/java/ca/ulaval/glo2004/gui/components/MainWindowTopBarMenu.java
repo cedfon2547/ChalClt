@@ -4,6 +4,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
 
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
@@ -55,12 +58,12 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         nouveauProjetItem = new javax.swing.JMenuItem("Nouveau");
         ouvrirFichierItem = new javax.swing.JMenuItem("Ouvrir");
         enregistrerItem = new javax.swing.JMenuItem("Enregistrer");
-        
+
         exportItemMenu = new javax.swing.JMenu("Exporter");
         exporterBrutItem = new javax.swing.JMenuItem("Panneaux bruts");
         exporterFiniItem = new javax.swing.JMenuItem("Panneaux finis");
         exporterRetraitsItem = new javax.swing.JMenuItem("Panneaux retraits");
-        
+
         exportItemMenu.add(exporterBrutItem);
         exportItemMenu.add(exporterFiniItem);
         exportItemMenu.add(exporterRetraitsItem);
@@ -84,6 +87,48 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         vueGaucheItem = new javax.swing.JRadioButtonMenuItem("Côté gauche");
         afficherGrilleItem = new javax.swing.JCheckBoxMenuItem("Afficher grille");
         afficherMursVoisinsItem = new javax.swing.JCheckBoxMenuItem("Afficher murs voisins");
+
+        JMenu renduVisuelItem = new javax.swing.JMenu("Rendu visuel");
+        JRadioButton renduVisuelBrutItem = new javax.swing.JRadioButton("Brut");
+        JRadioButton renduVisuelFiniItem = new javax.swing.JRadioButton("Fini");
+        JRadioButton renduVisuelRetraitsItem = new javax.swing.JRadioButton("Retraits");
+
+        renduVisuelItem.add(renduVisuelBrutItem);
+        renduVisuelItem.add(renduVisuelFiniItem);
+        renduVisuelItem.add(renduVisuelRetraitsItem);
+
+        renduVisuelFiniItem.setSelected(true);
+        
+        renduVisuelBrutItem.addActionListener((evt) -> {
+            renduVisuelFiniItem.setSelected(false);
+            renduVisuelRetraitsItem.setSelected(false);
+
+            renduVisuelBrutItem.setSelected(true);
+
+            mainWindow.drawingPanel.afficheur.renduVisuel = PanelHelper.OutputType.Brut;
+            mainWindow.drawingPanel.rechargerAffichage();
+        });
+
+        renduVisuelFiniItem.addActionListener((evt) -> {
+            renduVisuelBrutItem.setSelected(false);
+            renduVisuelRetraitsItem.setSelected(false);
+
+            renduVisuelFiniItem.setSelected(true);
+
+            mainWindow.drawingPanel.afficheur.renduVisuel = PanelHelper.OutputType.Fini;
+            mainWindow.drawingPanel.rechargerAffichage();
+        });
+
+        renduVisuelRetraitsItem.addActionListener((evt) -> {
+            renduVisuelBrutItem.setSelected(false);
+            renduVisuelFiniItem.setSelected(false);
+
+            renduVisuelRetraitsItem.setSelected(true);
+
+            mainWindow.drawingPanel.afficheur.renduVisuel = PanelHelper.OutputType.Retraits;
+            mainWindow.drawingPanel.rechargerAffichage();
+        });
+
         // `Selection` menu
         selectionMenu = new javax.swing.JMenu("Sélection");
         // `Selection` menu subitems
@@ -108,6 +153,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         affichageMenu.add(changerVueMenu);
         affichageMenu.add(afficherGrilleItem);
         affichageMenu.add(afficherMursVoisinsItem);
+        affichageMenu.add(renduVisuelItem);
 
         selectionMenu.add(ajouterAccessoire);
         selectionMenu.add(jMenuItem2);
@@ -348,9 +394,9 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
                 java.awt.event.InputEvent.CTRL_DOWN_MASK));
         enregistrerItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S,
                 java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        
+
         // exportItemMenu.setMnemonic(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E,
-        //         java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        // java.awt.event.InputEvent.CTRL_DOWN_MASK));
         exporterBrutItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B,
                 java.awt.event.InputEvent.CTRL_DOWN_MASK));
         exporterFiniItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F,
@@ -387,7 +433,6 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     }
 
     private void nouveauProjetItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
         mainWindow.clearAccessoiresSelectionnees();
         mainWindow.showChaletTable();
         mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Dessus);
@@ -397,39 +442,37 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         mainWindow.reloadArbreComposantes();
         mainWindow.drawingPanel.rechargerAffichage();
 
-        mainWindow.dispatchNotificationAlert("Nouveau Projet", "Un nouveau projet a été créé.", NotificationType.INFO, 3000);
+        mainWindow.dispatchNotificationAlert("Nouveau Projet", "Un nouveau projet a été créé.", NotificationType.INFO,
+                3000);
     }
 
     private void exporterBrutItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
         // exporterItemActionPerformed(evt);
-        System.out.println("Exporter Bruts");
+        // System.out.println("Exporter Bruts");
         ExportationDirectoryFileChoose exportationDirectoryFileChoose = new ExportationDirectoryFileChoose((path) -> {
-            System.out.println("Path: " + path);
+            // System.out.println("Path: " + path);
             mainWindow.drawingPanel.afficheur.exportSTL(path, PanelHelper.OutputType.Brut);
             return true;
         });
     }
 
     private void exporterFiniItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
         // exporterItemActionPerformed(evt);
-        System.out.println("Exporter Fini");
+        // System.out.println("Exporter Fini");
         ExportationDirectoryFileChoose exportationDirectoryFileChoose = new ExportationDirectoryFileChoose((path) -> {
-            System.out.println("Path: " + path);
+            // System.out.println("Path: " + path);
             mainWindow.drawingPanel.afficheur.exportSTL(path, PanelHelper.OutputType.Fini);
-        
+
             return true;
         });
 
     }
 
     private void exporterRetraitsItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
         // exporterItemActionPerformed(evt);
-        System.out.println("Exporter Retraits");
+        // System.out.println("Exporter Retraits");
         ExportationDirectoryFileChoose exportationDirectoryFileChoose = new ExportationDirectoryFileChoose((path) -> {
-            System.out.println("Path: " + path);
+            // System.out.println("Path: " + path);
             mainWindow.drawingPanel.afficheur.exportSTL(path, PanelHelper.OutputType.Retraits);
             return true;
         });
@@ -456,7 +499,6 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     }
 
     private void afficherGrilleItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
         PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = mainWindow.getControleur()
                 .getPreferencesUtilisateur();
         preferencesUtilisateurDTO.afficherGrille = !preferencesUtilisateurDTO.afficherGrille;
@@ -470,14 +512,12 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     }
 
     private void annulerItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
         System.out.println("UNDO");
         mainWindow.getControleur().undo();
         mainWindow.drawingPanel.rechargerAffichage();
     }
 
     private void retablirItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
         System.out.println("REDO");
         mainWindow.getControleur().redo();
         mainWindow.drawingPanel.rechargerAffichage();
@@ -514,10 +554,9 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     public static interface ExportationDirectoryFileChooseListener {
         public boolean onSelect(String path);
     }
-    
+
     public class ExportationDirectoryFileChoose extends javax.swing.JFrame {
         private JFileChooser fileChooser;
-        // private JInternalFrame internalFrame;
         private ExportationDirectoryFileChooseListener listener;
 
         public ExportationDirectoryFileChoose(ExportationDirectoryFileChooseListener listener) {
@@ -526,23 +565,9 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         }
 
         private void initComponents() {
-            // internalFrame = new JInternalFrame();
             fileChooser = new JFileChooser();
 
             fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
-            // fileChooser.addChoosableFileFilter(choosableFileFilter());
-            // internalFrame.setVisible(true);
-
-            // javax.swing.GroupLayout jInternalFrame1Layout = new javax.swing.GroupLayout(
-            //         internalFrame.getContentPane());
-            // internalFrame.getContentPane().setLayout(jInternalFrame1Layout);
-            // jInternalFrame1Layout.setHorizontalGroup(
-            //         jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            //                 .addGap(0, 147, Short.MAX_VALUE));
-            // jInternalFrame1Layout.setVerticalGroup(
-            //         jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            //                 .addGap(0, 86, Short.MAX_VALUE));
-
             setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
             fileChooser.setApproveButtonText("Sélectionner");
@@ -558,21 +583,22 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
 
             fileChooser.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    System.out.println(evt.getActionCommand());
+                    // System.out.println(evt.getActionCommand());
                     if (evt.getActionCommand().equals("ApproveSelection")) {
-                        System.out.println("ApproveSelection");
+                        // System.out.println("ApproveSelection");
                         boolean isValid = listener.onSelect(fileChooser.getSelectedFile().getAbsolutePath());
-                        
-                        // if the listener return false, the path is not valid and we should display the error and let the user choose a different one.
+
+                        // if the listener return false, the path is not valid and we should display the
+                        // error and let the user choose a different one.
                         if (isValid) {
                             fileChooser.setVisible(false);
                             dispose();
                         } else {
-                            
+
                         }
 
                     } else if (evt.getActionCommand().equals("CancelSelection")) {
-                        System.out.println("CancelSelection");
+                        // System.out.println("CancelSelection");
                         fileChooser.setVisible(false);
                         dispose();
                     }
@@ -581,7 +607,8 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
 
             fileChooser.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
                 public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                    System.out.println("Property Change" + evt.getPropertyName() + " " + evt.getNewValue());
+                    // System.out.println("Property Change" + evt.getPropertyName() + " " +
+                    // evt.getNewValue());
                 }
             });
 

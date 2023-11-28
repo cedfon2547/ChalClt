@@ -7,26 +7,58 @@ import java.util.UUID;
 
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 
-public class TriangleMeshGroup {
+public class TriangleMeshGroup extends TriangleMesh {
+    @FunctionalInterface
+    static public interface TriangleMeshVisitor {
+        public void visit(TriangleMesh mesh);
+    }
+
     String identifier = UUID.randomUUID().toString();
     List<TriangleMesh> meshes = new ArrayList<TriangleMesh>();
-    private boolean selected = false;
-    private boolean selectable = true;
-    private boolean visible = true;
-    private boolean valid = true;
+    // private boolean selected = false;
+    // private boolean selectable = true;
+    // private boolean visible = true;
+    // private boolean valid = true;
     private Vector3D position = new Vector3D(0, 0, 0);
-    
+
     public TriangleMeshGroup() {
+        super(new ArrayList<Triangle>());
     }
 
     public TriangleMeshGroup(ArrayList<TriangleMesh> meshes) {
+        super(new ArrayList<Triangle>());
         this.meshes = meshes;
     }
 
     public TriangleMeshGroup(TriangleMesh[] meshes) {
+        super(new ArrayList<Triangle>());
         for (TriangleMesh mesh : meshes) {
             this.meshes.add(mesh);
         }
+    }
+
+    public void traverseMeshes(TriangleMeshVisitor visitor) {
+        for (TriangleMesh mesh : meshes) {
+            visitor.visit(mesh);
+
+            if (mesh instanceof TriangleMeshGroup) {
+                ((TriangleMeshGroup) mesh).traverseMeshes(visitor);
+            }
+        }
+    }
+
+    public TriangleMesh find(String identifier) {
+        for (TriangleMesh mesh : meshes) {
+            if (mesh.getIdentifier().equals(identifier)) {
+                return mesh;
+            }else if (mesh instanceof TriangleMeshGroup) {
+                TriangleMesh found = ((TriangleMeshGroup) mesh).find(identifier);
+                if (found != null) {
+                    return found;
+                }
+            }
+        }
+        return null;
     }
 
     public Vector3D getPosition() {
@@ -54,17 +86,17 @@ public class TriangleMeshGroup {
         return identifier;
     }
 
-    public boolean getSelected() {
-        return selected;
-    }
+    // public boolean getSelected() {
+    //     return selected;
+    // }
 
-    public boolean getValid() {
-        return valid;
-    }
+    // public boolean getValid() {
+    //     return valid;
+    // }
 
-    public void setValid(boolean valid) {
-        this.valid = valid;
-    }
+    // public void setValid(boolean valid) {
+    //     this.valid = valid;
+    // }
 
     public void addMesh(TriangleMesh mesh) {
         meshes.add(mesh);
@@ -82,17 +114,25 @@ public class TriangleMeshGroup {
         this.identifier = ID;
     }
 
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
-    public void setSelectable(boolean selectable) {
-        this.selectable = selectable;
-    }
-    public boolean getSelectable() {return this.selectable;}
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-    public boolean getVisible() {return this.visible;}
+    // public void setSelected(boolean selected) {
+    //     this.selected = selected;
+    // }
+
+    // public void setSelectable(boolean selectable) {
+    //     this.selectable = selectable;
+    // }
+
+    // public boolean getSelectable() {
+    //     return this.selectable;
+    // }
+
+    // public void setVisible(boolean visible) {
+    //     this.visible = visible;
+    // }
+
+    // public boolean getVisible() {
+    //     return this.visible;
+    // }
 
     public void setPosition(Vector3D position) {
         this.position = position;
@@ -182,6 +222,13 @@ public class TriangleMeshGroup {
             newGroup.addMesh(mesh.translate(groupCenter.multiply(-1)).rotateX(angle));
         }
 
+        newGroup.ID = this.ID;
+        newGroup.setHandle(this.getHandle());
+        newGroup.setValid(this.getValid());
+        newGroup.setSelectable(this.getSelectable());
+        newGroup.setSelected(this.getSelected());
+        newGroup.setVisible(this.getVisible());
+        
         return newGroup;
     }
 
@@ -193,6 +240,13 @@ public class TriangleMeshGroup {
             newGroup.addMesh(mesh.translate(groupCenter.multiply(-1)).rotateY(angle));
         }
 
+        newGroup.ID = this.ID;
+        newGroup.setHandle(this.getHandle());
+        newGroup.setValid(this.getValid());
+        newGroup.setSelectable(this.getSelectable());
+        newGroup.setSelected(this.getSelected());
+        newGroup.setVisible(this.getVisible());
+        
         return newGroup;
     }
 
@@ -204,10 +258,17 @@ public class TriangleMeshGroup {
             newGroup.addMesh(mesh.translate(groupCenter.multiply(-1)).rotateZ(angle));
         }
 
+        newGroup.ID = this.ID;
+        newGroup.setHandle(this.getHandle());
+        newGroup.setValid(this.getValid());
+        newGroup.setSelectable(this.getSelectable());
+        newGroup.setSelected(this.getSelected());
+        newGroup.setVisible(this.getVisible());
+        
         return newGroup;
     }
 
-    public TriangleMeshGroup rotate(double angleX, double angleY, double angleZ, Vector3D axis) {
+    public TriangleMeshGroup rotateOnCenter(double angleX, double angleY, double angleZ, Vector3D axis) {
         TriangleMeshGroup newGroup = new TriangleMeshGroup();
         Vector3D groupCenter = this.getCenter();
 
@@ -216,6 +277,30 @@ public class TriangleMeshGroup {
                     .translate(groupCenter));
         }
 
+        newGroup.ID = this.ID;
+        newGroup.setHandle(this.getHandle());
+        newGroup.setValid(this.getValid());
+        newGroup.setSelectable(this.getSelectable());
+        newGroup.setSelected(this.getSelected());
+        newGroup.setVisible(this.getVisible());
+        
+        return newGroup;
+    }
+
+    public TriangleMeshGroup rotate(double angleX, double angleY, double angleZ, Vector3D axis) {
+        TriangleMeshGroup newGroup = new TriangleMeshGroup();
+
+        for (TriangleMesh mesh : meshes) {
+            newGroup.addMesh(mesh.rotate(angleX, angleY, angleZ, axis));
+        }
+
+        newGroup.ID = this.ID;
+        newGroup.setHandle(this.getHandle());
+        newGroup.setValid(this.getValid());
+        newGroup.setSelectable(this.getSelectable());
+        newGroup.setSelected(this.getSelected());
+        newGroup.setVisible(this.getVisible());
+        
         return newGroup;
     }
 
@@ -230,6 +315,14 @@ public class TriangleMeshGroup {
             newGroup.addMesh(mesh.translate(translation));
         }
 
+        newGroup.ID = this.ID;
+        newGroup.setHandle(this.getHandle());
+        newGroup.setValid(this.getValid());
+        newGroup.setSelectable(this.getSelectable());
+        newGroup.setSelected(this.getSelected());
+        newGroup.setVisible(this.getVisible());
+        
+
         return newGroup;
     }
 
@@ -240,6 +333,13 @@ public class TriangleMeshGroup {
             newGroup.addMesh(mesh.scale(scale));
         }
 
+        newGroup.ID = this.ID;
+        newGroup.setHandle(this.getHandle());
+        newGroup.setValid(this.getValid());
+        newGroup.setSelectable(this.getSelectable());
+        newGroup.setSelected(this.getSelected());
+        newGroup.setVisible(this.getVisible());
+        
         return newGroup;
     }
 }
