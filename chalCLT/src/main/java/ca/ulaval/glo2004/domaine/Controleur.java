@@ -75,6 +75,7 @@ public class Controleur {
     }
 
     public void setPreferencesUtilisateur(PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateur) {
+        this.pcs.firePropertyChange(EventType.PREFERENCES_UTILISATEUR, this.getPreferencesUtilisateur(), preferencesUtilisateur);
         projectActif.getPreferencesUtilisateur().update(preferencesUtilisateur);
     }
 
@@ -162,5 +163,6 @@ public class Controleur {
         public static final String CREE_PROJET = "creeProjet";
         public static final String FERMER_PROJET = "fermerProjet";
         public static final String ACCESSOIRE_INVALIDE = "accessoireInvalide";
+        public static final String PREFERENCES_UTILISATEUR = "preferencesUtilisateur";
     }
 }

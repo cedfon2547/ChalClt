@@ -566,25 +566,6 @@ public class Afficheur {
             default:
                 throw new IllegalArgumentException("Unexpected value: " + exportType);
         }
-
-        // for (TriangleMesh mesh : murFacadeGroup.getMeshRetraits().getMeshes()) {
-        // for (Triangle tri : mesh.getTriangles()) {
-        // double[] normal = tri.getNormal().toArray();
-        // double[] vertex1 = tri.getVertice(0).toArray();
-        // double[] vertex2 = tri.getVertice(1).toArray();
-        // double[] vertex3 = tri.getVertice(2).toArray();
-
-        // facadeStlTrianglesRetraits
-        // .add(new STLTools.Triangle(
-        // new float[] { -(float) normal[0], (float) normal[2], -(float) normal[1] },
-        // new float[] { -(float) vertex1[0], (float) vertex1[2], -(float) vertex1[1] },
-        // new float[] { -(float) vertex2[0], (float) vertex2[2], -(float) vertex2[1] },
-        // new float[] { -(float) vertex3[0], (float) vertex3[2], -(float) vertex3[1]
-        // }));
-        // }
-        // }
-
-        
     }
 
     public void draw(Graphics g, Dimension dimension) {

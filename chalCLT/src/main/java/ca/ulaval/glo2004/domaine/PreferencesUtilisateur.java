@@ -6,7 +6,7 @@ public class PreferencesUtilisateur {
     private boolean afficherVoisinSelection = false;
     private java.awt.Color backgroundColor = java.awt.Color.BLACK;
     private java.awt.Color gridColor = java.awt.Color.GRAY;
-    private int gridSpacing = 50;
+    private double gridSpacing = 50;
 
     private boolean afficherPlancher = true;
 
@@ -55,11 +55,11 @@ public class PreferencesUtilisateur {
         this.gridColor = gridColor;
     }
 
-    public int getGridSpacing() {
+    public double getGridSpacing() {
         return gridSpacing;
     }
 
-    public void setGridSpacing(int gridSpacing) {
+    public void setGridSpacing(double gridSpacing) {
         this.gridSpacing = gridSpacing;
     }
 
@@ -80,7 +80,7 @@ public class PreferencesUtilisateur {
         public boolean afficherVoisinSelection = false;
         public java.awt.Color backgroundColor = java.awt.Color.BLACK;
         public java.awt.Color gridColor = java.awt.Color.GRAY;
-        public int gridSpacing = 50;
+        public double gridSpacing = 50;
         public boolean afficherPlancher = false;
 
         public PreferencesUtilisateurDTO(PreferencesUtilisateur preferencesUtilisateur) {

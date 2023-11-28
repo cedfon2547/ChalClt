@@ -1,6 +1,7 @@
 package ca.ulaval.glo2004.gui.components;
 
 import ca.ulaval.glo2004.App;
+import ca.ulaval.glo2004.domaine.Controleur;
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.domaine.TypeAccessoire;
 import ca.ulaval.glo2004.domaine.TypeMur;
@@ -188,10 +189,15 @@ public class TopButtonPanel extends JPanel {
                 mainWindow.deleteAllAccessoiresSelectionnees();
             }
         });
-        PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = mainWindow.getControleur()
-                .getPreferencesUtilisateur();
-        preferencesUtilisateurDTO.afficherGrille = true;
-        mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO);
+
+        PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = mainWindow.getControleur().getPreferencesUtilisateur();
+        grilleToggleBtn.setSelected(preferencesUtilisateurDTO.afficherGrille);
+
+        mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.PREFERENCES_UTILISATEUR, (evt) -> {
+            PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateur = (PreferencesUtilisateur.PreferencesUtilisateurDTO) evt.getNewValue();
+            grilleToggleBtn.setSelected(preferencesUtilisateur.afficherGrille);
+            voisinToggleBtn.setSelected(preferencesUtilisateur.afficherVoisinSelection);
+        });
 
         grilleToggleBtn.addActionListener(new ActionListener() {
             @Override
@@ -212,8 +218,9 @@ public class TopButtonPanel extends JPanel {
                 PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = mainWindow.getControleur()
                         .getPreferencesUtilisateur();
                 preferencesUtilisateurDTO.afficherVoisinSelection = !preferencesUtilisateurDTO.afficherVoisinSelection;
-                mainWindow.drawingPanel.repaint();
-
+                mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO);
+                
+                mainWindow.drawingPanel.rechargerAffichage();
             }
         });
 
@@ -221,7 +228,8 @@ public class TopButtonPanel extends JPanel {
         if(mainWindow.getAccessoiresSelectionnees().size()==0){
             supprimerAccessoireBtn.setEnabled(false);
         }
-        voisinToggleBtn.setEnabled(false);
+
+        // voisinToggleBtn.setEnabled(false);
 
         add(creerFenetreBtn);
         add(creerPorteBtn);

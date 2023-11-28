@@ -8,6 +8,7 @@ import javax.swing.SwingUtilities;
 
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.gui.MainWindow;
+import ca.ulaval.glo2004.gui.NotificationManager.NotificationType;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 
@@ -395,6 +396,8 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         // mainWindow.arbreDesComposantesChalet.buildTree();
         mainWindow.reloadArbreComposantes();
         mainWindow.drawingPanel.rechargerAffichage();
+
+        mainWindow.dispatchNotificationAlert("Nouveau Projet", "Un nouveau projet a été créé.", NotificationType.INFO, 3000);
     }
 
     private void exporterBrutItemActionPerformed(java.awt.event.ActionEvent evt) {

@@ -7,8 +7,17 @@ import java.awt.event.MouseWheelListener;
 import java.util.UUID;
 
 import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
 
@@ -19,9 +28,39 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
-import ca.ulaval.glo2004.gui.Constants;
 import ca.ulaval.glo2004.gui.MainWindow;
 import ca.ulaval.glo2004.domaine.Accessoire;
+import ca.ulaval.glo2004.domaine.Controleur;
+
+class GridStepSpinner extends JSpinner {
+    public GridStepSpinner() {
+        this(0.0f);
+    }
+
+    public GridStepSpinner(float value) {
+        super();
+        // this.setModel(new javax.swing.SpinnerNumberModel((float) value, 0.0f, 100.0f, 0.5f));
+        setValue(value);
+        this.setModel(new SpinnerNumberModel((float) value, 0.0f, 100.0f, 0.5f));
+        ((SpinnerNumberModel) this.getModel()).setStepSize(0.1);
+        ((JSpinner.DefaultEditor) this.getEditor()).getTextField().setColumns(3);
+        ((JSpinner.DefaultEditor) this.getEditor()).getTextField().setHorizontalAlignment(JLabel.CENTER);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        JFormattedTextField spin = ((JSpinner.DefaultEditor) this.getEditor()).getTextField();
+        spin.setEditable(enabled);
+    }
+
+    @Override
+    public void setValue(Object value) {
+        if (this.isEnabled()) {
+            super.setValue(value);
+        }
+    }
+}
 
 public class DrawingPanel extends javax.swing.JPanel {
     MainWindow mainWindow;
@@ -49,7 +88,9 @@ public class DrawingPanel extends javax.swing.JPanel {
         rechargerAffichage();
     }
 
-    public void centeringLight(){this.afficheur.getScene().getLight().setPosition(new Vector3D((int) (this.getWidth()/2), 500, 0));}
+    public void centeringLight() {
+        this.afficheur.getScene().getLight().setPosition(new Vector3D((int) (this.getWidth() / 2), 500, 0));
+    }
 
     public MainWindow getMainWindow() {
         return mainWindow;
@@ -75,7 +116,6 @@ public class DrawingPanel extends javax.swing.JPanel {
     }
 
     private void buildToolbar() {
-
         barreOutils = new javax.swing.JToolBar("Barre d'outils");
 
         barreOutils.setFloatable(false);
@@ -125,21 +165,145 @@ public class DrawingPanel extends javax.swing.JPanel {
             repaint();
         }
 
+        JPanel toolsSwitchesContainer = new JPanel();
+        toolsSwitchesContainer.setOpaque(false);
+
+        if (MainWindow.SHOW_DRAWING_PANEL_TOOLS_SWITCHES) {
+            PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = mainWindow.getControleur()
+                    .getPreferencesUtilisateur();
+
+            System.out.println("Grille: " + preferencesUtilisateurDTO.afficherGrille);
+            JPanel grilleContainer = new JPanel();
+            JLabel grilleLabel = new JLabel("Grille: ");
+            SwitchToggleButton switchGrille = new SwitchToggleButton(SwitchToggleButton.Size.XSMALL,
+                    preferencesUtilisateurDTO.afficherGrille);
+
+            JPanel grilleStepContainer = new JPanel();
+            JLabel grilleStepLabel = new JLabel("Step: ");
+            GridStepSpinner grilleStepSpinner = new GridStepSpinner();
+
+            JPanel voisinContainer = new JPanel();
+            JLabel voisinLabel = new JLabel("Voisin: ");
+            SwitchToggleButton switchVoisin = new SwitchToggleButton(SwitchToggleButton.Size.XSMALL,
+                    preferencesUtilisateurDTO.afficherVoisinSelection);
+
+            switchGrille.setEnabled(true);
+            switchVoisin.setEnabled(true);
+
+            grilleContainer.setOpaque(false);
+            voisinContainer.setOpaque(false);
+            grilleStepContainer.setOpaque(false);
+
+            grilleContainer.setLayout(new BorderLayout());
+            voisinContainer.setLayout(new BorderLayout());
+            grilleStepContainer.setLayout(new BorderLayout());
+
+            grilleContainer.add(grilleLabel, BorderLayout.WEST);
+            grilleContainer.add(switchGrille, BorderLayout.EAST);
+
+            voisinContainer.add(voisinLabel, BorderLayout.WEST);
+            voisinContainer.add(switchVoisin, BorderLayout.EAST);
+
+            grilleStepContainer.add(grilleStepLabel, BorderLayout.WEST);
+            grilleStepContainer.add(grilleStepSpinner, BorderLayout.EAST);
+
+            grilleStepSpinner.setValue(preferencesUtilisateurDTO.gridSpacing);
+            grilleStepSpinner.setPreferredSize(new Dimension(50, 20));
+            grilleStepSpinner.setEnabled(!preferencesUtilisateurDTO.afficherGrille);
+            
+            grilleStepSpinner.setEnabled(preferencesUtilisateurDTO.afficherGrille);
+
+            grilleStepSpinner.addChangeListener((evt) -> {
+                System.out.println("Grille Step Changed: " + grilleStepSpinner.getValue());
+                PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = mainWindow.getControleur()
+                        .getPreferencesUtilisateur();
+
+                preferencesUtilisateurDTO2.gridSpacing = (double) grilleStepSpinner.getValue();
+                mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO2);
+                mainWindow.drawingPanel.rechargerAffichage();
+            });
+
+            switchGrille.addEventSelected((evt) -> {
+                System.out.println("Grille Selected: " + switchGrille.isSelected());
+                PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = mainWindow.getControleur()
+                        .getPreferencesUtilisateur();
+
+                preferencesUtilisateurDTO2.afficherGrille = switchGrille.isSelected();
+                mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO2);
+                mainWindow.drawingPanel.updateViewGrid();
+                mainWindow.drawingPanel.rechargerAffichage();
+            });
+
+            switchVoisin.addEventSelected((evt) -> {
+                System.out.println("Voisin Selected: " + switchVoisin.isSelected());
+                PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = mainWindow.getControleur()
+                        .getPreferencesUtilisateur();
+
+                preferencesUtilisateurDTO2.afficherVoisinSelection = switchVoisin.isSelected();
+                mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO2);
+                mainWindow.drawingPanel.rechargerAffichage();
+            });
+
+            toolsSwitchesContainer.add(grilleContainer);
+            toolsSwitchesContainer.add(grilleStepContainer);
+            toolsSwitchesContainer.add(voisinContainer);
+
+            mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.PREFERENCES_UTILISATEUR,
+                    (evt) -> {
+                        System.out.println("Preferences Utilisateur changed");
+                        PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = (PreferencesUtilisateur.PreferencesUtilisateurDTO) evt
+                                .getNewValue();
+                        switchGrille.setSelected(preferencesUtilisateurDTO2.afficherGrille);
+                        switchVoisin.setSelected(preferencesUtilisateurDTO2.afficherVoisinSelection);
+                        grilleStepSpinner.setValue(preferencesUtilisateurDTO2.gridSpacing);
+                        grilleStepSpinner.setEnabled(preferencesUtilisateurDTO2.afficherGrille);
+
+                        mainWindow.drawingPanel.afficheur.getScene().getConfiguration().setGridStep(preferencesUtilisateurDTO2.gridSpacing);
+                        mainWindow.drawingPanel.updateViewGrid();
+                        // mainWindow.drawingPanel.rechargerAffichage();
+                    });
+        }
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
 
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGap(0, 263, Short.MAX_VALUE)
                                 .addComponent(barreOutils, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)));
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(toolsSwitchesContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 100,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap()));
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addContainerGap()
+                                .addComponent(toolsSwitchesContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 150,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 321,
+                                        Short.MAX_VALUE)
                                 .addComponent(barreOutils, javax.swing.GroupLayout.PREFERRED_SIZE,
                                         javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)));
+        // layout.setHorizontalGroup(
+        // layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        // .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+        // layout.createSequentialGroup()
+        // .addGap(0, 0, Short.MAX_VALUE)
+        // .addComponent(barreOutils, javax.swing.GroupLayout.PREFERRED_SIZE,
+        // javax.swing.GroupLayout.DEFAULT_SIZE,
+        // javax.swing.GroupLayout.PREFERRED_SIZE)));
+        // layout.setVerticalGroup(
+        // layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        // .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+        // layout.createSequentialGroup()
+        // .addGap(0, 0, Short.MAX_VALUE)
+        // .addComponent(barreOutils, javax.swing.GroupLayout.PREFERRED_SIZE,
+        // javax.swing.GroupLayout.DEFAULT_SIZE,
+        // javax.swing.GroupLayout.PREFERRED_SIZE)));
 
     }
 
@@ -179,10 +343,10 @@ public class DrawingPanel extends javax.swing.JPanel {
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 grabFocus();
                 // System.out.println("Mouse Clicked");
-                
+
                 TriangleMeshGroup mesh = afficheur.getRasterizer().getMeshFromPoint(e.getPoint());
 
-                if(mesh != null && e.getClickCount() == 2) {
+                if (mesh != null && e.getClickCount() == 2) {
                     if (mesh instanceof PanelHelper.MurTriangleMeshGroup) {
                         System.out.println("Double clicked on a wall");
                         switch (((PanelHelper.MurTriangleMeshGroup) mesh).getTypeMur()) {
@@ -208,47 +372,48 @@ public class DrawingPanel extends javax.swing.JPanel {
                     // // check if we are in an intended view direction
                     // boolean strongChange = false;
                     // if(currentDirection.equals(Afficheur.TypeDeVue.vueArriere()) ||
-                    //         currentDirection.equals(Afficheur.TypeDeVue.vueFacade()) ||
-                    //         currentDirection.equals(Afficheur.TypeDeVue.vueDroite()) ||
-                    //         currentDirection.equals(Afficheur.TypeDeVue.vueGauche()) ||
-                    //         currentDirection.equals(Afficheur.TypeDeVue.vueDessus()))
-                    //     strongChange = true;
+                    // currentDirection.equals(Afficheur.TypeDeVue.vueFacade()) ||
+                    // currentDirection.equals(Afficheur.TypeDeVue.vueDroite()) ||
+                    // currentDirection.equals(Afficheur.TypeDeVue.vueGauche()) ||
+                    // currentDirection.equals(Afficheur.TypeDeVue.vueDessus()))
+                    // strongChange = true;
 
                     // switch(handle) {
-                    //     case Constants._STRING_MUR_FACADE:
-                    //         if(strongChange)
-                    //             changerVue(Afficheur.TypeDeVue.Facade);
-                    //         else
-                    //             weakChangerVue(Afficheur.TypeDeVue.Facade);
-                    //         return;
-                    //     case Constants._STRING_MUR_ARRIERE:
-                    //         if(strongChange)
-                    //             changerVue(Afficheur.TypeDeVue.Arriere);
-                    //         else
-                    //             weakChangerVue(Afficheur.TypeDeVue.Arriere);
-                    //         return;
-                    //     case Constants._STRING_MUR_DROIT:
-                    //         if(strongChange)
-                    //             changerVue(Afficheur.TypeDeVue.Droite);
-                    //         else
-                    //             weakChangerVue(Afficheur.TypeDeVue.Droite);
-                    //         return;
-                    //     case Constants._STRING_MUR_GAUCHE:
-                    //         if(strongChange)
-                    //             changerVue(Afficheur.TypeDeVue.Gauche);
-                    //         else
-                    //             weakChangerVue(Afficheur.TypeDeVue.Gauche);
-                    //         return;
-                    //     default:
-                    //         // nop, fall through
+                    // case Constants._STRING_MUR_FACADE:
+                    // if(strongChange)
+                    // changerVue(Afficheur.TypeDeVue.Facade);
+                    // else
+                    // weakChangerVue(Afficheur.TypeDeVue.Facade);
+                    // return;
+                    // case Constants._STRING_MUR_ARRIERE:
+                    // if(strongChange)
+                    // changerVue(Afficheur.TypeDeVue.Arriere);
+                    // else
+                    // weakChangerVue(Afficheur.TypeDeVue.Arriere);
+                    // return;
+                    // case Constants._STRING_MUR_DROIT:
+                    // if(strongChange)
+                    // changerVue(Afficheur.TypeDeVue.Droite);
+                    // else
+                    // weakChangerVue(Afficheur.TypeDeVue.Droite);
+                    // return;
+                    // case Constants._STRING_MUR_GAUCHE:
+                    // if(strongChange)
+                    // changerVue(Afficheur.TypeDeVue.Gauche);
+                    // else
+                    // weakChangerVue(Afficheur.TypeDeVue.Gauche);
+                    // return;
+                    // default:
+                    // // nop, fall through
                     // }
                 }
 
                 afficheur.getRasterizer().deselectAllMeshes();
 
                 if (mesh != null) {
-                    Accessoire.AccessoireDTO accDto = mainWindow.getControleur().getAccessoire(UUID.fromString(mesh.getIdentifier()));
-                    
+                    Accessoire.AccessoireDTO accDto = mainWindow.getControleur()
+                            .getAccessoire(UUID.fromString(mesh.getIdentifier()));
+
                     if (accDto != null) {
                         mainWindow.clearAccessoiresSelectionnees();
                         mainWindow.ajouterAccessoireSelectionnee(accDto);
@@ -257,7 +422,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                         mainWindow.clearAccessoiresSelectionnees();
                         mainWindow.showChaletTable();
                     }
-                    if(mesh.getSelectable()) {
+                    if (mesh.getSelectable()) {
                         System.out.println(mesh.getIdentifier() + " selected");
                         afficheur.getScene().setSelected(mesh.getIdentifier(), true);
                     }
@@ -377,21 +542,23 @@ public class DrawingPanel extends javax.swing.JPanel {
     }
 
     public void updateViewGrid() {
-        PreferencesUtilisateur.PreferencesUtilisateurDTO preferUser = mainWindow.getControleur().getPreferencesUtilisateur();
+        PreferencesUtilisateur.PreferencesUtilisateurDTO preferUser = mainWindow.getControleur()
+                .getPreferencesUtilisateur();
         Vector3D direction = afficheur.getScene().getCamera().getDirection();
 
         if (preferUser.afficherGrille) {
-            if (direction.equals(TypeDeVue.getDirection(TypeDeVue.Facade)) || direction.equals(TypeDeVue.getDirection(TypeDeVue.Arriere)) || direction.equals(TypeDeVue.getDirection(TypeDeVue.Droite)) ||direction.equals(TypeDeVue.getDirection(TypeDeVue.Gauche))) {
+            if (direction.equals(TypeDeVue.getDirection(TypeDeVue.Facade))
+                    || direction.equals(TypeDeVue.getDirection(TypeDeVue.Arriere))
+                    || direction.equals(TypeDeVue.getDirection(TypeDeVue.Droite))
+                    || direction.equals(TypeDeVue.getDirection(TypeDeVue.Gauche))) {
                 afficheur.getScene().getConfiguration().setShowGridXZ(true);
                 afficheur.getScene().getConfiguration().setShowGridYZ(true);
                 afficheur.getScene().getConfiguration().setShowGridXY(true);
-            }
-            else {
+            } else {
                 afficheur.getScene().getConfiguration().setShowGridYZ(false);
                 afficheur.getScene().getConfiguration().setShowGridXY(false);
             }
-        }
-        else {
+        } else {
             afficheur.getScene().getConfiguration().setShowGridXZ(false);
             afficheur.getScene().getConfiguration().setShowGridYZ(false);
             afficheur.getScene().getConfiguration().setShowGridXY(false);
@@ -414,7 +581,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 Vector3D lightPosition = afficheur.getScene().getLight().getPosition();
 
-                switch(evt.getKeyCode()) {
+                switch (evt.getKeyCode()) {
                     case java.awt.event.KeyEvent.VK_UP:
                         lightPosition.y += 1;
                         afficheur.getScene().getLight().setPosition(lightPosition);
@@ -465,10 +632,9 @@ public class DrawingPanel extends javax.swing.JPanel {
         afficheur.weakChangerVue(vue); // update seulement les flags
         mainWindow.menu.activerVue(afficheur.getVueActive());
         updateToolbarBtns();
-        //invalidate(); // redundant when not updating camera
-        //repaint();
+        // invalidate(); // redundant when not updating camera
+        // repaint();
     }
-
 
     public void rechargerAffichage() {
         try {

@@ -8,6 +8,7 @@ import javax.swing.JScrollPane;
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.Controleur;
+import ca.ulaval.glo2004.gui.NotificationManager.NotificationType;
 import ca.ulaval.glo2004.gui.components.ArbreDesComposantesChalet;
 import ca.ulaval.glo2004.gui.components.DrawingPanel;
 import ca.ulaval.glo2004.gui.components.MainWindowTopBarMenu;
@@ -33,6 +34,10 @@ SplitPane   ---------         Section         |
             |_______|_________________________|
  */
 public class MainWindow extends javax.swing.JFrame {
+    // ===== OPTIONS =====
+    public static final boolean ACTIVE_NOTIFICATION_ALERT = false;
+    public static final boolean SHOW_DRAWING_PANEL_TOOLS_SWITCHES = false;
+
     private Controleur controleur;
 
     public javax.swing.JPanel mainSection;
@@ -51,6 +56,8 @@ public class MainWindow extends javax.swing.JFrame {
     public TopButtonPanel topButtonPanel;
 
     public List<Accessoire.AccessoireDTO> accessoiresSelectionnees = new ArrayList<Accessoire.AccessoireDTO>();
+
+    public NotificationManager notificationManager = new NotificationManager(this);
 
     public MainWindow(Controleur controleur) {
         super("ChalCLT - Créateur de chalets");
@@ -217,5 +224,17 @@ public class MainWindow extends javax.swing.JFrame {
         List<Accessoire.AccessoireDTO> accessoireDTOs = controleur.getAccessoires();
 
         arbreDesComposantesChalet.reloadTree(chaletDTO, accessoireDTOs);
+    }
+
+    public void dispatchNotificationAlert(String title, String message, NotificationType type) {
+        if (ACTIVE_NOTIFICATION_ALERT) {
+            notificationManager.createNotification(title, message, type);
+        }
+    }
+
+    public void dispatchNotificationAlert(String title, String message, NotificationType type, int duration) {
+        if (ACTIVE_NOTIFICATION_ALERT) {
+            notificationManager.createNotification(title, message, type).setTimer(duration);
+        }
     }
 }

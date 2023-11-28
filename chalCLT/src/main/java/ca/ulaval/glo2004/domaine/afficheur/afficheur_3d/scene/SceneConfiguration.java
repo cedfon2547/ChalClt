@@ -12,7 +12,7 @@ public class SceneConfiguration {
     boolean showGridXZ = true;
     boolean showGridYZ = true;
     int stepCounts = 24;
-    int gridStep = 30;
+    double gridStep = 30;
     int gridStrokeWidth = 2;
     int axisStrokeWidth = 2;
     boolean showLight = true;
@@ -89,7 +89,7 @@ public class SceneConfiguration {
         return stepCounts;
     }
  
-    public int getGridStep() {
+    public double getGridStep() {
         return gridStep;
     }
 
@@ -157,7 +157,7 @@ public class SceneConfiguration {
         this.stepCounts = axisLength;
     }
  
-    public void setGridStep(int gridStep) {
+    public void setGridStep(double gridStep) {
         this.gridStep = gridStep;
     }
 }
