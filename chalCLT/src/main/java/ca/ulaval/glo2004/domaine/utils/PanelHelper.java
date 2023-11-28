@@ -332,7 +332,7 @@ public class PanelHelper {
         List<TriangleMeshGroup> meshAccessoires = new ArrayList<TriangleMeshGroup>();
 
         boolean truncate = false;
-        OutputType activeOutput = OutputType.Brut;
+        OutputType activeOutput = OutputType.Fini;
         boolean computeHoles = false;
 
         public MurTriangleMeshGroup(Chalet.ChaletDTO chaletDTO, TypeMur typeMur,
@@ -796,7 +796,7 @@ public class PanelHelper {
             }
         }
 
-        private void transformMesh() {
+        public void transformMesh() {
             this.meshBrut = this.meshBrut.translate(this.meshBrut.getCenter().multiply(-1));
             this.meshFini = this.meshFini.translate(this.meshFini.getCenter().multiply(-1));
 
@@ -904,8 +904,8 @@ public class PanelHelper {
             this.buildRetraits();
             this.buildAccessoires();
             this.setMaterial();
-            this.setActiveOuput(this.activeOutput);
             this.transformMesh();
+            this.setActiveOuput(this.activeOutput);
         }
 
         public void setActiveOuput(OutputType outputType) {

@@ -356,6 +356,11 @@ public class ImperialDimension {
     public static ImperialDimension parseFromString(String str) {
         // Format is: 7' 3" 1/2
         Pattern pattern = Pattern.compile("([0-9]+)\' +([0-9]+)\" +([0-9]+)/([0-9]+)");
+        
+        if (str.isEmpty()) {
+            return null;
+        }
+        
         java.util.regex.Matcher matcher = pattern.matcher(str);
 
         if (!matcher.find()) {
