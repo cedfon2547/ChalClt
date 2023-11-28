@@ -1,0 +1,9 @@
+Add build artifact to intellij:
+- Go to File > Project Structure > Project Settings > Artifacts
+- Click + to add an artifact
+- JAR > From modules with dependencies...
+- Select App as the main class
+- Keep "extract to the target JAR" checked
+- OK, OK
+- Then, click Build > Build Artifact > Build
+- Compiled JAR will be at [project root]\out\artifacts\chalclt_jar\chalclt.jar
