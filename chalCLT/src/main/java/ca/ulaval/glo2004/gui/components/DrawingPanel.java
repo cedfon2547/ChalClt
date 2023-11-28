@@ -250,7 +250,7 @@ public class DrawingPanel extends javax.swing.JPanel {
 
             mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.PREFERENCES_UTILISATEUR,
                     (evt) -> {
-                        System.out.println("Preferences Utilisateur changed");
+                        // System.out.println("Preferences Utilisateur changed");
                         PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = (PreferencesUtilisateur.PreferencesUtilisateurDTO) evt
                                 .getNewValue();
                         switchGrid.setSelected(preferencesUtilisateurDTO2.afficherGrille);
