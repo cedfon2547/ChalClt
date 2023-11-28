@@ -173,69 +173,69 @@ public class DrawingPanel extends javax.swing.JPanel {
                     .getPreferencesUtilisateur();
 
             System.out.println("Grille: " + preferencesUtilisateurDTO.afficherGrille);
-            JPanel grilleContainer = new JPanel();
-            JLabel grilleLabel = new JLabel("Grille: ");
-            SwitchToggleButton switchGrille = new SwitchToggleButton(SwitchToggleButton.Size.XSMALL,
+            JPanel gridContainer = new JPanel();
+            JLabel gridLabel = new JLabel("Grille: ");
+            SwitchToggleButton switchGrid = new SwitchToggleButton(SwitchToggleButton.Size.XSMALL,
                     preferencesUtilisateurDTO.afficherGrille);
 
-            JPanel grilleStepContainer = new JPanel();
-            JLabel grilleStepLabel = new JLabel("Step: ");
-            GridStepSpinner grilleStepSpinner = new GridStepSpinner();
+            JPanel gridStepContainer = new JPanel();
+            JLabel gridStepLabel = new JLabel("Step: ");
+            GridStepSpinner gridStepSpinner = new GridStepSpinner();
 
             JPanel voisinContainer = new JPanel();
             JLabel voisinLabel = new JLabel("Voisin: ");
             SwitchToggleButton switchVoisin = new SwitchToggleButton(SwitchToggleButton.Size.XSMALL,
                     preferencesUtilisateurDTO.afficherVoisinSelection);
 
-            switchGrille.setEnabled(true);
+            switchGrid.setEnabled(true);
             switchVoisin.setEnabled(true);
 
-            grilleContainer.setOpaque(false);
+            gridContainer.setOpaque(false);
             voisinContainer.setOpaque(false);
-            grilleStepContainer.setOpaque(false);
+            gridStepContainer.setOpaque(false);
 
-            grilleContainer.setLayout(new BorderLayout());
+            gridContainer.setLayout(new BorderLayout());
             voisinContainer.setLayout(new BorderLayout());
-            grilleStepContainer.setLayout(new BorderLayout());
+            gridStepContainer.setLayout(new BorderLayout());
 
-            grilleContainer.add(grilleLabel, BorderLayout.WEST);
-            grilleContainer.add(switchGrille, BorderLayout.EAST);
+            gridContainer.add(gridLabel, BorderLayout.WEST);
+            gridContainer.add(switchGrid, BorderLayout.EAST);
 
             voisinContainer.add(voisinLabel, BorderLayout.WEST);
             voisinContainer.add(switchVoisin, BorderLayout.EAST);
 
-            grilleStepContainer.add(grilleStepLabel, BorderLayout.WEST);
-            grilleStepContainer.add(grilleStepSpinner, BorderLayout.EAST);
+            gridStepContainer.add(gridStepLabel, BorderLayout.WEST);
+            gridStepContainer.add(gridStepSpinner, BorderLayout.EAST);
 
-            grilleStepSpinner.setValue(preferencesUtilisateurDTO.gridSpacing);
-            grilleStepSpinner.setPreferredSize(new Dimension(50, 20));
-            grilleStepSpinner.setEnabled(!preferencesUtilisateurDTO.afficherGrille);
+            gridStepSpinner.setValue(preferencesUtilisateurDTO.gridSpacing);
+            gridStepSpinner.setPreferredSize(new Dimension(50, 20));
+            gridStepSpinner.setEnabled(!preferencesUtilisateurDTO.afficherGrille);
             
-            grilleStepSpinner.setEnabled(preferencesUtilisateurDTO.afficherGrille);
+            gridStepSpinner.setEnabled(preferencesUtilisateurDTO.afficherGrille);
 
-            grilleStepSpinner.addChangeListener((evt) -> {
-                System.out.println("Grille Step Changed: " + grilleStepSpinner.getValue());
+            gridStepSpinner.addChangeListener((evt) -> {
+                // System.out.println("Grid Step Changed: " + grilleStepSpinner.getValue());
                 PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = mainWindow.getControleur()
                         .getPreferencesUtilisateur();
 
-                preferencesUtilisateurDTO2.gridSpacing = (double) grilleStepSpinner.getValue();
+                preferencesUtilisateurDTO2.gridSpacing = (double) gridStepSpinner.getValue();
                 mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO2);
                 mainWindow.drawingPanel.rechargerAffichage();
             });
 
-            switchGrille.addEventSelected((evt) -> {
-                System.out.println("Grille Selected: " + switchGrille.isSelected());
+            switchGrid.addEventSelected((evt) -> {
+                // System.out.println("Grid Selected: " + switchGrille.isSelected());
                 PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = mainWindow.getControleur()
                         .getPreferencesUtilisateur();
 
-                preferencesUtilisateurDTO2.afficherGrille = switchGrille.isSelected();
+                preferencesUtilisateurDTO2.afficherGrille = switchGrid.isSelected();
                 mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO2);
                 mainWindow.drawingPanel.updateViewGrid();
                 mainWindow.drawingPanel.rechargerAffichage();
             });
 
             switchVoisin.addEventSelected((evt) -> {
-                System.out.println("Voisin Selected: " + switchVoisin.isSelected());
+                // System.out.println("Voisin Selected: " + switchVoisin.isSelected());
                 PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = mainWindow.getControleur()
                         .getPreferencesUtilisateur();
 
@@ -244,8 +244,8 @@ public class DrawingPanel extends javax.swing.JPanel {
                 mainWindow.drawingPanel.rechargerAffichage();
             });
 
-            toolsSwitchesContainer.add(grilleContainer);
-            toolsSwitchesContainer.add(grilleStepContainer);
+            toolsSwitchesContainer.add(gridContainer);
+            toolsSwitchesContainer.add(gridStepContainer);
             toolsSwitchesContainer.add(voisinContainer);
 
             mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.PREFERENCES_UTILISATEUR,
@@ -253,10 +253,10 @@ public class DrawingPanel extends javax.swing.JPanel {
                         System.out.println("Preferences Utilisateur changed");
                         PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = (PreferencesUtilisateur.PreferencesUtilisateurDTO) evt
                                 .getNewValue();
-                        switchGrille.setSelected(preferencesUtilisateurDTO2.afficherGrille);
+                        switchGrid.setSelected(preferencesUtilisateurDTO2.afficherGrille);
                         switchVoisin.setSelected(preferencesUtilisateurDTO2.afficherVoisinSelection);
-                        grilleStepSpinner.setValue(preferencesUtilisateurDTO2.gridSpacing);
-                        grilleStepSpinner.setEnabled(preferencesUtilisateurDTO2.afficherGrille);
+                        gridStepSpinner.setValue(preferencesUtilisateurDTO2.gridSpacing);
+                        gridStepSpinner.setEnabled(preferencesUtilisateurDTO2.afficherGrille);
 
                         mainWindow.drawingPanel.afficheur.getScene().getConfiguration().setGridStep(preferencesUtilisateurDTO2.gridSpacing);
                         mainWindow.drawingPanel.updateViewGrid();
