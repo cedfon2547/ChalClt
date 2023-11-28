@@ -357,7 +357,7 @@ public class ImperialDimension {
         // Format is: 7' 3" 1/2
         Pattern pattern = Pattern.compile("([0-9]+)\' +([0-9]+)\" +([0-9]+)/([0-9]+)");
         
-        if (str.isEmpty()) {
+        if (str == null) {
             return null;
         }
         

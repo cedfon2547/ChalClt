@@ -75,6 +75,7 @@ public class TableChalet extends JTable {
                 chaletDTO.margeSupplementaireRetrait = ImperialDimension.parseFromString((String) getValueAt(8, 1).toString()).toInches();
                 
                 mainWindow.getControleur().setChalet(chaletDTO);
+                
                 mainWindow.drawingPanel.rechargerAffichage();
             }
         });

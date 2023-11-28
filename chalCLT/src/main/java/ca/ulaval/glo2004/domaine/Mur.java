@@ -231,7 +231,7 @@ public class Mur {
 
         if (accessoireDTO.accessoireType == TypeAccessoire.Porte) {
             double newPositionY = this.chalet.getHauteur() - accessoireDTO.dimensions[1];
-            accessoire.setPosition(new double[] { accessoireDTO.position[0], newPositionY });
+            accessoire.setPosition(new double[] { accessoireDTO.position[0], newPositionY - chalet.getMargeAccessoire()});
         }
 
         return accessoire;
@@ -375,7 +375,8 @@ public class Mur {
             // Mettre a jour la valeur de la position Y afin que l'accessoire soit aligné
             // avec le bas du mur.
             double newPositionY = this.chalet.getHauteur() - accessoire.getDimension()[1];
-            accessoire.setPosition(new double[] { accessoire.getPosition()[0], newPositionY });
+            accessoire.setPosition(
+                    new double[] { accessoire.getPosition()[0], newPositionY - chalet.getMargeAccessoire() });
         }
 
         if (isColliding) {
@@ -385,25 +386,24 @@ public class Mur {
         double[] margins = Accessoire.getMarginWithRect(accessoire.toDTO(), new double[] { 0, 0 },
                 new double[] { largeur, this.chalet.getHauteur() });
 
-        if (accessoire.getAccessoireType() == TypeAccessoire.Porte) {
-            // Bottom margin is always 0 for a door
-            // Only need to check left, top and right margins
-            if (margins[0] < margeMinimal + epaisseurMur || margins[2] < margeMinimal + epaisseurMur
-                    || margins[1] < margeMinimal) {
-                return false; // Invalide
-            }
-            // Condition pour exterieur du mur a retouche au besion
-            if (margins[0] > largeur - epaisseurMur - accessoire.getDimension()[0]) {
-                return false;
-            }
-
-            return true;
+        // if (accessoire.getAccessoireType() == TypeAccessoire.Porte) {
+        // // Bottom margin is always 0 for a door
+        // // Only need to check left, top and right margins
+        // if (margins[0] < margeMinimal + epaisseurMur || margins[2] < margeMinimal +
+        // epaisseurMur
+        // || margins[1] < margeMinimal) {
+        // return false; // Invalide
+        // }
+        // Condition pour exterieur du mur a retouche au besion
+        if (margins[0] > largeur - epaisseurMur - accessoire.getDimension()[0]) {
+            return false;
         }
-
         // revoir l'utilite de
         // If not a door, check all margins
         if (margins[0] < margeMinimal + epaisseurMur || margins[2] < margeMinimal + epaisseurMur
-                || margins[1] < margeMinimal || margins[3] < margeMinimal) {
+                || margins[1] < margeMinimal || margins[3] < margeMinimal)
+
+        {
             return false; // Invalide
         }
 
