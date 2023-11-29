@@ -62,7 +62,6 @@ public class AccessoireTableCellEditor extends AbstractCellEditor
     @Override
     public void actionPerformed(ActionEvent e) {
         valeurCellEditorCourrante = jTextField.getText();
-        System.out.println("ici");
     }
 
     @Override
