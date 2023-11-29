@@ -62,10 +62,12 @@ public class AccessoireTableCellEditor extends AbstractCellEditor
     @Override
     public void actionPerformed(ActionEvent e) {
         valeurCellEditorCourrante = jTextField.getText();
+        System.out.println("ici");
     }
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        if(value != null){
         String noFractionValue;
         String stringVal = value.toString();
         String delim = "[\"]";
@@ -79,7 +81,11 @@ public class AccessoireTableCellEditor extends AbstractCellEditor
             } else {
                 jTextField.setText((String) value);
             }
+        }else {
+            jTextField.setText((String) value);
         }
+    }
+        valeurCellEditorCourrante = getValeurCourranteByPattern();
         return jTextField;
     }
 
