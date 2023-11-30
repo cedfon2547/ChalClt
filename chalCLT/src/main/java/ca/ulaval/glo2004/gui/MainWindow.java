@@ -1,6 +1,8 @@
 package ca.ulaval.glo2004.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Event;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JScrollPane;
@@ -75,7 +77,21 @@ public class MainWindow extends javax.swing.JFrame {
         mainSection = new javax.swing.JPanel();
         sideSection = new javax.swing.JPanel();
         mainWindowSplitPane = new javax.swing.JSplitPane();
-        sidePanelSplitPane = new javax.swing.JSplitPane();
+        sidePanelSplitPane = new javax.swing.JSplitPane() {
+            @Override
+            public void paintComponent(java.awt.Graphics g) {
+                super.paintComponent(g);
+
+                // For test purpose, used to draw string on the split pane divider.
+                // g.setColor(this.getForeground());
+                // int divLocation = getDividerLocation();
+                // g.drawString("T", 10, divLocation + 10);
+                // g.drawString("e", 20, divLocation + 10);
+                // g.drawString("x", 30, divLocation + 10);
+                // g.drawString("t", 40, divLocation + 10);
+            }
+        };
+
         sidePanelTopSection = new javax.swing.JPanel();
         sidePanelBottomSection = new javax.swing.JPanel();
         drawingPanel = new DrawingPanel(this);
@@ -91,6 +107,12 @@ public class MainWindow extends javax.swing.JFrame {
 
         mainWindowSplitPane.setResizeWeight(0.25);
         sidePanelSplitPane.setResizeWeight(0.5);
+
+        mainWindowSplitPane.setDividerSize(15);
+        sidePanelSplitPane.setDividerSize(15);
+        
+        mainWindowSplitPane.setOneTouchExpandable(true);
+        sidePanelSplitPane.setOneTouchExpandable(false);
 
         sideSection.setLayout(sideSectionLayout);
         sidePanelTopSection.setLayout(sidePanelTopSectionLayout);

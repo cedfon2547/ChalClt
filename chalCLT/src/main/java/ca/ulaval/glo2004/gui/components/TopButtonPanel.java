@@ -207,8 +207,8 @@ public class TopButtonPanel extends JPanel {
                         .getPreferencesUtilisateur();
                 preferencesUtilisateurDTO.afficherGrille = !preferencesUtilisateurDTO.afficherGrille;
                 mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO);
-                mainWindow.drawingPanel.updateViewGrid();
-                mainWindow.drawingPanel.rechargerAffichage();
+                // mainWindow.drawingPanel.afficheur.updateViewGrid();
+                // mainWindow.drawingPanel.rechargerAffichage();
             }
         });
 

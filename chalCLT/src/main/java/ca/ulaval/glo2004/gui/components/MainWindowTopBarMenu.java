@@ -98,7 +98,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         renduVisuelItem.add(renduVisuelRetraitsItem);
 
         renduVisuelFiniItem.setSelected(true);
-        
+
         renduVisuelBrutItem.addActionListener((evt) -> {
             renduVisuelFiniItem.setSelected(false);
             renduVisuelRetraitsItem.setSelected(false);
@@ -503,7 +503,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
                 .getPreferencesUtilisateur();
         preferencesUtilisateurDTO.afficherGrille = !preferencesUtilisateurDTO.afficherGrille;
         mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO);
-        mainWindow.drawingPanel.updateViewGrid();
+        mainWindow.drawingPanel.afficheur.updateViewGrid();
         mainWindow.drawingPanel.rechargerAffichage();
     }
 

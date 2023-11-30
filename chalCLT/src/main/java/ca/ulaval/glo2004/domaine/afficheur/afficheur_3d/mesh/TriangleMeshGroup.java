@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
 
 public class TriangleMeshGroup extends TriangleMesh {
     @FunctionalInterface
@@ -15,10 +16,6 @@ public class TriangleMeshGroup extends TriangleMesh {
 
     String identifier = UUID.randomUUID().toString();
     List<TriangleMesh> meshes = new ArrayList<TriangleMesh>();
-    // private boolean selected = false;
-    // private boolean selectable = true;
-    // private boolean visible = true;
-    // private boolean valid = true;
     private Vector3D position = new Vector3D(0, 0, 0);
 
     public TriangleMeshGroup() {
@@ -228,6 +225,12 @@ public class TriangleMeshGroup extends TriangleMesh {
         newGroup.setSelectable(this.getSelectable());
         newGroup.setSelected(this.getSelected());
         newGroup.setVisible(this.getVisible());
+        newGroup.setPosition(this.getPosition());
+        newGroup.setDraggable(this.getDraggable());
+        newGroup.setDraggableX(this.getDraggableX());
+        newGroup.setDraggableY(this.getDraggableY());
+        newGroup.setDraggableZ(this.getDraggableZ());
+        
         
         return newGroup;
     }
@@ -246,6 +249,12 @@ public class TriangleMeshGroup extends TriangleMesh {
         newGroup.setSelectable(this.getSelectable());
         newGroup.setSelected(this.getSelected());
         newGroup.setVisible(this.getVisible());
+        newGroup.setPosition(this.getPosition());
+        newGroup.setDraggable(this.getDraggable());
+        newGroup.setDraggableX(this.getDraggableX());
+        newGroup.setDraggableY(this.getDraggableY());
+        newGroup.setDraggableZ(this.getDraggableZ());
+        
         
         return newGroup;
     }
@@ -264,6 +273,12 @@ public class TriangleMeshGroup extends TriangleMesh {
         newGroup.setSelectable(this.getSelectable());
         newGroup.setSelected(this.getSelected());
         newGroup.setVisible(this.getVisible());
+        newGroup.setPosition(this.getPosition());
+        newGroup.setDraggable(this.getDraggable());
+        newGroup.setDraggableX(this.getDraggableX());
+        newGroup.setDraggableY(this.getDraggableY());
+        newGroup.setDraggableZ(this.getDraggableZ());
+        
         
         return newGroup;
     }
@@ -283,6 +298,12 @@ public class TriangleMeshGroup extends TriangleMesh {
         newGroup.setSelectable(this.getSelectable());
         newGroup.setSelected(this.getSelected());
         newGroup.setVisible(this.getVisible());
+        newGroup.setPosition(this.getPosition());
+        newGroup.setDraggable(this.getDraggable());
+        newGroup.setDraggableX(this.getDraggableX());
+        newGroup.setDraggableY(this.getDraggableY());
+        newGroup.setDraggableZ(this.getDraggableZ());
+        
         
         return newGroup;
     }
@@ -300,6 +321,12 @@ public class TriangleMeshGroup extends TriangleMesh {
         newGroup.setSelectable(this.getSelectable());
         newGroup.setSelected(this.getSelected());
         newGroup.setVisible(this.getVisible());
+        newGroup.setPosition(this.getPosition());
+        newGroup.setDraggable(this.getDraggable());
+        newGroup.setDraggableX(this.getDraggableX());
+        newGroup.setDraggableY(this.getDraggableY());
+        newGroup.setDraggableZ(this.getDraggableZ());
+        
         
         return newGroup;
     }
@@ -321,7 +348,11 @@ public class TriangleMeshGroup extends TriangleMesh {
         newGroup.setSelectable(this.getSelectable());
         newGroup.setSelected(this.getSelected());
         newGroup.setVisible(this.getVisible());
-        
+        newGroup.setPosition(this.getPosition());
+        newGroup.setDraggable(this.getDraggable());
+        newGroup.setDraggableX(this.getDraggableX());
+        newGroup.setDraggableY(this.getDraggableY());
+        newGroup.setDraggableZ(this.getDraggableZ());
 
         return newGroup;
     }
@@ -339,7 +370,17 @@ public class TriangleMeshGroup extends TriangleMesh {
         newGroup.setSelectable(this.getSelectable());
         newGroup.setSelected(this.getSelected());
         newGroup.setVisible(this.getVisible());
+        newGroup.setPosition(this.getPosition());
+        newGroup.setDraggable(this.getDraggable());
+        newGroup.setDraggableX(this.getDraggableX());
+        newGroup.setDraggableY(this.getDraggableY());
+        newGroup.setDraggableZ(this.getDraggableZ());
+        
         
         return newGroup;
+    }
+
+    public TriangleMeshGroup moveLeft(Camera camera, double distance) {
+        return this.translate(camera.getLeftVector().multiply(distance));
     }
 }

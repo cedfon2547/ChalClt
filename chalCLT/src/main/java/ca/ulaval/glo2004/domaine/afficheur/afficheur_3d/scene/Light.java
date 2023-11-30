@@ -1,22 +1,14 @@
 package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene;
+
 import java.awt.Color;
 
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 
-public class Light {
-    private double intensity = 1;
-    private double ambientIntensity = 0.60;
-    private Vector3D position = new Vector3D(150, 250, 50);
-    private Vector3D direction = new Vector3D(150, 150, -100);
-    private Color color = Color.WHITE;
-    private double blenderFactor = 0.1;
+abstract class AbstractLight {
+    protected Color color;
+    protected double intensity;
 
-    public Light() {
-
-    }
-
-    public Light(Vector3D position, Color color, double intensity) {
-        this.position = position;
+    public AbstractLight(Color color, double intensity) {
         this.color = color;
         this.intensity = intensity;
     }
@@ -29,50 +21,12 @@ public class Light {
         return intensity;
     }
 
-    public double getAmbientIntensity() {
-        return ambientIntensity;
-    }
-
-    public Vector3D getPosition() {
-        return position;
-    }
-
-    public Vector3D getDirection() {
-        return direction;
-    }
-
-    public double getBlenderFactor() {
-        return blenderFactor;
-    }
-
     public void setColor(Color color) {
         this.color = color;
     }
 
     public void setIntensity(double intensity) {
-        if (intensity >= 0 && intensity <= 1) {
-        }
         this.intensity = intensity;
-    }
-
-    public void setAmbientIntensity(double ambientIntensity) {
-        if (ambientIntensity >= 0 && ambientIntensity <= 1) {
-            this.ambientIntensity = ambientIntensity;
-        }
-    }
-
-    public void setPosition(Vector3D position) {
-        this.position = position;
-    }
-
-    public void setBlenderFactor(double blenderFactor) {
-        if (blenderFactor >= 0 && blenderFactor <= 1) {
-            this.blenderFactor = blenderFactor;
-        }
-    }
-
-    public void setDirection(Vector3D direction) {
-        this.direction = direction;
     }
 
     public static double Lerp(double a, double b, double t) {
@@ -83,6 +37,35 @@ public class Light {
         // Return the interpolated value
         return a + (b - a) * t;
     }
+}
 
-    
+public class Light extends AbstractLight {
+    private Vector3D position = new Vector3D(150, 250, 50);
+
+    public Light() {
+        this(new Vector3D(150, 250, 50), Color.YELLOW, 0.1);
+    }
+
+    public Light(Vector3D position, Color color, double intensity) {
+        super(color, intensity);
+        this.position = position;
+    }
+
+    public Vector3D getPosition() {
+        return position;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public void setAmbientIntensity(double ambientIntensity) {
+        if (ambientIntensity >= 0 && ambientIntensity <= 1) {
+            this.setIntensity(ambientIntensity);
+        }
+    }
+
+    public void setPosition(Vector3D position) {
+        this.position = position;
+    }
 }

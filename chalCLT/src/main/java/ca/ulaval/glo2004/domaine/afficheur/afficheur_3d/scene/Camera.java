@@ -1,15 +1,18 @@
 package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.beans.PropertyChangeSupport;
 
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Matrix;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 
 public class Camera {
+    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
     private String id = "camera";
     private Vector3D position = new Vector3D(0, 0, -1000); // The position of the camera in the world
     private Vector3D direction = new Vector3D(0, 0, 0);
-    public double scale = 1;
+    private double scale = 1;
 
 
     public static final double _ZOOM_FAC_PER_TICK= 0.03;
@@ -18,19 +21,23 @@ public class Camera {
     }
 
     public Camera(String id) {
-        this.id = id;
+        this(new Vector3D(0, 0, 0), new Vector3D(0, 0, 0), 1, id);
     }
 
     public Camera(Vector3D position) {
-        this.position = position;
-        this.direction = new Vector3D(0, 0, 0);
+        this(position, new Vector3D(0, 0, 0), 1, "camera");
     }
 
-    public Camera(Vector3D position, Vector3D direction, String id) {
-        this.id = id;
-        this.direction = direction;
-        this.position = position;
-        this.direction = new Vector3D(0, 0, 0);
+    public Camera(Vector3D position, Vector3D direction) {
+
+    }
+
+    public Camera(Vector3D position, Vector3D direction, double scale, String id) {
+        this.setId(id);
+        this.setPosition(position);
+        this.setDirection(direction);
+        this.setScale(scale);
+
     }
 
     public String getId() {
@@ -50,18 +57,22 @@ public class Camera {
     }
 
     public void setId(String id) {
+        this.pcs.firePropertyChange("id", this.id, id);
         this.id = id;
     }
 
     public void setPosition(Vector3D position) {
+        this.pcs.firePropertyChange("position", this.position, position);
         this.position = position;
     }
 
     public void setDirection(Vector3D direction) {
+        this.pcs.firePropertyChange("direction", this.direction, direction);
         this.direction = direction;
     }
 
     public void setScale(double scale) {
+        this.pcs.firePropertyChange("scale", this.scale, scale);
         this.scale = scale;
     }
 
@@ -70,14 +81,13 @@ public class Camera {
         double trueFactor = (fac>0?zoomFactor:1/zoomFactor); // account for the possibility of zooming out
 
         // reduce clutter during testing and also now I guess
-        Vector3D mousePos = new Vector3D(mousePosition.x-(double)viewportDimension.width/2,mousePosition.y-(double)viewportDimension.height/2,0);
+        Vector3D mousePos = new Vector3D(mousePosition.x,mousePosition.y,0);
 
         // solution: for trueFactor = S', added value to pos = A, this.position = pos, mousePos = mouse
         // A = (S'-1)(mouse-pos); a lot of maths went into that ok @-@
 
-        this.position = position.add(new Vector3D(-(trueFactor-1)*(mousePos.x-position.x), -(trueFactor-1)*(mousePos.y-position.y), 0));
-
-        this.scale = this.scale * trueFactor;
+        this.setPosition(position.add(new Vector3D(-(trueFactor-1)*(mousePos.x-position.x), -(trueFactor-1)*(mousePos.y-position.y), 0)));
+        this.setScale(this.scale * trueFactor);
     }
 
     public void zoomInDirection(Point mousePosition, Dimension viewportDimension, boolean precise){
@@ -89,70 +99,46 @@ public class Camera {
     }
 
     public Camera copy() {
-        return new Camera(position.copy(), direction.copy(), id);
+        return new Camera(position.copy(), direction.copy(), scale, id);
     }
 
     public Matrix getTransformation() {
-        Vector3D cameraDirection = getDirection();
-        Vector3D cameraPosition = getPosition();
-        double cameraScale = getScale();
-
-        Matrix camRotateX = Matrix.rotationXMatrix(cameraDirection.x);
-        Matrix camRotateY = Matrix.rotationYMatrix(cameraDirection.y);
-        Matrix camRotateZ = Matrix.rotationZMatrix(cameraDirection.z);
+        Matrix camRotateX = Matrix.rotationXMatrix(direction.x);
+        Matrix camRotateY = Matrix.rotationYMatrix(direction.y);
+        Matrix camRotateZ = Matrix.rotationZMatrix(direction.z);
         Matrix cameraRotation = camRotateX.multiply(camRotateY).multiply(camRotateZ);
 
-        Matrix camTranslate = Matrix.translationMatrix(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-        Matrix camScale = Matrix.scaleMatrix(cameraScale, cameraScale, cameraScale);
+        Matrix camTranslate = Matrix.translationMatrix(position.x, position.y, position.z);
+        Matrix camScale = Matrix.scaleMatrix(scale, scale, scale);
 
-        return camTranslate.multiply(cameraRotation).multiply(camScale);
+        return camTranslate.multiply(camScale).multiply(cameraRotation);
     }
 
-    public void moveLeft(double distance) {
-        Vector3D position = this.position;
+    public Vector3D getUpVector() {
+        Vector3D tempUp = new Vector3D(0, 1, 0);
+        Vector3D tempLeft = tempUp.cross(direction);
+        return tempLeft.normalize();
+    } 
 
-        Vector3D movement = new Vector3D(-1, 0, 0).multiply(distance);
-
-        this.position = position.add(movement);
-    }
-    
-    public void moveUp(double distance) {
-        Vector3D position = this.position;
-
-        Vector3D movement = new Vector3D(0, 1, 0).multiply(distance);
-
-        this.position = position.add(movement);
+    public Vector3D getLeftVector() {
+        Vector3D tempUp = new Vector3D(0, 1, 0);
+        Vector3D tempLeft = tempUp.cross(direction);
+        Vector3D tempUp2 = direction.cross(tempLeft);
+        return tempUp2.normalize();
     }
 
-    public void moveForward(double distance) {
-        Vector3D position = this.position;
+    public Matrix getInverseRotationTransformation() {
+        Vector3D cameraDirection = getDirection();
+        double cameraScale = getScale();
 
-        Vector3D movement = new Vector3D(0, 0, 1).multiply(distance);
+        Matrix camRotateX = Matrix.rotationXMatrix(-cameraDirection.x);
+        Matrix camRotateY = Matrix.rotationYMatrix(-cameraDirection.y);
+        Matrix camRotateZ = Matrix.rotationZMatrix(-cameraDirection.z);
+        Matrix cameraRotation = camRotateZ.multiply(camRotateY).multiply(camRotateX);
 
-        this.position = position.add(movement);
-    }
+        Matrix camScale = Matrix.scaleMatrix(1/cameraScale, 1/cameraScale, 1/cameraScale);
 
-    public void rotateX(double angle) {
-        Vector3D direction = this.direction;
-
-        Vector3D rotation = new Vector3D(angle, 0, 0);
-
-        this.direction = direction.add(rotation);
-    }
-
-    public void rotateY(double angle) {
-        Vector3D direction = this.direction;
-
-        Vector3D rotation = new Vector3D(0, angle, 0);
-
-        this.direction = direction.add(rotation);
-    }
-
-    public void rotateZ(double angle) {
-        Vector3D direction = this.direction;
-
-        Vector3D rotation = new Vector3D(0, 0, angle);
-        this.direction = direction.add(rotation);
+        return camScale.multiply(cameraRotation); //.multiply(camTranslate);
     }
 
     public Matrix lookAtMatrix(Vector3D target) {
@@ -171,4 +157,19 @@ public class Camera {
         return matrix;
     }
 
+    public void addPropertyChangeListener(java.beans.PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(java.beans.PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(listener);
+    }
+
+    public void addPropertyChangeListener(String propertyName, java.beans.PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(propertyName, listener);
+    }
+
+    public void removePropertyChangeListener(String propertyName, java.beans.PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(propertyName, listener);
+    }
 }

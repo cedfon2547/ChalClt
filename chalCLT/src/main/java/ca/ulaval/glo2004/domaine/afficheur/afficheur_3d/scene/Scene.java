@@ -1,10 +1,13 @@
 package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene;
 
+import java.awt.Color;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.Triangle;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 
@@ -20,7 +23,6 @@ public class Scene {
     public Scene(ArrayList<TriangleMesh> objects, Light light, Camera camera) {
         this.light = light;
         this.camera = camera;
-        
     }
 
     public SceneConfiguration getConfiguration() {
@@ -53,18 +55,19 @@ public class Scene {
     }
 
     public void addMesh(TriangleMeshGroup mesh) {
+        this.formatTriangles(mesh);
         meshes.add(mesh);
     }
 
     public void addMeshes(List<TriangleMeshGroup> meshes) {
         for (TriangleMeshGroup mesh : meshes) {
-            this.meshes.add(mesh);
+            this.addMesh(mesh);
         }
     }
 
     public void addMeshes(TriangleMeshGroup[] meshes) {
         for (TriangleMeshGroup mesh : meshes) {
-            this.meshes.add(mesh);
+            this.addMesh(mesh);
         }
     }
 
@@ -124,6 +127,19 @@ public class Scene {
     public void clearAllValide() {
         for (TriangleMeshGroup mesh : meshes) {
             mesh.setValid(true);
+        }
+    }
+
+    public void formatTriangles(TriangleMesh mesh) {
+        for (Triangle triangle : mesh.getTriangles()) {
+            Vector3D toCamera = getCamera().getPosition().sub(triangle.getVertice(0));
+                double dotProduct = toCamera.dot(triangle.getNormal());
+
+                if (dotProduct < 0) {
+                    Vector3D temp = triangle.getVertex1();
+                    triangle.setVertex1(triangle.getVertex2());
+                    triangle.setVertex2(temp);
+                }
         }
     }
 }

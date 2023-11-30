@@ -1,10 +1,20 @@
 package ca.ulaval.glo2004.domaine.afficheur;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelListener;
+import java.awt.geom.Point2D;
+import java.beans.PropertyChangeListener;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JPanel;
+
+import ca.ulaval.glo2004.App;
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.Controleur;
@@ -12,22 +22,24 @@ import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.domaine.TypeSensToit;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.Rasterizer;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Matrix;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.Triangle;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.shapes.RectCuboid;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper.MurTriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper.OutputType;
+import ca.ulaval.glo2004.domaine.utils.ObjectImporter;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.domaine.utils.STLTools;
 
 public class Afficheur {
-    // private BufferedImage bufImage = new BufferedImage(500, 500,
-    // BufferedImage.TYPE_INT_RGB);
+    private AfficheurEventSupport eventSupport = new AfficheurEventSupport();
+
     private Controleur controleur;
 
-    private Dimension dimension;
     Scene scene;
     Rasterizer rasterizer;
     TypeDeVue vueActive = TypeDeVue.Dessus;
@@ -38,15 +50,91 @@ public class Afficheur {
     public MurTriangleMeshGroup murGaucheGroup;
 
     public OutputType renduVisuel = OutputType.Fini;
+    private JPanel drawingPanel;
 
-    public Afficheur(Controleur controleur, Dimension dimension) {
+    public Afficheur(Controleur controleur, JPanel drawingPanel) {
+        this.drawingPanel = drawingPanel;
         this.controleur = controleur;
-        this.dimension = dimension;
         this.scene = new Scene();
         this.rasterizer = new Rasterizer(this.scene);
         this.scene.getLight().setPosition(new Vector3D(0, 0, 1000));
         this.scene.getCamera().setDirection(TypeDeVue.vueDessus());
-        this.scene.getCamera().setScale(2.01);
+        this.scene.getCamera().setScale(2);
+
+        this.initDrawingPanel();
+        initialize();
+    }
+
+    private void initDrawingPanel() {
+        this.drawingPanel.addMouseWheelListener(this.mouseWheelListener());
+        this.drawingPanel.addMouseListener(this.mouseListener());
+        this.drawingPanel.addMouseMotionListener(this.mouseMotionListener());
+
+        this.drawingPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
+            Dimension oldSize = null;
+
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                if (oldSize != null) {
+                    int diffX = drawingPanel.getWidth() - oldSize.width;
+                    int diffY = drawingPanel.getHeight() - oldSize.height;
+
+                    // Positionning the camera considering the new frame size
+                    Camera camera = getScene().getCamera();
+                    camera.setPosition(new Vector3D(camera.getPosition().x + diffX / 2,
+                            camera.getPosition().y + diffY / 2, camera.getPosition().z));
+                }
+
+                oldSize = drawingPanel.getSize();
+            }
+
+            @Override
+            public void componentMoved(java.awt.event.ComponentEvent evt) {
+            }
+
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+            }
+
+            @Override
+            public void componentHidden(java.awt.event.ComponentEvent evt) {
+            }
+        });
+    }
+
+    private void initialize() {
+        this.controleur.addPropertyChangeListener(Controleur.EventType.PREFERENCES_UTILISATEUR,
+                new java.beans.PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                        PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = (PreferencesUtilisateur.PreferencesUtilisateurDTO) evt
+                                .getNewValue();
+                        toggleShowGrid(preferencesUtilisateurDTO.afficherGrille);
+                        scene.getConfiguration().setGridStep(preferencesUtilisateurDTO.gridSpacing);
+                        drawingPanel.repaint();
+                    }
+                });
+
+        this.scene.getCamera().addPropertyChangeListener("direction", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                eventSupport.dispatchCameraDirectionChanged(new AfficheurEventSupport.CameraEvent(
+                        scene.getCamera().getPosition(), scene.getCamera().getDirection()));
+
+            }
+        });
+
+        this.scene.getCamera().addPropertyChangeListener("position", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                eventSupport.dispatchCameraPositionChanged(new AfficheurEventSupport.CameraEvent(
+                        scene.getCamera().getPosition(), scene.getCamera().getDirection()));
+            }
+        });
+    }
+
+    public AfficheurEventSupport getEventSupport() {
+        return eventSupport;
     }
 
     public Scene getScene() {
@@ -61,20 +149,12 @@ public class Afficheur {
         return controleur;
     }
 
-    public Dimension getDimension() {
-        return dimension;
-    }
-
     public TypeDeVue getVueActive() {
         return vueActive;
     }
 
     public void setControleur(Controleur controleur) {
         this.controleur = controleur;
-    }
-
-    public void setDimension(Dimension dimension) {
-        this.dimension = dimension;
     }
 
     public void setRasterizer(Rasterizer rasterizer) {
@@ -90,15 +170,24 @@ public class Afficheur {
     }
 
     public void rechargerAffichage() throws Exception {
-        // System.out.println("RENDERING");
+        System.out.println("RENDERING");
 
         Chalet.ChaletDTO chaletDTO = this.getControleur().getChalet();
         PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = this.getControleur()
                 .getPreferencesUtilisateur();
+        scene.getConfiguration().setGridStep(preferencesUtilisateurDTO.gridSpacing);
+        toggleShowGrid(preferencesUtilisateurDTO.afficherGrille);
+
         // scene.getConfiguration().setShowGridXY(preferencesUtilisateurDTO.afficherGrille);
         // scene.getConfiguration().setShowGridYZ(preferencesUtilisateurDTO.afficherGrille);
-        scene.getConfiguration().setShowGridXZ(preferencesUtilisateurDTO.afficherGrille);
+        // scene.getConfiguration().setShowGridXZ(preferencesUtilisateurDTO.afficherGrille);
         scene.clearMeshes();
+
+        // RectCuboid cuboid = new RectCuboid(new Vector3D(drawingPanel.getWidth(), drawingPanel.getHeight(), 0),
+        //         new Vector3D(50, 50, 50));
+        // TriangleMeshGroup cuboidGroup = new TriangleMeshGroup(new TriangleMesh[] { cuboid });
+        // cuboidGroup = cuboidGroup.translate(new Vector3D(drawingPanel.getWidth(), drawingPanel.getHeight(), 0));
+        // scene.addMesh(cuboidGroup);
 
         boolean sideTruncate = chaletDTO.sensToit == TypeSensToit.Nord || chaletDTO.sensToit == TypeSensToit.Sud;
 
@@ -114,15 +203,9 @@ public class Afficheur {
         murDroitGroup = new MurTriangleMeshGroup(chaletDTO, TypeMur.Droit, murDroitAccessoires, sideTruncate, false);
         murGaucheGroup = new MurTriangleMeshGroup(chaletDTO, TypeMur.Gauche, murGaucheAccessoires, sideTruncate, false);
 
-        // murFacadeGroup.setIdentifier(Constants._STRING_MUR_FACADE);
-        // murArriereGroup.setIdentifier(Constants._STRING_MUR_ARRIERE);
-        // murDroitGroup.setIdentifier(Constants._STRING_MUR_DROIT);
-        // murGaucheGroup.setIdentifier(Constants._STRING_MUR_GAUCHE);
-
         // Si true, des trous sont formés dans les murs pour les accessoires
         // Présentement à false puisque les accessoires sont des objets 3D
         // Nécessaire pour les exportations
-
         murFacadeGroup.setComputeHoles(false);
         murArriereGroup.setComputeHoles(false);
         murDroitGroup.setComputeHoles(false);
@@ -143,335 +226,23 @@ public class Afficheur {
         this.scene.getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
         this.scene.getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
 
-        // murFacadeGroup.rebuild();
-        // murArriereGroup.rebuild();
-        // **La responsabilité du rendu à été transferer vers la classe
-        // MurTriangleMeshGroup**
-
-        // PreferencesUtilisateur.PreferencesUtilisateurDTO preferUser =
-        // getControleur().getPreferencesUtilisateur();
-        // Vector3D direction = scene.getCamera().getDirection();
-        // System.out.println(direction);
-        //
-        // if (preferUser.afficherGrille) {
-        // if (direction.equals(TypeDeVue.getDirection(TypeDeVue.Facade)) ||
-        // direction.equals(TypeDeVue.getDirection(TypeDeVue.Arriere)) ||
-        // direction.equals(TypeDeVue.getDirection(TypeDeVue.Droite))
-        // ||direction.equals(TypeDeVue.getDirection(TypeDeVue.Gauche))) {
-        // getScene().getConfiguration().setShowGridXZ(true);
-        // getScene().getConfiguration().setShowGridYZ(true);
-        // getScene().getConfiguration().setShowGridXY(true);
-        // }
-        // else {
-        // getScene().getConfiguration().setShowGridYZ(false);
-        // getScene().getConfiguration().setShowGridXY(false);
-        // }
-        // }
-        // else {
-        // getScene().getConfiguration().setShowGridXZ(false);
-        // getScene().getConfiguration().setShowGridYZ(false);
-        // getScene().getConfiguration().setShowGridXY(false);
-        // }
-
-        // Material murFacadeMaterial = new Material();
-        // Material murArriereMaterial = new Material();
-        // Material murDroitMaterial = new Material();
-        // Material murGaucheMaterial = new Material();
-
-        // murFacadeMaterial.setColor(java.awt.Color.RED);
-        // murArriereMaterial.setColor(java.awt.Color.BLUE);
-        // murDroitMaterial.setColor(java.awt.Color.GREEN);
-        // murGaucheMaterial.setColor(java.awt.Color.YELLOW);
-
-        // sideTruncate indique que si le toit pointe vers les murs Façade ou Arrière,
-        // ce sont les autres murs qu'il faut truncate et vice versa
-
-        // murFacadeGroup = new TriangleMeshGroup(new TriangleMesh[] {
-        // TriangleMesh.fromDoubleList(PanelHelper.buildWall(new double[] { 0, 0, 0 },
-        // new Dimension((int) chaletDTO.largeur, (int) chaletDTO.hauteur),
-        // chaletDTO.epaisseurMur,
-        // chaletDTO.margeSupplementaireRetrait, !sideTruncate), murFacadeMaterial),
-        // });
-        // murArriereGroup = new TriangleMeshGroup(new TriangleMesh[] {
-        // TriangleMesh.fromDoubleList(PanelHelper.buildWall(new double[] { 0, 0, 0 },
-        // new Dimension((int) chaletDTO.largeur, (int) chaletDTO.hauteur),
-        // chaletDTO.epaisseurMur,
-        // chaletDTO.margeSupplementaireRetrait, !sideTruncate), murArriereMaterial),
-        // });
-        // murDroitGroup = new TriangleMeshGroup(new TriangleMesh[] {
-        // TriangleMesh.fromDoubleList(PanelHelper.buildWall(new double[] { 0, 0, 0 },
-        // new Dimension((int) chaletDTO.longueur, (int) chaletDTO.hauteur),
-        // chaletDTO.epaisseurMur,
-        // chaletDTO.margeSupplementaireRetrait, sideTruncate), murDroitMaterial),
-        // });
-        // murGaucheGroup = new TriangleMeshGroup(new TriangleMesh[] {
-        // TriangleMesh.fromDoubleList(
-        // PanelHelper.buildWall(new double[] { 0, 0, 0 },
-        // new Dimension((int) chaletDTO.longueur, (int) chaletDTO.hauteur),
-        // chaletDTO.epaisseurMur, chaletDTO.margeSupplementaireRetrait, sideTruncate),
-        // murGaucheMaterial),
-        // });
-
-        // // get mesh
-        // murFacadeGroup.getMesh(0).setHandle(Constants._STRING_MUR_FACADE);
-        // murArriereGroup.getMesh(0).setHandle(Constants._STRING_MUR_ARRIERE);
-        // murDroitGroup.getMesh(0).setHandle(Constants._STRING_MUR_DROIT);
-        // murGaucheGroup.getMesh(0).setHandle(Constants._STRING_MUR_GAUCHE);
-
-        // // uh??
-        // murFacadeGroup =
-        // murFacadeGroup.translate(murFacadeGroup.getCenter().multiply(-1));
-        // murArriereGroup =
-        // murArriereGroup.translate(murArriereGroup.getCenter().multiply(-1));
-        // murDroitGroup =
-        // murDroitGroup.translate(murDroitGroup.getCenter().multiply(-1));
-        // murGaucheGroup =
-        // murGaucheGroup.translate(murGaucheGroup.getCenter().multiply(-1));
-
-        // // rotate walls all around
-        // murArriereGroup = murArriereGroup.rotate(0, Math.PI, 0);
-        // murDroitGroup = murDroitGroup.rotate(0, Math.PI / 2, 0);
-        // murGaucheGroup = murGaucheGroup.rotate(0, -Math.PI / 2, 0);
-
-        // // shift the walls into position
-        // murFacadeGroup = murFacadeGroup.translate(new Vector3D(0, 0,
-        // -chaletDTO.longueur / 2));
-        // murArriereGroup = murArriereGroup.translate(new Vector3D(0, 0,
-        // chaletDTO.longueur / 2));
-        // murDroitGroup = murDroitGroup.translate(new Vector3D(-chaletDTO.largeur / 2,
-        // 0, 0));
-        // murGaucheGroup = murGaucheGroup.translate(new Vector3D(chaletDTO.largeur / 2,
-        // 0, 0));
-
-        // // Connecter les murs entre eux
-        // // if (sideTruncate) {
-        // murDroitGroup = murDroitGroup.translate(new Vector3D(chaletDTO.epaisseurMur /
-        // 2, 0, 0));
-        // murGaucheGroup = murGaucheGroup.translate(new
-        // Vector3D(-chaletDTO.epaisseurMur / 2, 0, 0));
-        // // }
-
-        // // else {
-        // murFacadeGroup = murFacadeGroup.translate(new Vector3D(0, 0,
-        // chaletDTO.epaisseurMur / 2));
-        // murArriereGroup = murArriereGroup.translate(new Vector3D(0, 0,
-        // -chaletDTO.epaisseurMur / 2));
-        // // }
-
-        // // mettre le chalet sur le plancher
-        // murFacadeGroup = murFacadeGroup.translate(new Vector3D(0, -chaletDTO.hauteur
-        // / 2, 0));
-        // murArriereGroup = murArriereGroup.translate(new Vector3D(0,
-        // -chaletDTO.hauteur / 2, 0));
-        // murDroitGroup = murDroitGroup.translate(new Vector3D(0, -chaletDTO.hauteur /
-        // 2, 0));
-        // murGaucheGroup = murGaucheGroup.translate(new Vector3D(0, -chaletDTO.hauteur
-        // / 2, 0));
-
-        // // little detour through STL land
-        // // in order for this to show up properly in e.g. blender, we're just gonna
-        // set x=-x, y=z, z=-y; it makes sense ok
-        // List<STLTools.Triangle> stlTriangles = new ArrayList<>();
-        // for (Triangle tri : murFacadeGroup.getMesh(0).getTriangles()) {
-        // double[] normal = tri.getNormal().toArray();
-        // double[] vertex1 = tri.getVertice(0).toArray();
-        // double[] vertex2 = tri.getVertice(1).toArray();
-        // double[] vertex3 = tri.getVertice(2).toArray();
-
-        // stlTriangles
-        // .add(new STLTools.Triangle(new float[] { -(float) normal[0], (float)
-        // normal[2], -(float) normal[1] },
-        // new float[] { -(float) vertex1[0], (float) vertex1[2], -(float) vertex1[1] },
-        // new float[] { -(float) vertex2[0], (float) vertex2[2], -(float) vertex2[1] },
-        // new float[] { -(float) vertex3[0], (float) vertex3[2], -(float) vertex3[1]
-        // }));
-        // }
-
-        // for (Triangle tri : murArriereGroup.getMesh(0).getTriangles()) {
-        // double[] normal = tri.getNormal().toArray();
-        // double[] vertex1 = tri.getVertice(0).toArray();
-        // double[] vertex2 = tri.getVertice(1).toArray();
-        // double[] vertex3 = tri.getVertice(2).toArray();
-
-        // stlTriangles
-        // .add(new STLTools.Triangle(new float[] { -(float) normal[0], (float)
-        // normal[2], -(float) normal[1] },
-        // new float[] { -(float) vertex1[0], (float) vertex1[2], -(float) vertex1[1] },
-        // new float[] { -(float) vertex2[0], (float) vertex2[2], -(float) vertex2[1] },
-        // new float[] { -(float) vertex3[0], (float) vertex3[2], -(float) vertex3[1]
-        // }));
-        // }
-
-        // for (Triangle tri : murDroitGroup.getMesh(0).getTriangles()) {
-        // double[] normal = tri.getNormal().toArray();
-        // double[] vertex1 = tri.getVertice(0).toArray();
-        // double[] vertex2 = tri.getVertice(1).toArray();
-        // double[] vertex3 = tri.getVertice(2).toArray();
-
-        // stlTriangles
-        // .add(new STLTools.Triangle(new float[] { -(float) normal[0], (float)
-        // normal[2], -(float) normal[1] },
-        // new float[] { -(float) vertex1[0], (float) vertex1[2], -(float) vertex1[1] },
-        // new float[] { -(float) vertex2[0], (float) vertex2[2], -(float) vertex2[1] },
-        // new float[] { -(float) vertex3[0], (float) vertex3[2], -(float) vertex3[1]
-        // }));
-        // }
-
-        // for (Triangle tri : murGaucheGroup.getMesh(0).getTriangles()) {
-        // double[] normal = tri.getNormal().toArray();
-        // double[] vertex1 = tri.getVertice(0).toArray();
-        // double[] vertex2 = tri.getVertice(1).toArray();
-        // double[] vertex3 = tri.getVertice(2).toArray();
-
-        // stlTriangles
-        // .add(new STLTools.Triangle(new float[] { -(float) normal[0], (float)
-        // normal[2], -(float) normal[1] },
-        // new float[] { -(float) vertex1[0], (float) vertex1[2], -(float) vertex1[1] },
-        // new float[] { -(float) vertex2[0], (float) vertex2[2], -(float) vertex2[1] },
-        // new float[] { -(float) vertex3[0], (float) vertex3[2], -(float) vertex3[1]
-        // }));
-        // }
-
-        // STLTools.writeSTL(stlTriangles, "test.stl");
-
-        // // murFacadeGroup.setVisible(false);
-        // // murArriereGroup.setVisible(false);
-
-        // scene.addMesh(murFacadeGroup);
-        // scene.addMesh(murArriereGroup);
-        // scene.addMesh(murDroitGroup);
-        // scene.addMesh(murGaucheGroup);
-
-        // List<Accessoire.AccessoireDTO> accessoires =
-        // this.getControleur().getAccessoires();
-
-        // for (Accessoire.AccessoireDTO accessoireDTO : accessoires) {
-        // TypeMur typeMur = accessoireDTO.typeMur;
-
-        // TriangleMeshGroup accMesh = null;
-
-        // if (accessoireDTO.accessoireType == TypeAccessoire.Fenetre) {
-        // accMesh = PanelHelper.buildWindow(accessoireDTO.dimensions[0] - 2,
-        // accessoireDTO.dimensions[1],
-        // new Vector3D(0, 0, -2), 2);
-        // } else if (accessoireDTO.accessoireType == TypeAccessoire.Porte) {
-        // accMesh = PanelHelper.buildDoor(accessoireDTO.dimensions[0] - 4,
-        // accessoireDTO.dimensions[1],
-        // new Vector3D(0, 0, 0), 4);
-
-        // // System.out.println((accMesh.getBounding()[1].y) + " "
-        // // + (chaletDTO.hauteur - accMesh.getHeight() - chaletDTO.margeAccessoire));
-
-        // }
-
-        // if (accMesh == null)
-        // throw new Exception("Accessory id is null"); // TODO update exception type
-
-        // switch (typeMur) {
-        // case Facade:
-
-        // if (murFacadeGroup.getMesh(accessoireDTO.accessoireId.toString()) != null) {
-        // murFacadeGroup.removeMesh(murFacadeGroup.getMesh(accessoireDTO.accessoireId.toString()));
-        // }
-
-        // accMesh = accMesh.translate(accMesh.getCenter().multiply(-1));
-        // accMesh = accMesh.translate(new Vector3D(0, 0, -chaletDTO.longueur / 2));
-        // accMesh = accMesh.translate(new Vector3D(0, 0, -accMesh.getDepth() / 2));
-        // accMesh = accMesh.translate(new Vector3D(chaletDTO.largeur / 2 -
-        // accessoireDTO.dimensions[0] / 2,
-        // -chaletDTO.hauteur / 2 + accessoireDTO.dimensions[1] / 2, 0));
-
-        // accMesh = accMesh.translate(new Vector3D(-accessoireDTO.position[0],
-        // accessoireDTO.position[1], 0));
-
-        // break;
-        // case Arriere:
-        // if (murArriereGroup.getMesh(accessoireDTO.accessoireId.toString()) != null) {
-        // murArriereGroup.removeMesh(murArriereGroup.getMesh(accessoireDTO.accessoireId.toString()));
-        // }
-
-        // accMesh = accMesh.rotate(0, Math.PI, 0);
-        // accMesh = accMesh.translate(accMesh.getCenter().multiply(-1));
-        // accMesh = accMesh.translate(new Vector3D(0, 0, accMesh.getDepth() / 2));
-        // accMesh = accMesh
-        // .translate(new Vector3D(0, 0, chaletDTO.longueur / 2 + chaletDTO.epaisseurMur
-        // / 2));
-        // accMesh = accMesh.translate(new Vector3D(-chaletDTO.largeur / 2 +
-        // accessoireDTO.dimensions[0] / 2,
-        // -chaletDTO.hauteur / 2 + accessoireDTO.dimensions[1] / 2,
-        // -chaletDTO.epaisseurMur / 2));
-
-        // accMesh = accMesh.translate(new Vector3D(accessoireDTO.position[0],
-        // accessoireDTO.position[1], 0));
-
-        // break;
-        // case Gauche:
-        // if (murGaucheGroup.getMesh(accessoireDTO.accessoireId.toString()) != null) {
-        // murGaucheGroup.removeMesh(murGaucheGroup.getMesh(accessoireDTO.accessoireId.toString()));
-        // }
-        // accMesh = accMesh.rotate(0, -Math.PI / 2, 0);
-        // accMesh = accMesh.translate(accMesh.getCenter().multiply(-1));
-        // accMesh = accMesh.translate(new Vector3D(accMesh.getWidth() / 2, 0, 0));
-        // accMesh = accMesh.translate(new Vector3D(chaletDTO.largeur / 2 -
-        // chaletDTO.epaisseurMur / 2, 0, 0));
-        // accMesh = accMesh
-        // .translate(new Vector3D(chaletDTO.epaisseurMur / 2,
-        // -chaletDTO.hauteur / 2 + accessoireDTO.dimensions[1] / 2,
-        // chaletDTO.longueur / 2 - accessoireDTO.dimensions[0] / 2));
-
-        // accMesh = accMesh.translate(new Vector3D(0, accessoireDTO.position[1],
-        // -accessoireDTO.position[0]));
-
-        // break;
-        // case Droit:
-        // if (murDroitGroup.getMesh(accessoireDTO.accessoireId.toString()) != null) {
-        // murDroitGroup.removeMesh(murDroitGroup.getMesh(accessoireDTO.accessoireId.toString()));
-        // }
-
-        // accMesh = accMesh.rotate(0, Math.PI / 2, 0);
-        // accMesh = accMesh.translate(accMesh.getCenter().multiply(-1));
-        // accMesh = accMesh.translate(new Vector3D(-accMesh.getWidth() / 2, 0, 0));
-        // accMesh = accMesh
-        // .translate(new Vector3D(-chaletDTO.largeur / 2 + chaletDTO.epaisseurMur / 2,
-        // 0, 0));
-        // accMesh = accMesh
-        // .translate(new Vector3D(-chaletDTO.epaisseurMur / 2,
-        // -chaletDTO.hauteur / 2 + accessoireDTO.dimensions[1] / 2,
-        // -chaletDTO.longueur / 2 + accessoireDTO.dimensions[0] / 2));
-
-        // accMesh = accMesh.translate(new Vector3D(0, accessoireDTO.position[1],
-        // accessoireDTO.position[0]));
-
-        // break;
-        // }
-        // accMesh = accMesh.translate(new Vector3D(0, -chaletDTO.hauteur / 2, 0));
-
-        // accMesh.setIdentifier(accessoireDTO.accessoireId.toString());
-        // accMesh.setValid(accessoireDTO.valide);
-
-        // this.scene.addMesh(accMesh);
-        // this.scene.setValid(accMesh.getIdentifier(), accessoireDTO.valide);
-        // }
-
         // // Pour tester l'importation d'objets à partir de fichiers .obj
-        // if(getControleur().getPreferencesUtilisateur().afficherPlancher){
-        // URI url = App.class.getResource("/objets/floor_single.obj").toURI();
-        // System.out.println(url);
-        // TriangleMesh mesh = ObjectImporter.importObject(url); // shaep
-        // //mesh = mesh.scale(new Vector3D(1, 1, 1));
-        // mesh.getMaterial().setColor(new Color(114, 114, 114, 255));
-        // mesh.getMaterial().setShininess(0);
-        // mesh.getMaterial().setSpecular(0);
-        // mesh.getMaterial().setAmbient(2);
+        if (getControleur().getPreferencesUtilisateur().afficherPlancher) {
+            URI url = App.class.getResource("/objets/floor_single.obj").toURI();
+            TriangleMesh mesh = ObjectImporter.importObject(url); // shaep
+            // mesh = mesh.scale(new Vector3D(1, 1, 1));
+            mesh.getMaterial().setColor(new Color(114, 114, 114, 255));
+            // mesh.getMaterial().setShininess(0);
+            // mesh.getMaterial().setSpecular(0);
+            mesh.getMaterial().setAmbient(0.5);
 
-        // TriangleMeshGroup meshGroup = new TriangleMeshGroup(new TriangleMesh[] { mesh
-        // });
-        // meshGroup = meshGroup.scale(new Vector3D(1,1,-1)); // flip the z axis the
-        // right way around
-        // meshGroup.setSelectable(false);
+            TriangleMeshGroup meshGroup = new TriangleMeshGroup(new TriangleMesh[] { mesh });
+            meshGroup = meshGroup.scale(new Vector3D(1, 1, -1)); // flip the z axis the right way around
+            meshGroup.setSelectable(false);
 
-        // scene.addMesh(meshGroup);
-        // }
+            meshGroup.setDraggable(false);
+            scene.addMesh(meshGroup);
+        }
 
         // TODO: Ajouter le plancher
     }
@@ -487,10 +258,14 @@ public class Afficheur {
         murGaucheGroup.setComputeHoles(true);
         murDroitGroup.setComputeHoles(true);
 
-        List<STLTools.Triangle> facadeStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(murFacadeGroup.getMeshFini().getTriangles());
-        List<STLTools.Triangle> arriereStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(murArriereGroup.getMeshFini().getTriangles());
-        List<STLTools.Triangle> gaucheStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(murGaucheGroup.getMeshFini().getTriangles());
-        List<STLTools.Triangle> droitStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(murDroitGroup.getMeshFini().getTriangles());
+        List<STLTools.Triangle> facadeStlTriangles = PanelHelper
+                .convertMeshTrianglesToStlTriangles(murFacadeGroup.getMeshFini().getTriangles());
+        List<STLTools.Triangle> arriereStlTriangles = PanelHelper
+                .convertMeshTrianglesToStlTriangles(murArriereGroup.getMeshFini().getTriangles());
+        List<STLTools.Triangle> gaucheStlTriangles = PanelHelper
+                .convertMeshTrianglesToStlTriangles(murGaucheGroup.getMeshFini().getTriangles());
+        List<STLTools.Triangle> droitStlTriangles = PanelHelper
+                .convertMeshTrianglesToStlTriangles(murDroitGroup.getMeshFini().getTriangles());
 
         murFacadeGroup.setComputeHoles(facadeInitialComputeHoles);
         murArriereGroup.setComputeHoles(arriereInitialComputeHoles);
@@ -509,10 +284,14 @@ public class Afficheur {
     }
 
     public void exportStlBrut(String directoryPath, String nomChalet) {
-        List<STLTools.Triangle> facadeStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(murFacadeGroup.getMeshBrut().getTriangles());
-        List<STLTools.Triangle> arriereStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(murArriereGroup.getMeshBrut().getTriangles());
-        List<STLTools.Triangle> gaucheStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(murGaucheGroup.getMeshBrut().getTriangles());
-        List<STLTools.Triangle> droitStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(murDroitGroup.getMeshBrut().getTriangles());
+        List<STLTools.Triangle> facadeStlTriangles = PanelHelper
+                .convertMeshTrianglesToStlTriangles(murFacadeGroup.getMeshBrut().getTriangles());
+        List<STLTools.Triangle> arriereStlTriangles = PanelHelper
+                .convertMeshTrianglesToStlTriangles(murArriereGroup.getMeshBrut().getTriangles());
+        List<STLTools.Triangle> gaucheStlTriangles = PanelHelper
+                .convertMeshTrianglesToStlTriangles(murGaucheGroup.getMeshBrut().getTriangles());
+        List<STLTools.Triangle> droitStlTriangles = PanelHelper
+                .convertMeshTrianglesToStlTriangles(murDroitGroup.getMeshBrut().getTriangles());
 
         String facadeBrutFileName = String.format("\\%s_Brut_F.stl", nomChalet);
         String arriereBrutFileName = String.format("\\%s_Brut_A.stl", nomChalet);
@@ -531,16 +310,16 @@ public class Afficheur {
         List<STLTools.Triangle> gaucheStlTriangles = new ArrayList<>();
         List<STLTools.Triangle> droitStlTriangles = new ArrayList<>();
 
-        for (TriangleMesh mesh: murFacadeGroup.getMeshRetraits().getMeshes()) {
+        for (TriangleMesh mesh : murFacadeGroup.getMeshRetraits().getMeshes()) {
             facadeStlTriangles.addAll(PanelHelper.convertMeshTrianglesToStlTriangles(mesh.getTriangles()));
         }
-        for (TriangleMesh mesh: murArriereGroup.getMeshRetraits().getMeshes()) {
+        for (TriangleMesh mesh : murArriereGroup.getMeshRetraits().getMeshes()) {
             arriereStlTriangles.addAll(PanelHelper.convertMeshTrianglesToStlTriangles(mesh.getTriangles()));
         }
-        for (TriangleMesh mesh: murGaucheGroup.getMeshRetraits().getMeshes()) {
+        for (TriangleMesh mesh : murGaucheGroup.getMeshRetraits().getMeshes()) {
             gaucheStlTriangles.addAll(PanelHelper.convertMeshTrianglesToStlTriangles(mesh.getTriangles()));
         }
-        for (TriangleMesh mesh: murDroitGroup.getMeshRetraits().getMeshes()) {
+        for (TriangleMesh mesh : murDroitGroup.getMeshRetraits().getMeshes()) {
             droitStlTriangles.addAll(PanelHelper.convertMeshTrianglesToStlTriangles(mesh.getTriangles()));
         }
 
@@ -575,6 +354,9 @@ public class Afficheur {
 
     public void draw(Graphics g, Dimension dimension) {
         this.rasterizer.draw(g, dimension);
+
+        // Draw a 3D cube
+        
     }
 
     public void changerVue(TypeDeVue vue) {
@@ -592,9 +374,13 @@ public class Afficheur {
             this.getScene().getCamera().setDirection(TypeDeVue.vueGauche());
         }
 
-        this.getScene().getCamera().setPosition(new Vector3D(this.scene.getCamera().getPosition().x,
-                (vueActive == TypeDeVue.Dessus) ? 0 : controleur.getChalet().hauteur / 2,
-                this.scene.getCamera().getPosition().z));
+        // this.getScene().getCamera().setPosition(new
+        // Vector3D(this.scene.getCamera().getPosition().x,
+        // (vueActive == TypeDeVue.Dessus) ? 0 : controleur.getChalet().hauteur / 2,
+        // this.scene.getCamera().getPosition().z));
+
+        drawingPanel.invalidate();
+        drawingPanel.repaint();
     }
 
     public void weakChangerVue(TypeDeVue vue) {
@@ -611,6 +397,320 @@ public class Afficheur {
         }
 
         return selection;
+    }
+
+    private MouseWheelListener mouseWheelListener() {
+        return new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                if (evt.getPreciseWheelRotation() < 0) {
+                    scene.getCamera().zoomInDirection(evt.getPoint(), ((JPanel) evt.getSource()).getSize(),
+                            evt.isShiftDown());
+                    // pcs.firePropertyChange(AfficheurEvent.ZoomIn.toString(), null, null);
+                    eventSupport.dispatchZoomIn();
+                } else {
+                    scene.getCamera().zoomOutDirection(evt.getPoint(), ((JPanel) evt.getSource()).getSize(),
+                            evt.isShiftDown());
+                    // pcs.firePropertyChange(AfficheurEvent.ZoomOut.toString(), null, null);
+                    eventSupport.dispatchZoomOut();
+                }
+
+                drawingPanel.repaint();
+            }
+        };
+    }
+
+    private MouseListener mouseListener() {
+        return new MouseListener() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                drawingPanel.grabFocus();
+
+                TriangleMeshGroup clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
+
+                if (clickedMesh == null) {
+                    deselectAllMeshed();
+                    eventSupport.dispatchSelectionChanged(new AfficheurEventSupport.MeshSelectionEvent(getSelection()));
+                    drawingPanel.repaint();
+                    return;
+                }
+
+                if (clickedMesh != null && evt.getClickCount() == 2) {
+
+                    // pcs.firePropertyChange(AfficheurEvent.MeshDoubleClicked.toString(), null,
+                    // clickedMesh);
+
+                    if (clickedMesh instanceof PanelHelper.MurTriangleMeshGroup) {
+                        // System.out.println("Double clicked on a wall");
+                        switch (((PanelHelper.MurTriangleMeshGroup) clickedMesh).getTypeMur()) {
+                            case Facade:
+                                changerVue(Afficheur.TypeDeVue.Facade);
+                                break;
+                            case Arriere:
+                                changerVue(Afficheur.TypeDeVue.Arriere);
+                                break;
+                            case Droit:
+                                changerVue(Afficheur.TypeDeVue.Droite);
+                                break;
+                            case Gauche:
+                                changerVue(Afficheur.TypeDeVue.Gauche);
+                                break;
+                            default:
+                                // nop, fall through
+                        }
+                    }
+
+                    if (clickedMesh.getSelectable()) {
+                        clickedMesh.setSelected(true);
+                    }
+
+                    updateViewGrid();
+                    // drawingPanel.repaint();
+                    eventSupport.dispatchMeshClicked(new AfficheurEventSupport.MeshMouseEvent(evt, clickedMesh));
+                    eventSupport.dispatchViewChanged(new AfficheurEventSupport.ViewChangedEvent(getVueActive()));
+                    return;
+                } else if (clickedMesh != null && clickedMesh.getSelectable()) {
+                    // pcs.firePropertyChange(AfficheurEvent.SelectionChanged.toString(), null,
+                    // clickedMesh);
+                    // pcs.firePropertyChange(AfficheurEvent.MeshClicked.toString(), null,
+                    // clickedMesh);
+                    if (!evt.isControlDown()) {
+                        deselectAllMeshed();
+                    }
+
+                    clickedMesh.setSelected(true);
+                    eventSupport.dispatchMeshClicked(new AfficheurEventSupport.MeshMouseEvent(evt, clickedMesh));
+                    eventSupport.dispatchSelectionChanged(new AfficheurEventSupport.MeshSelectionEvent(getSelection()));
+                }
+
+                drawingPanel.repaint();
+            }
+
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+
+            }
+
+            @Override
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+
+            }
+
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+            }
+        };
+    }
+
+    private MouseMotionListener mouseMotionListener() {
+        return new MouseMotionListener() {
+            boolean initialized = false;
+            boolean isDragging = false;
+            Vector3D initialDragCamPosition = null;
+            Vector3D initialDragCamDirection = null;
+            Point2D initialPoint = null;
+            Vector3D initialDragMeshPosition = null;
+            TriangleMeshGroup lastMouseEnteredMesh = null;
+            TriangleMeshGroup lastDraggedMesh = null;
+
+            MouseListener mouseListener = new MouseListener() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+
+                }
+
+                @Override
+                public void mousePressed(java.awt.event.MouseEvent evt) {
+                    isDragging = true;
+                    initialPoint = evt.getPoint();
+                    initialDragCamPosition = scene.getCamera().getPosition();
+                    initialDragCamDirection = scene.getCamera().getDirection();
+
+                    TriangleMeshGroup clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
+                    if (clickedMesh != null && clickedMesh.getDraggable()) {
+                        initialDragMeshPosition = clickedMesh.getPosition();
+                        lastDraggedMesh = clickedMesh;
+                    }
+                }
+
+                @Override
+                public void mouseReleased(java.awt.event.MouseEvent evt) {
+                    isDragging = false;
+                    initialPoint = null;
+                    initialDragCamPosition = null;
+                    initialDragCamDirection = null;
+                    lastDraggedMesh = null;
+                }
+
+                @Override
+                public void mouseEntered(java.awt.event.MouseEvent evt) {
+
+                }
+
+                @Override
+                public void mouseExited(java.awt.event.MouseEvent evt) {
+
+                }
+            };
+
+            @Override
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                if (!initialized) {
+                    drawingPanel.addMouseListener(mouseListener);
+                    initialized = true;
+                    isDragging = true;
+                    initialDragCamDirection = scene.getCamera().getDirection();
+                    initialDragCamPosition = scene.getCamera().getPosition();
+                    initialPoint = evt.getPoint();
+
+                    TriangleMeshGroup clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
+                    if (clickedMesh != null && clickedMesh.getDraggable()) {
+                        initialDragMeshPosition = clickedMesh.getPosition();
+                        lastDraggedMesh = clickedMesh;
+                    }
+                }
+
+                if (lastDraggedMesh != null) {
+                    Vector3D diff = new Vector3D(evt.getX(), evt.getY(), 0)
+                            .sub(new Vector3D(initialPoint.getX(), initialPoint.getY(), 0))
+                            .multiply(scene.getCamera().getInverseRotationTransformation());
+
+                    if (!lastDraggedMesh.getDraggableX()) {
+                        diff.x = 0;
+                    }
+
+                    if (!lastDraggedMesh.getDraggableY()) {
+                        diff.y = 0;
+                    }
+
+                    if (!lastDraggedMesh.getDraggableZ()) {
+                        diff.z = 0;
+                    }
+                    Vector3D position = initialDragMeshPosition.add(diff);
+
+                    lastDraggedMesh.setPosition(position);
+                    drawingPanel.repaint();
+                    eventSupport.dispatchMeshDragged(new AfficheurEventSupport.MeshMouseMotionEvent(evt, lastDraggedMesh));
+                    return;
+                }
+
+                if (isDragging && initialPoint != null && initialDragCamDirection != null
+                        && initialDragCamPosition != null) {
+                    double diffX = evt.getPoint().x - initialPoint.getX();
+                    double diffY = evt.getPoint().y - initialPoint.getY();
+
+                    // Rotating when shift is pressed
+                    if (evt.isShiftDown()) {
+                        double rotateStep = Math.toRadians(1);
+                        double rotateX = rotateStep * -diffY / 3; // negated Ydiff to fix the inverted y axis
+                        double rotateY = rotateStep * diffX / 3;
+
+                        Vector3D direction = initialDragCamDirection.add(new Vector3D(rotateX, rotateY, 0));
+
+                        // Constraint cam direction
+                        if (direction.x > 0) {
+                            direction.x = 0;
+                        } else if (direction.x < -Math.PI / 2) {
+                            direction.x = -Math.PI / 2;
+                        }
+
+                        // pcs.firePropertyChange(AfficheurEvent.CameraDirectionChanged.toString(),
+                        // getScene().getCamera().getDirection(), direction);
+                        getScene().getCamera().setDirection(direction);
+                        updateViewGrid();
+                    } else {
+                        Vector3D position = initialDragCamPosition.add(new Vector3D(diffX, diffY, 0));
+                        // pcs.firePropertyChange(AfficheurEvent.CameraPositionChanged.toString(),
+                        // getScene().getCamera().getPosition(), position);
+                        getScene().getCamera().setPosition(position);
+                    }
+
+                    drawingPanel.repaint();
+                }
+            }
+
+            @Override
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                TriangleMeshGroup mouseEnteredMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
+
+                if (mouseEnteredMesh != null) {
+                    if (lastMouseEnteredMesh != null && mouseEnteredMesh != lastMouseEnteredMesh) {
+                        // pcs.firePropertyChange(AfficheurEvent.MouseExitMesh.toString(), null,
+                        // lastMouseEnteredMesh);
+                        eventSupport.dispatchMouseExitMesh(
+                                new AfficheurEventSupport.MeshMouseMotionEvent(evt, lastMouseEnteredMesh));
+                    }
+
+                    // pcs.firePropertyChange(AfficheurEvent.MouseEnterMesh.toString(),
+                    // lastMouseEnteredMesh,
+                    // mouseEnteredMesh);
+                    eventSupport.dispatchMouseEnterMesh(
+                            new AfficheurEventSupport.MeshMouseMotionEvent(evt, mouseEnteredMesh));
+                    lastMouseEnteredMesh = mouseEnteredMesh;
+                } else {
+                    if (lastMouseEnteredMesh != null) {
+                        // pcs.firePropertyChange(AfficheurEvent.MouseExitMesh.toString(), null,
+                        // lastMouseEnteredMesh);
+                        eventSupport.dispatchMouseExitMesh(
+                                new AfficheurEventSupport.MeshMouseMotionEvent(evt, lastMouseEnteredMesh));
+                        lastMouseEnteredMesh = null;
+                    }
+                }
+            }
+        };
+    }
+
+    public void updateViewGrid() {
+        if (!getScene().getConfiguration().getShowGridXY() && !getScene().getConfiguration().getShowGridXZ()
+                && !getScene().getConfiguration().getShowGridYZ()) {
+            return;
+        }
+
+        Vector3D direction = getScene().getCamera().getDirection();
+
+        if (!direction.equals(TypeDeVue.getDirection(TypeDeVue.Facade))
+                && !direction.equals(TypeDeVue.getDirection(TypeDeVue.Arriere))
+                && !direction.equals(TypeDeVue.getDirection(TypeDeVue.Droite))
+                && !direction.equals(TypeDeVue.getDirection(TypeDeVue.Gauche))) {
+            getScene().getConfiguration().setShowGridYZ(false);
+            getScene().getConfiguration().setShowGridXY(false);
+        } else {
+            getScene().getConfiguration().setShowGridXZ(true);
+            getScene().getConfiguration().setShowGridYZ(true);
+            getScene().getConfiguration().setShowGridXY(true);
+        }
+
+        drawingPanel.repaint();
+    }
+
+    public void toggleShowGrid(boolean showGrid) {
+        Vector3D direction = getScene().getCamera().getDirection();
+
+        getScene().getConfiguration().setShowGridXZ(showGrid);
+
+        if (direction.equals(TypeDeVue.getDirection(TypeDeVue.Facade))
+                || direction.equals(TypeDeVue.getDirection(TypeDeVue.Arriere))
+                || direction.equals(TypeDeVue.getDirection(TypeDeVue.Droite))
+                || direction.equals(TypeDeVue.getDirection(TypeDeVue.Gauche))) {
+            // getScene().getConfiguration().setShowGridXZ(showGrid);
+            getScene().getConfiguration().setShowGridYZ(showGrid);
+            getScene().getConfiguration().setShowGridXY(showGrid);
+        } else {
+            getScene().getConfiguration().setShowGridYZ(false);
+            getScene().getConfiguration().setShowGridXY(false);
+        }
+
+        drawingPanel.repaint();
+    }
+
+    public void deselectAllMeshed() {
+        for (TriangleMeshGroup mesh : this.scene.getMeshes()) {
+            mesh.setSelected(false);
+        }
     }
 
     public static enum TypeDeVue {
@@ -651,6 +751,22 @@ public class Afficheur {
                 return vueDroite();
             } else if (vue == TypeDeVue.Gauche) {
                 return vueGauche();
+            }
+
+            return null;
+        }
+
+        public static TypeDeVue getTypeFromDirection(Vector3D direction) {
+            if (direction.equals(vueDessus())) {
+                return TypeDeVue.Dessus;
+            } else if (direction.equals(vueFacade())) {
+                return TypeDeVue.Facade;
+            } else if (direction.equals(vueArriere())) {
+                return TypeDeVue.Arriere;
+            } else if (direction.equals(vueDroite())) {
+                return TypeDeVue.Droite;
+            } else if (direction.equals(vueGauche())) {
+                return TypeDeVue.Gauche;
             }
 
             return null;

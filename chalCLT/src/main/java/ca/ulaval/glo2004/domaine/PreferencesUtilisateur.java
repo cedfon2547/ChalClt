@@ -2,12 +2,11 @@ package ca.ulaval.glo2004.domaine;
 
 
 public class PreferencesUtilisateur {
-    private boolean afficherGrille = false;
+    private boolean afficherGrille = true;
     private boolean afficherVoisinSelection = false;
     private java.awt.Color backgroundColor = java.awt.Color.BLACK;
     private java.awt.Color gridColor = java.awt.Color.GRAY;
     private double gridSpacing = 50;
-
     private boolean afficherPlancher = true;
 
     public PreferencesUtilisateur() {}
@@ -80,7 +79,7 @@ public class PreferencesUtilisateur {
         public boolean afficherVoisinSelection = false;
         public java.awt.Color backgroundColor = java.awt.Color.BLACK;
         public java.awt.Color gridColor = java.awt.Color.GRAY;
-        public double gridSpacing = 50;
+        public double gridSpacing = 30;
         public boolean afficherPlancher = false;
 
         public PreferencesUtilisateurDTO(PreferencesUtilisateur preferencesUtilisateur) {

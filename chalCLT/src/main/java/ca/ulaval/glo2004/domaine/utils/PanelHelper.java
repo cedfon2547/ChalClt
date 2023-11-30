@@ -347,6 +347,8 @@ public class PanelHelper {
             this.truncate = truncate;
             this.accessoireDTOs = accessoireDTOs;
             this.computeHoles = computeHoles;
+            
+            this.setDraggable(false);
             this.rebuild();
         }
 
@@ -710,6 +712,8 @@ public class PanelHelper {
         }
 
         private void buildAccessoires() {
+            this.meshAccessoires.clear();
+
             for (Accessoire.AccessoireDTO accessoireDTO : this.accessoireDTOs) {
                 TriangleMeshGroup accMesh = null;
 
@@ -723,12 +727,21 @@ public class PanelHelper {
                         accMesh = PanelHelper.buildDoor(accessoireDTO.dimensions[0] - 4,
                                 accessoireDTO.dimensions[1],
                                 new Vector3D(0, 0, 0), 4);
+                        accMesh.setDraggableY(false);
                         break;
                 }
 
+                if (accMesh == null) {
+                    throw new IllegalArgumentException("Invalid accessoire type");
+                }
+
+                accMesh.ID = accessoireDTO.accessoireId.toString();
+                accMesh.setIdentifier(accessoireDTO.accessoireId.toString());
+                accMesh.setValid(accessoireDTO.valide);
+
                 switch (typeMur) {
                     case Facade:
-
+                        accMesh.setDraggableZ(false);
                         accMesh = accMesh.translate(accMesh.getCenter().multiply(-1));
                         accMesh = accMesh.translate(new Vector3D(0, 0, -chaletDTO.longueur / 2));
                         accMesh = accMesh.translate(new Vector3D(0, 0, -accMesh.getDepth() / 2));
@@ -741,7 +754,7 @@ public class PanelHelper {
 
                         break;
                     case Arriere:
-
+                        accMesh.setDraggableZ(false);
                         accMesh = accMesh.rotate(0, Math.PI, 0);
                         accMesh = accMesh.translate(accMesh.getCenter().multiply(-1));
                         accMesh = accMesh.translate(new Vector3D(0, 0, accMesh.getDepth() / 2));
@@ -756,7 +769,7 @@ public class PanelHelper {
 
                         break;
                     case Gauche:
-
+                        accMesh.setDraggableX(false);
                         accMesh = accMesh.rotate(0, -Math.PI / 2, 0);
                         accMesh = accMesh.translate(accMesh.getCenter().multiply(-1));
                         accMesh = accMesh.translate(new Vector3D(accMesh.getWidth() / 2, 0, 0));
@@ -772,7 +785,7 @@ public class PanelHelper {
 
                         break;
                     case Droit:
-
+                        accMesh.setDraggableX(false);
                         accMesh = accMesh.rotate(0, Math.PI / 2, 0);
                         accMesh = accMesh.translate(accMesh.getCenter().multiply(-1));
                         accMesh = accMesh.translate(new Vector3D(-accMesh.getWidth() / 2, 0, 0));
@@ -788,10 +801,8 @@ public class PanelHelper {
 
                         break;
                 }
+                
                 accMesh = accMesh.translate(new Vector3D(0, -chaletDTO.hauteur / 2, 0));
-
-                accMesh.setIdentifier(accessoireDTO.accessoireId.toString());
-                accMesh.setValid(accessoireDTO.valide);
                 this.meshAccessoires.add(accMesh);
             }
         }

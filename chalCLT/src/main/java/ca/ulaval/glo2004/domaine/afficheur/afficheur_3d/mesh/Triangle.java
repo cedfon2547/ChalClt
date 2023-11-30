@@ -8,7 +8,7 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 
 public class Triangle {
     private Vector3D vertex1, vertex2, vertex3; // The vertices of the triangle
-    
+
     public Triangle(Vector3D vertex1, Vector3D vertex2, Vector3D vertex3) {
         this.vertex1 = vertex1;
         this.vertex2 = vertex2;
@@ -34,6 +34,18 @@ public class Triangle {
         }
     }
 
+    public Vector3D getVertex1() {
+        return vertex1;
+    }
+
+    public Vector3D getVertex2() {
+        return vertex2;
+    }
+
+    public Vector3D getVertex3() {
+        return vertex3;
+    }
+
     public Vector3D[] getVertices() {
         return new Vector3D[] { this.vertex1, this.vertex2, this.vertex3 };
     }
@@ -48,6 +60,18 @@ public class Triangle {
 
     public Vector3D getNormal() {
         return getNormal(this);
+    }
+
+    public void setVertex1(Vector3D vertex1) {
+        this.vertex1 = vertex1;
+    }
+
+    public void setVertex2(Vector3D vertex2) {
+        this.vertex2 = vertex2;
+    }
+
+    public void setVertex3(Vector3D vertex3) {
+        this.vertex3 = vertex3;
     }
 
     public Triangle transform(Matrix transformMatrix) {
@@ -82,7 +106,7 @@ public class Triangle {
     public Triangle rotate(double angleX, double angleY, double angleZ, Vector3D axis) {
         Matrix rotationMatrix = Matrix.rotationMatrix(angleX, angleY, angleZ, axis);
         return transform(rotationMatrix);
-    } 
+    }
 
     public Triangle copy() {
         return new Triangle(vertex1.copy(), vertex2.copy(), vertex3.copy());
@@ -90,6 +114,14 @@ public class Triangle {
 
     public String toString() {
         return String.format("Triangle(%s, %s, %s)", vertex1, vertex2, vertex3);
+    }
+
+    public Triangle invertNormal() {
+        return invertNormal(this);
+    }
+
+    public Vector3D getNormal(Vector3D point) {
+        return getNormal(this, point);
     }
 
     /* ================= Static Methods ================= */
@@ -105,7 +137,7 @@ public class Triangle {
         Vector3D vertex3 = triangle.vertex3;
 
         return (vertex1.y - vertex3.y) * (vertex2.x - vertex3.x)
-        + (vertex2.y - vertex3.y) * (vertex3.x - vertex1.x);
+                + (vertex2.y - vertex3.y) * (vertex3.x - vertex1.x);
     }
 
     public static Vector3D getCenter(Triangle triangle) {
@@ -161,5 +193,18 @@ public class Triangle {
         }
 
         return triangles;
+    }
+
+    public static Triangle invertNormal(Triangle triangle) {
+        return new Triangle(triangle.vertex1, triangle.vertex3, triangle.vertex2);
+    }
+
+    public static Vector3D getNormal(Triangle triangle, Vector3D point) {
+        Vector3D normal = getNormal(triangle);
+        if (Vector3D.dot(normal, point.sub(triangle.vertex1)) < 0) {
+            return normal;
+        } else {
+            return normal.multiply(-1);
+        }
     }
 }

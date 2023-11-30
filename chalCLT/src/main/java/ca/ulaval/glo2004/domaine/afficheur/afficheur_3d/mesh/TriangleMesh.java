@@ -16,26 +16,31 @@ public class TriangleMesh {
     private boolean selectable = true;
     private boolean visible = true;
     private boolean valid = true;
+    private boolean draggable = true;
+    private boolean draggableX = true;
+    private boolean draggableY = true;
+    private boolean draggableZ = true;
 
     public TriangleMesh(List<Triangle> triangles) {
-        this.triangles = triangles;
+        this(triangles, new Material());
     }
 
     public TriangleMesh(TriangleMesh mesh) {
-        this.triangles = mesh.triangles;
+        this(mesh.triangles, mesh.material, mesh.ID, mesh.componentHandle);
     }
 
     public TriangleMesh(TriangleMesh[] meshes) {
-        this.triangles = new ArrayList<Triangle>();
+        this(new ArrayList<Triangle>());
 
         for (TriangleMesh mesh : meshes) {
             this.triangles.addAll(mesh.triangles);
         }
+
+        // this.triangles = convertToClockwise(this.triangles);
     }
 
     public TriangleMesh(List<Triangle> triangles, Material material) {
-        this.triangles = triangles;
-        this.material = material;
+        this(triangles, material, UUID.randomUUID().toString(), "");
     }
 
     public TriangleMesh(List<Triangle> triangles, Material material, String ID, String handle) {
@@ -48,7 +53,23 @@ public class TriangleMesh {
     public String getIdentifier() {
         return ID;
     }
-    
+
+    public boolean getDraggable() {
+        return draggable;
+    }
+
+    public boolean getDraggableX() {
+        return draggableX;
+    }
+
+    public boolean getDraggableY() {
+        return draggableY;
+    }
+
+    public boolean getDraggableZ() {
+        return draggableZ;
+    }
+
     public boolean getSelected() {
         return selected;
     }
@@ -63,6 +84,22 @@ public class TriangleMesh {
 
     public boolean getValid() {
         return valid;
+    }
+
+    public void setDraggable(boolean draggable) {
+        this.draggable = draggable;
+    }
+
+    public void setDraggableX(boolean draggableX) {
+        this.draggableX = draggableX;
+    }
+
+    public void setDraggableY(boolean draggableY) {
+        this.draggableY = draggableY;
+    }
+
+    public void setDraggableZ(boolean draggableZ) {
+        this.draggableZ = draggableZ;
     }
 
     public void setSelected(boolean selected) {
@@ -218,7 +255,7 @@ public class TriangleMesh {
         newMesh.visible = this.visible;
         newMesh.selectable = this.selectable;
         newMesh.selected = this.selected;
-        
+
         return newMesh;
     }
 
@@ -391,6 +428,76 @@ public class TriangleMesh {
         TriangleMesh mesh = fromDoubleList(triangles);
         mesh.setMaterial(material);
         return mesh;
+    }
+
+    /*
+     * Used to convert all triangles in a mesh to be clockwise
+     */
+    public static List<Triangle> convertToClockwise(List<Triangle> triangles) {
+        List<Triangle> clockwiseTriangles = new ArrayList<>();
+
+        // The axis x are horizontal and the axis y are vertical
+        // Axis z is depth
+
+        for (Triangle triangle : triangles) {
+            Vector3D[] vertices = triangle.getVertices();
+
+            // Get the center of the triangle
+            Vector3D center = new Vector3D((vertices[0].x + vertices[1].x + vertices[2].x) / 3,
+                    (vertices[0].y + vertices[1].y + vertices[2].y) / 3,
+                    (vertices[0].z + vertices[1].z + vertices[2].z) / 3);
+
+            // Get the normal of the triangle
+            Vector3D normal = triangle.getNormal();
+
+            // Get the vector from the center of the triangle to the camera
+            Vector3D cameraVector = center.multiply(-1);
+
+            // If the dot product of the normal and the camera vector is positive, the
+            // triangle is facing the camera
+            if (normal.dot(cameraVector) > 0) {
+                clockwiseTriangles.add(triangle);
+            } else {
+                clockwiseTriangles.add(new Triangle(vertices[0], vertices[2], vertices[1]));
+            }
+        }
+
+        return clockwiseTriangles;
+    }
+
+    /*
+     * Used to convert all triangles in a mesh to be counter clockwise
+     */
+    public static List<Triangle> convertToCounterClockwise(List<Triangle> triangles) {
+        List<Triangle> counterClockwiseTriangles = new ArrayList<>();
+
+        // The axis x are horizontal and the axis y are vertical
+        // Axis z is depth
+
+        for (Triangle triangle : triangles) {
+            Vector3D[] vertices = triangle.getVertices();
+
+            // Get the center of the triangle
+            Vector3D center = new Vector3D((vertices[0].x + vertices[1].x + vertices[2].x) / 3,
+                    (vertices[0].y + vertices[1].y + vertices[2].y) / 3,
+                    (vertices[0].z + vertices[1].z + vertices[2].z) / 3);
+
+            // Get the normal of the triangle
+            Vector3D normal = triangle.getNormal();
+
+            // Get the vector from the center of the triangle to the camera
+            Vector3D cameraVector = center.multiply(-1);
+
+            // If the dot product of the normal and the camera vector is negative, the
+            // triangle is facing the camera
+            if (normal.dot(cameraVector) < 0) {
+                counterClockwiseTriangles.add(triangle);
+            } else {
+                counterClockwiseTriangles.add(new Triangle(vertices[0], vertices[2], vertices[1]));
+            }
+        }
+
+        return counterClockwiseTriangles;
     }
 
 }
