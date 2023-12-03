@@ -1,7 +1,5 @@
 package ca.ulaval.glo2004.domaine;
 
-import java.beans.PropertyChangeSupport;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -9,10 +7,10 @@ import java.util.UUID;
 import ca.ulaval.glo2004.domaine.utils.UndoRedoManager;
 import java.util.stream.Collectors;
 
-public class Controleur {
+public class Controleur extends ControleurEventSupport {
     private static Controleur instance = null;
     private ChalCLTProjet projectActif;
-    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    // private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
 
     private Controleur() {
@@ -65,9 +63,9 @@ public class Controleur {
 
     public void setChalet(Chalet.ChaletDTO chalet) {
         Chalet.ChaletDTO chaletDTO = this.projectActif.getChalet().toDTO();
-        this.pcs.firePropertyChange(EventType.CHALET, chaletDTO, chalet);
-
+        // this.pcs.firePropertyChange(EventType.CHALET, chaletDTO, chalet);
         projectActif.getChalet().updateChalet(chalet);
+        this.dispatchChaletChangeEvent(chaletDTO);
     }
 
     public PreferencesUtilisateur.PreferencesUtilisateurDTO getPreferencesUtilisateur() {
@@ -75,45 +73,50 @@ public class Controleur {
     }
 
     public void setPreferencesUtilisateur(PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateur) {
-        this.pcs.firePropertyChange(EventType.PREFERENCES_UTILISATEUR, this.getPreferencesUtilisateur(), preferencesUtilisateur);
+        // this.pcs.firePropertyChange(EventType.PREFERENCES_UTILISATEUR, this.getPreferencesUtilisateur(), preferencesUtilisateur);
         projectActif.getPreferencesUtilisateur().update(preferencesUtilisateur);
+        this.dispatchUserPreferencesChangeEvent(preferencesUtilisateur);
     }
 
     public void setAccessoire(Accessoire.AccessoireDTO accessoireDTO) {
         Accessoire accessoire = this.projectActif.getChalet().updateAccessoire(accessoireDTO);
 
-        this.pcs.firePropertyChange(EventType.ACCESSOIRE, accessoireDTO, accessoire.toDTO());
+        // this.pcs.firePropertyChange(EventType.ACCESSOIRE, accessoireDTO, accessoire.toDTO());
+        this.dispatchAccessoireChangeEvent(accessoire.toDTO());
 
-        if (!accessoire.isValide()) {
-            this.pcs.firePropertyChange(EventType.ACCESSOIRE_INVALIDE, accessoireDTO.valide, accessoire.getValide());
-        }
+        this.dispatchAccessoirValidityChangeEvent(getAccessoires(accessoire.getTypeMur()));
     }
 
     public void ajouterAccessoire(TypeMur typeMur, TypeAccessoire typeAcc, double[] position, double[] dimension) {
         Accessoire accessoire = this.projectActif.getChalet().ajouterAccessoire(typeMur, typeAcc, position, dimension);
 
-        this.pcs.firePropertyChange(EventType.AJOUTER_ACCESSOIRE, null, accessoire.toDTO());
-
-        if (!accessoire.isValide()) {
-            this.pcs.firePropertyChange(EventType.ACCESSOIRE_INVALIDE, false, true);
-        }
+        this.dispatchAccessoireAddEvent(accessoire.toDTO());
+        this.dispatchAccessoirValidityChangeEvent(getAccessoires(accessoire.getTypeMur()));
+        
     }
 
     public void retirerAccessoire(TypeMur typeMur, UUID uuid) {
         Accessoire accessoire = this.projectActif.getChalet().retirerAccessoire(typeMur, uuid);
-        this.pcs.firePropertyChange(EventType.RETIRER_ACCESSOIRE, null, accessoire.toDTO());
+        this.dispatchAccessoireRemoveEvent(accessoire.toDTO());
+        // this.pcs.firePropertyChange(EventType.RETIRER_ACCESSOIRE, null, accessoire.toDTO());
     }
 
     public void retirerAccessoire(UUID uuid) {
         Accessoire accessoire = this.projectActif.getChalet().retirerAccessoire(uuid);
-        this.pcs.firePropertyChange(EventType.RETIRER_ACCESSOIRE, null, accessoire.toDTO());
+        this.dispatchAccessoireRemoveEvent(accessoire.toDTO());
+        // this.pcs.firePropertyChange(EventType.RETIRER_ACCESSOIRE, null, accessoire.toDTO());
     }
 
     public void retirerAccessoires(List<Accessoire.AccessoireDTO> accessoires) {
         List<Accessoire> removed = this.projectActif.getChalet().retirerAccessoires(accessoires);
         List<Accessoire.AccessoireDTO> removedDTOs = removed.stream().map((accessoire) -> accessoire.toDTO()).collect(Collectors.toList());
 
-        this.pcs.firePropertyChange(EventType.SUPPRIMER_ACCESSOIRES, null, removedDTOs);
+        for (Accessoire.AccessoireDTO accessoireDTO : removedDTOs) {
+            this.dispatchAccessoireRemoveEvent(accessoireDTO);
+            // this.pcs.firePropertyChange(EventType.RETIRER_ACCESSOIRE, null, accessoireDTO);
+        }
+
+        // this.pcs.firePropertyChange(EventType.RETIRER_ACCESSOIRES, null, removedDTOs);
     }
 
     public void creeProjet() {
@@ -122,7 +125,8 @@ public class Controleur {
         }
         
         this.projectActif = new ChalCLTProjet(null, new Chalet(), this.projectActif.getPreferencesUtilisateur());
-        this.pcs.firePropertyChange(EventType.CREE_PROJET, null, this.getChalet());
+        // this.pcs.firePropertyChange(EventType.CREE_PROJET, null, this.getChalet());
+        this.dispatchProjectCreateEvent(this.projectActif.getChalet().getNom());
     }
 
     public void fermerProjet() {
@@ -137,32 +141,5 @@ public class Controleur {
     public void redo() {
         this.undoRedoManager.redo();
     }
-
-    public void addPropertyChangeListener(String property, PropertyChangeListener listener) {
-        this.pcs.addPropertyChangeListener(property, listener);
-    }
-
-    public void removePropertyChangeListener(String property, PropertyChangeListener listener) {
-        this.pcs.removePropertyChangeListener(property, listener);
-    }
-
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        this.pcs.addPropertyChangeListener(listener);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        this.pcs.removePropertyChangeListener(listener);
-    }
-
-    public static class EventType {
-        public static final String CHALET = "chalet";
-        public static final String ACCESSOIRE = "accessoire";
-        public static final String AJOUTER_ACCESSOIRE = "ajouterAccessoire";
-        public static final String RETIRER_ACCESSOIRE = "supprimerAccessoire";
-        public static final String SUPPRIMER_ACCESSOIRES = "supprimerAccessoires";
-        public static final String CREE_PROJET = "creeProjet";
-        public static final String FERMER_PROJET = "fermerProjet";
-        public static final String ACCESSOIRE_INVALIDE = "accessoireInvalide";
-        public static final String PREFERENCES_UTILISATEUR = "preferencesUtilisateur";
-    }
 }
+

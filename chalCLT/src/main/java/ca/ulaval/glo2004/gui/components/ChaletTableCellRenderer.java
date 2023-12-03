@@ -1,6 +1,5 @@
 package ca.ulaval.glo2004.gui.components;
 
-import java.awt.Color;
 import java.awt.Component;
 
 

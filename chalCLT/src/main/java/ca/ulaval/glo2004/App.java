@@ -2,9 +2,6 @@ package ca.ulaval.glo2004;
 
 import ca.ulaval.glo2004.domaine.Controleur;
 import ca.ulaval.glo2004.gui.MainWindow;
-import ca.ulaval.glo2004.gui.NotificationManager;
-import ca.ulaval.glo2004.gui.NotificationManager.NotificationType;
-import ca.ulaval.glo2004.gui.components.SwitchToggleButton;
 
 import javax.swing.*;
 

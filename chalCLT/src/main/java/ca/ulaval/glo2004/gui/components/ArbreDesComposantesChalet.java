@@ -11,17 +11,17 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.beans.PropertyChangeEvent;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
-import ca.ulaval.glo2004.domaine.Controleur;
+import ca.ulaval.glo2004.domaine.ControleurEventSupport.AccessoireEvent;
+import ca.ulaval.glo2004.domaine.ControleurEventSupport.AccessoireEventListener;
+import ca.ulaval.glo2004.domaine.ControleurEventSupport.ChaletEventListener;
 import ca.ulaval.glo2004.gui.Constants;
 import ca.ulaval.glo2004.gui.MainWindow;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
@@ -40,28 +40,35 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
 
         initComponent();
 
-        this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.CHALET,
-                this.getChaletChangeListener());
-        this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.ACCESSOIRE,
-                this.getAccessoireChangeListener());
-        this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.RETIRER_ACCESSOIRE,
-                this.getSupprimerAccessoireListener());
-        this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.AJOUTER_ACCESSOIRE,
-                this.getAjouterAccessoireListener());
+        this.mainWindow.getControleur().addChaletEventListener(new ChaletEventListener() {
+            public void change(ca.ulaval.glo2004.domaine.ControleurEventSupport.ChaletEvent event) {
+                chaletNode.setUserObject(event.getChaletDTO().nom);
+                ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeChanged(chaletNode);
+            };
+        });
 
-        this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.SUPPRIMER_ACCESSOIRES,
-                new PropertyChangeListener() {
-                    public void propertyChange(PropertyChangeEvent evt) {
-                        for (Accessoire.AccessoireDTO accessoireDTO : ((List<?>) evt.getNewValue()).stream()
-                                .filter(Accessoire.AccessoireDTO.class::isInstance)
-                                .map(Accessoire.AccessoireDTO.class::cast)
-                                .collect(Collectors.toList())) {
-                            retirerNoeudAccessoire(accessoireDTO);
-                        }
+        this.mainWindow.getControleur().addAccessoireEventListener(new AccessoireEventListener() {
+            @Override
+            public void change(AccessoireEvent event) {
+                // TODO Auto-generated method stub
+                Accessoire.AccessoireDTO accessoireDTO = event.getAccessoireDTO();
+                updateNoeudAccessoire(accessoireDTO);
 
-                        mainWindow.showChaletTable();
-                    }
-                });
+            }
+
+            @Override
+            public void add(AccessoireEvent event) {
+                // TODO Auto-generated method stub
+                Accessoire.AccessoireDTO accDto = event.getAccessoireDTO();
+                ajouterNoeudAccessoire(accDto);
+
+            }
+
+            public void remove(AccessoireEvent event) {
+                retirerNoeudAccessoire(event.getAccessoireDTO());
+                mainWindow.showChaletTable();
+            };
+        });
     }
 
     public javax.swing.JTree arbreComposantesChalet;
@@ -101,7 +108,7 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                 arbreComposantesChalet.clearSelection();
             }
         });
-        
+
         arbreComposantesChalet.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
         chaletNode = new javax.swing.tree.DefaultMutableTreeNode();
@@ -198,59 +205,59 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
         };
     }
 
-    private PropertyChangeListener getChaletChangeListener() {
-        return new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals("chalet")) {
-                    Chalet.ChaletDTO chaletDTO = (Chalet.ChaletDTO) evt.getNewValue();
-                    chaletNode.setUserObject(chaletDTO.nom);
-                    ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeChanged(chaletNode);
-                }
-            }
-        };
-    }
+    // private PropertyChangeListener getChaletChangeListener() {
+    //     return new PropertyChangeListener() {
+    //         public void propertyChange(PropertyChangeEvent evt) {
+    //             if (evt.getPropertyName().equals("chalet")) {
+    //                 Chalet.ChaletDTO chaletDTO = (Chalet.ChaletDTO) evt.getNewValue();
+    //                 chaletNode.setUserObject(chaletDTO.nom);
+    //                 ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeChanged(chaletNode);
+    //             }
+    //         }
+    //     };
+    // }
 
-    private PropertyChangeListener getAccessoireChangeListener() {
-        return new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (!evt.getPropertyName().equals(Controleur.EventType.ACCESSOIRE)) {
-                    return;
-                }
+    // private PropertyChangeListener getAccessoireChangeListener() {
+    //     return new PropertyChangeListener() {
+    //         public void propertyChange(PropertyChangeEvent evt) {
+    //             if (!evt.getPropertyName().equals(Controleur.EventType.ACCESSOIRE)) {
+    //                 return;
+    //             }
 
-                Accessoire.AccessoireDTO accessoireDTO = (Accessoire.AccessoireDTO) evt.getNewValue();
-                updateNoeudAccessoire(accessoireDTO);
-            }
-        };
-    }
+    //             Accessoire.AccessoireDTO accessoireDTO = (Accessoire.AccessoireDTO) evt.getNewValue();
+    //             updateNoeudAccessoire(accessoireDTO);
+    //         }
+    //     };
+    // }
 
-    private PropertyChangeListener getSupprimerAccessoireListener() {
-        return new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (!evt.getPropertyName().equals(Controleur.EventType.RETIRER_ACCESSOIRE)) {
-                    return;
-                }
+    // private PropertyChangeListener getSupprimerAccessoireListener() {
+    //     return new PropertyChangeListener() {
+    //         public void propertyChange(PropertyChangeEvent evt) {
+    //             if (!evt.getPropertyName().equals(Controleur.EventType.RETIRER_ACCESSOIRE)) {
+    //                 return;
+    //             }
 
-                // System.out.println("Retirer Accessoire " + ((Accessoire.AccessoireDTO)
-                // evt.getNewValue()).accessoireNom);
+    //             // System.out.println("Retirer Accessoire " + ((Accessoire.AccessoireDTO)
+    //             // evt.getNewValue()).accessoireNom);
 
-                retirerNoeudAccessoire((Accessoire.AccessoireDTO) evt.getNewValue());
-                mainWindow.showChaletTable();
-            }
-        };
-    }
+    //             retirerNoeudAccessoire((Accessoire.AccessoireDTO) evt.getNewValue());
+    //             mainWindow.showChaletTable();
+    //         }
+    //     };
+    // }
 
-    private PropertyChangeListener getAjouterAccessoireListener() {
-        return new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (!evt.getPropertyName().equals(Controleur.EventType.AJOUTER_ACCESSOIRE)) {
-                    return;
-                }
+    // private PropertyChangeListener getAjouterAccessoireListener() {
+    //     return new PropertyChangeListener() {
+    //         public void propertyChange(PropertyChangeEvent evt) {
+    //             if (!evt.getPropertyName().equals(Controleur.EventType.AJOUTER_ACCESSOIRE)) {
+    //                 return;
+    //             }
 
-                Accessoire.AccessoireDTO accDto = (Accessoire.AccessoireDTO) evt.getNewValue();
-                ajouterNoeudAccessoire(accDto);
-            }
-        };
-    }
+    //             Accessoire.AccessoireDTO accDto = (Accessoire.AccessoireDTO) evt.getNewValue();
+    //             ajouterNoeudAccessoire(accDto);
+    //         }
+    //     };
+    // }
 
     private MouseAdapter getTreeMouseListener() {
         return new MouseAdapter() {
@@ -452,15 +459,14 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
 
     public void reloadTree(Chalet.ChaletDTO chalet, List<Accessoire.AccessoireDTO> accessoireDTOs) {
         removeAllNoeudAccessoire();
-        
+
         this.chaletDTO = chalet;
         this.accessoireDTOs = accessoireDTOs;
 
         chaletNode.setUserObject(chaletDTO.nom);
         rechargerNoeudsAccessoire(accessoireDTOs);
-        
-        ((DefaultTreeModel) arbreComposantesChalet.getModel()).reload(chaletNode);
 
+        ((DefaultTreeModel) arbreComposantesChalet.getModel()).reload(chaletNode);
 
         arbreComposantesChalet.expandPath(new TreePath(mursNode.getPath()));
     }

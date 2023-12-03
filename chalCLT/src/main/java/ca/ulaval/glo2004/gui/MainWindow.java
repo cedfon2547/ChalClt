@@ -1,8 +1,6 @@
 package ca.ulaval.glo2004.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Event;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JScrollPane;
@@ -161,6 +159,7 @@ public class MainWindow extends javax.swing.JFrame {
         add(mainWindowSplitPane);
         add(topButtonPanel, BorderLayout.BEFORE_FIRST_LINE);
 
+
         showChaletTable();
     }
 
@@ -203,20 +202,12 @@ public class MainWindow extends javax.swing.JFrame {
 
     public void ajouterAccessoireSelectionnee(Accessoire.AccessoireDTO accessoireDTO) {
         accessoiresSelectionnees.add(accessoireDTO);
-        if (accessoiresSelectionnees.size() == 0) {
-            topButtonPanel.supprimerAccessoireBtn.setEnabled(false);
-        } else {
-            topButtonPanel.supprimerAccessoireBtn.setEnabled(true);
-        }
+        topButtonPanel.update();
     }
 
     public void retirerAccessoireSelectionnee(Accessoire.AccessoireDTO accessoireDTO) {
         accessoiresSelectionnees.remove(accessoireDTO);
-        if (accessoiresSelectionnees.size() == 0) {
-            topButtonPanel.supprimerAccessoireBtn.setEnabled(false);
-        } else {
-            topButtonPanel.supprimerAccessoireBtn.setEnabled(true);
-        }
+        topButtonPanel.update();
     }
 
     public void clearAccessoiresSelectionnees() {
@@ -238,7 +229,7 @@ public class MainWindow extends javax.swing.JFrame {
         this.clearAccessoiresSelectionnees();
 
         this.arbreDesComposantesChalet.rechargerNoeudsAccessoire(controleur.getAccessoires());
-        drawingPanel.rechargerAffichage();
+        drawingPanel.afficheur.rechargerAffichage();
     }
 
     public void reloadArbreComposantes() {

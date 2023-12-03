@@ -42,7 +42,7 @@ public class TableChalet extends JTable {
                 { "Épaisseur panneaux", ImperialDimension.convertToImperial(dtoChalet.epaisseurMur).toString()  },
                 { "Angle du toit", String.format("%s", dtoChalet.angleToit)},
                 { "Sens du toit", String.format("%s", dtoChalet.sensToit)},
-                {" Marge accessoire", ImperialDimension.convertToImperial(dtoChalet.margeAccessoire).toString() },
+                { "Marge accessoire", ImperialDimension.convertToImperial(dtoChalet.margeAccessoire).toString() },
                 { "Marge supplémentaire", ImperialDimension.convertToImperial(dtoChalet.margeSupplementaireRetrait).toString()  },
         };
         
@@ -76,7 +76,7 @@ public class TableChalet extends JTable {
                 
                 mainWindow.getControleur().setChalet(chaletDTO);
                 
-                mainWindow.drawingPanel.rechargerAffichage();
+                mainWindow.drawingPanel.afficheur.rechargerAffichage();
             }
         });
 

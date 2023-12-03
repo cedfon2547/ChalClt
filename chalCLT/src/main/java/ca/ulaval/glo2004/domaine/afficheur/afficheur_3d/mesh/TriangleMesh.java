@@ -20,7 +20,10 @@ public class TriangleMesh {
     private boolean draggableX = true;
     private boolean draggableY = true;
     private boolean draggableZ = true;
+    private boolean isDragged = false;
+    private Vector3D position = new Vector3D(0, 0, 0);
 
+    
     public TriangleMesh(List<Triangle> triangles) {
         this(triangles, new Material());
     }
@@ -50,6 +53,10 @@ public class TriangleMesh {
         this.componentHandle = handle;
     }
 
+    public Vector3D getPosition() {
+        return position;
+    }
+
     public String getIdentifier() {
         return ID;
     }
@@ -68,6 +75,10 @@ public class TriangleMesh {
 
     public boolean getDraggableZ() {
         return draggableZ;
+    }
+
+    public boolean getIsDragged() {
+        return isDragged;
     }
 
     public boolean getSelected() {
@@ -102,6 +113,10 @@ public class TriangleMesh {
         this.draggableZ = draggableZ;
     }
 
+    public void setIsDragged(boolean isDragged) {
+        this.isDragged = isDragged;
+    }
+
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
@@ -116,6 +131,10 @@ public class TriangleMesh {
 
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+
+    public void setPosition(Vector3D position) {
+        this.position = position;
     }
 
     // feel free to fix, this is a bodge
@@ -208,19 +227,6 @@ public class TriangleMesh {
     public double getDepth() {
         Vector3D[] bounding = this.getBounding();
         return bounding[1].getZ() - bounding[0].getZ();
-    }
-
-    public TriangleMesh copy() {
-        ArrayList<Triangle> trianglesCopy = new ArrayList<Triangle>();
-
-        for (Triangle triangle : this.triangles) {
-            trianglesCopy.add(triangle.copy());
-        }
-
-        TriangleMesh newMesh = new TriangleMesh(trianglesCopy, this.material.copy());
-        newMesh.material = this.material;
-
-        return newMesh;
     }
 
     public TriangleMesh translate(Vector3D translation) {
@@ -410,6 +416,30 @@ public class TriangleMesh {
         } else {
             return new TriangleMesh(subdividedTriangles);
         }
+    }
+
+    public TriangleMesh copy() {
+        List<Triangle> newTriangles = new ArrayList<Triangle>();
+
+        for (Triangle triangle : triangles) {
+            newTriangles.add(triangle.copy());
+        }
+
+        TriangleMesh newMesh = new TriangleMesh(newTriangles, this.material.copy(), this.ID, this.componentHandle);
+
+        newMesh.ID = this.ID;
+        newMesh.componentHandle = this.componentHandle;
+        newMesh.material = this.material;
+        newMesh.valid = this.valid;
+        newMesh.visible = this.visible;
+        newMesh.selectable = this.selectable;
+        newMesh.selected = this.selected;
+        newMesh.draggable = this.draggable;
+        newMesh.draggableX = this.draggableX;
+        newMesh.draggableY = this.draggableY;
+        newMesh.draggableZ = this.draggableZ;
+
+        return newMesh;
     }
 
     public static TriangleMesh fromDoubleList(List<double[][]> triangles) {

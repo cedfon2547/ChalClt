@@ -54,8 +54,6 @@ public class STLTools {
                     }
                 }
 
-                short controlWord = Short.reverseBytes(in.readShort());
-
                 Triangle triangle = new Triangle(
                         normal,
                         vertices[0], vertices[1], vertices[2]);

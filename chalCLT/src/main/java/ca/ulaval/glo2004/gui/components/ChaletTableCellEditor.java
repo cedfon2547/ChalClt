@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JComboBox;

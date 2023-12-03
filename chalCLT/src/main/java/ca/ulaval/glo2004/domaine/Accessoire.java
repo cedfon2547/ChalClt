@@ -189,6 +189,22 @@ public class Accessoire extends Retrait {
             this.typeMur = accessoire.typeMur;
             this.valide = accessoire.valide;
         }
+
+        public AccessoireDTO(AccessoireDTO accessoireDTO) {
+            super(accessoireDTO);
+            this.accessoireNom = accessoireDTO.accessoireNom;
+            this.accessoireType = accessoireDTO.accessoireType;
+            this.accessoireId = accessoireDTO.accessoireId;
+            this.typeMur = accessoireDTO.typeMur;
+            this.valide = accessoireDTO.valide;
+        }
+
+        public AccessoireDTO copy() {
+            AccessoireDTO copy = new AccessoireDTO(this);
+            copy.position = this.position.clone();
+            copy.dimensions = this.dimensions.clone();
+            return copy;
+        }
     }
 
     /**

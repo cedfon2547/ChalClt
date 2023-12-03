@@ -3,20 +3,11 @@ package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
 
 public class TriangleMeshGroup extends TriangleMesh {
-    @FunctionalInterface
-    static public interface TriangleMeshVisitor {
-        public void visit(TriangleMesh mesh);
-    }
-
-    String identifier = UUID.randomUUID().toString();
     List<TriangleMesh> meshes = new ArrayList<TriangleMesh>();
-    private Vector3D position = new Vector3D(0, 0, 0);
 
     public TriangleMeshGroup() {
         super(new ArrayList<Triangle>());
@@ -34,16 +25,6 @@ public class TriangleMeshGroup extends TriangleMesh {
         }
     }
 
-    public void traverseMeshes(TriangleMeshVisitor visitor) {
-        for (TriangleMesh mesh : meshes) {
-            visitor.visit(mesh);
-
-            if (mesh instanceof TriangleMeshGroup) {
-                ((TriangleMeshGroup) mesh).traverseMeshes(visitor);
-            }
-        }
-    }
-
     public TriangleMesh find(String identifier) {
         for (TriangleMesh mesh : meshes) {
             if (mesh.getIdentifier().equals(identifier)) {
@@ -56,10 +37,6 @@ public class TriangleMeshGroup extends TriangleMesh {
             }
         }
         return null;
-    }
-
-    public Vector3D getPosition() {
-        return position;
     }
 
     public List<TriangleMesh> getMeshes() {
@@ -77,10 +54,6 @@ public class TriangleMeshGroup extends TriangleMesh {
             }
         }
         return null;
-    }
-
-    public String getIdentifier() {
-        return identifier;
     }
 
     // public boolean getSelected() {
@@ -107,10 +80,6 @@ public class TriangleMeshGroup extends TriangleMesh {
         this.meshes = meshes;
     }
 
-    public void setIdentifier(String ID) {
-        this.identifier = ID;
-    }
-
     // public void setSelected(boolean selected) {
     //     this.selected = selected;
     // }
@@ -130,10 +99,6 @@ public class TriangleMeshGroup extends TriangleMesh {
     // public boolean getVisible() {
     //     return this.visible;
     // }
-
-    public void setPosition(Vector3D position) {
-        this.position = position;
-    }
 
     public void clear() {
         meshes.clear();
@@ -380,7 +345,27 @@ public class TriangleMeshGroup extends TriangleMesh {
         return newGroup;
     }
 
-    public TriangleMeshGroup moveLeft(Camera camera, double distance) {
-        return this.translate(camera.getLeftVector().multiply(distance));
+    @Override
+    public TriangleMeshGroup copy() {
+        TriangleMeshGroup newGroup = new TriangleMeshGroup();
+
+        for (TriangleMesh mesh : meshes) {
+            newGroup.addMesh(mesh.copy());
+        }
+
+        newGroup.ID = this.ID;
+        newGroup.setHandle(this.getHandle());
+        newGroup.setValid(this.getValid());
+        newGroup.setSelectable(this.getSelectable());
+        newGroup.setSelected(this.getSelected());
+        newGroup.setVisible(this.getVisible());
+        newGroup.setPosition(this.getPosition());
+        newGroup.setDraggable(this.getDraggable());
+        newGroup.setDraggableX(this.getDraggableX());
+        newGroup.setDraggableY(this.getDraggableY());
+        newGroup.setDraggableZ(this.getDraggableZ());
+        
+        
+        return newGroup;
     }
 }

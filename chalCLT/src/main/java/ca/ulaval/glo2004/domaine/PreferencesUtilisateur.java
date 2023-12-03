@@ -7,7 +7,7 @@ public class PreferencesUtilisateur {
     private java.awt.Color backgroundColor = java.awt.Color.BLACK;
     private java.awt.Color gridColor = java.awt.Color.GRAY;
     private double gridSpacing = 50;
-    private boolean afficherPlancher = true;
+    private boolean afficherPlancher = false;
 
     public PreferencesUtilisateur() {}
 

@@ -76,12 +76,12 @@ public class AccessoireTableCellEditor extends AbstractCellEditor
             if (stringVal.contains("0/1")) {
                 // System.out.println("in");
                 noFractionValue = parsedString[0] + "\"";
-                jTextField.setText((String) noFractionValue);
+                jTextField.setText((String) noFractionValue.toString());
             } else {
-                jTextField.setText((String) value);
+                jTextField.setText((String) value.toString());
             }
         }else {
-            jTextField.setText((String) value);
+            jTextField.setText((String) value.toString());
         }
     }
         valeurCellEditorCourrante = getValeurCourranteByPattern();

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 
 public class AfficheurEventSupport {
@@ -61,6 +62,18 @@ public class AfficheurEventSupport {
     public void dispatchMeshDragged(MeshMouseMotionEvent e) {
         for (MeshMouseListener listener : meshMouseListeners) {
             listener.meshDragged(e);
+        }
+    }
+
+    public void dispatchMeshDragEnd(MeshMouseMotionEvent e) {
+        for (MeshMouseListener listener : meshMouseListeners) {
+            listener.meshDragEnd(e);
+        }
+    }
+
+    public void dispatchMeshDragStart(MeshMouseMotionEvent e) {
+        for (MeshMouseListener listener : meshMouseListeners) {
+            listener.meshDragStart(e);
         }
     }
 
@@ -125,6 +138,8 @@ public class AfficheurEventSupport {
         MeshClicked,
         MeshHovered,
         MeshDragged,
+        MeshDragStart,
+        MeshDragEnd,
         SelectionChanged,
         VueChanged,
         CameraDirectionChanged,
@@ -134,29 +149,46 @@ public class AfficheurEventSupport {
     }
 
     public static class MeshMouseEvent extends MouseEvent {
-        private TriangleMeshGroup mesh;
-        public MeshMouseEvent(MouseEvent e, TriangleMeshGroup mesh) {
+        private TriangleMesh mesh;
+        public MeshMouseEvent(MouseEvent e, TriangleMesh mesh) {
             super(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX(), e.getY(), e.getClickCount(),
                     e.isPopupTrigger(), e.getButton());
             this.mesh = mesh;
         }
 
-        public TriangleMeshGroup getMesh() {
+        public TriangleMesh getMesh() {
             return mesh;
         }
 
     }
 
     public static class MeshMouseMotionEvent extends MouseEvent {
-        private TriangleMeshGroup mesh;
-        public MeshMouseMotionEvent(MouseEvent e, TriangleMeshGroup mesh) {
+        private TriangleMesh mesh;
+        private Vector3D initialMeshPosition;
+        Vector3D diffMeshPosition;
+
+        public MeshMouseMotionEvent(MouseEvent e, TriangleMesh mesh, Vector3D initialMeshPosition) {
+            this(e, mesh, initialMeshPosition, new Vector3D(0, 0, 0));
+        }
+
+        public MeshMouseMotionEvent(MouseEvent e, TriangleMesh mesh, Vector3D initialMeshPosition, Vector3D diffMeshPosition) {
             super(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX(), e.getY(), e.getClickCount(),
                     e.isPopupTrigger(), e.getButton());
             this.mesh = mesh;
+            this.initialMeshPosition = initialMeshPosition;
+            this.diffMeshPosition = diffMeshPosition;
         }
 
-        public TriangleMeshGroup getMesh() {
+        public TriangleMesh getMesh() {
             return mesh;
+        }
+
+        public Vector3D getInitialMeshPosition() {
+            return initialMeshPosition;
+        }
+
+        public Vector3D getDiffMeshPosition() {
+            return diffMeshPosition;
         }
     }
 
@@ -213,6 +245,8 @@ public class AfficheurEventSupport {
         public void meshClicked(MeshMouseEvent e);
         public void meshHovered(MeshMouseMotionEvent e);
         public void meshDragged(MeshMouseMotionEvent e);
+        public void meshDragStart(MeshMouseMotionEvent e);
+        public void meshDragEnd(MeshMouseMotionEvent e);
         public void mouseEnterMesh(MeshMouseMotionEvent e);
         public void mouseExitMesh(MeshMouseMotionEvent e);
     }

@@ -11,7 +11,6 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.Triangle;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.shapes.RectCuboid;
-import ca.ulaval.glo2004.gui.Constants;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -246,6 +245,139 @@ public class PanelHelper {
         return group;
     }
 
+    public static TriangleMeshGroup buildRallongeVertical(double largeur, double hauteur, double d, double angle,
+            double m, Vector3D position) {
+        TriangleMeshGroup rallongeVertGroup = new TriangleMeshGroup();
+
+        double x0 = position.x;
+        double y0 = position.y;
+        double z0 = position.z;
+        double diffHauteur = d / 2 * Math.tan(Math.toRadians(angle));
+        double space = 5;
+
+        double[] p1 = new double[] { x0, y0, z0 };
+        double[] p2 = new double[] { x0, y0 + diffHauteur, z0 + d / 2 - m / 2 };
+        double[] p3 = new double[] { x0 + largeur, y0 + diffHauteur, z0 + d / 2 - m / 2 };
+        double[] p4 = new double[] { x0 + largeur, y0, z0 };
+
+        double[] p5 = new double[] { x0 + d / 2 + m / 2, y0 + d / 2 + space, z0 + d / 2 - m / 2 };
+        double[] p6 = new double[] { x0 + d / 2 + m / 2, y0 + d / 2 + diffHauteur + space, z0 + d };
+        double[] p7 = new double[] { x0 + largeur - d / 2 - m / 2, y0 + d / 2 + diffHauteur + space, z0 + d };
+        double[] p8 = new double[] { x0 + largeur - d / 2 - m / 2, y0 + d / 2 + space, z0 + d / 2 - m / 2 };
+
+        double[] p9 = new double[] { x0, y0 + hauteur, z0 };
+        double[] p10 = new double[] { x0, y0 + hauteur, z0 + d / 2 - m / 2 };
+        double[] p11 = new double[] { x0 + d / 2 + m / 2, y0 + hauteur, z0 + d / 2 - m / 2 };
+        double[] p12 = new double[] { x0 + d / 2 + m / 2, y0 + hauteur, z0 + d };
+        double[] p13 = new double[] { x0 + largeur - d / 2 - m / 2, y0 + hauteur, z0 + d };
+        double[] p14 = new double[] { x0 + largeur - d / 2 - m / 2, y0 + hauteur, z0 + d / 2 - m / 2 };
+        double[] p15 = new double[] { x0 + largeur, y0 + hauteur, z0 + d / 2 - m / 2 };
+        double[] p16 = new double[] { x0 + largeur, y0 + hauteur, z0 };
+
+        List<double[][]> triangles = new ArrayList<double[][]>();
+
+        // Top (2 faces, 4 triangles)
+        triangles.add(new double[][] { p1, p2, p3 });
+        triangles.add(new double[][] { p1, p3, p4 });
+
+        triangles.add(new double[][] { p1, p4, p9 });
+        triangles.add(new double[][] { p4, p16, p9 });
+
+        triangles.add(new double[][] { p5, p6, p7 });
+        triangles.add(new double[][] { p5, p7, p8 });
+
+        triangles.add(new double[][] { p2, p5, p8 });
+        triangles.add(new double[][] { p2, p8, p3 });
+
+        triangles.add(new double[][] { p7, p12, p13 });
+        triangles.add(new double[][] { p6, p12, p7 });
+
+        triangles.add(new double[][] { p13, p8, p7 });
+        triangles.add(new double[][] { p13, p14, p8 });
+
+        triangles.add(new double[][] { p14, p15, p8 });
+        triangles.add(new double[][] { p15, p3, p8 });
+
+        triangles.add(new double[][] { p12, p6, p5 });
+        triangles.add(new double[][] { p12, p5, p11 });
+
+        triangles.add(new double[][] { p10, p5, p2 });
+        triangles.add(new double[][] { p10, p11, p5 });
+
+        triangles.add(new double[][] { p9, p10, p2 });
+        triangles.add(new double[][] { p9, p2, p1 });
+
+        triangles.add(new double[][] { p15, p16, p3 });
+        triangles.add(new double[][] { p4, p3, p16 });
+
+        // triangles.add(new double[][] { p14, p15, p8 });
+        // triangles.add(new double[][] { p15, p3, p8 });
+
+        // Bottom (2 faces, 4 triangles)
+        triangles.add(new double[][] { p9, p10, p16 });
+        triangles.add(new double[][] { p10, p15, p16 });
+        triangles.add(new double[][] { p11, p12, p14 });
+        triangles.add(new double[][] { p12, p13, p14 });
+
+        TriangleMesh mesh = TriangleMesh.fromDoubleList(triangles);
+
+        rallongeVertGroup.addMesh(mesh);
+
+        return rallongeVertGroup;
+    };
+
+    public static TriangleMeshGroup buildPignon(double width, double depth, double angle, Vector3D position) {
+        TriangleMeshGroup pignonGroup = new TriangleMeshGroup();
+
+        // Hauteur du pignon est égal à la largeur du chalet multiplié par tan(angle) (h
+        // = w * tan(angle))
+        double height = width * Math.tan(Math.toRadians(angle));
+
+        // Points face extérieur
+        double[] p1 = new double[] { position.x, position.y, position.z };
+        double[] p2 = new double[] { position.x + width, position.y + height, position.z };
+        double[] p3 = new double[] { position.x, position.y + height, position.z };
+
+        double[] p4 = new double[] { position.x, position.y, position.z + depth / 2 };
+        double[] p5 = new double[] { position.x + width, position.y + height, position.z + depth / 2 };
+        double[] p6 = new double[] { position.x, position.y + height, position.z + depth / 2 };
+
+        double[] p7 = new double[] { position.x + depth / 2, position.y + height, position.z + depth / 2 };
+        double[] p8 = new double[] { position.x + depth / 2, position.y + height, position.z + depth };
+        double[] p9 = new double[] { position.x + width - depth / 2, position.y + height, position.z + depth };
+        double[] p10 = new double[] { position.x + width - depth / 2, position.y + height, position.z + depth / 2 };
+
+        double[] p11 = new double[] { position.x, position.y + Math.tan(Math.toRadians(angle)) * depth / 2, position.z + depth / 2 };
+        double[] p12 = new double[] { position.x + depth / 2, position.y + Math.tan(Math.toRadians(angle)) * depth / 2, position.z + depth / 2 };
+
+        List<double[][]> triangles = new ArrayList<double[][]>();
+
+
+        triangles.add(new double[][] { p1, p2, p3 });
+
+        triangles.add(new double[][] { p1, p2, p4 });
+        triangles.add(new double[][] { p2, p5, p4 });
+
+        triangles.add(new double[][] { p2, p5, p3 });
+        triangles.add(new double[][] { p5, p6, p3 });
+
+        triangles.add(new double[][] { p1, p3, p4 });
+        triangles.add(new double[][] { p3, p6, p4 });
+
+        triangles.add(new double[][] { p8, p7, p9 });
+        triangles.add(new double[][] { p9, p7, p10 });
+
+        triangles.add(new double[][] { p11, p4, p12 });
+
+        triangles.add(new double[][] { p6, p11, p12 });
+        triangles.add(new double[][] { p6, p12, p7 });
+        
+
+        TriangleMesh pignonMesh = TriangleMesh.fromDoubleList(triangles);
+        pignonGroup.addMesh(pignonMesh);
+        return pignonGroup;
+    }
+
     public static class RectPlane2D {
         public List<double[][]> triangles = new ArrayList<double[][]>();
         int axis = 0; // 0 = x, 1 = y, 2 = z
@@ -347,7 +479,7 @@ public class PanelHelper {
             this.truncate = truncate;
             this.accessoireDTOs = accessoireDTOs;
             this.computeHoles = computeHoles;
-            
+
             this.setDraggable(false);
             this.rebuild();
         }
@@ -707,7 +839,7 @@ public class PanelHelper {
 
             // meshRetraits = meshRetraits.translate(meshRetraits.getCenter().multiply(-1));
             // meshRetraits = meshRetraits
-            //         .translate(new Vector3D(-chaletDTO.longueur / 2, 0, -largeur / 2));
+            // .translate(new Vector3D(-chaletDTO.longueur / 2, 0, -largeur / 2));
             this.meshRetraits = meshRetraits;
         }
 
@@ -736,7 +868,6 @@ public class PanelHelper {
                 }
 
                 accMesh.ID = accessoireDTO.accessoireId.toString();
-                accMesh.setIdentifier(accessoireDTO.accessoireId.toString());
                 accMesh.setValid(accessoireDTO.valide);
 
                 switch (typeMur) {
@@ -801,7 +932,7 @@ public class PanelHelper {
 
                         break;
                 }
-                
+
                 accMesh = accMesh.translate(new Vector3D(0, -chaletDTO.hauteur / 2, 0));
                 this.meshAccessoires.add(accMesh);
             }
@@ -822,7 +953,8 @@ public class PanelHelper {
                     this.meshFini = this.meshFini.translate(
                             new Vector3D(0, 0, -this.chaletDTO.longueur / 2 + this.chaletDTO.epaisseurMur / 2));
 
-                    this.meshRetraits = this.meshRetraits.translate(new Vector3D(-this.chaletDTO.largeur / 2, 0, -this.chaletDTO.longueur / 2));
+                    this.meshRetraits = this.meshRetraits
+                            .translate(new Vector3D(-this.chaletDTO.largeur / 2, 0, -this.chaletDTO.longueur / 2));
                     break;
                 case Arriere:
                     this.meshBrut = this.meshBrut.rotateYOnPlace(Math.PI);
@@ -834,7 +966,8 @@ public class PanelHelper {
                             new Vector3D(0, 0, this.chaletDTO.longueur / 2 - this.chaletDTO.epaisseurMur / 2));
 
                     this.meshRetraits = this.meshRetraits.rotate(0, Math.PI, 0);
-                    this.meshRetraits = this.meshRetraits.translate(new Vector3D(this.chaletDTO.largeur / 2, 0, this.chaletDTO.longueur / 2));
+                    this.meshRetraits = this.meshRetraits
+                            .translate(new Vector3D(this.chaletDTO.largeur / 2, 0, this.chaletDTO.longueur / 2));
 
                     break;
                 case Droit:
@@ -847,7 +980,8 @@ public class PanelHelper {
                             new Vector3D(-this.chaletDTO.largeur / 2 + this.chaletDTO.epaisseurMur / 2, 0, 0));
 
                     this.meshRetraits = this.meshRetraits.rotate(0, Math.PI / 2, 0);
-                    this.meshRetraits = this.meshRetraits.translate(new Vector3D(-this.chaletDTO.largeur / 2, 0, this.chaletDTO.longueur / 2));
+                    this.meshRetraits = this.meshRetraits
+                            .translate(new Vector3D(-this.chaletDTO.largeur / 2, 0, this.chaletDTO.longueur / 2));
                     break;
                 case Gauche:
                     this.meshBrut = this.meshBrut.rotateYOnPlace(Math.PI / 2);
@@ -859,7 +993,8 @@ public class PanelHelper {
                             new Vector3D(this.chaletDTO.largeur / 2 - this.chaletDTO.epaisseurMur / 2, 0, 0));
 
                     this.meshRetraits = this.meshRetraits.rotate(0, -Math.PI / 2, 0);
-                    this.meshRetraits = this.meshRetraits.translate(new Vector3D(this.chaletDTO.largeur / 2, 0, -this.chaletDTO.longueur / 2));
+                    this.meshRetraits = this.meshRetraits
+                            .translate(new Vector3D(this.chaletDTO.largeur / 2, 0, -this.chaletDTO.longueur / 2));
                     break;
             }
         }
@@ -920,35 +1055,6 @@ public class PanelHelper {
         }
 
         public void setActiveOuput(OutputType outputType) {
-            // this.rebuild();
-            // switch (outputType) {
-            // case Brut:
-            // this.getMeshes().clear();
-            // this.getMeshes().add(this.meshBrut);
-            // break;
-            // case Fini:
-            // this.getMeshes().clear();
-            // this.getMeshes().add(this.meshFini);
-            // break;
-            // case Retraits:
-            // this.getMeshes().clear();
-            // this.getMeshes().addAll(this.meshRetraits.getMeshes());
-            // break;
-            // // case FiniWithRetraits:
-            // // this.getMeshes().clear();
-            // // this.getMeshes().addAll(this.meshRetraits.getMeshes());
-            // // this.getMeshes().add(this.meshFini);
-            // // break;
-            // // case FiniWithAccessoires:
-            // // this.getMeshes().clear();
-            // // this.getMeshes().add(this.meshFini);
-            // // System.out.println("Accessoires : " + this.meshAccessoires.size());
-            // // this.getMeshes().addAll(this.meshAccessoires);
-            // // break;
-            // default:
-            // break;
-            // }
-
             switch (outputType) {
                 case Brut:
                     this.getMeshes().clear();

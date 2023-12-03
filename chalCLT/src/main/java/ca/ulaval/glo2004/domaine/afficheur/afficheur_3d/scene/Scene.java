@@ -1,7 +1,5 @@
 package ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene;
 
-import java.awt.Color;
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,12 +35,33 @@ public class Scene {
         return meshes.get(index);
     }
 
-    public TriangleMeshGroup getMesh(String id) {
-        for (TriangleMeshGroup mesh : meshes) {
-            if (mesh.getIdentifier().equals(id)) {
-                return mesh;
+    @FunctionalInterface
+    public static interface TraverseMeshesFn {
+        public void apply(TriangleMesh mesh);
+    }
+
+    public void traverseMeshes(TriangleMesh mesh, TraverseMeshesFn fn) {
+        fn.apply(mesh);
+        if (mesh instanceof TriangleMeshGroup) {
+            for (TriangleMesh child : ((TriangleMeshGroup) mesh).getMeshes()) {
+                traverseMeshes(child, fn);
             }
         }
+    }
+
+    public TriangleMesh getMesh(String id) {
+        for (TriangleMeshGroup group: this.getMeshes()) {
+            if (group.getIdentifier().equals(id)) {
+                return group;
+            }
+
+            for (TriangleMesh mesh: group.getMeshes()) {
+                if (mesh.getIdentifier().equals(id)) {
+                    return mesh;
+                }
+            }
+        }
+
         return null;
     }
 

@@ -57,23 +57,27 @@ public class Camera {
     }
 
     public void setId(String id) {
-        this.pcs.firePropertyChange("id", this.id, id);
+        String old = this.id;
         this.id = id;
+                this.pcs.firePropertyChange("id", old, id);
     }
 
     public void setPosition(Vector3D position) {
-        this.pcs.firePropertyChange("position", this.position, position);
+        Vector3D old = this.position.copy();
         this.position = position;
+        this.pcs.firePropertyChange("position", old, position);
     }
 
     public void setDirection(Vector3D direction) {
-        this.pcs.firePropertyChange("direction", this.direction, direction);
+        Vector3D old = this.direction.copy();
         this.direction = direction;
+        this.pcs.firePropertyChange("direction", old, direction);
     }
 
     public void setScale(double scale) {
-        this.pcs.firePropertyChange("scale", this.scale, scale);
+        double old = this.scale;
         this.scale = scale;
+        this.pcs.firePropertyChange("scale", old, scale);
     }
 
     private void zoom(Point mousePosition, Dimension viewportDimension, boolean precise, int fac) { // 1 = in, -1 = out

@@ -1,13 +1,8 @@
 package ca.ulaval.glo2004.gui.components;
 
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JRadioButton;
-import javax.swing.SwingUtilities;
 
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.gui.MainWindow;
@@ -106,7 +101,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
             renduVisuelBrutItem.setSelected(true);
 
             mainWindow.drawingPanel.afficheur.renduVisuel = PanelHelper.OutputType.Brut;
-            mainWindow.drawingPanel.rechargerAffichage();
+            mainWindow.drawingPanel.afficheur.rechargerAffichage();
         });
 
         renduVisuelFiniItem.addActionListener((evt) -> {
@@ -116,7 +111,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
             renduVisuelFiniItem.setSelected(true);
 
             mainWindow.drawingPanel.afficheur.renduVisuel = PanelHelper.OutputType.Fini;
-            mainWindow.drawingPanel.rechargerAffichage();
+            mainWindow.drawingPanel.afficheur.rechargerAffichage();
         });
 
         renduVisuelRetraitsItem.addActionListener((evt) -> {
@@ -126,7 +121,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
             renduVisuelRetraitsItem.setSelected(true);
 
             mainWindow.drawingPanel.afficheur.renduVisuel = PanelHelper.OutputType.Retraits;
-            mainWindow.drawingPanel.rechargerAffichage();
+            mainWindow.drawingPanel.afficheur.rechargerAffichage();
         });
 
         // `Selection` menu
@@ -440,7 +435,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         mainWindow.getControleur().creeProjet();
         // mainWindow.arbreDesComposantesChalet.buildTree();
         mainWindow.reloadArbreComposantes();
-        mainWindow.drawingPanel.rechargerAffichage();
+        mainWindow.drawingPanel.afficheur.rechargerAffichage();
 
         mainWindow.dispatchNotificationAlert("Nouveau Projet", "Un nouveau projet a été créé.", NotificationType.INFO,
                 3000);
@@ -504,7 +499,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         preferencesUtilisateurDTO.afficherGrille = !preferencesUtilisateurDTO.afficherGrille;
         mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO);
         mainWindow.drawingPanel.afficheur.updateViewGrid();
-        mainWindow.drawingPanel.rechargerAffichage();
+        mainWindow.drawingPanel.afficheur.rechargerAffichage();
     }
 
     private void afficherMursVoisinsItemActionPerformed(java.awt.event.ActionEvent evt) {
@@ -514,13 +509,13 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     private void annulerItemActionPerformed(java.awt.event.ActionEvent evt) {
         System.out.println("UNDO");
         mainWindow.getControleur().undo();
-        mainWindow.drawingPanel.rechargerAffichage();
+        mainWindow.drawingPanel.afficheur.rechargerAffichage();
     }
 
     private void retablirItemActionPerformed(java.awt.event.ActionEvent evt) {
         System.out.println("REDO");
         mainWindow.getControleur().redo();
-        mainWindow.drawingPanel.rechargerAffichage();
+        mainWindow.drawingPanel.afficheur.rechargerAffichage();
     }
 
     public void activerVue(Afficheur.TypeDeVue vue) {

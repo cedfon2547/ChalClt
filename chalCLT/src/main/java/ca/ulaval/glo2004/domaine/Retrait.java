@@ -127,6 +127,12 @@ public class Retrait {
             this.dimensions = retrait.dimensions;
             this.position = retrait.position;
         }
+
+        public RetraitDTO(RetraitDTO retraitDTO) {
+            this.type = retraitDTO.type;
+            this.dimensions = retraitDTO.dimensions;
+            this.position = retraitDTO.position;
+        }
     }
 
     /**

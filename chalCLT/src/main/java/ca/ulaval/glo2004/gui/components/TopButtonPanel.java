@@ -1,10 +1,11 @@
 package ca.ulaval.glo2004.gui.components;
 
 import ca.ulaval.glo2004.App;
-import ca.ulaval.glo2004.domaine.Controleur;
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.domaine.TypeAccessoire;
 import ca.ulaval.glo2004.domaine.TypeMur;
+import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEvent;
+import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEventListener;
 import ca.ulaval.glo2004.gui.MainWindow;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 import javax.swing.*;
@@ -30,6 +31,16 @@ public class TopButtonPanel extends JPanel {
     public TopButtonPanel(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
         initComponent();
+        initializeIcons();
+
+        mainWindow.getControleur().addUserPreferencesEventListener(new UserPreferencesEventListener() {
+            @Override
+            public void change(UserPreferencesEvent event) {
+                PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateur = event.getPreferencesUtilisateurDTO();
+                grilleToggleBtn.setSelected(preferencesUtilisateur.afficherGrille);
+                voisinToggleBtn.setSelected(preferencesUtilisateur.afficherVoisinSelection);
+            }
+        });
     }
 
     public void initComponent() {
@@ -51,6 +62,61 @@ public class TopButtonPanel extends JPanel {
         grilleToggleBtn.setPreferredSize(new Dimension(75, 50));
         voisinToggleBtn.setPreferredSize(new Dimension(75, 50));
 
+        creerFenetreBtn.setFocusPainted(false);
+        creerFenetreBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        creerFenetreBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        creerFenetreBtn.setBorder(null);
+
+        creerPorteBtn.setFocusPainted(false);
+        creerPorteBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        creerPorteBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        creerPorteBtn.setBorder(null);
+
+        supprimerAccessoireBtn.setFocusPainted(false);
+        supprimerAccessoireBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        supprimerAccessoireBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        supprimerAccessoireBtn.setBorder(null);
+
+        grilleToggleBtn.setFocusPainted(false);
+        grilleToggleBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        grilleToggleBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        grilleToggleBtn.setBorder(null);
+        grilleToggleBtn.setSelected(true);
+
+        voisinToggleBtn.setFocusPainted(false);
+        voisinToggleBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        voisinToggleBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        voisinToggleBtn.setBorder(null);
+
+        creerFenetreBtn.addActionListener(creerFenetreActionListener());
+        creerPorteBtn.addActionListener(creerPortActionListener());
+        supprimerAccessoireBtn.addActionListener(supprimerAccessoireActionListener());
+        grilleToggleBtn.addActionListener(grilleToggleActionListener());
+        voisinToggleBtn.addActionListener(voisinToggleActionListener());
+
+        add(creerFenetreBtn);
+        add(creerPorteBtn);
+        add(supprimerAccessoireBtn);
+        add(voisinToggleBtn);
+        add(grilleToggleBtn);
+
+        update();
+    }
+
+    public void update() {
+        PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = mainWindow.getControleur()
+                .getPreferencesUtilisateur();
+
+        grilleToggleBtn.setSelected(preferencesUtilisateurDTO.afficherGrille);
+
+        if (mainWindow.getAccessoiresSelectionnees().size() != 0) {
+            supprimerAccessoireBtn.setEnabled(true);
+        } else {
+            supprimerAccessoireBtn.setEnabled(false);
+        }
+    }
+
+    private void initializeIcons() {
         String fenetreImgName = "/icons/dark/fenetre_1.png";
         String porteImgName = "/icons/dark/door_1.png";
         String supprimerImgName = "/icons/dark/supprimer_1.png";
@@ -63,7 +129,7 @@ public class TopButtonPanel extends JPanel {
         URL grilleImgURL = App.class.getResource(grilleImgName);
         URL voisinImgURL = App.class.getResource(voisinImgName);
         Toolkit tk = Toolkit.getDefaultToolkit();
-        
+
         Image fenetreImg = tk.getImage(fenetreImgURL);
         Image porteImg = tk.getImage(porteImgURL);
         Image supprimerImg = tk.getImage(supprimerImgURL);
@@ -82,38 +148,15 @@ public class TopButtonPanel extends JPanel {
         iconGrille.setImage(iconGrille.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
         iconVoisins.setImage(iconVoisins.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
 
-        creerFenetreBtn.setFocusPainted(false);
         creerFenetreBtn.setIcon(iconFenetre);
-        creerFenetreBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
-        creerFenetreBtn.setHorizontalTextPosition(SwingConstants.CENTER);
-        creerFenetreBtn.setBorder(null);
-
-        creerPorteBtn.setFocusPainted(false);
         creerPorteBtn.setIcon(iconPorte);
-        creerPorteBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
-        creerPorteBtn.setHorizontalTextPosition(SwingConstants.CENTER);
-        creerPorteBtn.setBorder(null);
-
-        supprimerAccessoireBtn.setFocusPainted(false);
         supprimerAccessoireBtn.setIcon(iconSupprimer);
-        supprimerAccessoireBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
-        supprimerAccessoireBtn.setHorizontalTextPosition(SwingConstants.CENTER);
-        supprimerAccessoireBtn.setBorder(null);
-
-        grilleToggleBtn.setFocusPainted(false);
         grilleToggleBtn.setIcon(iconGrille);
-        grilleToggleBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
-        grilleToggleBtn.setHorizontalTextPosition(SwingConstants.CENTER);
-        grilleToggleBtn.setBorder(null);
-        grilleToggleBtn.setSelected(true);
-
-        voisinToggleBtn.setFocusPainted(false);
         voisinToggleBtn.setIcon(iconVoisins);
-        voisinToggleBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
-        voisinToggleBtn.setHorizontalTextPosition(SwingConstants.CENTER);
-        voisinToggleBtn.setBorder(null);
+    }
 
-        creerFenetreBtn.addActionListener(new ActionListener() {
+    private ActionListener creerFenetreActionListener() {
+        return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Afficheur.TypeDeVue vueActive = mainWindow.drawingPanel.afficheur.getVueActive();
@@ -143,12 +186,14 @@ public class TopButtonPanel extends JPanel {
 
                 mainWindow.getControleur().ajouterAccessoire(typeMur, TypeAccessoire.Fenetre, new double[] { 0, 0 },
                         new double[] { 20, 20 });
-                mainWindow.drawingPanel.rechargerAffichage();
+                // mainWindow.drawingPanel.rechargerAffichage();
 
             }
-        });
+        };
+    }
 
-        creerPorteBtn.addActionListener(new ActionListener() {
+    private ActionListener creerPortActionListener() {
+        return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Afficheur.TypeDeVue vueActive = mainWindow.drawingPanel.afficheur.getVueActive();
@@ -178,28 +223,23 @@ public class TopButtonPanel extends JPanel {
 
                 mainWindow.getControleur().ajouterAccessoire(typeMur, TypeAccessoire.Porte, new double[] { 0, 0 },
                         new double[] { 32, 60 });
-                mainWindow.drawingPanel.rechargerAffichage();
+                // mainWindow.drawingPanel.rechargerAffichage();
             }
-        });
+        };
+    }
 
-        supprimerAccessoireBtn.addActionListener(new ActionListener() {
+    private ActionListener supprimerAccessoireActionListener() {
+        return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // System.out.println(mainWindow.getAccessoiresSelectionnees().size());
                 mainWindow.deleteAllAccessoiresSelectionnees();
             }
-        });
+        };
+    }
 
-        PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = mainWindow.getControleur().getPreferencesUtilisateur();
-        grilleToggleBtn.setSelected(preferencesUtilisateurDTO.afficherGrille);
-
-        mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.PREFERENCES_UTILISATEUR, (evt) -> {
-            PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateur = (PreferencesUtilisateur.PreferencesUtilisateurDTO) evt.getNewValue();
-            grilleToggleBtn.setSelected(preferencesUtilisateur.afficherGrille);
-            voisinToggleBtn.setSelected(preferencesUtilisateur.afficherVoisinSelection);
-        });
-
-        grilleToggleBtn.addActionListener(new ActionListener() {
+    private ActionListener grilleToggleActionListener() {
+        return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -207,36 +247,21 @@ public class TopButtonPanel extends JPanel {
                         .getPreferencesUtilisateur();
                 preferencesUtilisateurDTO.afficherGrille = !preferencesUtilisateurDTO.afficherGrille;
                 mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO);
-                // mainWindow.drawingPanel.afficheur.updateViewGrid();
-                // mainWindow.drawingPanel.rechargerAffichage();
             }
-        });
+        };
+    }
 
-        voisinToggleBtn.addActionListener(new ActionListener() {
+    private ActionListener voisinToggleActionListener() {
+        return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = mainWindow.getControleur()
                         .getPreferencesUtilisateur();
                 preferencesUtilisateurDTO.afficherVoisinSelection = !preferencesUtilisateurDTO.afficherVoisinSelection;
                 mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO);
-                
-                mainWindow.drawingPanel.rechargerAffichage();
+
+                mainWindow.drawingPanel.afficheur.rechargerAffichage();
             }
-        });
-
-        
-        if(mainWindow.getAccessoiresSelectionnees().size()==0){
-            supprimerAccessoireBtn.setEnabled(false);
-        }
-
-        // voisinToggleBtn.setEnabled(false);
-
-        add(creerFenetreBtn);
-        add(creerPorteBtn);
-        add(supprimerAccessoireBtn);
-        add(voisinToggleBtn);
-        add(grilleToggleBtn);
-        mainWindow.drawingPanel.rechargerAffichage();
+        };
     }
-
 }

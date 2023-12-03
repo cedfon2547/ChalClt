@@ -112,6 +112,13 @@ public class Mur {
         this.chalet.updateChalet(chaletDTO);
     }
 
+    public double getHauteur() {
+        return this.chalet.getHauteur();
+    }
+
+    public double getLargeur() {
+        return this.getType() == TypeMur.Facade || this.getType() == TypeMur.Arriere ? this.chalet.getLargeur() : this.chalet.getLongueur();
+    }
     /**
      * Modifie la liste des accessoires du mur.
      *
@@ -290,6 +297,14 @@ public class Mur {
         return this.verifierCollisionAcc(accessoire.toDTO(), margeAcc);
     }
 
+    public boolean isAccessoireOutside(Accessoire accessoire) {
+        Rectangle2D murRect = new Rectangle2D.Double(0, 0, this.getLargeur(), this.getHauteur());
+        Rectangle2D accRect = new Rectangle2D.Double(accessoire.getPosition()[0], accessoire.getPosition()[1],
+                accessoire.getDimension()[0], accessoire.getDimension()[1]);
+
+        return !murRect.contains(accRect);
+    }
+
     /**
      * Permet de voir la validité de l'accessoire dont les paramètres passent en
      * entrée par rapport aux autres accessoires
@@ -371,12 +386,18 @@ public class Mur {
         double largeur = this.type == TypeMur.Facade || this.type == TypeMur.Arriere ? this.chalet.getLargeur()
                 : this.chalet.getLongueur();
         boolean isColliding = this.verifierCollisionAcc(accessoire, margeMinimal);
+        boolean isOutside = this.isAccessoireOutside(accessoire);
+
         if (accessoire.getAccessoireType() == TypeAccessoire.Porte) {
             // Mettre a jour la valeur de la position Y afin que l'accessoire soit aligné
             // avec le bas du mur.
             double newPositionY = this.chalet.getHauteur() - accessoire.getDimension()[1];
             accessoire.setPosition(
                     new double[] { accessoire.getPosition()[0], newPositionY - chalet.getMargeAccessoire() });
+        }
+
+        if (isOutside) {
+            return false;
         }
 
         if (isColliding) {

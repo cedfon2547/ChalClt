@@ -1,6 +1,5 @@
 package ca.ulaval.glo2004.domaine.afficheur;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseListener;
@@ -21,12 +20,12 @@ import ca.ulaval.glo2004.domaine.Controleur;
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.domaine.TypeSensToit;
+import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEvent;
+import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEventListener;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.Rasterizer;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Matrix;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.shapes.RectCuboid;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper.MurTriangleMeshGroup;
@@ -34,6 +33,7 @@ import ca.ulaval.glo2004.domaine.utils.PanelHelper.OutputType;
 import ca.ulaval.glo2004.domaine.utils.ObjectImporter;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.domaine.utils.STLTools;
+import java.awt.Color;
 
 public class Afficheur {
     private AfficheurEventSupport eventSupport = new AfficheurEventSupport();
@@ -103,17 +103,28 @@ public class Afficheur {
     }
 
     private void initialize() {
-        this.controleur.addPropertyChangeListener(Controleur.EventType.PREFERENCES_UTILISATEUR,
-                new java.beans.PropertyChangeListener() {
-                    @Override
-                    public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                        PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = (PreferencesUtilisateur.PreferencesUtilisateurDTO) evt
-                                .getNewValue();
-                        toggleShowGrid(preferencesUtilisateurDTO.afficherGrille);
-                        scene.getConfiguration().setGridStep(preferencesUtilisateurDTO.gridSpacing);
-                        drawingPanel.repaint();
-                    }
-                });
+        // this.controleur.addPropertyChangeListener(Controleur.EventType.PREFERENCES_UTILISATEUR,
+        // new java.beans.PropertyChangeListener() {
+        // @Override
+        // public void propertyChange(java.beans.PropertyChangeEvent evt) {
+        // PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO =
+        // (PreferencesUtilisateur.PreferencesUtilisateurDTO) evt
+        // .getNewValue();
+        // toggleShowGrid(preferencesUtilisateurDTO.afficherGrille);
+        // scene.getConfiguration().setGridStep(preferencesUtilisateurDTO.gridSpacing);
+        // drawingPanel.repaint();
+        // }
+        // });
+        this.controleur.addUserPreferencesEventListener(new UserPreferencesEventListener() {
+            @Override
+            public void change(UserPreferencesEvent event) {
+                PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = event
+                        .getPreferencesUtilisateurDTO();
+                toggleShowGrid(preferencesUtilisateurDTO.afficherGrille);
+                scene.getConfiguration().setGridStep(preferencesUtilisateurDTO.gridSpacing);
+                drawingPanel.repaint();
+            }
+        });
 
         this.scene.getCamera().addPropertyChangeListener("direction", new PropertyChangeListener() {
             @Override
@@ -169,25 +180,16 @@ public class Afficheur {
         this.vueActive = vueActive;
     }
 
-    public void rechargerAffichage() throws Exception {
+    public void rechargerAffichage() {
         System.out.println("RENDERING");
 
         Chalet.ChaletDTO chaletDTO = this.getControleur().getChalet();
         PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = this.getControleur()
                 .getPreferencesUtilisateur();
-        scene.getConfiguration().setGridStep(preferencesUtilisateurDTO.gridSpacing);
+        getScene().getConfiguration().setGridStep(preferencesUtilisateurDTO.gridSpacing);
         toggleShowGrid(preferencesUtilisateurDTO.afficherGrille);
 
-        // scene.getConfiguration().setShowGridXY(preferencesUtilisateurDTO.afficherGrille);
-        // scene.getConfiguration().setShowGridYZ(preferencesUtilisateurDTO.afficherGrille);
-        // scene.getConfiguration().setShowGridXZ(preferencesUtilisateurDTO.afficherGrille);
-        scene.clearMeshes();
-
-        // RectCuboid cuboid = new RectCuboid(new Vector3D(drawingPanel.getWidth(), drawingPanel.getHeight(), 0),
-        //         new Vector3D(50, 50, 50));
-        // TriangleMeshGroup cuboidGroup = new TriangleMeshGroup(new TriangleMesh[] { cuboid });
-        // cuboidGroup = cuboidGroup.translate(new Vector3D(drawingPanel.getWidth(), drawingPanel.getHeight(), 0));
-        // scene.addMesh(cuboidGroup);
+        getScene().clearMeshes();
 
         boolean sideTruncate = chaletDTO.sensToit == TypeSensToit.Nord || chaletDTO.sensToit == TypeSensToit.Sud;
 
@@ -216,35 +218,120 @@ public class Afficheur {
         murGaucheGroup.setActiveOuput(this.renduVisuel);
         murDroitGroup.setActiveOuput(this.renduVisuel);
 
-        this.scene.addMesh(murFacadeGroup);
-        this.scene.addMesh(murArriereGroup);
-        this.scene.addMesh(murDroitGroup);
-        this.scene.addMesh(murGaucheGroup);
+        // TODO: For test purpose. Was trying to define resizable bounding element
+        // around meshes. To continue...
+        // Vector3D[] bounding = murFacadeGroup.getBounding();
+        // Vector3D diff = bounding[1].sub(bounding[0]);
 
-        this.scene.getMeshes().addAll(murFacadeGroup.getAccessoiresMeshes());
-        this.scene.getMeshes().addAll(murArriereGroup.getAccessoiresMeshes());
-        this.scene.getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
-        this.scene.getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
+        // Vector3D pos1 = new Vector3D(bounding[1].x + 10, bounding[0].y - 4,
+        // bounding[0].z + diff.z / 2);
+
+        // TriangleMesh boundingCuboid1 = new RectCuboid(pos1, new Vector3D(4, 4, 4));
+        // TriangleMesh boundingCuboid2 = new RectCuboid(pos1, new Vector3D(4, 4, 4));
+        // TriangleMesh boundingCuboid3 = new RectCuboid(pos1, new Vector3D(4, 4, 4));
+
+        // TriangleMeshGroup boundingGroup1 = new TriangleMeshGroup(new TriangleMesh[] {
+        // boundingCuboid1 });
+        // TriangleMeshGroup boundingGroup2 = new TriangleMeshGroup(new TriangleMesh[] {
+        // boundingCuboid2 }).translate(new Vector3D(0, diff.y / 2 - 2, 0));
+        // TriangleMeshGroup boundingGroup3 = new TriangleMeshGroup(new TriangleMesh[] {
+        // boundingCuboid3 }).translate(new Vector3D(0, diff.y + 2, 0));
+
+        // afficheur.getScene().addMesh(boundingGroup1);
+        // afficheur.getScene().addMesh(boundingGroup2);
+        // afficheur.getScene().addMesh(boundingGroup3);
+
+        // afficheur.getEventSupport().addMeshMouseListener(new MeshMouseListener() {
+        // @Override
+        // public void meshHovered(MeshMouseMotionEvent e) {
+        // System.out.println("Mesh Hovered " + e.getMesh().ID);
+        // }
+
+        // @Override
+        // public void meshClicked(MeshMouseEvent e) {
+        // // TODO Auto-generated method stub
+
+        // }
+
+        // @Override
+        // public void meshDragEnd(MeshMouseMotionEvent e) {
+        // // TODO Auto-generated method stub
+
+        // }
+
+        // @Override
+        // public void meshDragStart(MeshMouseMotionEvent e) {
+        // // TODO Auto-generated method stub
+
+        // }
+
+        // @Override
+        // public void meshDragged(MeshMouseMotionEvent e) {
+        // // TODO Auto-generated method stub
+
+        // }
+
+        // @Override
+        // public void mouseEnterMesh(MeshMouseMotionEvent e) {
+        // // TODO Auto-generated method stub
+        // System.out.println("MouseEnterMesh " + e.getMesh().ID);
+        // if (e.getMesh().ID == boundingGroup1.ID) {
+        // setCursor(new java.awt.Cursor(java.awt.Cursor.E_RESIZE_CURSOR));
+        // } else if (e.getMesh().ID == boundingGroup2.id) {
+        // setCursor(new java.awt.Cursor(java.awt.Cursor.N_RESIZE_CURSOR));
+        // } else if (e.getMesh() == boundingGroup3) {
+        // setCursor(new java.awt.Cursor(java.awt.Cursor.S_RESIZE_CURSOR));
+        // } else {
+        // setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        // }
+
+        // }
+
+        // @Override
+        // public void mouseExitMesh(MeshMouseMotionEvent e) {
+        // // TODO Auto-generated method stub
+        // System.out.println("MouseExitMesh " + e.getMesh().ID);
+        // setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        // }
+        // });
+
+        // TriangleMeshGroup pignonMesh = PanelHelper.buildPignon(chaletDTO.largeur,
+        // chaletDTO.epaisseurMur,
+        // chaletDTO.angleToit, new Vector3D(0, 0, 0));
+
+        // afficheur.getScene().addMesh(pignonMesh);
+
+        getScene().addMesh(murFacadeGroup);
+        getScene().addMesh(murArriereGroup);
+        getScene().addMesh(murDroitGroup);
+        getScene().addMesh(murGaucheGroup);
+
+        getScene().getMeshes().addAll(murFacadeGroup.getAccessoiresMeshes());
+        getScene().getMeshes().addAll(murArriereGroup.getAccessoiresMeshes());
+        getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
+        getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
 
         // // Pour tester l'importation d'objets à partir de fichiers .obj
         if (getControleur().getPreferencesUtilisateur().afficherPlancher) {
-            URI url = App.class.getResource("/objets/floor_single.obj").toURI();
-            TriangleMesh mesh = ObjectImporter.importObject(url); // shaep
-            // mesh = mesh.scale(new Vector3D(1, 1, 1));
-            mesh.getMaterial().setColor(new Color(114, 114, 114, 255));
-            // mesh.getMaterial().setShininess(0);
-            // mesh.getMaterial().setSpecular(0);
-            mesh.getMaterial().setAmbient(0.5);
+            try {
+                URI url = App.class.getResource("/objets/floor_single.obj").toURI();
+                TriangleMesh mesh = ObjectImporter.importObject(url); // shaep
+                // mesh = mesh.scale(new Vector3D(1, 1, 1));
+                mesh.getMaterial().setColor(new Color(114, 114, 114, 255));
+                // mesh.getMaterial().setShininess(0);
+                // mesh.getMaterial().setSpecular(0);
+                mesh.getMaterial().setAmbient(0.5);
 
-            TriangleMeshGroup meshGroup = new TriangleMeshGroup(new TriangleMesh[] { mesh });
-            meshGroup = meshGroup.scale(new Vector3D(1, 1, -1)); // flip the z axis the right way around
-            meshGroup.setSelectable(false);
+                TriangleMeshGroup meshGroup = new TriangleMeshGroup(new TriangleMesh[] { mesh });
+                meshGroup = meshGroup.scale(new Vector3D(1, 1, -1)); // flip the z axis the right way around
+                meshGroup.setSelectable(false);
 
-            meshGroup.setDraggable(false);
-            scene.addMesh(meshGroup);
+                meshGroup.setDraggable(false);
+                getScene().addMesh(meshGroup);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-
-        // TODO: Ajouter le plancher
     }
 
     public void exportStlFini(String directoryPath, String nomChalet) {
@@ -356,7 +443,7 @@ public class Afficheur {
         this.rasterizer.draw(g, dimension);
 
         // Draw a 3D cube
-        
+
     }
 
     public void changerVue(TypeDeVue vue) {
@@ -426,7 +513,7 @@ public class Afficheur {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 drawingPanel.grabFocus();
 
-                TriangleMeshGroup clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
+                TriangleMesh clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
 
                 if (clickedMesh == null) {
                     deselectAllMeshed();
@@ -478,7 +565,7 @@ public class Afficheur {
                         deselectAllMeshed();
                     }
 
-                    clickedMesh.setSelected(true);
+                    clickedMesh.setSelected(!clickedMesh.getSelected());
                     eventSupport.dispatchMeshClicked(new AfficheurEventSupport.MeshMouseEvent(evt, clickedMesh));
                     eventSupport.dispatchSelectionChanged(new AfficheurEventSupport.MeshSelectionEvent(getSelection()));
                 }
@@ -514,8 +601,9 @@ public class Afficheur {
             Vector3D initialDragCamDirection = null;
             Point2D initialPoint = null;
             Vector3D initialDragMeshPosition = null;
-            TriangleMeshGroup lastMouseEnteredMesh = null;
-            TriangleMeshGroup lastDraggedMesh = null;
+            TriangleMesh lastMouseEnteredMesh = null;
+            TriangleMesh lastDraggedMesh = null;
+            boolean dragStarted = false;
 
             MouseListener mouseListener = new MouseListener() {
                 @Override
@@ -530,10 +618,11 @@ public class Afficheur {
                     initialDragCamPosition = scene.getCamera().getPosition();
                     initialDragCamDirection = scene.getCamera().getDirection();
 
-                    TriangleMeshGroup clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
+                    TriangleMesh clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
                     if (clickedMesh != null && clickedMesh.getDraggable()) {
                         initialDragMeshPosition = clickedMesh.getPosition();
                         lastDraggedMesh = clickedMesh;
+                        dragStarted = false;
                     }
                 }
 
@@ -543,7 +632,18 @@ public class Afficheur {
                     initialPoint = null;
                     initialDragCamPosition = null;
                     initialDragCamDirection = null;
+
+                    if (lastDraggedMesh != null && dragStarted) {
+                        dragStarted = false;
+                        lastDraggedMesh.setIsDragged(false);
+
+                        lastDraggedMesh.setSelected(true);
+                        getEventSupport().dispatchMeshDragEnd(new AfficheurEventSupport.MeshMouseMotionEvent(evt,
+                                lastDraggedMesh, lastDraggedMesh.getPosition()));
+                    }
+
                     lastDraggedMesh = null;
+                    drawingPanel.repaint();
                 }
 
                 @Override
@@ -567,14 +667,27 @@ public class Afficheur {
                     initialDragCamPosition = scene.getCamera().getPosition();
                     initialPoint = evt.getPoint();
 
-                    TriangleMeshGroup clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
+                    TriangleMesh clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
                     if (clickedMesh != null && clickedMesh.getDraggable()) {
                         initialDragMeshPosition = clickedMesh.getPosition();
                         lastDraggedMesh = clickedMesh;
+                        getScene().clearAllSelection();
+                        clickedMesh.setIsDragged(true);
+                        // getEventSupport().dispatchMeshDragStart(new
+                        // AfficheurEventSupport.MeshMouseMotionEvent(evt, lastDraggedMesh,
+                        // lastDraggedMesh.getPosition()));
                     }
                 }
 
                 if (lastDraggedMesh != null) {
+                    if (dragStarted == false) {
+                        dragStarted = true;
+                        getScene().clearAllSelection();
+                        lastDraggedMesh.setIsDragged(true);
+                        getEventSupport().dispatchMeshDragStart(new AfficheurEventSupport.MeshMouseMotionEvent(evt,
+                                lastDraggedMesh, lastDraggedMesh.getPosition()));
+                    }
+
                     Vector3D diff = new Vector3D(evt.getX(), evt.getY(), 0)
                             .sub(new Vector3D(initialPoint.getX(), initialPoint.getY(), 0))
                             .multiply(scene.getCamera().getInverseRotationTransformation());
@@ -592,9 +705,11 @@ public class Afficheur {
                     }
                     Vector3D position = initialDragMeshPosition.add(diff);
 
+                    // System.out.println("Dragged mesh position: " + position);
                     lastDraggedMesh.setPosition(position);
+                    eventSupport.dispatchMeshDragged(new AfficheurEventSupport.MeshMouseMotionEvent(evt,
+                            lastDraggedMesh, initialDragMeshPosition, diff));
                     drawingPanel.repaint();
-                    eventSupport.dispatchMeshDragged(new AfficheurEventSupport.MeshMouseMotionEvent(evt, lastDraggedMesh));
                     return;
                 }
 
@@ -635,28 +750,31 @@ public class Afficheur {
 
             @Override
             public void mouseMoved(java.awt.event.MouseEvent evt) {
-                TriangleMeshGroup mouseEnteredMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
+                TriangleMesh mouseEnteredMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
 
                 if (mouseEnteredMesh != null) {
                     if (lastMouseEnteredMesh != null && mouseEnteredMesh != lastMouseEnteredMesh) {
                         // pcs.firePropertyChange(AfficheurEvent.MouseExitMesh.toString(), null,
                         // lastMouseEnteredMesh);
                         eventSupport.dispatchMouseExitMesh(
-                                new AfficheurEventSupport.MeshMouseMotionEvent(evt, lastMouseEnteredMesh));
+                                new AfficheurEventSupport.MeshMouseMotionEvent(evt, lastMouseEnteredMesh,
+                                        lastMouseEnteredMesh.getPosition()));
                     }
 
                     // pcs.firePropertyChange(AfficheurEvent.MouseEnterMesh.toString(),
                     // lastMouseEnteredMesh,
                     // mouseEnteredMesh);
                     eventSupport.dispatchMouseEnterMesh(
-                            new AfficheurEventSupport.MeshMouseMotionEvent(evt, mouseEnteredMesh));
+                            new AfficheurEventSupport.MeshMouseMotionEvent(evt, mouseEnteredMesh,
+                                    mouseEnteredMesh.getPosition()));
                     lastMouseEnteredMesh = mouseEnteredMesh;
                 } else {
                     if (lastMouseEnteredMesh != null) {
                         // pcs.firePropertyChange(AfficheurEvent.MouseExitMesh.toString(), null,
                         // lastMouseEnteredMesh);
                         eventSupport.dispatchMouseExitMesh(
-                                new AfficheurEventSupport.MeshMouseMotionEvent(evt, lastMouseEnteredMesh));
+                                new AfficheurEventSupport.MeshMouseMotionEvent(evt, lastMouseEnteredMesh,
+                                        lastMouseEnteredMesh.getPosition()));
                         lastMouseEnteredMesh = null;
                     }
                 }
