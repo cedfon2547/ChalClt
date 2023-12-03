@@ -30,6 +30,7 @@ import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport.MeshMouseMotion
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
+import ca.ulaval.glo2004.domaine.utils.PanelHelper.MurTriangleMeshGroup;
 import ca.ulaval.glo2004.gui.MainWindow;
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Controleur;
@@ -286,6 +287,19 @@ public class DrawingPanel extends javax.swing.JPanel {
         this.afficheur.getEventSupport().addMeshSelectionListener(new AfficheurEventSupport.MeshSelectionListener() {
             @Override
             public void selectionChanged(AfficheurEventSupport.MeshSelectionEvent evt) {
+                boolean isOnlyWall = evt.getSelectedMeshIDs().stream().allMatch((id) -> {
+                    TriangleMesh mesh = afficheur.getScene().getMesh(id);
+                    if (mesh instanceof MurTriangleMeshGroup) {
+                        return true;
+                    }
+                    return false;
+                });
+
+                if (isOnlyWall) {
+                    mainWindow.clearAccessoiresSelectionnees();
+                    mainWindow.showChaletTable();
+                }
+                
                 if (evt.getSelectedMeshIDs().size() == 0) {
                     mainWindow.clearAccessoiresSelectionnees();
                     mainWindow.showChaletTable();
