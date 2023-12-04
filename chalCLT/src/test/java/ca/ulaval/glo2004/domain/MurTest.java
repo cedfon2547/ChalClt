@@ -1,4 +1,4 @@
-package ca.ulaval.glo2004.domain.utils;
+package ca.ulaval.glo2004.domain;
 
 import ca.ulaval.glo2004.domaine.*;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class MurTest {
         TypeMur typeMur = TypeMur.Facade;
         double[] pos = {3.0, 3.0};
         double[] dim = {1.0,1.0};
-        return new Accessoire(typeAccessoire, typeMur, pos, dim);
+        return new Accessoire(typeAccessoire, typeMur, pos, dim, true);
     }
 
    // Accessoire qui colisionne pour eviter redondance
@@ -36,7 +36,7 @@ public class MurTest {
         TypeMur typeMur2 = TypeMur.Facade;
         double[] pos2 = {2.0, 3.0};
         double[] dim2 = {2.0,1.0};
-        return new Accessoire(typeAccessoire2, typeMur2, pos2, dim2);
+        return new Accessoire(typeAccessoire2, typeMur2, pos2, dim2, true);
     }
 
     // Accessoire qui ne colisionne pas pour eviter redondance
@@ -45,7 +45,7 @@ public class MurTest {
         TypeMur typeMur2 = TypeMur.Facade;
         double[] pos2 = {7.0, 8.0};
         double[] dim2 = {1.0,2.0};
-        return new Accessoire(typeAccessoire2, typeMur2, pos2, dim2);
+        return new Accessoire(typeAccessoire2, typeMur2, pos2, dim2, true);
     }
 
     // Test
@@ -70,7 +70,7 @@ public class MurTest {
 
         assertEquals(accessoire, mur.getAccessoires().get(0));
 
-        Accessoire accessoireMauvaisePosition = new Accessoire(typeAccessoire, typeMur, mauvaise_pos, dim);
+        Accessoire accessoireMauvaisePosition = new Accessoire(typeAccessoire, typeMur, mauvaise_pos, dim, true);
         try {
             mur.ajouterAccessoire(accessoireMauvaisePosition);
             fail("Devrait lever une IllegalArgumentException pour la mauvaise position");
@@ -152,7 +152,7 @@ public class MurTest {
         Mur mur = setTest();
         double[] pos = {2.0, 3.0};
         double[] dim = {1.0,2.0};
-        Accessoire accessoire = new Accessoire(typeAccessoire, mur.getType(), pos, dim);
+        Accessoire accessoire = new Accessoire(typeAccessoire, mur.getType(), pos, dim, true);
 
         List<Accessoire> accessoireList = new ArrayList<>();
         accessoireList.add(accessoire);

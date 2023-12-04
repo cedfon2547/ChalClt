@@ -1,9 +1,7 @@
-package ca.ulaval.glo2004.domain.utils;
+package ca.ulaval.glo2004.domain;
 
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import org.junit.Test;
-
-import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

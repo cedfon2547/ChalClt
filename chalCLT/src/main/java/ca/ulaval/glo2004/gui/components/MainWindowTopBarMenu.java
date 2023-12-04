@@ -444,7 +444,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     private void exporterBrutItemActionPerformed(java.awt.event.ActionEvent evt) {
         // exporterItemActionPerformed(evt);
         // System.out.println("Exporter Bruts");
-        ExportationDirectoryFileChoose exportationDirectoryFileChoose = new ExportationDirectoryFileChoose((path) -> {
+        new ExportationDirectoryFileChoose((path) -> {
             // System.out.println("Path: " + path);
             mainWindow.drawingPanel.afficheur.exportSTL(path, PanelHelper.OutputType.Brut);
             return true;
@@ -454,7 +454,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     private void exporterFiniItemActionPerformed(java.awt.event.ActionEvent evt) {
         // exporterItemActionPerformed(evt);
         // System.out.println("Exporter Fini");
-        ExportationDirectoryFileChoose exportationDirectoryFileChoose = new ExportationDirectoryFileChoose((path) -> {
+        new ExportationDirectoryFileChoose((path) -> {
             // System.out.println("Path: " + path);
             mainWindow.drawingPanel.afficheur.exportSTL(path, PanelHelper.OutputType.Fini);
 
@@ -466,7 +466,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     private void exporterRetraitsItemActionPerformed(java.awt.event.ActionEvent evt) {
         // exporterItemActionPerformed(evt);
         // System.out.println("Exporter Retraits");
-        ExportationDirectoryFileChoose exportationDirectoryFileChoose = new ExportationDirectoryFileChoose((path) -> {
+        new ExportationDirectoryFileChoose((path) -> {
             // System.out.println("Path: " + path);
             mainWindow.drawingPanel.afficheur.exportSTL(path, PanelHelper.OutputType.Retraits);
             return true;
@@ -507,14 +507,16 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     }
 
     private void annulerItemActionPerformed(java.awt.event.ActionEvent evt) {
-        System.out.println("UNDO");
+        // System.out.println("UNDO");
         mainWindow.getControleur().undo();
+        mainWindow.recharger();
         mainWindow.drawingPanel.afficheur.rechargerAffichage();
     }
 
     private void retablirItemActionPerformed(java.awt.event.ActionEvent evt) {
-        System.out.println("REDO");
+        // System.out.println("REDO");
         mainWindow.getControleur().redo();
+        mainWindow.recharger();
         mainWindow.drawingPanel.afficheur.rechargerAffichage();
     }
 
@@ -543,6 +545,15 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
                 vueGaucheItem.setSelected(true);
                 break;
         }
+    }
+
+    public void recharger() {
+        PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = mainWindow.getControleur()
+                .getPreferencesUtilisateur();
+
+        afficherGrilleItem.setSelected(preferencesUtilisateurDTO.afficherGrille);
+        afficherMursVoisinsItem.setSelected(preferencesUtilisateurDTO.afficherVoisinSelection);
+        activerVue(mainWindow.drawingPanel.afficheur.getVueActive());
     }
 
     @FunctionalInterface

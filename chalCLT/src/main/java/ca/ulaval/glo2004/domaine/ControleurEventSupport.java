@@ -116,6 +116,8 @@ public class ControleurEventSupport {
         CreateProject,
         CloseProject,
         InvalidAccessoires,
+        Undo,
+        Redo,
     }
 
     public static class UserPreferencesEvent {

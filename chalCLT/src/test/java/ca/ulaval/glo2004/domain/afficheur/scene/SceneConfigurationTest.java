@@ -1,3 +1,4 @@
+package ca.ulaval.glo2004.domain.afficheur.scene;
 // package ca.ulaval.glo2004.domain.utils.scene;
 
 // import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.SceneConfiguration;

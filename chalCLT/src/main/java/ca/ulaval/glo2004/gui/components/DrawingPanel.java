@@ -4,7 +4,6 @@ import java.awt.event.KeyListener;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -81,8 +80,13 @@ public class DrawingPanel extends javax.swing.JPanel {
             { "Droite", Afficheur.TypeDeVue.Droite.toString(), null },
             { "Gauche", Afficheur.TypeDeVue.Gauche.toString(), null },
     };
+    SwitchToggleButton toggleGridSwitch;
+    SwitchToggleButton toggleVoisinSwitch;
+    GridStepSpinner gridStepSpinner;
+
     // Afficheur.TypeDeVue vueActive = Afficheur.TypeDeVue.Dessus;
-    javax.swing.JToolBar barreOutils;
+    javax.swing.JToolBar barreOutilsVue;
+
 
     public DrawingPanel(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
@@ -101,14 +105,6 @@ public class DrawingPanel extends javax.swing.JPanel {
         return mainWindow;
     }
 
-    // public Scene getScene() {
-    // return scene;
-    // }
-
-    // public Rasterizer getRasterizer() {
-    // return rasterizer;
-    // }
-
     private void initComponents() {
         setBackground(java.awt.Color.BLACK);
 
@@ -126,7 +122,6 @@ public class DrawingPanel extends javax.swing.JPanel {
 
             @Override
             public void change(AccessoireEvent event) {
-                // TODO Auto-generated method stub
                 // rechargerAffichage();
             }
         });
@@ -156,6 +151,12 @@ public class DrawingPanel extends javax.swing.JPanel {
                         break;
                     case java.awt.event.KeyEvent.VK_PAGE_DOWN:
                         lightPosition.z -= step;
+                        break;
+                    case java.awt.event.KeyEvent.VK_EQUALS:
+                        afficheur.getScene().getLight().setIntensity(afficheur.getScene().getLight().getIntensity() + 0.01);
+                        break;
+                    case java.awt.event.KeyEvent.VK_MINUS:
+                        afficheur.getScene().getLight().setIntensity(afficheur.getScene().getLight().getIntensity() - 0.01);
                         break;
                     default:
                         break;
@@ -252,7 +253,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             @Override
             public void meshDragStart(MeshMouseMotionEvent evt) {
                 // TODO Auto-generated method stub
-                System.out.println("MeshDragStart " + evt.getMesh().ID);
+                // System.out.println("MeshDragStart " + evt.getMesh().ID);
                 TriangleMeshGroup clickedMesh = (TriangleMeshGroup) evt.getMesh();
                 Accessoire.AccessoireDTO accDto = mainWindow.getControleur()
                         .getAccessoire(UUID.fromString(clickedMesh.ID));
@@ -267,7 +268,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             @Override
             public void meshDragEnd(MeshMouseMotionEvent e) {
                 // TODO Auto-generated method stub
-                System.out.println("MeshDragEnd " + e.getMesh().ID);
+                // System.out.println("MeshDragEnd " + e.getMesh().ID);
                 initialAccessoireDTO = null;
             }
 
@@ -292,6 +293,8 @@ public class DrawingPanel extends javax.swing.JPanel {
                     if (mesh instanceof MurTriangleMeshGroup) {
                         return true;
                     }
+                    mainWindow.arbreDesComposantesChalet.setSelectedAccessoire(mainWindow.getAccessoiresSelectionnees());
+
                     return false;
                 });
 
@@ -303,17 +306,16 @@ public class DrawingPanel extends javax.swing.JPanel {
                 if (evt.getSelectedMeshIDs().size() == 0) {
                     mainWindow.clearAccessoiresSelectionnees();
                     mainWindow.showChaletTable();
-                } else {
+                } else {                    
                     mainWindow.clearAccessoiresSelectionnees();
-                    List<String> selections = mainWindow.getAccessoiresSelectionnees().stream()
-                            .map((acc) -> acc.accessoireId.toString()).collect(Collectors.toList());
 
                     for (String id : evt.getSelectedMeshIDs()) {
+                        // System.out.println(id);
+
                         Accessoire.AccessoireDTO accessoireDTO = mainWindow.getControleur()
                                 .getAccessoire(UUID.fromString(id));
-                        // System.out.println("Selection Changed " + accDto);
 
-                        if (accessoireDTO != null && !selections.contains(id)) {
+                        if (accessoireDTO != null) {
                             mainWindow.ajouterAccessoireSelectionnee(accessoireDTO);
                         } else {
                             mainWindow.retirerAccessoireSelectionnee(accessoireDTO);
@@ -325,6 +327,8 @@ public class DrawingPanel extends javax.swing.JPanel {
                                 .get(mainWindow.getAccessoiresSelectionnees().size() - 1));
                     }
                 }
+
+                mainWindow.arbreDesComposantesChalet.setSelectedAccessoire(mainWindow.getAccessoiresSelectionnees());
             }
         });
 
@@ -355,15 +359,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             }
         });
 
-        // this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.AJOUTER_ACCESSOIRE, (evt) -> {
-        //     System.out.println("Accessoire added " + evt.getNewValue());
-        // });
-
-        // this.mainWindow.getControleur().addPropertyChangeListener(Controleur.EventType.RETIRER_ACCESSOIRE, (evt) -> {
-
-        // });
-
-        buildToolbar();
+        buildViewToolbar();
     }
 
     @Override
@@ -380,14 +376,14 @@ public class DrawingPanel extends javax.swing.JPanel {
         });
     }
 
-    private void buildToolbar() {
-        barreOutils = new javax.swing.JToolBar("Barre d'outils");
+    private void buildViewToolbar() {
+        barreOutilsVue = new javax.swing.JToolBar("Barre d'outils");
 
-        barreOutils.setFloatable(false);
-        barreOutils.setRollover(true);
-        barreOutils.setBorder(new EmptyBorder(0, 0, 0, 0));
-        barreOutils.setLayout(new GridLayout());
-        barreOutils.setOpaque(false);
+        barreOutilsVue.setFloatable(false);
+        barreOutilsVue.setRollover(true);
+        barreOutilsVue.setBorder(new EmptyBorder(0, 0, 0, 0));
+        barreOutilsVue.setLayout(new GridLayout());
+        barreOutilsVue.setOpaque(false);
 
         for (Object[] obj : btns) {
             final String label = (String) obj[0];
@@ -424,7 +420,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             if (btn.getName() == afficheur.getVueActive().toString())
                 btn.setBackground(activeBtnColor);
 
-            barreOutils.add(btn);
+            barreOutilsVue.add(btn);
 
             invalidate();
             repaint();
@@ -439,20 +435,20 @@ public class DrawingPanel extends javax.swing.JPanel {
 
             JPanel gridContainer = new JPanel();
             JLabel gridLabel = new JLabel("Grille: ");
-            SwitchToggleButton switchGrid = new SwitchToggleButton(SwitchToggleButton.Size.XSMALL,
+            toggleGridSwitch = new SwitchToggleButton(SwitchToggleButton.Size.XSMALL,
                     preferencesUtilisateurDTO.afficherGrille);
 
             JPanel gridStepContainer = new JPanel();
             JLabel gridStepLabel = new JLabel("Taille: ");
-            GridStepSpinner gridStepSpinner = new GridStepSpinner();
+            gridStepSpinner = new GridStepSpinner();
 
             JPanel voisinContainer = new JPanel();
             JLabel voisinLabel = new JLabel("Voisin: ");
-            SwitchToggleButton switchVoisin = new SwitchToggleButton(SwitchToggleButton.Size.XSMALL,
+            toggleVoisinSwitch = new SwitchToggleButton(SwitchToggleButton.Size.XSMALL,
                     preferencesUtilisateurDTO.afficherVoisinSelection);
 
-            switchGrid.setEnabled(true);
-            switchVoisin.setEnabled(true);
+            toggleGridSwitch.setEnabled(true);
+            toggleVoisinSwitch.setEnabled(true);
 
             gridContainer.setOpaque(false);
             voisinContainer.setOpaque(false);
@@ -463,10 +459,10 @@ public class DrawingPanel extends javax.swing.JPanel {
             gridStepContainer.setLayout(new BorderLayout());
 
             gridContainer.add(gridLabel, BorderLayout.WEST);
-            gridContainer.add(switchGrid, BorderLayout.EAST);
+            gridContainer.add(toggleGridSwitch, BorderLayout.EAST);
 
             voisinContainer.add(voisinLabel, BorderLayout.WEST);
-            voisinContainer.add(switchVoisin, BorderLayout.EAST);
+            voisinContainer.add(toggleVoisinSwitch, BorderLayout.EAST);
 
             gridStepContainer.add(gridStepLabel, BorderLayout.WEST);
             gridStepContainer.add(gridStepSpinner, BorderLayout.EAST);
@@ -489,24 +485,24 @@ public class DrawingPanel extends javax.swing.JPanel {
                 // mainWindow.drawingPanel.rechargerAffichage();
             });
 
-            switchGrid.addEventSelected((evt) -> {
+            toggleGridSwitch.addEventSelected((evt) -> {
                 // System.out.println("Grid Selected: " + switchGrille.isSelected());
                 PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = mainWindow.getControleur()
                         .getPreferencesUtilisateur();
 
-                preferencesUtilisateurDTO2.afficherGrille = switchGrid.isSelected();
+                preferencesUtilisateurDTO2.afficherGrille = toggleGridSwitch.isSelected();
                 mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO2);
                 // afficheur.toggleShowGrid(switchGrid.isSelected());
                 // afficheur.updateViewGrid();
                 // mainWindow.drawingPanel.rechargerAffichage();
             });
 
-            switchVoisin.addEventSelected((evt) -> {
+            toggleVoisinSwitch.addEventSelected((evt) -> {
                 // System.out.println("Voisin Selected: " + switchVoisin.isSelected());
                 PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = mainWindow.getControleur()
                         .getPreferencesUtilisateur();
 
-                preferencesUtilisateurDTO2.afficherVoisinSelection = switchVoisin.isSelected();
+                preferencesUtilisateurDTO2.afficherVoisinSelection = toggleVoisinSwitch.isSelected();
                 mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO2);
                 afficheur.rechargerAffichage();
             });
@@ -521,8 +517,8 @@ public class DrawingPanel extends javax.swing.JPanel {
                     // System.out.println("Preferences Utilisateur changed");
                     PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = event.getPreferencesUtilisateurDTO();
 
-                    switchGrid.setSelected(preferencesUtilisateurDTO2.afficherGrille);
-                    switchVoisin.setSelected(preferencesUtilisateurDTO2.afficherVoisinSelection);
+                    toggleGridSwitch.setSelected(preferencesUtilisateurDTO2.afficherGrille);
+                    toggleVoisinSwitch.setSelected(preferencesUtilisateurDTO2.afficherVoisinSelection);
                     gridStepSpinner.setValue(preferencesUtilisateurDTO2.gridSpacing);
                     gridStepSpinner.setEnabled(preferencesUtilisateurDTO2.afficherGrille);
 
@@ -541,7 +537,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(0, 263, Short.MAX_VALUE)
-                                .addComponent(barreOutils, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                .addComponent(barreOutilsVue, javax.swing.GroupLayout.PREFERRED_SIZE,
                                         javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -556,7 +552,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 321,
                                         Short.MAX_VALUE)
-                                .addComponent(barreOutils, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                .addComponent(barreOutilsVue, javax.swing.GroupLayout.PREFERRED_SIZE,
                                         javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)));
     }
 
@@ -570,6 +566,15 @@ public class DrawingPanel extends javax.swing.JPanel {
             else
                 btn.setBackground(inactiveBtnColor);
         }
+
+        PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = mainWindow.getControleur()
+                .getPreferencesUtilisateur();
+
+        toggleGridSwitch.setSelected(preferencesUtilisateurDTO.afficherGrille);
+        toggleVoisinSwitch.setSelected(preferencesUtilisateurDTO.afficherVoisinSelection);
+        gridStepSpinner.setValue(preferencesUtilisateurDTO.gridSpacing);
+        gridStepSpinner.setEnabled(preferencesUtilisateurDTO.afficherGrille);
+
     }
 
     public Controleur getControleur() {
@@ -594,162 +599,5 @@ public class DrawingPanel extends javax.swing.JPanel {
         afficheur.weakChangerVue(vue); // update seulement les flags
         mainWindow.menu.activerVue(afficheur.getVueActive());
         updateToolbarBtns();
-        // invalidate(); // redundant when not updating camera
-        // repaint();
     }
-
-    // public MurTriangleMeshGroup murFacadeGroup;
-    // public MurTriangleMeshGroup murArriereGroup;
-    // public MurTriangleMeshGroup murDroitGroup;
-    // public MurTriangleMeshGroup murGaucheGroup;
-    // public OutputType renduVisuel = OutputType.Fini;
-
-    // public void rechargerAffichage() {
-    //     System.out.println("RENDERING");
-
-    //     Chalet.ChaletDTO chaletDTO = this.getControleur().getChalet();
-    //     PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = this.getControleur()
-    //             .getPreferencesUtilisateur();
-    //     afficheur.getScene().getConfiguration().setGridStep(preferencesUtilisateurDTO.gridSpacing);
-    //     afficheur.toggleShowGrid(preferencesUtilisateurDTO.afficherGrille);
-
-    //     afficheur.getScene().clearMeshes();
-
-    //     boolean sideTruncate = chaletDTO.sensToit == TypeSensToit.Nord || chaletDTO.sensToit == TypeSensToit.Sud;
-
-    //     List<Accessoire.AccessoireDTO> murFacadeAccessoires = getControleur().getAccessoires(TypeMur.Facade);
-    //     List<Accessoire.AccessoireDTO> murArriereAccessoires = getControleur().getAccessoires(TypeMur.Arriere);
-    //     List<Accessoire.AccessoireDTO> murDroitAccessoires = getControleur().getAccessoires(TypeMur.Droit);
-    //     List<Accessoire.AccessoireDTO> murGaucheAccessoires = getControleur().getAccessoires(TypeMur.Gauche);
-
-    //     murFacadeGroup = new MurTriangleMeshGroup(chaletDTO, TypeMur.Facade, murFacadeAccessoires, !sideTruncate,
-    //             false);
-    //     murArriereGroup = new MurTriangleMeshGroup(chaletDTO, TypeMur.Arriere, murArriereAccessoires, !sideTruncate,
-    //             false);
-    //     murDroitGroup = new MurTriangleMeshGroup(chaletDTO, TypeMur.Droit, murDroitAccessoires, sideTruncate, false);
-    //     murGaucheGroup = new MurTriangleMeshGroup(chaletDTO, TypeMur.Gauche, murGaucheAccessoires, sideTruncate, false);
-
-    //     // Si true, des trous sont formés dans les murs pour les accessoires
-    //     // Présentement à false puisque les accessoires sont des objets 3D
-    //     // Nécessaire pour les exportations
-    //     murFacadeGroup.setComputeHoles(false);
-    //     murArriereGroup.setComputeHoles(false);
-    //     murDroitGroup.setComputeHoles(false);
-    //     murGaucheGroup.setComputeHoles(false);
-
-    //     murFacadeGroup.setActiveOuput(this.renduVisuel);
-    //     murArriereGroup.setActiveOuput(this.renduVisuel);
-    //     murGaucheGroup.setActiveOuput(this.renduVisuel);
-    //     murDroitGroup.setActiveOuput(this.renduVisuel);
-
-    //     // TODO: For test purpose. Was trying to define resizable bounding element around meshes. To continue...
-    //     // Vector3D[] bounding = murFacadeGroup.getBounding();
-    //     // Vector3D diff = bounding[1].sub(bounding[0]);
-
-    //     // Vector3D pos1 = new Vector3D(bounding[1].x + 10, bounding[0].y - 4, bounding[0].z + diff.z / 2);
-        
-    //     // TriangleMesh boundingCuboid1 = new RectCuboid(pos1, new Vector3D(4, 4, 4));
-    //     // TriangleMesh boundingCuboid2 = new RectCuboid(pos1, new Vector3D(4, 4, 4));
-    //     // TriangleMesh boundingCuboid3 = new RectCuboid(pos1, new Vector3D(4, 4, 4));
-
-    //     // TriangleMeshGroup boundingGroup1 = new TriangleMeshGroup(new TriangleMesh[] { boundingCuboid1 });
-    //     // TriangleMeshGroup boundingGroup2 = new TriangleMeshGroup(new TriangleMesh[] { boundingCuboid2 }).translate(new Vector3D(0, diff.y / 2 - 2, 0));
-    //     // TriangleMeshGroup boundingGroup3 = new TriangleMeshGroup(new TriangleMesh[] { boundingCuboid3 }).translate(new Vector3D(0, diff.y + 2, 0));
-        
-    //     // afficheur.getScene().addMesh(boundingGroup1);
-    //     // afficheur.getScene().addMesh(boundingGroup2);
-    //     // afficheur.getScene().addMesh(boundingGroup3);
-        
-    //     // afficheur.getEventSupport().addMeshMouseListener(new MeshMouseListener() {
-    //     //     @Override
-    //     //     public void meshHovered(MeshMouseMotionEvent e) {
-    //     //         System.out.println("Mesh Hovered " + e.getMesh().ID);
-    //     //     }
-
-    //     //     @Override
-    //     //     public void meshClicked(MeshMouseEvent e) {
-    //     //         // TODO Auto-generated method stub
-                
-    //     //     }
-
-    //     //     @Override
-    //     //     public void meshDragEnd(MeshMouseMotionEvent e) {
-    //     //         // TODO Auto-generated method stub
-                
-    //     //     }
-
-    //     //     @Override
-    //     //     public void meshDragStart(MeshMouseMotionEvent e) {
-    //     //         // TODO Auto-generated method stub
-                
-    //     //     }
-
-    //     //     @Override
-    //     //     public void meshDragged(MeshMouseMotionEvent e) {
-    //     //         // TODO Auto-generated method stub
-                
-    //     //     }
-
-    //     //     @Override
-    //     //     public void mouseEnterMesh(MeshMouseMotionEvent e) {
-    //     //         // TODO Auto-generated method stub
-    //     //         System.out.println("MouseEnterMesh " + e.getMesh().ID);
-    //     //         if (e.getMesh().ID == boundingGroup1.ID) {
-    //     //             setCursor(new java.awt.Cursor(java.awt.Cursor.E_RESIZE_CURSOR));
-    //     //         } else if (e.getMesh().ID == boundingGroup2.id) {
-    //     //             setCursor(new java.awt.Cursor(java.awt.Cursor.N_RESIZE_CURSOR));
-    //     //         } else if (e.getMesh() == boundingGroup3) {
-    //     //             setCursor(new java.awt.Cursor(java.awt.Cursor.S_RESIZE_CURSOR));
-    //     //         } else {
-    //     //             setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-    //     //         }
-
-                
-    //     //     }
-
-    //     //     @Override
-    //     //     public void mouseExitMesh(MeshMouseMotionEvent e) {
-    //     //         // TODO Auto-generated method stub
-    //     //         System.out.println("MouseExitMesh " + e.getMesh().ID);
-    //     //         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-    //     //     }
-    //     // });
-
-    //     // TriangleMeshGroup pignonMesh = PanelHelper.buildPignon(chaletDTO.largeur, chaletDTO.epaisseurMur,
-    //     //         chaletDTO.angleToit, new Vector3D(0, 0, 0));
-        
-    //     // afficheur.getScene().addMesh(pignonMesh);
-
-    //     afficheur.getScene().addMesh(murFacadeGroup);
-    //     afficheur.getScene().addMesh(murArriereGroup);
-    //     afficheur.getScene().addMesh(murDroitGroup);
-    //     afficheur.getScene().addMesh(murGaucheGroup);
-
-    //     afficheur.getScene().getMeshes().addAll(murFacadeGroup.getAccessoiresMeshes());
-    //     afficheur.getScene().getMeshes().addAll(murArriereGroup.getAccessoiresMeshes());
-    //     afficheur.getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
-    //     afficheur.getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
-
-    //     // // Pour tester l'importation d'objets à partir de fichiers .obj
-    //     if (getControleur().getPreferencesUtilisateur().afficherPlancher) {
-    //         try {
-    //             URI url = App.class.getResource("/objets/floor_single.obj").toURI();
-    //             TriangleMesh mesh = ObjectImporter.importObject(url); // shaep
-    //             // mesh = mesh.scale(new Vector3D(1, 1, 1));
-    //             mesh.getMaterial().setColor(new Color(114, 114, 114, 255));
-    //             // mesh.getMaterial().setShininess(0);
-    //             // mesh.getMaterial().setSpecular(0);
-    //             mesh.getMaterial().setAmbient(0.5);
-
-    //             TriangleMeshGroup meshGroup = new TriangleMeshGroup(new TriangleMesh[] { mesh });
-    //             meshGroup = meshGroup.scale(new Vector3D(1, 1, -1)); // flip the z axis the right way around
-    //             meshGroup.setSelectable(false);
-
-    //             meshGroup.setDraggable(false);
-    //             afficheur.getScene().addMesh(meshGroup);
-    //         } catch (Exception e) {
-    //             e.printStackTrace();
-    //         }
-    //     }
-    // }
 }

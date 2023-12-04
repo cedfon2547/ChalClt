@@ -62,6 +62,8 @@ public class Controleur extends ControleurEventSupport {
     }
 
     public void setChalet(Chalet.ChaletDTO chalet) {
+        this.undoRedoManager.saveState(this.projectActif);
+
         Chalet.ChaletDTO chaletDTO = this.projectActif.getChalet().toDTO();
         // this.pcs.firePropertyChange(EventType.CHALET, chaletDTO, chalet);
         projectActif.getChalet().updateChalet(chalet);
@@ -73,12 +75,14 @@ public class Controleur extends ControleurEventSupport {
     }
 
     public void setPreferencesUtilisateur(PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateur) {
+        this.undoRedoManager.saveState(this.projectActif);
         // this.pcs.firePropertyChange(EventType.PREFERENCES_UTILISATEUR, this.getPreferencesUtilisateur(), preferencesUtilisateur);
         projectActif.getPreferencesUtilisateur().update(preferencesUtilisateur);
         this.dispatchUserPreferencesChangeEvent(preferencesUtilisateur);
     }
 
     public void setAccessoire(Accessoire.AccessoireDTO accessoireDTO) {
+        this.undoRedoManager.saveState(this.projectActif);
         Accessoire accessoire = this.projectActif.getChalet().updateAccessoire(accessoireDTO);
 
         // this.pcs.firePropertyChange(EventType.ACCESSOIRE, accessoireDTO, accessoire.toDTO());
@@ -88,6 +92,7 @@ public class Controleur extends ControleurEventSupport {
     }
 
     public void ajouterAccessoire(TypeMur typeMur, TypeAccessoire typeAcc, double[] position, double[] dimension) {
+        this.undoRedoManager.saveState(this.projectActif);
         Accessoire accessoire = this.projectActif.getChalet().ajouterAccessoire(typeMur, typeAcc, position, dimension);
 
         this.dispatchAccessoireAddEvent(accessoire.toDTO());
@@ -96,18 +101,21 @@ public class Controleur extends ControleurEventSupport {
     }
 
     public void retirerAccessoire(TypeMur typeMur, UUID uuid) {
+        this.undoRedoManager.saveState(this.projectActif);
         Accessoire accessoire = this.projectActif.getChalet().retirerAccessoire(typeMur, uuid);
         this.dispatchAccessoireRemoveEvent(accessoire.toDTO());
         // this.pcs.firePropertyChange(EventType.RETIRER_ACCESSOIRE, null, accessoire.toDTO());
     }
 
     public void retirerAccessoire(UUID uuid) {
+        this.undoRedoManager.saveState(this.projectActif);
         Accessoire accessoire = this.projectActif.getChalet().retirerAccessoire(uuid);
         this.dispatchAccessoireRemoveEvent(accessoire.toDTO());
         // this.pcs.firePropertyChange(EventType.RETIRER_ACCESSOIRE, null, accessoire.toDTO());
     }
 
     public void retirerAccessoires(List<Accessoire.AccessoireDTO> accessoires) {
+        this.undoRedoManager.saveState(this.projectActif);
         List<Accessoire> removed = this.projectActif.getChalet().retirerAccessoires(accessoires);
         List<Accessoire.AccessoireDTO> removedDTOs = removed.stream().map((accessoire) -> accessoire.toDTO()).collect(Collectors.toList());
 
@@ -135,11 +143,13 @@ public class Controleur extends ControleurEventSupport {
     }
 
     public void undo() {
-        this.undoRedoManager.undo();
+        this.undoRedoManager.undo(this.projectActif);
+        this.dispatchChaletChangeEvent(getChalet());
     }
 
     public void redo() {
-        this.undoRedoManager.redo();
+        this.undoRedoManager.redo(this.projectActif);
+        this.dispatchChaletChangeEvent(getChalet());
     }
 }
 

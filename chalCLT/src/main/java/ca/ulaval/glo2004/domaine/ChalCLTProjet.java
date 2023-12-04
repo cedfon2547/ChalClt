@@ -35,14 +35,18 @@ public class ChalCLTProjet {
         this.preferencesUtilisateur = preferencesUtilisateur;
     }
 
+    public void setChalet(Chalet chalet) {
+        this.chalet = chalet;
+    }
+
     public static class ChalCLTProjetDTO {
         public String nom;
-        public Chalet.ChaletDTO chalet;
+        public Chalet.ChaletCompletDTO chalet;
         public PreferencesUtilisateur preferencesUtilisateur;
 
         public ChalCLTProjetDTO(ChalCLTProjet chalCLTProjet) {
             this.nom = chalCLTProjet.nom;
-            this.chalet = chalCLTProjet.chalet.toDTO();
+            this.chalet = new Chalet.ChaletCompletDTO(chalCLTProjet.chalet);
             this.preferencesUtilisateur = chalCLTProjet.preferencesUtilisateur;
         }
     }

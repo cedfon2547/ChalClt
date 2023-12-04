@@ -210,4 +210,19 @@ public class TableAccessoire extends JTable {
     public TitledBorder getTitledBorder() {
         return titledBorder;
     }
+
+    public void recharger() {
+        Accessoire.AccessoireDTO _accessoireDTO = mainWindow.getControleur().getAccessoire(accessoireDTO.accessoireId);
+        if (_accessoireDTO == null) {
+            return;
+        }
+
+        accessoireDTO = _accessoireDTO;
+        props[0][1] = accessoireDTO.accessoireNom;
+        props[1][1] = ImperialDimension.convertToImperial(accessoireDTO.dimensions[1]);
+        props[2][1] = ImperialDimension.convertToImperial(accessoireDTO.dimensions[0]);
+        props[3][1] = ImperialDimension.convertToImperial(accessoireDTO.position[0]);
+        props[4][1] = ImperialDimension.convertToImperial(accessoireDTO.position[1]);
+        model.fireTableDataChanged();
+    }
 }

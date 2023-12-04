@@ -89,9 +89,16 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
                 Accessoire.AccessoireDTO accDto = mainWindow.getControleur()
                         .getAccessoire(accNode.getAccessoireDTO().accessoireId);
 
+                if (accDto == null) {
+                    return this;
+                }
                 // Set the text of the node to the name of the accessory
                 this.setText(accDto.accessoireNom);
-                // this.setPreferredSize(new Dimension(100, 20));
+
+                if (selected) {
+                    backgroundSelectionColor = new Color(0, 84, 204);
+                    this.setBackground(backgroundSelectionColor);
+                }
             }
 
         } else if (tempDefaultMutableTreeNode.getUserObject() instanceof String) {

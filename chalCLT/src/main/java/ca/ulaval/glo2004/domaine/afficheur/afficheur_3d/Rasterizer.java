@@ -61,6 +61,13 @@ public class Rasterizer {
         // g2.fillRect(0, 0, image.getWidth(), image.getHeight());
 
         // TODO gradient sky
+        // Color backgroundColorTransparent = new Color(this.scene.getConfiguration().getBackgroundColor().getRed(),
+        //         this.scene.getConfiguration().getBackgroundColor().getGreen(),
+        //         this.scene.getConfiguration().getBackgroundColor().getBlue(), 150);
+        // Color backgroundColorOpaque = new Color(this.scene.getConfiguration().getBackgroundColor().getRed(),
+        //         this.scene.getConfiguration().getBackgroundColor().getGreen(),
+        //         this.scene.getConfiguration().getBackgroundColor().getBlue(), 255);
+
         Color skyColorTransparent = new Color(116, 147, 170, 255);
         Color skyColorOpaque = new Color(49, 73, 111, 255);
         Paint skyColor = new GradientPaint(180.0f, 0.0f, skyColorTransparent,

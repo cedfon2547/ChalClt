@@ -8,6 +8,7 @@ import javax.swing.JScrollPane;
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.Controleur;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.gui.NotificationManager.NotificationType;
 import ca.ulaval.glo2004.gui.components.ArbreDesComposantesChalet;
 import ca.ulaval.glo2004.gui.components.DrawingPanel;
@@ -202,18 +203,39 @@ public class MainWindow extends javax.swing.JFrame {
 
     public void ajouterAccessoireSelectionnee(Accessoire.AccessoireDTO accessoireDTO) {
         accessoiresSelectionnees.add(accessoireDTO);
-        topButtonPanel.update();
+        topButtonPanel.recharger();
+        TriangleMesh mesh = drawingPanel.afficheur.getScene().getMesh(accessoireDTO.accessoireId.toString());
+
+        if (mesh != null) {
+            mesh.setSelected(true);
+            drawingPanel.repaint();
+        }
     }
 
     public void retirerAccessoireSelectionnee(Accessoire.AccessoireDTO accessoireDTO) {
+        if (accessoireDTO == null) {
+            return;
+        }
         accessoiresSelectionnees.remove(accessoireDTO);
-        topButtonPanel.update();
+        topButtonPanel.recharger();
+        TriangleMesh mesh = drawingPanel.afficheur.getScene().getMesh(accessoireDTO.accessoireId.toString());
+        if (mesh != null) {
+            mesh.setSelected(false);
+            drawingPanel.repaint();
+        }
     }
 
     public void clearAccessoiresSelectionnees() {
-        accessoiresSelectionnees.clear();
+        for (Accessoire.AccessoireDTO accessoireDTO : accessoiresSelectionnees) {
+            TriangleMesh mesh = drawingPanel.afficheur.getScene().getMesh(accessoireDTO.accessoireId.toString());
+            if (mesh != null) {
+                mesh.setSelected(false);
+            }
+        }
 
-        topButtonPanel.supprimerAccessoireBtn.setEnabled(false);
+        accessoiresSelectionnees.clear();
+        topButtonPanel.recharger();
+        drawingPanel.repaint();
     }
 
     /**
@@ -225,11 +247,8 @@ public class MainWindow extends javax.swing.JFrame {
      * recharge l'affichage.
      */
     public void deleteAllAccessoiresSelectionnees() {
-        this.controleur.retirerAccessoires(accessoiresSelectionnees);
-        this.clearAccessoiresSelectionnees();
-
-        this.arbreDesComposantesChalet.rechargerNoeudsAccessoire(controleur.getAccessoires());
-        drawingPanel.afficheur.rechargerAffichage();
+        this.getControleur().retirerAccessoires(accessoiresSelectionnees);
+        recharger();
     }
 
     public void reloadArbreComposantes() {
@@ -237,6 +256,38 @@ public class MainWindow extends javax.swing.JFrame {
         List<Accessoire.AccessoireDTO> accessoireDTOs = controleur.getAccessoires();
 
         arbreDesComposantesChalet.reloadTree(chaletDTO, accessoireDTOs);
+    }
+
+    public void recharger() {
+        clearAccessoiresSelectionnees();
+        if (tableProprietesChalet != null) {
+            tableProprietesChalet.recharger();
+        }
+
+        if (tableProprietesAccessoire != null) {
+            tableProprietesAccessoire.recharger();
+        }
+
+        if (arbreDesComposantesChalet != null) {
+            arbreDesComposantesChalet.recharger();
+        }
+
+        if (drawingPanel != null) {
+            drawingPanel.afficheur.rechargerAffichage();
+        }
+
+        if (topButtonPanel != null) {
+            topButtonPanel.recharger();
+        }
+
+        if (menu != null) {
+            menu.recharger();
+        }
+
+        drawingPanel.updateToolbarBtns();
+
+        List<String> selectedIDs = accessoiresSelectionnees.stream().map(accessoire -> accessoire.accessoireId.toString()).collect(java.util.stream.Collectors.toList());
+        drawingPanel.afficheur.setSelectedMeshes(selectedIDs);
     }
 
     public void dispatchNotificationAlert(String title, String message, NotificationType type) {

@@ -13,6 +13,7 @@ import ca.ulaval.glo2004.domaine.TypeSensToit;
 import ca.ulaval.glo2004.domaine.utils.ImperialDimension;
 import ca.ulaval.glo2004.gui.MainWindow;
 
+
 public class TableChalet extends JTable {
     private MainWindow mainWindow;
     private ChaletDTO dtoChalet;
@@ -34,6 +35,7 @@ public class TableChalet extends JTable {
                 "Propriété",
                 "Valeur"
         };
+
         this.props = new String[][] {
                 { "Nom", dtoChalet.nom },
                 { "Hauteur", ImperialDimension.convertToImperial(dtoChalet.hauteur).toString() },
@@ -62,7 +64,8 @@ public class TableChalet extends JTable {
                 // System.out.println("Table changed" + " " + evt.getFirstRow() + " " + evt.getLastRow() + " "
                 //         + evt.getColumn() + " " + getValueAt(evt.getFirstRow(), evt.getColumn()));
 
-                Chalet.ChaletDTO chaletDTO = mainWindow.getControleur().getChalet();
+
+                Chalet.ChaletDTO chaletDTO =  dtoChalet; //mainWindow.getControleur().getChalet();
                 chaletDTO.nom = (String) getValueAt(0, 1);
                 chaletDTO.hauteur = ImperialDimension.parseFromString((String) getValueAt(1, 1).toString()).toInches();
                 chaletDTO.largeur = ImperialDimension.parseFromString((String) getValueAt(2, 1).toString()).toInches();
@@ -74,7 +77,7 @@ public class TableChalet extends JTable {
                 chaletDTO.margeAccessoire = ImperialDimension.parseFromString((String) getValueAt(7, 1).toString()).toInches();
                 chaletDTO.margeSupplementaireRetrait = ImperialDimension.parseFromString((String) getValueAt(8, 1).toString()).toInches();
                 
-                mainWindow.getControleur().setChalet(chaletDTO);
+                // mainWindow.getControleur().setChalet(chaletDTO);
                 
                 mainWindow.drawingPanel.afficheur.rechargerAffichage();
             }
@@ -116,16 +119,20 @@ public class TableChalet extends JTable {
             }
 
             props[rowIndex][columnIndex] = dim.toString();
+            updateChalet();
             model.fireTableCellUpdated(rowIndex, columnIndex);
             return;
         }
+
         if(rowIndex == 6){
             props[rowIndex][columnIndex] = chaletTableCellEditor.sensToitComboBox.getSelectedItem().toString();
+            updateChalet();
             model.fireTableCellUpdated(rowIndex,columnIndex);
             return;
         }
 
         props[rowIndex][columnIndex] = (String)aValue;
+        updateChalet();
         model.fireTableCellUpdated(rowIndex, columnIndex);
     }
 
@@ -136,5 +143,26 @@ public class TableChalet extends JTable {
 
     public TitledBorder getTitledBorder() {
         return titledBorder;
+    }
+
+    private void updateChalet() {
+        dtoChalet.nom = (String) getValueAt(0, 1);
+        dtoChalet.hauteur = ImperialDimension.parseFromString((String) getValueAt(1, 1).toString()).toInches();
+        dtoChalet.largeur = ImperialDimension.parseFromString((String) getValueAt(2, 1).toString()).toInches();
+        dtoChalet.longueur = ImperialDimension.parseFromString((String) getValueAt(3, 1).toString()).toInches();
+        dtoChalet.epaisseurMur = ImperialDimension.parseFromString((String) getValueAt(4, 1).toString()).toInches();
+        dtoChalet.angleToit = Double.parseDouble(getValueAt(5, 1).toString());
+        dtoChalet.sensToit = TypeSensToit.valueOf(getValueAt(6, 1).toString());
+        dtoChalet.margeAccessoire = ImperialDimension.parseFromString((String) getValueAt(7, 1).toString()).toInches();
+        dtoChalet.margeSupplementaireRetrait = ImperialDimension.parseFromString((String) getValueAt(8, 1).toString()).toInches();
+
+        mainWindow.getControleur().setChalet(dtoChalet);
+    }
+
+    public void recharger() {
+        Chalet.ChaletDTO chaletDTO = mainWindow.getControleur().getChalet();
+        this.dtoChalet = chaletDTO;
+
+        model.fireTableDataChanged();
     }
 }

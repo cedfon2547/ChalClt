@@ -16,6 +16,15 @@ public class PreferencesUtilisateur {
         this.afficherVoisinSelection = afficherVoisinSelection;
     }
 
+    public PreferencesUtilisateur(PreferencesUtilisateurDTO preferencesUtilisateurDTO) {
+        this.afficherGrille = preferencesUtilisateurDTO.afficherGrille;
+        this.afficherVoisinSelection = preferencesUtilisateurDTO.afficherVoisinSelection;
+        this.backgroundColor = preferencesUtilisateurDTO.backgroundColor;
+        this.gridColor = preferencesUtilisateurDTO.gridColor;
+        this.gridSpacing = preferencesUtilisateurDTO.gridSpacing;
+        this.afficherPlancher = preferencesUtilisateurDTO.afficherPlancher;
+    }
+
     public boolean getAfficherPlancher(){return afficherPlancher;}
 
     public void setAfficherPlancher(boolean afficherPlancher) {

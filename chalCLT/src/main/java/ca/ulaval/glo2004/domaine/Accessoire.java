@@ -20,13 +20,14 @@ public class Accessoire extends Retrait {
      * @param position la position de l'accessoire
      * @param dimensions les dimensions de l'accessoire
      */
-    public Accessoire(TypeAccessoire accessoireType,TypeMur typeMur, double[] position, double[] dimensions) {
+    public Accessoire(TypeAccessoire accessoireType,TypeMur typeMur, double[] position, double[] dimensions, boolean valide) {
         super(TypeRetrait.Accessoire, position, dimensions);
         this.accessoireType = accessoireType;
         this.typeMur = typeMur;
         this.accessoireNom = accessoireType.toString();
         this.valide = true;
         this.accessoireId = UUID.randomUUID();
+        this.valide = valide;
     }
 
     /**
@@ -34,7 +35,8 @@ public class Accessoire extends Retrait {
      * @param dto l'objet AccessoireDTO à partir duquel construire
      */
     public Accessoire(AccessoireDTO dto) {
-        this(dto.accessoireType,dto.typeMur, dto.position, dto.dimensions);
+        this(dto.accessoireType, dto.typeMur, dto.position, dto.dimensions, dto.valide);
+        this.accessoireId = dto.accessoireId;
     }
 
     /**

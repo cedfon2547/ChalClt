@@ -1,69 +1,47 @@
 package ca.ulaval.glo2004.domaine.utils;
 
+import java.util.List;
 import java.util.Stack;
 
-// TODO: undo/redo management should be completed.
-class UndoRedoAction {
-    private Runnable undoAction;
-    private Runnable redoAction;
+import ca.ulaval.glo2004.domaine.Accessoire;
+import ca.ulaval.glo2004.domaine.ChalCLTProjet;
+import ca.ulaval.glo2004.domaine.Chalet;
+import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 
-    public UndoRedoAction(Runnable undoAction, Runnable redoAction) {
-        this.undoAction = undoAction;
-        this.redoAction = redoAction;
-    }
-
-    public void undo() {
-        undoAction.run();
-    }
-
-    public void redo() {
-        redoAction.run();
-    }
-}
 
 public class UndoRedoManager {
-    private Stack<UndoRedoAction> undoStack = new Stack<>();
-    private Stack<UndoRedoAction> redoStack = new Stack<>();
+    private static class ProjetState {
+        private String nom;
+        private Chalet.ChaletDTO chalet;
+        private List<Accessoire.AccessoireDTO> accessoires;
+        private PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateur;
 
-    public void addUndoRedoAction(Runnable undoAction, Runnable redoAction) {
-        UndoRedoAction action = new UndoRedoAction(undoAction, redoAction);
-        addUndoRedoAction(action);
-    }
-
-    public void addUndoRedoAction(UndoRedoAction action) {
-        undoStack.push(action);
-        redoStack.clear();
-    }
-    
-    public void undo() {
-        if (undoStack.isEmpty()) {
-            return;
+        public ProjetState(ChalCLTProjet projet) {
+            this.nom = projet.getNom();
+            this.chalet = projet.getChalet().toDTO();
+            this.accessoires = projet.getChalet().getAccessoireDTOs();
+            this.preferencesUtilisateur = projet.getPreferencesUtilisateur().toDTO();
         }
 
-        UndoRedoAction action = undoStack.pop();
-
-        if (action == null) {
-            return;
+        public String getNom() {
+            return nom;
         }
 
-        action.undo();
-        redoStack.push(action);
+        public Chalet.ChaletDTO getChalet() {
+            return chalet;
+        }
+
+        public List<Accessoire.AccessoireDTO> getAccessoires() {
+            return accessoires;
+        }
+
+        public PreferencesUtilisateur.PreferencesUtilisateurDTO getPreferencesUtilisateur() {
+            return preferencesUtilisateur;
+        }
     }
 
-    public void redo() {
-        if (redoStack.isEmpty()) {
-            return;
-        }
-
-        UndoRedoAction action = redoStack.pop();
-
-        if (action == null) {
-            return;
-        }
-
-        action.redo();
-        undoStack.push(action);
-    }
+    private Stack<ProjetState> undoStack = new Stack<>();
+    private Stack<ProjetState> redoStack = new Stack<>();
 
     public int getUndoStackSize() {
         return undoStack.size();
@@ -71,5 +49,42 @@ public class UndoRedoManager {
 
     public int getRedoStackSize() {
         return redoStack.size();
+    }
+
+    public void saveState(ChalCLTProjet projet) {
+        undoStack.push(new ProjetState(projet));
+        redoStack.clear();
+    }
+
+    public void undo(ChalCLTProjet projet) {
+        if (undoStack.isEmpty()) {
+            return;
+        }
+
+        redoStack.push(new ProjetState(projet));
+        ProjetState sauvegardeDTO = undoStack.pop();
+        applyChange(projet, sauvegardeDTO);
+    }
+
+    public void redo(ChalCLTProjet projet) {
+        if (redoStack.isEmpty()) {
+            return;
+        }
+
+        undoStack.push(new ProjetState(projet));
+        ProjetState sauvegardeDTO = redoStack.pop();
+        applyChange(projet, sauvegardeDTO);
+    }
+
+    private void applyChange(ChalCLTProjet projet, ProjetState sauvegardeDTO) {
+        projet.setNom(sauvegardeDTO.getNom());
+        projet.setPreferencesUtilisateur(new PreferencesUtilisateur(sauvegardeDTO.getPreferencesUtilisateur()));
+
+        Chalet newChalet = new Chalet(sauvegardeDTO.getChalet());
+        for (Accessoire.AccessoireDTO accessoireDTO : sauvegardeDTO.getAccessoires()) {
+            newChalet.getMur(accessoireDTO.typeMur).ajouterAccessoire(new Accessoire(accessoireDTO));
+        }
+        
+        projet.setChalet(newChalet);
     }
 }

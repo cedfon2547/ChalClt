@@ -6,7 +6,7 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 
 abstract class AbstractLight {
     protected Color color;
-    protected double intensity;
+    protected double intensity = 0.5;
 
     public AbstractLight(Color color, double intensity) {
         this.color = color;

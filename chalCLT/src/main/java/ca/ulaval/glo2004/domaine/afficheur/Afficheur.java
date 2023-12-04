@@ -511,16 +511,17 @@ public class Afficheur {
         return new MouseListener() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                drawingPanel.grabFocus();
+                // drawingPanel.grabFocus();
 
                 TriangleMesh clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
 
-                if (clickedMesh == null) {
-                    deselectAllMeshed();
-                    eventSupport.dispatchSelectionChanged(new AfficheurEventSupport.MeshSelectionEvent(getSelection()));
-                    drawingPanel.repaint();
-                    return;
-                }
+                // if (clickedMesh == null) {
+                // deselectAllMeshed();
+                // eventSupport.dispatchSelectionChanged(new
+                // AfficheurEventSupport.MeshSelectionEvent(getSelection()));
+                // drawingPanel.repaint();
+                // return;
+                // }
 
                 if (clickedMesh != null && evt.getClickCount() == 2) {
 
@@ -547,27 +548,31 @@ public class Afficheur {
                         }
                     }
 
-                    if (clickedMesh.getSelectable()) {
-                        clickedMesh.setSelected(true);
-                    }
+                    // if (clickedMesh.getSelectable()) {
+                    // clickedMesh.setSelected(true);
+                    // }
 
                     updateViewGrid();
                     // drawingPanel.repaint();
-                    eventSupport.dispatchMeshClicked(new AfficheurEventSupport.MeshMouseEvent(evt, clickedMesh));
-                    eventSupport.dispatchViewChanged(new AfficheurEventSupport.ViewChangedEvent(getVueActive()));
+                    // eventSupport.dispatchMeshClicked(new
+                    // AfficheurEventSupport.MeshMouseEvent(evt, clickedMesh));
+                    // eventSupport.dispatchViewChanged(new
+                    // AfficheurEventSupport.ViewChangedEvent(getVueActive()));
                     return;
                 } else if (clickedMesh != null && clickedMesh.getSelectable()) {
                     // pcs.firePropertyChange(AfficheurEvent.SelectionChanged.toString(), null,
                     // clickedMesh);
                     // pcs.firePropertyChange(AfficheurEvent.MeshClicked.toString(), null,
                     // clickedMesh);
-                    if (!evt.isControlDown()) {
-                        deselectAllMeshed();
-                    }
+                    // if (!evt.isControlDown()) {
+                    // deselectAllMeshed();
+                    // }
 
-                    clickedMesh.setSelected(!clickedMesh.getSelected());
-                    eventSupport.dispatchMeshClicked(new AfficheurEventSupport.MeshMouseEvent(evt, clickedMesh));
-                    eventSupport.dispatchSelectionChanged(new AfficheurEventSupport.MeshSelectionEvent(getSelection()));
+                    // clickedMesh.setSelected(!clickedMesh.getSelected());
+                    // eventSupport.dispatchMeshClicked(new
+                    // AfficheurEventSupport.MeshMouseEvent(evt, clickedMesh));
+                    // eventSupport.dispatchSelectionChanged(new
+                    // AfficheurEventSupport.MeshSelectionEvent(getSelection()));
                 }
 
                 drawingPanel.repaint();
@@ -575,7 +580,23 @@ public class Afficheur {
 
             @Override
             public void mousePressed(java.awt.event.MouseEvent evt) {
+                // drawingPanel.grabFocus();
+                TriangleMesh clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
+                if (clickedMesh != null) {
+                    System.out.println("Mouse pressed on mesh: " + clickedMesh.ID);
 
+                    if (evt.isControlDown()) {
+                        clickedMesh.setSelected(!clickedMesh.getSelected());
+                    } else {
+                        deselectAllMeshed();
+                        clickedMesh.setSelected(true);
+                    }
+                } else {
+                    deselectAllMeshed();
+                }
+
+                eventSupport.dispatchSelectionChanged(new AfficheurEventSupport.MeshSelectionEvent(getSelection()));
+                drawingPanel.repaint();
             }
 
             @Override
@@ -828,6 +849,12 @@ public class Afficheur {
     public void deselectAllMeshed() {
         for (TriangleMeshGroup mesh : this.scene.getMeshes()) {
             mesh.setSelected(false);
+        }
+    }
+
+    public void setSelectedMeshes(List<String> ids) {
+        for (TriangleMeshGroup mesh : this.scene.getMeshes()) {
+            mesh.setSelected(ids.contains(mesh.ID));
         }
     }
 

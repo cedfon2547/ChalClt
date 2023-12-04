@@ -39,6 +39,29 @@ public class Chalet {
         this(dto.nom, dto.hauteur, dto.largeur, dto.longueur, dto.epaisseurMur, dto.sensToit, dto.angleToit, dto.margeAccessoire, dto.margeSupplementaireRetrait);
     }
 
+    public Chalet(ChaletDTO dto, List<Accessoire.AccessoireDTO> accessoireDTOs) {
+        this(dto.nom, dto.hauteur, dto.largeur, dto.longueur, dto.epaisseurMur, dto.sensToit, dto.angleToit, dto.margeAccessoire, dto.margeSupplementaireRetrait);
+
+        for (Accessoire.AccessoireDTO accessoireDTO : accessoireDTOs) {
+            Accessoire accessoire = new Accessoire(accessoireDTO);
+            getMur(accessoire.getTypeMur()).ajouterAccessoire(accessoire);
+        }
+    }
+
+    public Chalet(ChaletCompletDTO completDTO) {
+        this(completDTO.nom, completDTO.hauteur, completDTO.largeur, completDTO.longueur, completDTO.epaisseurMur, completDTO.sensToit, completDTO.angleToit, completDTO.margeAccessoire, completDTO.margeSupplementaireRetrait);
+
+        for (Mur.MurDTO murDTO : completDTO.murs) {
+            Mur mur = new Mur(murDTO, this);
+            // mur.getAccessoires().clear();
+            // for (Accessoire.AccessoireDTO accessoireDTO : murDTO.accessoires) {
+            //     Accessoire accessoire = new Accessoire(accessoireDTO);
+            //     mur.ajouterAccessoire(accessoire);
+            // }
+            this.murs[mur.getType().ordinal()] = mur;
+        }
+    }
+
     public Mur getMur(TypeMur type) {
         for (Mur mur : murs) {
             if (mur.getType() == type) {
@@ -86,6 +109,46 @@ public class Chalet {
     
     public TypeSensToit getSensToit() {
         return sensToit;
+    }
+
+    public void setAngleToit(double angleToit) {
+        this.angleToit = angleToit;
+    }
+
+    public void setEpaisseurMur(double epaisseurMur) {
+        this.epaisseurMur = epaisseurMur;
+    }
+
+    public void setHauteur(double hauteur) {
+        this.hauteur = hauteur;
+    }
+
+    public void setLargeur(double largeur) {
+        this.largeur = largeur;
+    }
+
+    public void setLongueur(double longueur) {
+        this.longueur = longueur;
+    }
+
+    public void setMargeAccessoire(double margeAccessoire) {
+        this.margeAccessoire = margeAccessoire;
+    }
+
+    public void setMargeSupplementaireRetrait(double margeSupplementaireRetrait) {
+        this.margeSupplementaireRetrait = margeSupplementaireRetrait;
+    }
+    
+    public void setMurs(Mur[] murs) {
+        this.murs = murs;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public void setSensToit(TypeSensToit sensToit) {
+        this.sensToit = sensToit;
     }
     
     public void updateChalet(ChaletDTO dtoChalet) {
@@ -140,8 +203,50 @@ public class Chalet {
         return null;
     }
 
+    public List<Accessoire> getAccessoires() {
+        List<Accessoire> accessoires = new ArrayList<Accessoire>();
+        for (Mur mur : this.murs) {
+            for (Accessoire accessoire : mur.getAccessoires()) {
+                accessoires.add(accessoire);
+            }
+        }
+
+        return accessoires;
+    }
+
+    public List<Accessoire> getAccessoires(TypeMur typeMur) {
+        Mur mur = this.getMur(typeMur);
+        List<Accessoire> accessoires = new ArrayList<Accessoire>();
+        for (Accessoire accessoire : mur.getAccessoires()) {
+            accessoires.add(accessoire);
+        }
+
+        return accessoires;
+    }
+
+    public List<Accessoire.AccessoireDTO> getAccessoireDTOs() {
+        List<Accessoire.AccessoireDTO> accessoireDTOs = new ArrayList<Accessoire.AccessoireDTO>();
+        for (Mur mur : this.murs) {
+            for (Accessoire accessoire : mur.getAccessoires()) {
+                accessoireDTOs.add(accessoire.toDTO());
+            }
+        }
+
+        return accessoireDTOs;
+    }
+
+    public List<Accessoire.AccessoireDTO> getAccessoireDTOs(TypeMur typeMur) {
+        Mur mur = this.getMur(typeMur);
+        List<Accessoire.AccessoireDTO> accessoireDTOs = new ArrayList<Accessoire.AccessoireDTO>();
+        for (Accessoire accessoire : mur.getAccessoires()) {
+            accessoireDTOs.add(accessoire.toDTO());
+        }
+
+        return accessoireDTOs;
+    }
+
     public Accessoire ajouterAccessoire(TypeMur typeMur, TypeAccessoire typeAccessoire, double[] position, double[] dimension) {
-        Accessoire accessoire = new Accessoire(typeAccessoire, typeMur, position, dimension);
+        Accessoire accessoire = new Accessoire(typeAccessoire, typeMur, position, dimension, true);
 
         // By default, translate the accessory to the margin specified in the chalet
         accessoire.setPosition(new double[]{margeAccessoire + this.epaisseurMur, margeAccessoire});

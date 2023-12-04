@@ -96,18 +96,7 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
         treeScrollPane = new javax.swing.JScrollPane();
         arbreComposantesChalet = new javax.swing.JTree();
 
-        arbreComposantesChalet.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                // System.out.println("focusGained");
-            }
-
-            @Override
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                // System.out.println("focusLost");
-                arbreComposantesChalet.clearSelection();
-            }
-        });
+        arbreComposantesChalet.addFocusListener(this.getFocusListener());
 
         arbreComposantesChalet.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
@@ -159,8 +148,6 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
 
         treeRenderer.setClosedIcon(null);
         treeRenderer.setOpenIcon(null);
-        // renderer.setLeafIcon(null);
-        // renderer.setDisabledIcon(null);
         treeRenderer.setIcon(null);
         treeRenderer.setIconTextGap(4);
 
@@ -183,81 +170,29 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                                 .addGap(0, 0, 0)));
 
         reloadTree(chaletDTO, accessoireDTOs);
-        // rechargerNoeudsAccessoire(accessoireDTOs);
     }
 
     private TreeSelectionListener getTreeSelectionListener() {
         return new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
+                mainWindow.clearAccessoiresSelectionnees();
+
                 TreePath[] treePaths = arbreComposantesChalet.getSelectionPaths();
 
                 if (treePaths == null)
                     return;
 
-                mainWindow.clearAccessoiresSelectionnees();
                 for (TreePath path : treePaths) {
                     if (path.getLastPathComponent() instanceof AccessoireTreeNode) {
                         AccessoireTreeNode nodeAcc = (AccessoireTreeNode) path.getLastPathComponent();
-                        mainWindow.ajouterAccessoireSelectionnee(nodeAcc.getAccessoireDTO());
+                        if (nodeAcc != null) {
+                            mainWindow.ajouterAccessoireSelectionnee(nodeAcc.getAccessoireDTO());
+                        } 
                     }
                 }
             }
         };
     }
-
-    // private PropertyChangeListener getChaletChangeListener() {
-    //     return new PropertyChangeListener() {
-    //         public void propertyChange(PropertyChangeEvent evt) {
-    //             if (evt.getPropertyName().equals("chalet")) {
-    //                 Chalet.ChaletDTO chaletDTO = (Chalet.ChaletDTO) evt.getNewValue();
-    //                 chaletNode.setUserObject(chaletDTO.nom);
-    //                 ((DefaultTreeModel) arbreComposantesChalet.getModel()).nodeChanged(chaletNode);
-    //             }
-    //         }
-    //     };
-    // }
-
-    // private PropertyChangeListener getAccessoireChangeListener() {
-    //     return new PropertyChangeListener() {
-    //         public void propertyChange(PropertyChangeEvent evt) {
-    //             if (!evt.getPropertyName().equals(Controleur.EventType.ACCESSOIRE)) {
-    //                 return;
-    //             }
-
-    //             Accessoire.AccessoireDTO accessoireDTO = (Accessoire.AccessoireDTO) evt.getNewValue();
-    //             updateNoeudAccessoire(accessoireDTO);
-    //         }
-    //     };
-    // }
-
-    // private PropertyChangeListener getSupprimerAccessoireListener() {
-    //     return new PropertyChangeListener() {
-    //         public void propertyChange(PropertyChangeEvent evt) {
-    //             if (!evt.getPropertyName().equals(Controleur.EventType.RETIRER_ACCESSOIRE)) {
-    //                 return;
-    //             }
-
-    //             // System.out.println("Retirer Accessoire " + ((Accessoire.AccessoireDTO)
-    //             // evt.getNewValue()).accessoireNom);
-
-    //             retirerNoeudAccessoire((Accessoire.AccessoireDTO) evt.getNewValue());
-    //             mainWindow.showChaletTable();
-    //         }
-    //     };
-    // }
-
-    // private PropertyChangeListener getAjouterAccessoireListener() {
-    //     return new PropertyChangeListener() {
-    //         public void propertyChange(PropertyChangeEvent evt) {
-    //             if (!evt.getPropertyName().equals(Controleur.EventType.AJOUTER_ACCESSOIRE)) {
-    //                 return;
-    //             }
-
-    //             Accessoire.AccessoireDTO accDto = (Accessoire.AccessoireDTO) evt.getNewValue();
-    //             ajouterNoeudAccessoire(accDto);
-    //         }
-    //     };
-    // }
 
     private MouseAdapter getTreeMouseListener() {
         return new MouseAdapter() {
@@ -268,7 +203,6 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                     return;
 
                 if (path.getPath().length == 1) {
-                    // System.out.println("Projet");
                     mainWindow.showChaletTable();
                     return;
                 }
@@ -338,13 +272,13 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
         return new FocusListener() {
             @Override
             public void focusGained(java.awt.event.FocusEvent evt) {
-                // System.out.println("focusGained");
             }
 
             @Override
             public void focusLost(java.awt.event.FocusEvent evt) {
-                // System.out.println("focusLost");
-                // arbreComposantesChalet.clearSelection();
+                // System.out.println("Focus lost");
+                mainWindow.clearAccessoiresSelectionnees();
+                setSelectedAccessoire(mainWindow.accessoiresSelectionnees);
             }
         };
     }
@@ -406,8 +340,6 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                 return;
         }
 
-        // Set the newly added node as selected
-        arbreComposantesChalet.setSelectionPath(new TreePath(accessoireNode.getPath()));
         // Scroll to the newly added node
         arbreComposantesChalet.scrollPathToVisible(new TreePath(accessoireNode.getPath()));
     }
@@ -469,5 +401,38 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
         ((DefaultTreeModel) arbreComposantesChalet.getModel()).reload(chaletNode);
 
         arbreComposantesChalet.expandPath(new TreePath(mursNode.getPath()));
+    }
+
+    public void recharger() {
+        Chalet.ChaletDTO chaletDTO = mainWindow.getControleur().getChalet();
+        List<Accessoire.AccessoireDTO> accessoireDTOs = mainWindow.getControleur().getAccessoires();
+
+        reloadTree(chaletDTO, accessoireDTOs);
+
+        for (int i = 0; i < arbreComposantesChalet.getRowCount(); i++) {
+            TreePath rowPath = arbreComposantesChalet.getPathForRow(i);
+
+            // Preventing expending `Toit` node for the moment.
+            if (rowPath.toString().contains("Toit")) {
+                continue;
+            }
+
+            arbreComposantesChalet.expandPath(rowPath);
+        }
+    }
+
+    public void setSelectedAccessoire(List<Accessoire.AccessoireDTO> accessoireDTOs) {
+        List<TreePath> paths = new ArrayList<TreePath>();
+
+        for (Accessoire.AccessoireDTO accDto : accessoireDTOs) {
+            for (AccessoireTreeNode accNode : accessoireNodes) {
+                if (accNode.getAccessoireDTO().accessoireId == accDto.accessoireId) {
+                    paths.add(new TreePath(accNode.getPath()));
+                    break;
+                }
+            }
+        }
+
+        arbreComposantesChalet.setSelectionPaths(paths.toArray(new TreePath[paths.size()]));
     }
 }

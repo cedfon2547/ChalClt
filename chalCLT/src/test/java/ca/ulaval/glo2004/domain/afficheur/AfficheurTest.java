@@ -1,3 +1,4 @@
+package ca.ulaval.glo2004.domain.afficheur;
 // package ca.ulaval.glo2004.domain.utils;
 
 // import ca.ulaval.glo2004.domaine.Controleur;

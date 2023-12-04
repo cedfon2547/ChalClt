@@ -52,6 +52,14 @@ public class Mur {
         this.accessoires = accessoires;
     }
 
+    public Mur(MurDTO murDTO, Chalet chalet) {
+        this(murDTO.type, chalet);
+        this.accessoires = new ArrayList<Accessoire>();
+        for (Accessoire.AccessoireDTO accessoireDTO : murDTO.accessoires) {
+            this.accessoires.add(new Accessoire(accessoireDTO));
+        }
+    }
+
     /**
      * Retourne le type de mur.
      *
@@ -228,7 +236,7 @@ public class Mur {
     }
 
     public Accessoire ajouterAccessoire(TypeAccessoire p_type, double[] p_position, double[] p_dimension) {
-        Accessoire accessoire = new Accessoire(p_type, this.type, p_position, p_dimension);
+        Accessoire accessoire = new Accessoire(p_type, this.type, p_position, p_dimension, true);
         return ajouterAccessoire(accessoire);
     }
 

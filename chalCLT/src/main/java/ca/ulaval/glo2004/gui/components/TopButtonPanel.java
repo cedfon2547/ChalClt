@@ -36,7 +36,8 @@ public class TopButtonPanel extends JPanel {
         mainWindow.getControleur().addUserPreferencesEventListener(new UserPreferencesEventListener() {
             @Override
             public void change(UserPreferencesEvent event) {
-                PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateur = event.getPreferencesUtilisateurDTO();
+                PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateur = event
+                        .getPreferencesUtilisateurDTO();
                 grilleToggleBtn.setSelected(preferencesUtilisateur.afficherGrille);
                 voisinToggleBtn.setSelected(preferencesUtilisateur.afficherVoisinSelection);
             }
@@ -100,20 +101,7 @@ public class TopButtonPanel extends JPanel {
         add(voisinToggleBtn);
         add(grilleToggleBtn);
 
-        update();
-    }
-
-    public void update() {
-        PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = mainWindow.getControleur()
-                .getPreferencesUtilisateur();
-
-        grilleToggleBtn.setSelected(preferencesUtilisateurDTO.afficherGrille);
-
-        if (mainWindow.getAccessoiresSelectionnees().size() != 0) {
-            supprimerAccessoireBtn.setEnabled(true);
-        } else {
-            supprimerAccessoireBtn.setEnabled(false);
-        }
+        recharger();
     }
 
     private void initializeIcons() {
@@ -196,6 +184,8 @@ public class TopButtonPanel extends JPanel {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                System.out.println("Creer porte");
+
                 Afficheur.TypeDeVue vueActive = mainWindow.drawingPanel.afficheur.getVueActive();
                 if (vueActive == Afficheur.TypeDeVue.Dessus) {
                     return;
@@ -232,6 +222,7 @@ public class TopButtonPanel extends JPanel {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                System.out.println("Supprimer accessoire");
                 // System.out.println(mainWindow.getAccessoiresSelectionnees().size());
                 mainWindow.deleteAllAccessoiresSelectionnees();
             }
@@ -263,5 +254,19 @@ public class TopButtonPanel extends JPanel {
                 mainWindow.drawingPanel.afficheur.rechargerAffichage();
             }
         };
+    }
+
+    public void recharger() {
+        PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = mainWindow.getControleur()
+                .getPreferencesUtilisateur();
+
+        grilleToggleBtn.setSelected(preferencesUtilisateurDTO.afficherGrille);
+        voisinToggleBtn.setSelected(preferencesUtilisateurDTO.afficherVoisinSelection);
+        
+        if (mainWindow.getAccessoiresSelectionnees().size() != 0) {
+            supprimerAccessoireBtn.setEnabled(true);
+        } else {
+            supprimerAccessoireBtn.setEnabled(false);
+        }
     }
 }

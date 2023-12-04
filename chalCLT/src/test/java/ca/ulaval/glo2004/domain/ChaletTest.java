@@ -1,4 +1,4 @@
-package ca.ulaval.glo2004.domain.utils;
+package ca.ulaval.glo2004.domain;
 
 import ca.ulaval.glo2004.domaine.*;
 import org.junit.Test;

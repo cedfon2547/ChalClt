@@ -1,4 +1,4 @@
-package ca.ulaval.glo2004.domain.utils;
+package ca.ulaval.glo2004.domain;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.TypeAccessoire;
@@ -18,7 +18,7 @@ public class AccessoireTest {
         double[] pos = {2.0, 3.0};
         double[] dim = {1.0,2.0};
 
-        Accessoire accessoire = new Accessoire(typeAccessoire, typeMur,pos, dim );
+        Accessoire accessoire = new Accessoire(typeAccessoire, typeMur,pos, dim, true);
 
         assertEquals(TypeAccessoire.Fenetre, accessoire.getAccessoireType());
         assertEquals(TypeMur.Droit, accessoire.getTypeMur());
@@ -35,7 +35,7 @@ public class AccessoireTest {
         double[] pos = {2.0, 3.0};
         double[] dim = {1.0,2.0};
 
-        Accessoire accessoire = new Accessoire(typeAccessoire, typeMur,pos, dim );
+        Accessoire accessoire = new Accessoire(typeAccessoire, typeMur,pos, dim, true);
 
         assertEquals(TypeAccessoire.Porte, accessoire.getAccessoireType());
         assertEquals(TypeMur.Droit, accessoire.getTypeMur());
@@ -51,7 +51,7 @@ public class AccessoireTest {
         TypeMur typeMur = TypeMur.Droit;
         double[] pos = {4.0, 3.0};
         double[] dim = {7.0, 2.0};
-        return new Accessoire(typeAccessoire, typeMur, pos, dim);
+        return new Accessoire(typeAccessoire, typeMur, pos, dim, true);
     }
 
 
@@ -91,7 +91,7 @@ public class AccessoireTest {
         TypeMur typeMur = TypeMur.Droit;
         double[] pos = {4.0, 3.0};
         double[] dim = {7.0,2.0};
-        Accessoire accessoire = new Accessoire(typeAccessoire, typeMur,pos, dim);
+        Accessoire accessoire = new Accessoire(typeAccessoire, typeMur,pos, dim, true);
         double[] pos2 = {5.0, 2.0};
         double[] dim2 = {3.0, 4.0};
         double[] result = accessoire.getMarginWithRect(pos2, dim2);
