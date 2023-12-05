@@ -941,6 +941,8 @@ public class PanelHelper {
                 TriangleMesh rainure2 = rainure1.rotateZOnPlace(Math.PI)
                         .translate(new Vector3D(largeur - d - m, 0, 0));
 
+                rainure1.ID = "rainure1";
+                rainure2.ID = "rainure2";
                 meshRetraits.addMesh(rainure1);
                 meshRetraits.addMesh(rainure2);
             } else {
@@ -983,6 +985,8 @@ public class PanelHelper {
                 TriangleMesh rainure1 = TriangleMesh.fromDoubleList(triangles);
                 TriangleMesh rainure2 = rainure1.translate(new Vector3D(largeur - d / 2 - m, 0, 0));
 
+                rainure1.ID = "rainure1";
+                rainure2.ID = "rainure2";
                 meshRetraits.addMesh(rainure1);
                 meshRetraits.addMesh(rainure2);
             }
