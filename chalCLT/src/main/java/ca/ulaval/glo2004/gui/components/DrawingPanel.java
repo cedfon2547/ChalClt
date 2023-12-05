@@ -25,6 +25,7 @@ import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEvent;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEventListener;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport;
+import ca.ulaval.glo2004.domaine.afficheur.Afficheur.TypeDeVue;
 import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport.MeshMouseMotionEvent;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
@@ -87,7 +88,6 @@ public class DrawingPanel extends javax.swing.JPanel {
     // Afficheur.TypeDeVue vueActive = Afficheur.TypeDeVue.Dessus;
     javax.swing.JToolBar barreOutilsVue;
 
-
     public DrawingPanel(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
         this.afficheur = new Afficheur(this.mainWindow.getControleur(), this);
@@ -108,23 +108,24 @@ public class DrawingPanel extends javax.swing.JPanel {
     private void initComponents() {
         setBackground(java.awt.Color.BLACK);
 
-        this.mainWindow.getControleur().addAccessoireEventListener(new ControleurEventSupport.AccessoireEventListener() {
-            @Override
-            public void add(AccessoireEvent event) {
-                // TODO Auto-generated method stub
-                afficheur.rechargerAffichage();
-            }
+        this.mainWindow.getControleur()
+                .addAccessoireEventListener(new ControleurEventSupport.AccessoireEventListener() {
+                    @Override
+                    public void add(AccessoireEvent event) {
+                        // TODO Auto-generated method stub
+                        afficheur.rechargerAffichage();
+                    }
 
-            @Override
-            public void remove(AccessoireEvent event) {
-                afficheur.rechargerAffichage();
-            }
+                    @Override
+                    public void remove(AccessoireEvent event) {
+                        afficheur.rechargerAffichage();
+                    }
 
-            @Override
-            public void change(AccessoireEvent event) {
-                // rechargerAffichage();
-            }
-        });
+                    @Override
+                    public void change(AccessoireEvent event) {
+                        // rechargerAffichage();
+                    }
+                });
 
         addKeyListener(new KeyListener() {
             @Override
@@ -153,10 +154,12 @@ public class DrawingPanel extends javax.swing.JPanel {
                         lightPosition.z -= step;
                         break;
                     case java.awt.event.KeyEvent.VK_EQUALS:
-                        afficheur.getScene().getLight().setIntensity(afficheur.getScene().getLight().getIntensity() + 0.01);
+                        afficheur.getScene().getLight()
+                                .setIntensity(afficheur.getScene().getLight().getIntensity() + 0.01);
                         break;
                     case java.awt.event.KeyEvent.VK_MINUS:
-                        afficheur.getScene().getLight().setIntensity(afficheur.getScene().getLight().getIntensity() - 0.01);
+                        afficheur.getScene().getLight()
+                                .setIntensity(afficheur.getScene().getLight().getIntensity() - 0.01);
                         break;
                     default:
                         break;
@@ -237,9 +240,10 @@ public class DrawingPanel extends javax.swing.JPanel {
                 mainWindow.getControleur().setAccessoire(copy);
                 Accessoire.AccessoireDTO accDto = mainWindow.getControleur()
                         .getAccessoire(UUID.fromString(evt.getMesh().ID));
-                List<Accessoire.AccessoireDTO> accessoireDTOs = mainWindow.getControleur().getAccessoires(initialAccessoireDTO.typeMur);
+                List<Accessoire.AccessoireDTO> accessoireDTOs = mainWindow.getControleur()
+                        .getAccessoires(initialAccessoireDTO.typeMur);
 
-                for (Accessoire.AccessoireDTO accessoireDTO: accessoireDTOs) {
+                for (Accessoire.AccessoireDTO accessoireDTO : accessoireDTOs) {
                     TriangleMesh mesh = afficheur.getScene().getMesh(accessoireDTO.accessoireId.toString());
                     if (mesh != null) {
                         mesh.setValid(accessoireDTO.valide);
@@ -293,7 +297,8 @@ public class DrawingPanel extends javax.swing.JPanel {
                     if (mesh instanceof MurTriangleMeshGroup) {
                         return true;
                     }
-                    mainWindow.arbreDesComposantesChalet.setSelectedAccessoire(mainWindow.getAccessoiresSelectionnees());
+                    mainWindow.arbreDesComposantesChalet
+                            .setSelectedAccessoire(mainWindow.getAccessoiresSelectionnees());
 
                     return false;
                 });
@@ -302,11 +307,11 @@ public class DrawingPanel extends javax.swing.JPanel {
                     mainWindow.clearAccessoiresSelectionnees();
                     mainWindow.showChaletTable();
                 }
-                
+
                 if (evt.getSelectedMeshIDs().size() == 0) {
                     mainWindow.clearAccessoiresSelectionnees();
                     mainWindow.showChaletTable();
-                } else {                    
+                } else {
                     mainWindow.clearAccessoiresSelectionnees();
 
                     for (String id : evt.getSelectedMeshIDs()) {
@@ -355,7 +360,12 @@ public class DrawingPanel extends javax.swing.JPanel {
             @Override
             public void viewChanged(AfficheurEventSupport.ViewChangedEvent evt) {
                 // System.out.println("View Changed");
+                Vector3D positionDefault = afficheur.getScene().getCamera().getPosition();
+                positionDefault.x = getWidth() / 2;
+                positionDefault.y = getHeight() / 2;
+                afficheur.getScene().getCamera().setPosition(positionDefault);
                 updateToolbarBtns();
+                repaint();
             }
         });
 
@@ -515,7 +525,8 @@ public class DrawingPanel extends javax.swing.JPanel {
                 @Override
                 public void change(UserPreferencesEvent event) {
                     // System.out.println("Preferences Utilisateur changed");
-                    PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = event.getPreferencesUtilisateurDTO();
+                    PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = event
+                            .getPreferencesUtilisateurDTO();
 
                     toggleGridSwitch.setSelected(preferencesUtilisateurDTO2.afficherGrille);
                     toggleVoisinSwitch.setSelected(preferencesUtilisateurDTO2.afficherVoisinSelection);

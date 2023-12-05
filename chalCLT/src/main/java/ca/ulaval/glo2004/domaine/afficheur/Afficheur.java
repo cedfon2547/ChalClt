@@ -14,12 +14,7 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import ca.ulaval.glo2004.App;
-import ca.ulaval.glo2004.domaine.Accessoire;
-import ca.ulaval.glo2004.domaine.Chalet;
-import ca.ulaval.glo2004.domaine.Controleur;
-import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
-import ca.ulaval.glo2004.domaine.TypeMur;
-import ca.ulaval.glo2004.domaine.TypeSensToit;
+import ca.ulaval.glo2004.domaine.*;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEvent;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEventListener;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.Rasterizer;
@@ -34,6 +29,8 @@ import ca.ulaval.glo2004.domaine.utils.ObjectImporter;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.domaine.utils.STLTools;
 import java.awt.Color;
+import java.util.Objects;
+import java.util.UUID;
 
 public class Afficheur {
     private AfficheurEventSupport eventSupport = new AfficheurEventSupport();
@@ -375,6 +372,17 @@ public class Afficheur {
         STLTools.writeSTL(droitStlTriangles, directoryPath + droitFileName);
     }
 
+    public static class RetraitTest {
+        Accessoire.AccessoireDTO accessoireDTO;
+        TriangleMesh mesh;
+
+        public RetraitTest(Accessoire.AccessoireDTO accessoireDTO, TriangleMesh mesh) {
+            this.accessoireDTO = accessoireDTO;
+            this.mesh = mesh;
+        }
+    };
+
+
     public void exportStlBrut(String directoryPath, String nomChalet) {
         List<STLTools.Triangle> facadeStlTriangles = PanelHelper
                 .convertMeshTrianglesToStlTriangles(murFacadeGroup.getMeshBrut().getTriangles());
@@ -397,33 +405,75 @@ public class Afficheur {
     }
 
     public void exportStlRetraits(String directoryPath, String nomChalet) {
-        List<STLTools.Triangle> facadeStlTriangles = new ArrayList<>();
-        List<STLTools.Triangle> arriereStlTriangles = new ArrayList<>();
-        List<STLTools.Triangle> gaucheStlTriangles = new ArrayList<>();
-        List<STLTools.Triangle> droitStlTriangles = new ArrayList<>();
+        List<Accessoire.AccessoireDTO> retraitDTOs = new ArrayList<>();
+        List<TriangleMesh> retraitMesh = new ArrayList<>();
 
-        for (TriangleMesh mesh : murFacadeGroup.getMeshRetraits().getMeshes()) {
-            facadeStlTriangles.addAll(PanelHelper.convertMeshTrianglesToStlTriangles(mesh.getTriangles()));
-        }
-        for (TriangleMesh mesh : murArriereGroup.getMeshRetraits().getMeshes()) {
-            arriereStlTriangles.addAll(PanelHelper.convertMeshTrianglesToStlTriangles(mesh.getTriangles()));
-        }
-        for (TriangleMesh mesh : murGaucheGroup.getMeshRetraits().getMeshes()) {
-            gaucheStlTriangles.addAll(PanelHelper.convertMeshTrianglesToStlTriangles(mesh.getTriangles()));
-        }
-        for (TriangleMesh mesh : murDroitGroup.getMeshRetraits().getMeshes()) {
-            droitStlTriangles.addAll(PanelHelper.convertMeshTrianglesToStlTriangles(mesh.getTriangles()));
+        retraitDTOs.addAll(murFacadeGroup.getAccessoireDTOs());
+        retraitDTOs.addAll(murArriereGroup.getAccessoireDTOs());
+        retraitDTOs.addAll(murDroitGroup.getAccessoireDTOs());
+        retraitDTOs.addAll(murGaucheGroup.getAccessoireDTOs());
+
+        retraitMesh.addAll(murFacadeGroup.getMeshRetraits().getMeshes());
+        retraitMesh.addAll(murArriereGroup.getMeshRetraits().getMeshes());
+        retraitMesh.addAll(murDroitGroup.getMeshRetraits().getMeshes());
+        retraitMesh.addAll(murGaucheGroup.getMeshRetraits().getMeshes());
+
+        List<RetraitTest> retraits = retraitDTOs.stream().map((acc) -> {
+            TriangleMesh mesh = retraitMesh.stream().filter((retrait) -> Objects.equals(retrait.ID, acc.accessoireId.toString())).findFirst().orElse(null);
+            if (mesh != null) {
+                return new RetraitTest(acc, mesh);
+            } else {
+                return null;
+            }
+        }).filter((value) -> value != null).collect(java.util.stream.Collectors.toList());
+
+        for(RetraitTest retraitTest: retraits){
+            String facadeRetraitsFileName = String.format("\\%s_Retrait_%s_%s.stl", nomChalet, retraitTest.accessoireDTO.typeMur, retraitTest.accessoireDTO.accessoireNom);
+            List<STLTools.Triangle> stltriangle = PanelHelper.convertMeshTrianglesToStlTriangles(retraitTest.mesh.getTriangles());
+            STLTools.writeSTL(stltriangle, directoryPath + facadeRetraitsFileName);
         }
 
-        String facadeRetraitsFileName = String.format("\\%s_Retrait_F.stl", nomChalet);
-        String arriereRetraitsFileName = String.format("\\%s_Retrait_A.stl", nomChalet);
-        String gaucheRetraitsFileName = String.format("\\%s_Retrait_G.stl", nomChalet);
-        String droitRetraitsFileName = String.format("\\%s_Retrait_D.stl", nomChalet);
 
-        STLTools.writeSTL(facadeStlTriangles, directoryPath + facadeRetraitsFileName);
-        STLTools.writeSTL(arriereStlTriangles, directoryPath + arriereRetraitsFileName);
-        STLTools.writeSTL(gaucheStlTriangles, directoryPath + gaucheRetraitsFileName);
-        STLTools.writeSTL(droitStlTriangles, directoryPath + droitRetraitsFileName);
+        TriangleMesh rainure1_Facade = murFacadeGroup.getMeshRetraits().getMesh("rainure1");
+        String facadeRetraitsFileFacade1 = String.format("\\%s_Retrait_F_rainure1.stl", nomChalet);
+        List<STLTools.Triangle> stl_rainure1_Facade = PanelHelper.convertMeshTrianglesToStlTriangles(rainure1_Facade.getTriangles());
+        STLTools.writeSTL(stl_rainure1_Facade, directoryPath + facadeRetraitsFileFacade1);
+
+        TriangleMesh rainure2_Facade = murFacadeGroup.getMeshRetraits().getMesh("rainure2");
+        String facadeRetraitsFileFacade2 = String.format("\\%s_Retrait_F_rainure2.stl", nomChalet);
+        List<STLTools.Triangle> stl_rainure2_Facade = PanelHelper.convertMeshTrianglesToStlTriangles(rainure2_Facade.getTriangles());
+        STLTools.writeSTL(stl_rainure2_Facade, directoryPath + facadeRetraitsFileFacade2);
+
+        TriangleMesh rainure1_Arriere = murArriereGroup.getMeshRetraits().getMesh("rainure1");
+        String facadeRetraitsFileArriere1 = String.format("\\%s_Retrait_A_rainure1.stl", nomChalet);
+        List<STLTools.Triangle> stl_rainure1_Arriere = PanelHelper.convertMeshTrianglesToStlTriangles(rainure1_Arriere.getTriangles());
+        STLTools.writeSTL(stl_rainure1_Arriere, directoryPath + facadeRetraitsFileArriere1);
+
+        TriangleMesh rainure2_Arriere = murArriereGroup.getMeshRetraits().getMesh("rainure2");
+        String facadeRetraitsFileArriere2 = String.format("\\%s_Retrait_A_rainure2.stl", nomChalet);
+        List<STLTools.Triangle> stl_rainure2_Arriere = PanelHelper.convertMeshTrianglesToStlTriangles(rainure2_Arriere.getTriangles());
+        STLTools.writeSTL(stl_rainure2_Arriere, directoryPath + facadeRetraitsFileArriere2);
+
+        TriangleMesh rainure1_Gauche = murGaucheGroup.getMeshRetraits().getMesh("rainure1");
+        String facadeRetraitsFileGauche1 = String.format("\\%s_Retrait_G_rainure1.stl", nomChalet);
+        List<STLTools.Triangle> stl_rainure1_Gauche = PanelHelper.convertMeshTrianglesToStlTriangles(rainure1_Gauche.getTriangles());
+        STLTools.writeSTL(stl_rainure1_Gauche, directoryPath + facadeRetraitsFileGauche1);
+
+        TriangleMesh rainure2_Gauche = murGaucheGroup.getMeshRetraits().getMesh("rainure2");
+        String facadeRetraitsFileGauche2 = String.format("\\%s_Retrait_G_rainure2.stl", nomChalet);
+        List<STLTools.Triangle> stl_rainure2_Gauche = PanelHelper.convertMeshTrianglesToStlTriangles(rainure2_Gauche.getTriangles());
+        STLTools.writeSTL(stl_rainure2_Gauche, directoryPath + facadeRetraitsFileGauche2);
+
+        TriangleMesh rainure1_Droit = murDroitGroup.getMeshRetraits().getMesh("rainure1");
+        String facadeRetraitsFileDroit1 = String.format("\\%s_Retrait_D_rainure1.stl", nomChalet);
+        List<STLTools.Triangle> stl_rainure1_Droit = PanelHelper.convertMeshTrianglesToStlTriangles(rainure1_Droit.getTriangles());
+        STLTools.writeSTL(stl_rainure1_Droit, directoryPath + facadeRetraitsFileDroit1);
+
+        TriangleMesh rainure2_Droit = murDroitGroup.getMeshRetraits().getMesh("rainure2");
+        String facadeRetraitsFileDroit2 = String.format("\\%s_Retrait_D_rainure2.stl", nomChalet);
+        List<STLTools.Triangle> stl_rainure2_Droit = PanelHelper.convertMeshTrianglesToStlTriangles(rainure2_Droit.getTriangles());
+        STLTools.writeSTL(stl_rainure2_Droit, directoryPath + facadeRetraitsFileDroit2);
+
     }
 
     public void exportSTL(String directoryPath, PanelHelper.OutputType exportType) {
@@ -466,6 +516,7 @@ public class Afficheur {
             this.getScene().getCamera().setDirection(TypeDeVue.vueGauche());
         }
 
+        this.getEventSupport().dispatchViewChanged(new AfficheurEventSupport.ViewChangedEvent(this.vueActive));
         // this.getScene().getCamera().setPosition(new
         // Vector3D(this.scene.getCamera().getPosition().x,
         // (vueActive == TypeDeVue.Dessus) ? 0 : controleur.getChalet().hauteur / 2,
@@ -629,6 +680,7 @@ public class Afficheur {
             TriangleMesh lastMouseEnteredMesh = null;
             TriangleMesh lastDraggedMesh = null;
             boolean dragStarted = false;
+            boolean lastIsShiftDown = false;
 
             MouseListener mouseListener = new MouseListener() {
                 @Override
@@ -642,6 +694,7 @@ public class Afficheur {
                     initialPoint = evt.getPoint();
                     initialDragCamPosition = scene.getCamera().getPosition();
                     initialDragCamDirection = scene.getCamera().getDirection();
+                    lastIsShiftDown = evt.isShiftDown();
 
                     TriangleMesh clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
                     if (clickedMesh != null && clickedMesh.getDraggable()) {
@@ -691,6 +744,7 @@ public class Afficheur {
                     initialDragCamDirection = scene.getCamera().getDirection();
                     initialDragCamPosition = scene.getCamera().getPosition();
                     initialPoint = evt.getPoint();
+                    lastIsShiftDown = evt.isShiftDown();
 
                     TriangleMesh clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
                     if (clickedMesh != null && clickedMesh.getDraggable()) {
@@ -740,6 +794,12 @@ public class Afficheur {
 
                 if (isDragging && initialPoint != null && initialDragCamDirection != null
                         && initialDragCamPosition != null) {
+                    if (evt.isShiftDown() != lastIsShiftDown) {
+                        initialDragCamDirection = scene.getCamera().getDirection();
+                        initialDragCamPosition = scene.getCamera().getPosition();
+                        initialPoint = evt.getPoint();
+
+                    }
                     double diffX = evt.getPoint().x - initialPoint.getX();
                     double diffY = evt.getPoint().y - initialPoint.getY();
 
@@ -768,7 +828,7 @@ public class Afficheur {
                         // getScene().getCamera().getPosition(), position);
                         getScene().getCamera().setPosition(position);
                     }
-
+                    lastIsShiftDown = evt.isShiftDown();
                     drawingPanel.repaint();
                 }
             }
