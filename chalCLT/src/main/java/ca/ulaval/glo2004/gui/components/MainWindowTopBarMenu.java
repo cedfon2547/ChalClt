@@ -428,7 +428,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     }
 
     private void nouveauProjetItemActionPerformed(java.awt.event.ActionEvent evt) {
-        mainWindow.clearAccessoiresSelectionnees();
+        // mainWindow.clearAccessoiresSelectionnees();
         mainWindow.showChaletTable();
         mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Dessus);
 
@@ -507,14 +507,14 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     }
 
     private void annulerItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // System.out.println("UNDO");
+        System.out.println("UNDO");
         mainWindow.getControleur().undo();
         mainWindow.recharger();
         mainWindow.drawingPanel.afficheur.rechargerAffichage();
     }
 
     private void retablirItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // System.out.println("REDO");
+        System.out.println("REDO");
         mainWindow.getControleur().redo();
         mainWindow.recharger();
         mainWindow.drawingPanel.afficheur.rechargerAffichage();

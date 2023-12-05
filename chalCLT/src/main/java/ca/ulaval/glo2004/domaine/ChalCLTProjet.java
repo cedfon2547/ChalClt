@@ -42,12 +42,12 @@ public class ChalCLTProjet {
     public static class ChalCLTProjetDTO {
         public String nom;
         public Chalet.ChaletCompletDTO chalet;
-        public PreferencesUtilisateur preferencesUtilisateur;
+        public PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateur;
 
         public ChalCLTProjetDTO(ChalCLTProjet chalCLTProjet) {
             this.nom = chalCLTProjet.nom;
             this.chalet = new Chalet.ChaletCompletDTO(chalCLTProjet.chalet);
-            this.preferencesUtilisateur = chalCLTProjet.preferencesUtilisateur;
+            this.preferencesUtilisateur = chalCLTProjet.preferencesUtilisateur.toDTO();
         }
     }
 }

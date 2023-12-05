@@ -56,7 +56,9 @@ public class Mur {
         this(murDTO.type, chalet);
         this.accessoires = new ArrayList<Accessoire>();
         for (Accessoire.AccessoireDTO accessoireDTO : murDTO.accessoires) {
-            this.accessoires.add(new Accessoire(accessoireDTO));
+            Accessoire accessoire = new Accessoire(accessoireDTO);
+            accessoire.setAccessoireNom(accessoireDTO.accessoireNom);
+            this.accessoires.add(accessoire);
         }
     }
 

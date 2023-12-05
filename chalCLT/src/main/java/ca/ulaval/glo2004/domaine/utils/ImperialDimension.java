@@ -226,7 +226,11 @@ public class ImperialDimension {
      * @return une chaîne de caractères représentant la dimension impériale
      */
     public String toString() {
-        return this.pieds + "' " + this.pouces + "\" " + this.numerateur + "/" + this.denominateur;
+        String fractionStr = numerateur == 0 ? "" : numerateur + "/" + denominateur;
+        String poucesStr = pouces == 0 ? "" : pouces + "\"";
+        String piedStr = pieds == 0 && pouces == 0 ? "" : pieds + "'";
+
+        return String.format("%s %s %s", piedStr, poucesStr, fractionStr).trim();
     }
 
     /**
@@ -371,6 +375,10 @@ public class ImperialDimension {
         String strNumerateur = matcher.group("A");
         String strDenominateur = matcher.group("B");
 
+        if (strPieds == null && strPouces == null && strNumerateur == null && strDenominateur == null) {
+            return null;
+        }
+        
         // System.out.println("Pieds: " + strPieds);
         // System.out.println("Pouces: " + strPouces);
         // System.out.println("Numerateur: " + strNumerateur);

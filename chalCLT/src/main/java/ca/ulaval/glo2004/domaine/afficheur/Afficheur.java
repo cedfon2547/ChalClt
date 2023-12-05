@@ -295,11 +295,13 @@ public class Afficheur {
         // }
         // });
 
-        // TriangleMeshGroup pignonMesh = PanelHelper.buildPignon(chaletDTO.largeur,
-        // chaletDTO.epaisseurMur,
-        // chaletDTO.angleToit, new Vector3D(0, 0, 0));
+        // TriangleMeshGroup pignonMesh = PanelHelper.buildPanneauToit(chaletDTO.largeur, chaletDTO.longueur,
+        //         chaletDTO.epaisseurMur,
+        //         chaletDTO.angleToit, new Vector3D(0, 0, 0));
+        // TriangleMeshGroup rallongeVerticale = PanelHelper.buildRallongeVertical(chaletDTO.largeur, chaletDTO.hauteur, chaletDTO.epaisseurMur, chaletDTO.angleToit, 0, new Vector3D(0, 0, 0));
 
-        // afficheur.getScene().addMesh(pignonMesh);
+        // getScene().addMesh(pignonMesh);
+        // getScene().addMesh(rallongeVerticale);
 
         getScene().addMesh(murFacadeGroup);
         getScene().addMesh(murArriereGroup);
@@ -748,11 +750,11 @@ public class Afficheur {
                         Vector3D direction = initialDragCamDirection.add(new Vector3D(rotateX, rotateY, 0));
 
                         // Constraint cam direction
-                        if (direction.x > 0) {
-                            direction.x = 0;
-                        } else if (direction.x < -Math.PI / 2) {
-                            direction.x = -Math.PI / 2;
-                        }
+                        // if (direction.x > 0) {
+                        //     direction.x = 0;
+                        // } else if (direction.x < -Math.PI / 2) {
+                        //     direction.x = -Math.PI / 2;
+                        // }
 
                         // pcs.firePropertyChange(AfficheurEvent.CameraDirectionChanged.toString(),
                         // getScene().getCamera().getDirection(), direction);
@@ -856,6 +858,7 @@ public class Afficheur {
         for (TriangleMeshGroup mesh : this.scene.getMeshes()) {
             mesh.setSelected(ids.contains(mesh.ID));
         }
+        this.drawingPanel.repaint();
     }
 
     public static enum TypeDeVue {

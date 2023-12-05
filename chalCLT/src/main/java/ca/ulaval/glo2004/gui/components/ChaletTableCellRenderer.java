@@ -20,9 +20,7 @@ public class ChaletTableCellRenderer extends DefaultTableCellRenderer {
             int row, int column) {
 
         if (row == 6 && column == 1) {
-            hasFocus = true;
-            isSelected = true;
-            chaletTableCellEditor.sensToitComboBox.setSelectedItem(value);            
+            // chaletTableCellEditor.sensToitComboBox.setSelectedItem(value);            
             return chaletTableCellEditor.sensToitComboBox;
         }
         if (column == 1 && (row == 1 || row == 2 || row == 3 || row == 4 || row == 7 || row == 8)) {

@@ -18,16 +18,13 @@ import ca.ulaval.glo2004.domaine.TypeSensToit;
 import ca.ulaval.glo2004.domaine.utils.ImperialDimension;
 
 public class ChaletTableCellEditor extends AbstractCellEditor implements TableCellEditor, ActionListener, KeyListener {
-
     private class SensToitComboBox extends JComboBox<String> {
-
         public SensToitComboBox() {
             this.setFont(this.getFont().deriveFont(8));
             this.addItem(TypeSensToit.Nord.toString());
             this.addItem(TypeSensToit.Sud.toString());
             this.addItem(TypeSensToit.Est.toString());
             this.addItem(TypeSensToit.Ouest.toString());
-            this.setSelectedItem(TypeSensToit.Nord.toString());
         }
 
     }
@@ -53,19 +50,20 @@ public class ChaletTableCellEditor extends AbstractCellEditor implements TableCe
         jTextField.addActionListener(this);
         jTextField.addKeyListener(this);
 
-        sensToitComboBox.setFocusable(false);
-        sensToitComboBox.setRequestFocusEnabled(false);
         sensToitComboBox.setBorder(null);
         sensToitComboBox.setBackground(UIManager.getColor("Table.background"));
     }
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        System.out.println("row: " + row + " column: " + column + " value: " + value);
+
         String noFractionValue;
         if (row == 6 && column == 1) {
             if (isSelected) {
                 valeurCellEditorCourrante = (String) value;
             }
+
             sensToitComboBox.setSelectedItem(value);
             return sensToitComboBox;
         }
@@ -84,6 +82,7 @@ public class ChaletTableCellEditor extends AbstractCellEditor implements TableCe
         } else {
             jTextField.setText((String) value);
         }
+
         valeurCellEditorCourrante = getValeurCourranteByPattern();
         return jTextField;
     }

@@ -2,6 +2,7 @@ package ca.ulaval.glo2004.domaine.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
@@ -252,8 +253,17 @@ public class PanelHelper {
         double x0 = position.x;
         double y0 = position.y;
         double z0 = position.z;
-        double diffHauteur = d / 2 * Math.tan(Math.toRadians(angle));
-        double space = 5;
+        double diffHauteur = 0; //d/2 * Math.sin(Math.toRadians(angle));
+        double space = 0;
+        double a = d / 2 * Math.tan(Math.toRadians(angle));
+        double b = Math.sqrt(Math.pow(d / 2, 2) + Math.pow(a, 2)) * 2;
+        // double b1 = b/2;
+        // double b2 = d/2 * Math.sin(Math.toRadians(angle));
+
+        diffHauteur = d/2 * Math.tan(Math.toRadians(angle));
+        space = -a;
+
+        hauteur = largeur * Math.tan(Math.toRadians(angle));
 
         double[] p1 = new double[] { x0, y0, z0 };
         double[] p2 = new double[] { x0, y0 + diffHauteur, z0 + d / 2 - m / 2 };
@@ -332,50 +342,190 @@ public class PanelHelper {
         // Hauteur du pignon est égal à la largeur du chalet multiplié par tan(angle) (h
         // = w * tan(angle))
         double height = width * Math.tan(Math.toRadians(angle));
+        double x0 = position.x;
+        double y0 = position.y;
+        double z0 = position.z;
 
-        // Points face extérieur
-        double[] p1 = new double[] { position.x, position.y, position.z };
-        double[] p2 = new double[] { position.x + width, position.y + height, position.z };
-        double[] p3 = new double[] { position.x, position.y + height, position.z };
+        double diffHeight = depth / 2 * Math.tan(Math.toRadians(angle));
+        double innerHeight = height - diffHeight;
 
-        double[] p4 = new double[] { position.x, position.y, position.z + depth / 2 };
-        double[] p5 = new double[] { position.x + width, position.y + height, position.z + depth / 2 };
-        double[] p6 = new double[] { position.x, position.y + height, position.z + depth / 2 };
+        double[] p1 = new double[] { x0, y0, z0 };
+        double[] p2 = new double[] { x0, y0 - height, z0 };
+        double[] p3 = new double[] { x0 + width, y0, z0 };
 
-        double[] p7 = new double[] { position.x + depth / 2, position.y + height, position.z + depth / 2 };
-        double[] p8 = new double[] { position.x + depth / 2, position.y + height, position.z + depth };
-        double[] p9 = new double[] { position.x + width - depth / 2, position.y + height, position.z + depth };
-        double[] p10 = new double[] { position.x + width - depth / 2, position.y + height, position.z + depth / 2 };
+        double[] p4 = new double[] { x0, y0, z0 + depth / 2 };
+        double[] p5 = new double[] { x0, y0 - height + diffHeight, z0 + depth / 2 };
+        double[] p6 = new double[] { x0, y0 - height, z0 + depth / 2 };
 
-        double[] p11 = new double[] { position.x, position.y + Math.tan(Math.toRadians(angle)) * depth / 2, position.z + depth / 2 };
-        double[] p12 = new double[] { position.x + depth / 2, position.y + Math.tan(Math.toRadians(angle)) * depth / 2, position.z + depth / 2 };
+        double[] p7 = new double[] { x0 + depth / 2, y0, z0 + depth / 2 };
+        double[] p8 = new double[] { x0 + depth / 2, y0 - ((width - depth) * Math.tan(Math.toRadians(angle))), z0 + depth / 2 };
+        double[] p9 = new double[] { x0 + depth / 2, y0 - ((width - depth / 2) * Math.tan(Math.toRadians(angle))), z0 + depth / 2 };
 
+        double[] p10 = new double[] { x0 + depth / 2, y0, z0 + depth };
+        double[] p11 = new double[] { x0 + depth / 2, y0 - ((width - depth) * Math.tan(Math.toRadians(angle))), z0 + depth };
+        
+        double[] p12 = new double[] { x0 + width, y0, z0 + depth / 2 };
+        double[] p13 = new double[] { x0 + width - depth / 2, y0, z0 + depth / 2};
+        double[] p14 = new double[] { x0 + width - depth / 2, y0, z0 + depth };
+        
         List<double[][]> triangles = new ArrayList<double[][]>();
-
-
-        triangles.add(new double[][] { p1, p2, p3 });
+        
+        triangles.add(new double[][] { p1, p3, p2 });
 
         triangles.add(new double[][] { p1, p2, p4 });
-        triangles.add(new double[][] { p2, p5, p4 });
+        triangles.add(new double[][] { p2, p6, p4 });
 
-        triangles.add(new double[][] { p2, p5, p3 });
-        triangles.add(new double[][] { p5, p6, p3 });
+        triangles.add(new double[][] { p4, p5, p7 });
+        triangles.add(new double[][] { p7, p5, p8 });
 
-        triangles.add(new double[][] { p1, p3, p4 });
-        triangles.add(new double[][] { p3, p6, p4 });
+        triangles.add(new double[][] { p9, p5, p6 });
+        triangles.add(new double[][] { p5, p9, p8 });
 
-        triangles.add(new double[][] { p8, p7, p9 });
-        triangles.add(new double[][] { p9, p7, p10 });
-
-        triangles.add(new double[][] { p11, p4, p12 });
-
-        triangles.add(new double[][] { p6, p11, p12 });
-        triangles.add(new double[][] { p6, p12, p7 });
+        triangles.add(new double[][] { p7, p10, p8 });
+        triangles.add(new double[][] { p10, p11, p8  });
         
+        triangles.add(new double[][] { p2, p6, p3 });
+        triangles.add(new double[][] { p3, p6, p12 });
+        
+        triangles.add(new double[][] { p1, p12, p3 });
+        triangles.add(new double[][] { p1, p4, p12 });
+
+        triangles.add(new double[][] { p7, p10, p13 });
+        triangles.add(new double[][] { p10, p14, p13 });
+
+        triangles.add(new double[][] { p8, p14, p11 });
+        triangles.add(new double[][] { p8, p13, p14 });
+        triangles.add(new double[][] { p10, p14, p11 });
+
+        triangles.add(new double[][] { p13, p8, p12 });
+        triangles.add(new double[][] { p8, p9, p12 });
 
         TriangleMesh pignonMesh = TriangleMesh.fromDoubleList(triangles);
         pignonGroup.addMesh(pignonMesh);
         return pignonGroup;
+    }
+
+    @FunctionalInterface
+    public static interface Fn {
+        public double apply(double x);
+    }
+
+    public static TriangleMeshGroup buildPanneauToit(double width, double longueur, double depth, double angle, Vector3D position) {
+        TriangleMeshGroup panneauToitGroup = new TriangleMeshGroup();
+
+        double height = (longueur) * Math.tan(Math.toRadians(angle));
+
+        double x0 = position.x;
+        double y0 = position.y;
+        double z0 = position.z;
+
+        double a = depth / 2 * Math.tan(Math.toRadians(angle));
+        double b = Math.sqrt(Math.pow(depth / 2, 2) + Math.pow(a, 2)) * 2;
+        double b1 = b/2;
+        double b2 = depth/2 * Math.sin(Math.toRadians(angle));
+
+        double[] p1 = new double[] { x0, y0, z0 };
+        double[] p2 = new double[] { x0 + width, y0, z0 };
+        double[] p3 = new double[] { x0 + width, y0 + b1, z0 };
+        double[] p4 = new double[] { x0, y0 + b1, z0 };
+
+        double[] p5 = new double[] { x0 + depth / 2, y0 + b1 + a, z0 + depth / 2 };
+        double[] p6 = new double[] { x0 + width - depth / 2, y0 + b1 + a, z0 + depth / 2 };
+        
+        double[] p7 = new double[] { x0 + depth / 2, y0 + b1 + b2 + a, z0 + depth / 2 };
+        double[] p8 = new double[] { x0 + width - depth / 2, y0 + b1 + b2 + a, z0 + depth / 2 };
+
+        double[] p9 = new double[] { x0, y0 + height, z0 + longueur - depth / 2 };
+        double[] p10 = new double[] { x0 + width, y0 + height, z0 + longueur - depth / 2 };
+
+        double m = (p9[1] - p7[1]) / (p9[2] - p7[2]);
+        Fn fn = new Fn() {
+            @Override
+            public double apply(double x) {
+                return m * (x - p9[2]) + p9[1];
+            }
+        };
+
+        double[] p11 = new double[] { x0, y0 + fn.apply(z0 + longueur) - b1 - b2 + a, z0 + longueur };
+        double[] p12 = new double[] { x0 + width, + fn.apply(z0 + longueur) - b1 - b2 + a, z0 + longueur };
+
+        double[] p13 = new double[] { x0, y0 + height, z0 + longueur };
+        double[] p14 = new double[] { x0 + width, y0 + height, z0 + longueur };
+
+        double[] p17 = new double[] { x0 + depth / 2, y0 + height, z0 + longueur - depth };
+        double[] p18 = new double[] { x0 + width -  depth / 2, y0 + height, z0 + longueur - depth };
+
+        double[] p19 = new double[] { x0 + depth / 2, y0 + height, z0 + longueur - depth / 2 };
+        double[] p20 = new double[] { x0 + width - depth / 2, y0 + height, z0 + longueur - depth / 2 };
+
+        double[] p21 = new double[] { x0, y0 + b1 + a, z0 + depth / 2 };
+        double[] p22 = new double[] { x0 + width, y0 + b1 + a, z0 + depth / 2 };
+
+        List<double[][]> triangles = new ArrayList<double[][]>();
+        
+
+        triangles.add(new double[][] { p1, p2, p3 });
+        triangles.add(new double[][] { p1, p3, p4 });
+
+        triangles.add(new double[][] { p5, p4, p6 });
+        triangles.add(new double[][] { p4, p3, p6 });
+
+        triangles.add(new double[][] { p5, p6, p7 });
+        triangles.add(new double[][] { p6, p8, p7 });
+
+        // Top
+        triangles.add(new double[][] { p2, p11, p12 });
+        triangles.add(new double[][] { p1, p11, p2 });
+
+        triangles.add(new double[][] { p9, p10, p13 });
+        triangles.add(new double[][] { p13, p10, p14 });
+
+        triangles.add(new double[][] {p11, p12, p13});
+        triangles.add(new double[][] {p13, p12, p14});
+
+
+        triangles.add(new double[][] { p17, p18, p19 });
+        triangles.add(new double[][] { p18, p20, p19 });
+
+        triangles.add(new double[][] { p19, p20, p9 });
+        triangles.add(new double[][] { p9, p20, p10 });
+
+        // Bottom
+        triangles.add(new double[][] { p7, p8, p17 });
+        triangles.add(new double[][] { p17, p8, p18 });
+
+        triangles.add(new double[][] { p4, p5, p21 });
+        triangles.add(new double[][] { p6, p3, p22 });
+
+        triangles.add(new double[][] { p9, p21, p19 });
+        triangles.add(new double[][] { p19, p21, p5 });
+
+        triangles.add(new double[][] { p22, p10, p20 });
+        triangles.add(new double[][] { p6, p22, p20 });
+
+        triangles.add(new double[][] { p13, p9, p11 });
+        triangles.add(new double[][] { p14, p10, p12 });
+
+        triangles.add(new double[][] { p4, p1, p21 });
+        triangles.add(new double[][] { p3, p2, p22 });
+
+        triangles.add(new double[][] { p11, p9, p21 });
+        triangles.add(new double[][] { p12, p10, p22 });
+
+        triangles.add(new double[][] { p1, p11, p21 });
+        triangles.add(new double[][] { p2, p12, p22 });
+
+        triangles.add(new double[][] { p17, p7, p5 });
+        triangles.add(new double[][] { p19, p17, p5 });
+
+        triangles.add(new double[][] { p18, p8, p6 });
+        triangles.add(new double[][] { p20, p18, p6 });
+
+
+        TriangleMesh pignonMesh = TriangleMesh.fromDoubleList(triangles);
+        pignonMesh.getMaterial().setColor(Color.GRAY);
+        panneauToitGroup.addMesh(pignonMesh);
+        return panneauToitGroup;
     }
 
     public static class RectPlane2D {

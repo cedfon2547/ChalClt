@@ -1,21 +1,35 @@
 package ca.ulaval.glo2004.gui;
 
 import java.awt.BorderLayout;
+import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.border.TitledBorder;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.Controleur;
+import ca.ulaval.glo2004.domaine.ControleurEventSupport.AccessoireEvent;
+import ca.ulaval.glo2004.domaine.ControleurEventSupport.AccessoireEventListener;
+import ca.ulaval.glo2004.domaine.ControleurEventSupport.ChaletEvent;
+import ca.ulaval.glo2004.domaine.ControleurEventSupport.ChaletEventListener;
+import ca.ulaval.glo2004.domaine.ControleurEventSupport.UndoRedoEvent;
+import ca.ulaval.glo2004.domaine.ControleurEventSupport.UndoRedoEventListener;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.gui.NotificationManager.NotificationType;
 import ca.ulaval.glo2004.gui.components.ArbreDesComposantesChalet;
 import ca.ulaval.glo2004.gui.components.DrawingPanel;
 import ca.ulaval.glo2004.gui.components.MainWindowTopBarMenu;
 import ca.ulaval.glo2004.gui.components.TableAccessoire;
+import ca.ulaval.glo2004.gui.components.TableAccessoireV2;
 import ca.ulaval.glo2004.gui.components.TopButtonPanel;
 import ca.ulaval.glo2004.gui.components.TableChalet;
+import ca.ulaval.glo2004.gui.components.TableChaletV2;
 
 /*
  * UI main layout
@@ -48,8 +62,8 @@ public class MainWindow extends javax.swing.JFrame {
     public javax.swing.JPanel sidePanelTopSection;
     public javax.swing.JPanel sidePanelBottomSection;
 
-    public TableChalet tableProprietesChalet;
-    public TableAccessoire tableProprietesAccessoire;
+    public TableChaletV2 tableProprietesChalet;
+    public TableAccessoireV2 tableProprietesAccessoire;
     public JScrollPane tableContainer;
     public DrawingPanel drawingPanel;
     public ArbreDesComposantesChalet arbreDesComposantesChalet;
@@ -67,6 +81,15 @@ public class MainWindow extends javax.swing.JFrame {
 
         setJMenuBar(menu); // Add the menu bar to the window
         initComponents();
+
+        this.controleur.addChaletEventListener(new ChaletEventListener() {
+            @Override
+            public void change(ChaletEvent event) {
+                // TODO Auto-generated method stub
+                recharger();
+            }
+        });
+        ;
     }
 
     private void initComponents() {
@@ -109,7 +132,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         mainWindowSplitPane.setDividerSize(15);
         sidePanelSplitPane.setDividerSize(15);
-        
+
         mainWindowSplitPane.setOneTouchExpandable(true);
         sidePanelSplitPane.setOneTouchExpandable(false);
 
@@ -160,8 +183,72 @@ public class MainWindow extends javax.swing.JFrame {
         add(mainWindowSplitPane);
         add(topButtonPanel, BorderLayout.BEFORE_FIRST_LINE);
 
+        tableProprietesChalet = new TableChaletV2(controleur.getChalet());
+        tableProprietesChalet.getPcs().addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                System.out.println("Property changed: " + evt.getPropertyName() + " " + evt.getNewValue());
+                getControleur().setChalet(tableProprietesChalet.getChaletDTO());
+            }
+        });
 
+        this.getControleur().addChaletEventListener((evt) -> {
+            System.out.println("Chalet event: " + evt.getChaletDTO().toString());
+            tableProprietesChalet.updateTable(evt.getChaletDTO());
+            // recharger();
+        });
+
+        this.getControleur().addAccessoireEventListener(new AccessoireEventListener() {
+            @Override
+            public void add(AccessoireEvent event) {
+                // TODO Auto-generated method stub
+                recharger();
+            }
+
+            @Override
+            public void remove(AccessoireEvent event) {
+                // TODO Auto-generated method stub
+                recharger();
+            }
+
+            @Override
+            public void change(AccessoireEvent event) {
+                // TODO Auto-generated method stub
+                System.out.println("Accessoire event: " + event.getAccessoireDTO().accessoireId);
+                if (tableProprietesAccessoire != null) {
+                    tableProprietesAccessoire.updateTable(event.getAccessoireDTO());
+                    recharger();
+                }
+            }
+        });
+
+        this.getControleur().addUndoRedoEventListener(new UndoRedoEventListener() {
+            @Override
+            public void undo(UndoRedoEvent event) {
+                // TODO Auto-generated method stub
+                System.out.println("Undo event: " + event.getProjet().nom);
+                recharger();
+            }
+
+            @Override
+            public void redo(UndoRedoEvent event) {
+                // TODO Auto-generated method stub
+                System.out.println("Redo event: " + event.getProjet());
+                recharger();
+            }
+        });
+
+        drawingPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("Clicked on drawing panel");
+                if (tableProprietesChalet.getCellEditor() != null) {
+                    tableProprietesChalet.getCellEditor().stopCellEditing();
+                }
+            }
+        });
         showChaletTable();
+        this.getContentPane().requestFocusInWindow();
     }
 
     public Controleur getControleur() {
@@ -175,11 +262,28 @@ public class MainWindow extends javax.swing.JFrame {
     /**
      * Affiche la table des propriétés du chalet.
      */
+
     public void showChaletTable() {
-        tableProprietesChalet = new TableChalet(this);
-        tableContainer.setBorder(tableProprietesChalet.getTitledBorder());
+        TitledBorder border = javax.swing.BorderFactory.createTitledBorder("Propriétés du chalet");
+        tableContainer.setBorder(border);
         tableContainer.add(tableProprietesChalet.getTableHeader());
         tableContainer.setViewportView(tableProprietesChalet);
+        
+        tableContainer.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                System.out.println("Focus gained");
+            }
+
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                System.out.println("Focus lost");
+            }
+        
+        });
+        // tableContainer.setBorder(tableProprietesChalet.getTitledBorder());
+        // tableContainer.add(tableProprietesChalet.getTableHeader());
+        // tableContainer.setViewportView(tableProprietesChalet);
     }
 
     /**
@@ -191,10 +295,25 @@ public class MainWindow extends javax.swing.JFrame {
         if (dtoAccessoire == null) {
             return;
         }
-        tableProprietesAccessoire = new TableAccessoire(this, dtoAccessoire);
-        tableContainer.setBorder(tableProprietesAccessoire.getTitledBorder());
+        
+        if (tableProprietesAccessoire == null) {
+            tableProprietesAccessoire = new TableAccessoireV2(dtoAccessoire);
+            tableProprietesAccessoire.getPcs().addPropertyChangeListener(new PropertyChangeListener() {
+                @Override
+                public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                    System.out.println("Property changed: " + evt.getPropertyName() + " " + evt.getNewValue());
+                    getControleur().setAccessoire(tableProprietesAccessoire.getAccessoireDTO());
+                }
+            });
+        } else {
+            tableProprietesAccessoire.updateTable(dtoAccessoire);
+        }
+
+        TitledBorder border = javax.swing.BorderFactory.createTitledBorder("Propriétés de l'accessoire");
+        tableContainer.setBorder(border);
         tableContainer.add(tableProprietesAccessoire.getTableHeader());
         tableContainer.setViewportView(tableProprietesAccessoire);
+
     }
 
     public List<Accessoire.AccessoireDTO> getAccessoiresSelectionnees() {
@@ -226,6 +345,7 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     public void clearAccessoiresSelectionnees() {
+        System.out.println("Clearing selected accessories");
         for (Accessoire.AccessoireDTO accessoireDTO : accessoiresSelectionnees) {
             TriangleMesh mesh = drawingPanel.afficheur.getScene().getMesh(accessoireDTO.accessoireId.toString());
             if (mesh != null) {
@@ -259,13 +379,24 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     public void recharger() {
+        Chalet.ChaletDTO chaletDTO = controleur.getChalet();
+        List<Accessoire.AccessoireDTO> accessoireDTOs = controleur.getAccessoires();
+
         clearAccessoiresSelectionnees();
         if (tableProprietesChalet != null) {
-            tableProprietesChalet.recharger();
+            tableProprietesChalet.updateTable(chaletDTO);
+            // tableProprietesChalet.recharger();
         }
 
         if (tableProprietesAccessoire != null) {
-            tableProprietesAccessoire.recharger();
+            Accessoire.AccessoireDTO accessoireDTO = tableProprietesAccessoire.getAccessoireDTO();
+            Accessoire.AccessoireDTO newAccessoireDTO = accessoireDTOs.stream()
+                    .filter(accessoire -> accessoire.accessoireId == accessoireDTO.accessoireId).findFirst()
+                    .orElse(null);
+            if (newAccessoireDTO != null) {
+                tableProprietesAccessoire.updateTable(newAccessoireDTO);
+            }
+            // tableProprietesAccessoire.recharger();
         }
 
         if (arbreDesComposantesChalet != null) {
@@ -286,8 +417,11 @@ public class MainWindow extends javax.swing.JFrame {
 
         drawingPanel.updateToolbarBtns();
 
-        List<String> selectedIDs = accessoiresSelectionnees.stream().map(accessoire -> accessoire.accessoireId.toString()).collect(java.util.stream.Collectors.toList());
-        drawingPanel.afficheur.setSelectedMeshes(selectedIDs);
+        // List<String> selectedIDs = accessoiresSelectionnees.stream().map(accessoire
+        // ->
+        // accessoire.accessoireId.toString()).collect(java.util.stream.Collectors.toList());
+        // System.out.println("Accessoires sélectionnés: " + selectedIDs.toString());
+        // // drawingPanel.afficheur.setSelectedMeshes(selectedIDs);
     }
 
     public void dispatchNotificationAlert(String title, String message, NotificationType type) {

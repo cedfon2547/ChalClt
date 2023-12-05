@@ -175,7 +175,7 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
     private TreeSelectionListener getTreeSelectionListener() {
         return new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
-                mainWindow.clearAccessoiresSelectionnees();
+                // mainWindow.clearAccessoiresSelectionnees();
 
                 TreePath[] treePaths = arbreComposantesChalet.getSelectionPaths();
 
@@ -187,7 +187,7 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                         AccessoireTreeNode nodeAcc = (AccessoireTreeNode) path.getLastPathComponent();
                         if (nodeAcc != null) {
                             mainWindow.ajouterAccessoireSelectionnee(nodeAcc.getAccessoireDTO());
-                        } 
+                        }
                     }
                 }
             }
@@ -276,9 +276,12 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
 
             @Override
             public void focusLost(java.awt.event.FocusEvent evt) {
-                // System.out.println("Focus lost");
-                mainWindow.clearAccessoiresSelectionnees();
-                setSelectedAccessoire(mainWindow.accessoiresSelectionnees);
+                System.out.println("Focus lost "
+                        + (evt.getOppositeComponent() == mainWindow.topButtonPanel.supprimerAccessoireBtn));
+                if (evt.getOppositeComponent() != mainWindow.topButtonPanel.supprimerAccessoireBtn) {
+                    mainWindow.clearAccessoiresSelectionnees();
+                    setSelectedAccessoire(mainWindow.accessoiresSelectionnees);
+                }
             }
         };
     }

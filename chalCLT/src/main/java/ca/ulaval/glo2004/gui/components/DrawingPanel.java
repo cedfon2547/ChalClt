@@ -365,7 +365,7 @@ public class DrawingPanel extends javax.swing.JPanel {
     @Override
     public void addNotify() {
         super.addNotify();
-        requestFocus();
+        requestFocusInWindow();
 
         SwingUtilities.invokeLater(() -> {
             System.out.println("InvokeAndWait " + getSize());

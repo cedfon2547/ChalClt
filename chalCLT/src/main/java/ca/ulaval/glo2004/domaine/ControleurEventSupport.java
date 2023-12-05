@@ -3,12 +3,15 @@ package ca.ulaval.glo2004.domaine;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.ulaval.glo2004.domaine.utils.UndoRedoManager;
+
 public class ControleurEventSupport {
     private List<UserPreferencesEventListener> userPreferencesEventListeners = new ArrayList<>();
     private List<ChaletEventListener> chaletEventListeners = new ArrayList<>();
     private List<AccessoireEventListener> accessoireEventListeners = new ArrayList<>();
     private List<ProjectEventListener> projectEventListeners = new ArrayList<>();
     private List<AccessoirValidityEventListener> accessoirValidityEventListeners = new ArrayList<>();
+    private List<UndoRedoEventListener> undoRedoEventListeners = new ArrayList<>();
 
     public void addUserPreferencesEventListener(UserPreferencesEventListener listener) {
         userPreferencesEventListeners.add(listener);
@@ -30,6 +33,10 @@ public class ControleurEventSupport {
         accessoirValidityEventListeners.add(listener);
     }
 
+    public void addUndoRedoEventListener(UndoRedoEventListener listener) {
+        undoRedoEventListeners.add(listener);
+    }
+
     public void removeUserPreferencesEventListener(UserPreferencesEventListener listener) {
         userPreferencesEventListeners.remove(listener);
     }
@@ -48,6 +55,10 @@ public class ControleurEventSupport {
 
     public void removeAccessoirValidityEventListener(AccessoirValidityEventListener listener) {
         accessoirValidityEventListeners.remove(listener);
+    }
+
+    public void removeUndoRedoEventListener(UndoRedoEventListener listener) {
+        undoRedoEventListeners.remove(listener);
     }
 
     public void dispatchUserPreferencesChangeEvent(
@@ -104,6 +115,20 @@ public class ControleurEventSupport {
         AccessoirValidityEvent event = new AccessoirValidityEvent(accessoireDTOs);
         for (AccessoirValidityEventListener listener : accessoirValidityEventListeners) {
             listener.change(event);
+        }
+    }
+
+    public void dispatchUndoEvent(ChalCLTProjet.ChalCLTProjetDTO projet) {
+        UndoRedoEvent event = new UndoRedoEvent(projet);
+        for (UndoRedoEventListener listener : undoRedoEventListeners) {
+            listener.undo(event);
+        }
+    }
+
+    public void dispatchRedoEvent(ChalCLTProjet.ChalCLTProjetDTO projet) {
+        UndoRedoEvent event = new UndoRedoEvent(projet);
+        for (UndoRedoEventListener listener : undoRedoEventListeners) {
+            listener.redo(event);
         }
     }
 
@@ -180,6 +205,18 @@ public class ControleurEventSupport {
         }
     }
 
+    public static class UndoRedoEvent {
+        ChalCLTProjet.ChalCLTProjetDTO projet;
+
+        public UndoRedoEvent(ChalCLTProjet.ChalCLTProjetDTO projet) {
+            this.projet = projet;
+        }
+
+        public ChalCLTProjet.ChalCLTProjetDTO getProjet() {
+            return projet;
+        }
+    }
+
     public interface UserPreferencesEventListener {
         public void change(UserPreferencesEvent event);
     }
@@ -204,5 +241,11 @@ public class ControleurEventSupport {
 
     public interface AccessoirValidityEventListener {
         public void change(AccessoirValidityEvent event);
+    }
+
+    public interface UndoRedoEventListener {
+        public void undo(UndoRedoEvent event);
+
+        public void redo(UndoRedoEvent event);
     }
 }

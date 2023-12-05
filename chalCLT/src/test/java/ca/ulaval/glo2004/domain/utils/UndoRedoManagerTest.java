@@ -32,7 +32,7 @@ public class UndoRedoManagerTest {
         assertEquals(80, projet.getChalet().getLargeur(), 0);
 
         // Save the state
-        manager.saveState(projet);
+        manager.saveState(new ChalCLTProjet.ChalCLTProjetDTO(projet));
 
         // Check that the state was saved
         assertEquals(1, manager.getUndoStackSize());

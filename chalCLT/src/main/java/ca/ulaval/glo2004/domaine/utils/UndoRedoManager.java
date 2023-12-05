@@ -6,33 +6,29 @@ import java.util.Stack;
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.ChalCLTProjet;
 import ca.ulaval.glo2004.domaine.Chalet;
+import ca.ulaval.glo2004.domaine.Mur;
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 
 
 public class UndoRedoManager {
-    private static class ProjetState {
+    public static class ProjetState {
         private String nom;
-        private Chalet.ChaletDTO chalet;
-        private List<Accessoire.AccessoireDTO> accessoires;
+        private Chalet.ChaletCompletDTO chalet;
         private PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateur;
 
-        public ProjetState(ChalCLTProjet projet) {
-            this.nom = projet.getNom();
-            this.chalet = projet.getChalet().toDTO();
-            this.accessoires = projet.getChalet().getAccessoireDTOs();
-            this.preferencesUtilisateur = projet.getPreferencesUtilisateur().toDTO();
+        public ProjetState(ChalCLTProjet.ChalCLTProjetDTO projet) {
+            this.nom = projet.nom;
+            this.chalet = projet.chalet;
+            this.preferencesUtilisateur = projet.preferencesUtilisateur;
+
         }
 
         public String getNom() {
             return nom;
         }
 
-        public Chalet.ChaletDTO getChalet() {
+        public Chalet.ChaletCompletDTO getChalet() {
             return chalet;
-        }
-
-        public List<Accessoire.AccessoireDTO> getAccessoires() {
-            return accessoires;
         }
 
         public PreferencesUtilisateur.PreferencesUtilisateurDTO getPreferencesUtilisateur() {
@@ -51,7 +47,7 @@ public class UndoRedoManager {
         return redoStack.size();
     }
 
-    public void saveState(ChalCLTProjet projet) {
+    public void saveState(ChalCLTProjet.ChalCLTProjetDTO projet) {
         undoStack.push(new ProjetState(projet));
         redoStack.clear();
     }
@@ -61,7 +57,7 @@ public class UndoRedoManager {
             return;
         }
 
-        redoStack.push(new ProjetState(projet));
+        redoStack.push(new ProjetState(new ChalCLTProjet.ChalCLTProjetDTO(projet)));
         ProjetState sauvegardeDTO = undoStack.pop();
         applyChange(projet, sauvegardeDTO);
     }
@@ -71,7 +67,7 @@ public class UndoRedoManager {
             return;
         }
 
-        undoStack.push(new ProjetState(projet));
+        undoStack.push(new ProjetState(new ChalCLTProjet.ChalCLTProjetDTO(projet)));
         ProjetState sauvegardeDTO = redoStack.pop();
         applyChange(projet, sauvegardeDTO);
     }
@@ -81,9 +77,12 @@ public class UndoRedoManager {
         projet.setPreferencesUtilisateur(new PreferencesUtilisateur(sauvegardeDTO.getPreferencesUtilisateur()));
 
         Chalet newChalet = new Chalet(sauvegardeDTO.getChalet());
-        for (Accessoire.AccessoireDTO accessoireDTO : sauvegardeDTO.getAccessoires()) {
-            newChalet.getMur(accessoireDTO.typeMur).ajouterAccessoire(new Accessoire(accessoireDTO));
-        }
+        // for (Mur.MurDTO murDTO: sauvegardeDTO.getChalet().murs) {
+        //     Mur mur = newChalet.getMur(murDTO.type);
+        //     for (Accessoire.AccessoireDTO accessoireDTO: murDTO.accessoires) {
+        //         mur.ajouterAccessoire(new Accessoire(accessoireDTO));
+        //     }
+        // }
         
         projet.setChalet(newChalet);
     }
