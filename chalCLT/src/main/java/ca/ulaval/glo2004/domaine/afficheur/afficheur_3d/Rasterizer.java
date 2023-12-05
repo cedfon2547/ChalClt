@@ -347,10 +347,10 @@ public class Rasterizer {
 
     public void draw(Graphics g, Dimension panelDimension) {
         image = rasterize(panelDimension);
-        Graphics _g = image.getGraphics();
+        // Graphics _g = image.getGraphics();
         // g.drawImage(canvasBuffer, 0, 0, null);
-        drawCameraDetails(_g, new Point(10, 20));
-        drawLightDetails(_g, new Point(10, 80));
+        // drawCameraDetails(_g, new Point(10, 20));
+        // drawLightDetails(_g, new Point(10, 80));
 
         g.drawImage(image, 0, 0, null);
 

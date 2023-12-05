@@ -292,10 +292,13 @@ public class Afficheur {
         // }
         // });
 
-        // TriangleMeshGroup pignonMesh = PanelHelper.buildPanneauToit(chaletDTO.largeur, chaletDTO.longueur,
-        //         chaletDTO.epaisseurMur,
-        //         chaletDTO.angleToit, new Vector3D(0, 0, 0));
-        // TriangleMeshGroup rallongeVerticale = PanelHelper.buildRallongeVertical(chaletDTO.largeur, chaletDTO.hauteur, chaletDTO.epaisseurMur, chaletDTO.angleToit, 0, new Vector3D(0, 0, 0));
+        // TriangleMeshGroup pignonMesh =
+        // PanelHelper.buildPanneauToit(chaletDTO.largeur, chaletDTO.longueur,
+        // chaletDTO.epaisseurMur,
+        // chaletDTO.angleToit, new Vector3D(0, 0, 0));
+        // TriangleMeshGroup rallongeVerticale =
+        // PanelHelper.buildRallongeVertical(chaletDTO.largeur, chaletDTO.hauteur,
+        // chaletDTO.epaisseurMur, chaletDTO.angleToit, 0, new Vector3D(0, 0, 0));
 
         // getScene().addMesh(pignonMesh);
         // getScene().addMesh(rallongeVerticale);
@@ -513,6 +516,7 @@ public class Afficheur {
             this.getScene().getCamera().setDirection(TypeDeVue.vueGauche());
         }
 
+        this.getEventSupport().dispatchViewChanged(new AfficheurEventSupport.ViewChangedEvent(this.vueActive));
         // this.getScene().getCamera().setPosition(new
         // Vector3D(this.scene.getCamera().getPosition().x,
         // (vueActive == TypeDeVue.Dessus) ? 0 : controleur.getChalet().hauteur / 2,
@@ -608,8 +612,7 @@ public class Afficheur {
                     // drawingPanel.repaint();
                     // eventSupport.dispatchMeshClicked(new
                     // AfficheurEventSupport.MeshMouseEvent(evt, clickedMesh));
-                    // eventSupport.dispatchViewChanged(new
-                    // AfficheurEventSupport.ViewChangedEvent(getVueActive()));
+                    eventSupport.dispatchViewChanged(new AfficheurEventSupport.ViewChangedEvent(getVueActive()));
                     return;
                 } else if (clickedMesh != null && clickedMesh.getSelectable()) {
                     // pcs.firePropertyChange(AfficheurEvent.SelectionChanged.toString(), null,
@@ -635,7 +638,7 @@ public class Afficheur {
                 // drawingPanel.grabFocus();
                 TriangleMesh clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
                 if (clickedMesh != null) {
-                    System.out.println("Mouse pressed on mesh: " + clickedMesh.ID);
+                    // System.out.println("Mouse pressed on mesh: " + clickedMesh.ID);
 
                     if (evt.isControlDown()) {
                         clickedMesh.setSelected(!clickedMesh.getSelected());
@@ -677,6 +680,7 @@ public class Afficheur {
             TriangleMesh lastMouseEnteredMesh = null;
             TriangleMesh lastDraggedMesh = null;
             boolean dragStarted = false;
+            boolean lastIsShiftDown = false;
 
             MouseListener mouseListener = new MouseListener() {
                 @Override
@@ -690,6 +694,7 @@ public class Afficheur {
                     initialPoint = evt.getPoint();
                     initialDragCamPosition = scene.getCamera().getPosition();
                     initialDragCamDirection = scene.getCamera().getDirection();
+                    lastIsShiftDown = evt.isShiftDown();
 
                     TriangleMesh clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
                     if (clickedMesh != null && clickedMesh.getDraggable()) {
@@ -739,6 +744,7 @@ public class Afficheur {
                     initialDragCamDirection = scene.getCamera().getDirection();
                     initialDragCamPosition = scene.getCamera().getPosition();
                     initialPoint = evt.getPoint();
+                    lastIsShiftDown = evt.isShiftDown();
 
                     TriangleMesh clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
                     if (clickedMesh != null && clickedMesh.getDraggable()) {
@@ -788,6 +794,12 @@ public class Afficheur {
 
                 if (isDragging && initialPoint != null && initialDragCamDirection != null
                         && initialDragCamPosition != null) {
+                    if (evt.isShiftDown() != lastIsShiftDown) {
+                        initialDragCamDirection = scene.getCamera().getDirection();
+                        initialDragCamPosition = scene.getCamera().getPosition();
+                        initialPoint = evt.getPoint();
+
+                    }
                     double diffX = evt.getPoint().x - initialPoint.getX();
                     double diffY = evt.getPoint().y - initialPoint.getY();
 
@@ -800,11 +812,11 @@ public class Afficheur {
                         Vector3D direction = initialDragCamDirection.add(new Vector3D(rotateX, rotateY, 0));
 
                         // Constraint cam direction
-                        // if (direction.x > 0) {
-                        //     direction.x = 0;
-                        // } else if (direction.x < -Math.PI / 2) {
-                        //     direction.x = -Math.PI / 2;
-                        // }
+                        if (direction.x > 0) {
+                            direction.x = 0;
+                        } else if (direction.x < -Math.PI / 2) {
+                            direction.x = -Math.PI / 2;
+                        }
 
                         // pcs.firePropertyChange(AfficheurEvent.CameraDirectionChanged.toString(),
                         // getScene().getCamera().getDirection(), direction);
@@ -816,7 +828,7 @@ public class Afficheur {
                         // getScene().getCamera().getPosition(), position);
                         getScene().getCamera().setPosition(position);
                     }
-
+                    lastIsShiftDown = evt.isShiftDown();
                     drawingPanel.repaint();
                 }
             }

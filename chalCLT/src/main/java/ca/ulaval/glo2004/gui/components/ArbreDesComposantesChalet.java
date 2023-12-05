@@ -276,8 +276,8 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
 
             @Override
             public void focusLost(java.awt.event.FocusEvent evt) {
-                System.out.println("Focus lost "
-                        + (evt.getOppositeComponent() == mainWindow.topButtonPanel.supprimerAccessoireBtn));
+                // System.out.println("Focus lost "
+                //         + (evt.getOppositeComponent() == mainWindow.topButtonPanel.supprimerAccessoireBtn));
                 if (evt.getOppositeComponent() != mainWindow.topButtonPanel.supprimerAccessoireBtn) {
                     mainWindow.clearAccessoiresSelectionnees();
                     setSelectedAccessoire(mainWindow.accessoiresSelectionnees);
