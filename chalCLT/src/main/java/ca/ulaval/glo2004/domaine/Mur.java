@@ -4,6 +4,10 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.io.Serializable;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.IOException;
 
 /**
  * La classe Mur représente un mur du chalet. Un mur a un type, une hauteur, une
@@ -151,7 +155,7 @@ public class Mur {
      * La classe MurDTO représente un objet de transfert de données (DTO) pour un
      * mur.
      */
-    public static class MurDTO implements java.io.Serializable {
+    public static class MurDTO implements Serializable {
 
         /**
          * Le type de mur.
@@ -185,6 +189,67 @@ public class Mur {
             this.accessoires = new ArrayList<Accessoire.AccessoireDTO>();
             for (Accessoire accessoire : mur.getAccessoires()) {
                 this.accessoires.add(accessoire.toDTO());
+            }
+        }
+        
+        public void writeObject(ObjectOutputStream oos) {
+            try {
+                String typeMurString;
+                switch (type) {
+                    case Facade:
+                        typeMurString = "Facade";
+                        break;
+                    case Arriere:
+                        typeMurString = "Arriere";
+                        break;
+                    case Droit:
+                        typeMurString = "Droit";
+                        break;
+                    case Gauche:
+                        typeMurString = "Gauche";
+                        break;
+                    default:
+                        typeMurString = "";
+                        break;
+                }
+                oos.writeObject(typeMurString);
+                oos.writeObject(accessoires.size());
+                for (Accessoire.AccessoireDTO accessoire : accessoires) {
+                    oos.writeObject(accessoire);
+                }
+            }
+            catch (IOException e) {
+                // jsp
+            }
+        }
+        
+        public void readObject (ObjectInputStream ois) {
+            try {
+                String typeMurString = (String) ois.readObject();
+                switch (typeMurString) {
+                    case "Facade":
+                        type = TypeMur.Facade;
+                        break;
+                    case "Arriere":
+                        type = TypeMur.Arriere;
+                        break;
+                    case "Droit":
+                        type = TypeMur.Droit;
+                        break;
+                    case "Gauche":
+                        type = TypeMur.Gauche;
+                        break;
+                    default:
+                        break;
+                }
+                int nbAccessoires = (int) ois.readObject();
+                for (int i = 0; i < nbAccessoires; i++) {
+                    Accessoire.AccessoireDTO surMur = (Accessoire.AccessoireDTO) ois.readObject();
+                    accessoires.add(surMur);
+                }
+            }
+            catch (IOException | ClassNotFoundException e) {
+                // jsp
             }
         }
     }

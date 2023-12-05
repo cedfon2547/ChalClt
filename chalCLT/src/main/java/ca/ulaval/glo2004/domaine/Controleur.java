@@ -3,6 +3,11 @@ package ca.ulaval.glo2004.domaine;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.IOException;
 
 import ca.ulaval.glo2004.domaine.utils.UndoRedoManager;
 import java.util.stream.Collectors;
@@ -14,7 +19,7 @@ public class Controleur extends ControleurEventSupport {
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
 
     private Controleur() {
-        this.projectActif = new ChalCLTProjet(null);
+        this.projectActif = new ChalCLTProjet();
         // this.undoRedoManager = new UndoRedoManager();
     }
 
@@ -140,6 +145,34 @@ public class Controleur extends ControleurEventSupport {
     public void fermerProjet() {
         // TODO
 
+    }
+    
+    public void creerSauvegarde() {
+        try {
+            ChalCLTProjet.ChalCLTProjetDTO aSauvegarder = new ChalCLTProjet.ChalCLTProjetDTO(this.projectActif);
+            String nomFichier = aSauvegarder.nom + ".txt";
+            FileOutputStream fichier = new FileOutputStream(nomFichier);
+            ObjectOutputStream oos = new ObjectOutputStream(fichier);
+            oos.writeObject(aSauvegarder);
+            oos.flush();
+            oos.close();
+        }
+        catch (IOException e) {
+            // jsp
+        }
+    }
+    
+    public void ouvrirSauvegarde(String nomFichier) {
+        try {
+            FileInputStream fichier = new FileInputStream(nomFichier);
+            ObjectInputStream ois = new ObjectInputStream(fichier);
+            ChalCLTProjet.ChalCLTProjetDTO aOuvrir = (ChalCLTProjet.ChalCLTProjetDTO) ois.readObject();
+            this.projectActif = new ChalCLTProjet(aOuvrir);
+            ois.close();
+        }
+        catch (IOException | ClassNotFoundException e) {
+            // jsp
+        }
     }
 
     public void undo() {

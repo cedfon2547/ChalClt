@@ -12,9 +12,7 @@ public class PreferencesUtilisateurTest {
     public void ConstructeurPrefUtil() {
         PreferencesUtilisateur test = new PreferencesUtilisateur();
         
-        assertTrue(!(test.getAfficherGrille() || test.getAfficherVoisinSelection()));
-        assertEquals(java.awt.Color.BLACK, test.getBackgroundColor());
-        assertEquals(java.awt.Color.GRAY, test.getGridColor());
+        assertTrue(test.getAfficherGrille() || !(test.getAfficherVoisinSelection()));
         assertEquals(50, test.getGridSpacing(), 0);
     }
     
@@ -23,8 +21,6 @@ public class PreferencesUtilisateurTest {
         PreferencesUtilisateur test = new PreferencesUtilisateur(true, true);
         
         assertTrue(test.getAfficherGrille() && test.getAfficherVoisinSelection());
-        assertEquals(java.awt.Color.BLACK, test.getBackgroundColor());
-        assertEquals(java.awt.Color.GRAY, test.getGridColor());
         assertEquals(50, test.getGridSpacing(), 0);
     }
     
@@ -61,22 +57,6 @@ public class PreferencesUtilisateurTest {
     }
     
     @Test
-    public void SetBackgroundColor() {
-        PreferencesUtilisateur test = new PreferencesUtilisateur();
-        test.setBackgroundColor(java.awt.Color.BLUE);
-        
-        assertEquals(java.awt.Color.BLUE, test.getBackgroundColor());
-    }
-    
-    @Test
-    public void SetGridColor() {
-        PreferencesUtilisateur test = new PreferencesUtilisateur();
-        test.setGridColor(java.awt.Color.RED);
-        
-        assertEquals(java.awt.Color.RED, test.getGridColor());
-    }
-    
-    @Test
     public void SetGridSpace() {
         PreferencesUtilisateur test = new PreferencesUtilisateur();
         test.setGridSpacing(80);
@@ -92,8 +72,6 @@ public class PreferencesUtilisateurTest {
         
         assertEquals(test.getAfficherGrille(), testDTO.afficherGrille);
         assertEquals(test.getAfficherVoisinSelection(), testDTO.afficherVoisinSelection);
-        assertEquals(test.getBackgroundColor(), testDTO.backgroundColor);
-        assertEquals(test.getGridColor(), testDTO.gridColor);
         assertEquals(test.getGridSpacing(), testDTO.gridSpacing, 0);      
     }
     
@@ -104,8 +82,6 @@ public class PreferencesUtilisateurTest {
         
         assertEquals(test.getAfficherGrille(), testDTO.afficherGrille);
         assertEquals(test.getAfficherVoisinSelection(), testDTO.afficherVoisinSelection);
-        assertEquals(test.getBackgroundColor(), testDTO.backgroundColor);
-        assertEquals(test.getGridColor(), testDTO.gridColor);
         assertEquals(test.getGridSpacing(), testDTO.gridSpacing, 0);
     }
     
@@ -113,16 +89,12 @@ public class PreferencesUtilisateurTest {
     public void Update() {
         PreferencesUtilisateur test = new PreferencesUtilisateur();
         PreferencesUtilisateur modele = new PreferencesUtilisateur(true, true);
-        modele.setBackgroundColor(java.awt.Color.BLUE);
-        modele.setGridColor(java.awt.Color.RED);
         modele.setGridSpacing(80);
         PreferencesUtilisateur.PreferencesUtilisateurDTO modeleDTO = modele.toDTO();
         test.update(modeleDTO);
         
         assertEquals(modele.getAfficherGrille(), test.getAfficherGrille());
         assertEquals(modele.getAfficherVoisinSelection(), test.getAfficherVoisinSelection());
-        assertEquals(modele.getBackgroundColor(), test.getBackgroundColor());
-        assertEquals(modele.getGridColor(), test.getGridColor());
         assertEquals(modele.getGridSpacing(), test.getGridSpacing(), 0);
     }
 }

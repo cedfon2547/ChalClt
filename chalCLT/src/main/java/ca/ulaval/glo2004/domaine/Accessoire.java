@@ -1,6 +1,10 @@
 package ca.ulaval.glo2004.domaine;
 
 import java.util.UUID;
+import java.io.Serializable;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.IOException;
 
 
 /**
@@ -173,7 +177,7 @@ public class Accessoire extends Retrait {
      * Représente un objet de transfert de données pour un objet Accessoire.
      * Hérite de {@link ca.ulaval.glo2004.domaine.Retrait.RetraitDTO}.
      */
-    public static class AccessoireDTO extends Retrait.RetraitDTO {
+    public static class AccessoireDTO extends Retrait.RetraitDTO implements Serializable {
         public TypeAccessoire accessoireType;
         public String accessoireNom;
         public UUID accessoireId;
@@ -211,6 +215,92 @@ public class Accessoire extends Retrait {
             copy.position = this.position.clone();
             copy.dimensions = this.dimensions.clone();
             return copy;
+        }
+        
+        public void writeObject(ObjectOutputStream oos) {
+            try {
+                oos.writeObject(accessoireNom);
+                String typeString;
+                switch (accessoireType) {
+                    case Porte:
+                        typeString = "Porte";
+                        break;
+                    case Fenetre:
+                        typeString = "Fenetre";
+                        break;
+                    default:
+                        typeString = "";
+                        break;
+                }
+                oos.writeObject(typeString);
+                oos.writeObject(accessoireId);
+                String typeMurString;
+                switch (typeMur) {
+                    case Facade:
+                        typeMurString = "Facade";
+                        break;
+                    case Arriere:
+                        typeMurString = "Arriere";
+                        break;
+                    case Droit:
+                        typeMurString = "Droit";
+                        break;
+                    case Gauche:
+                        typeMurString = "Gauche";
+                        break;
+                    default:
+                        typeMurString = "";
+                        break;
+                }
+                oos.writeObject(typeMurString);
+                oos.writeObject(valide);
+                oos.writeObject(position);
+                oos.writeObject(dimensions);
+            }
+            catch (IOException e) {
+                // jsp
+            }
+        }
+        
+        public void readObject(ObjectInputStream ois) {
+            try {
+                accessoireNom = (String) ois.readObject();
+                String typeString = (String) ois.readObject();
+                switch (typeString) {
+                    case "Porte":
+                        accessoireType = TypeAccessoire.Porte;
+                        break;
+                    case "Fenetre":
+                        accessoireType = TypeAccessoire.Fenetre;
+                        break;
+                    default:
+                        break;
+                }
+                accessoireId = (UUID) ois.readObject();
+                String typeMurString = (String) ois.readObject();
+                switch (typeMurString) {
+                    case "Facade":
+                        typeMur = TypeMur.Facade;
+                        break;
+                    case "Arriere":
+                        typeMur = TypeMur.Arriere;
+                        break;
+                    case "Droit":
+                        typeMur = TypeMur.Droit;
+                        break;
+                    case "Gauche":
+                        typeMur = TypeMur.Gauche;
+                        break;
+                    default:
+                        break;
+                }
+                valide = (boolean) ois.readObject();
+                position = (double[]) ois.readObject();
+                dimensions = (double[]) ois.readObject();
+            }
+            catch (IOException | ClassNotFoundException e) {
+                // jsp
+            }
         }
     }
 

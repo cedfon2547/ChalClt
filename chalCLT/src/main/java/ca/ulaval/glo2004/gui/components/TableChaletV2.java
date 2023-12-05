@@ -207,13 +207,6 @@ public class TableChaletV2 extends JTable {
                     if (epaisseurPanneaux == null) {
                         return;
                     }
-                    if (epaisseurPanneaux.toInches() >= chaletDTO.longueur/2) {
-                        return;
-                    }
-                    if (epaisseurPanneaux.toInches() >= chaletDTO.largeur/2) {
-                        return;
-                    }
-                    
                     chaletDTO.epaisseurMur = epaisseurPanneaux.toInches();
                     this.pcs.firePropertyChange("epaisseurMur", oldEpaisseur, epaisseurPanneaux.toInches());
                     break;

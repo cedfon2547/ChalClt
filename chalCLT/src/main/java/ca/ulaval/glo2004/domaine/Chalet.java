@@ -3,6 +3,10 @@ package ca.ulaval.glo2004.domaine;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.io.Serializable;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.IOException;
 
 public class Chalet {
     private String nom = "ChaletDefault";
@@ -301,7 +305,7 @@ public class Chalet {
         return new ChaletDTO(this);
     }
 
-    public static class ChaletDTO implements java.io.Serializable {
+    public static class ChaletDTO {
         public String nom;
         public double hauteur;
         public double largeur;
@@ -322,11 +326,11 @@ public class Chalet {
             this.angleToit = chalet.angleToit;
             this.margeAccessoire = chalet.margeAccessoire;
             this.margeSupplementaireRetrait = chalet.margeSupplementaireRetrait;
-        }
+        }   
     }
 
     /* Inclus aussi les DTOs pour les murs, ainsi que leurs accessoires. */
-    public static class ChaletCompletDTO implements java.io.Serializable {
+    public static class ChaletCompletDTO implements Serializable {
         public String nom;
         public double hauteur;
         public double largeur;
@@ -355,9 +359,81 @@ public class Chalet {
             }
             // this.toit = chalet.toit.toDTO();
         }
+        
+        public void writeObject(ObjectOutputStream oos) {
+            try {
+                oos.writeObject(nom);
+                oos.writeObject(hauteur);
+                oos.writeObject(largeur);
+                oos.writeObject(longueur);
+                oos.writeObject(epaisseurMur);
+                String sensToitString;
+                switch (sensToit) {
+                    case Nord:
+                        sensToitString = "Nord";
+                        break;
+                    case Sud:
+                        sensToitString = "Sud";
+                        break;
+                    case Est:
+                        sensToitString = "Est";
+                        break;
+                    case Ouest:
+                        sensToitString = "Ouest";
+                        break;
+                    default:
+                        sensToitString = "";
+                        break;
+                }
+                oos.writeObject(sensToitString);
+                oos.writeObject(angleToit);
+                oos.writeObject(margeAccessoire);
+                oos.writeObject(margeSupplementaireRetrait);
+            }
+            catch (IOException e) {
+                // jsp
+            }
+        }
+        
+        public void readObject(ObjectInputStream ois) {
+            try {
+                nom = (String) ois.readObject();
+                hauteur = (double) ois.readObject();
+                largeur = (double) ois.readObject();
+                longueur = (double) ois.readObject();
+                epaisseurMur = (double) ois.readObject();
+                String sensToitString = (String) ois.readObject();
+                switch (sensToitString) {
+                    case "Nord":
+                        sensToit = TypeSensToit.Nord;
+                        break;
+                    case "Sud":
+                        sensToit = TypeSensToit.Sud;
+                        break;
+                    case "Est":
+                        sensToit = TypeSensToit.Est;
+                        break;
+                    case "Ouest":
+                        sensToit = TypeSensToit.Ouest;
+                        break;
+                    default:
+                        break;
+                }
+                angleToit = (double) ois.readObject();
+                margeAccessoire = (double) ois.readObject();
+                margeSupplementaireRetrait = (double) ois.readObject();
+            }
+            catch (IOException | ClassNotFoundException e) {
+                // jsp
+            }
+        }
     }
 
     public static Chalet fromDTO(ChaletDTO dto) {
+        return new Chalet(dto);
+    }
+    
+    public static Chalet fromDTO(ChaletCompletDTO dto) {
         return new Chalet(dto);
     }
 }

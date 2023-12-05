@@ -101,7 +101,7 @@ public class Retrait {
     /**
      * La classe RetraitDTO représente un objet de transfert de données pour un retrait.
      */
-    public static class RetraitDTO implements java.io.Serializable {
+    public static class RetraitDTO {
 
         /**
          * Le type de retrait.
