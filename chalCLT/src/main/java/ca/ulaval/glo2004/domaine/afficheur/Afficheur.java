@@ -466,6 +466,7 @@ public class Afficheur {
             this.getScene().getCamera().setDirection(TypeDeVue.vueGauche());
         }
 
+        this.getEventSupport().dispatchViewChanged(new AfficheurEventSupport.ViewChangedEvent(this.vueActive));
         // this.getScene().getCamera().setPosition(new
         // Vector3D(this.scene.getCamera().getPosition().x,
         // (vueActive == TypeDeVue.Dessus) ? 0 : controleur.getChalet().hauteur / 2,
