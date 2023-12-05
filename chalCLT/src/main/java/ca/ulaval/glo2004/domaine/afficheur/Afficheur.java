@@ -629,6 +629,7 @@ public class Afficheur {
             TriangleMesh lastMouseEnteredMesh = null;
             TriangleMesh lastDraggedMesh = null;
             boolean dragStarted = false;
+            boolean lastIsShiftDown = false;
 
             MouseListener mouseListener = new MouseListener() {
                 @Override
@@ -642,6 +643,7 @@ public class Afficheur {
                     initialPoint = evt.getPoint();
                     initialDragCamPosition = scene.getCamera().getPosition();
                     initialDragCamDirection = scene.getCamera().getDirection();
+                    lastIsShiftDown = evt.isShiftDown();
 
                     TriangleMesh clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
                     if (clickedMesh != null && clickedMesh.getDraggable()) {
@@ -691,6 +693,7 @@ public class Afficheur {
                     initialDragCamDirection = scene.getCamera().getDirection();
                     initialDragCamPosition = scene.getCamera().getPosition();
                     initialPoint = evt.getPoint();
+                    lastIsShiftDown = evt.isShiftDown();
 
                     TriangleMesh clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
                     if (clickedMesh != null && clickedMesh.getDraggable()) {
@@ -740,6 +743,12 @@ public class Afficheur {
 
                 if (isDragging && initialPoint != null && initialDragCamDirection != null
                         && initialDragCamPosition != null) {
+                    if (evt.isShiftDown() != lastIsShiftDown) {
+                        initialDragCamDirection = scene.getCamera().getDirection();
+                        initialDragCamPosition = scene.getCamera().getPosition();
+                        initialPoint = evt.getPoint();
+
+                    }
                     double diffX = evt.getPoint().x - initialPoint.getX();
                     double diffY = evt.getPoint().y - initialPoint.getY();
 
@@ -768,7 +777,7 @@ public class Afficheur {
                         // getScene().getCamera().getPosition(), position);
                         getScene().getCamera().setPosition(position);
                     }
-
+                    lastIsShiftDown = evt.isShiftDown();
                     drawingPanel.repaint();
                 }
             }
