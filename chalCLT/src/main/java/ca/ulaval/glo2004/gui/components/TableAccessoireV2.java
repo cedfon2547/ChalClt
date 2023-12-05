@@ -14,6 +14,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
+import ca.ulaval.glo2004.domaine.TypeAccessoire;
 import ca.ulaval.glo2004.domaine.TypeSensToit;
 import ca.ulaval.glo2004.domaine.utils.ImperialDimension;
 
@@ -152,6 +153,10 @@ public class TableAccessoireV2 extends JTable {
 
     @Override
     public boolean isCellEditable(int row, int column) {
+        if (accessoireDTO.accessoireType == TypeAccessoire.Porte && this.getProps()[row][0].equals("Position y")) {
+            return false;
+        }
+        
         return column == 1;
     }
 

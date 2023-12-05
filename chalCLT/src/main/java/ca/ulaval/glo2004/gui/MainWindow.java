@@ -187,13 +187,13 @@ public class MainWindow extends javax.swing.JFrame {
         tableProprietesChalet.getPcs().addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                System.out.println("Property changed: " + evt.getPropertyName() + " " + evt.getNewValue());
+                // System.out.println("Property changed: " + evt.getPropertyName() + " " + evt.getNewValue());
                 getControleur().setChalet(tableProprietesChalet.getChaletDTO());
             }
         });
 
         this.getControleur().addChaletEventListener((evt) -> {
-            System.out.println("Chalet event: " + evt.getChaletDTO().toString());
+            // System.out.println("Chalet event: " + evt.getChaletDTO().toString());
             tableProprietesChalet.updateTable(evt.getChaletDTO());
             // recharger();
         });
@@ -214,7 +214,7 @@ public class MainWindow extends javax.swing.JFrame {
             @Override
             public void change(AccessoireEvent event) {
                 // TODO Auto-generated method stub
-                System.out.println("Accessoire event: " + event.getAccessoireDTO().accessoireId);
+                // System.out.println("Accessoire event: " + event.getAccessoireDTO().accessoireId);
                 if (tableProprietesAccessoire != null) {
                     tableProprietesAccessoire.updateTable(event.getAccessoireDTO());
                     recharger();
@@ -226,14 +226,14 @@ public class MainWindow extends javax.swing.JFrame {
             @Override
             public void undo(UndoRedoEvent event) {
                 // TODO Auto-generated method stub
-                System.out.println("Undo event: " + event.getProjet().nom);
+                // System.out.println("Undo event: " + event.getProjet().nom);
                 recharger();
             }
 
             @Override
             public void redo(UndoRedoEvent event) {
                 // TODO Auto-generated method stub
-                System.out.println("Redo event: " + event.getProjet());
+                // System.out.println("Redo event: " + event.getProjet());
                 recharger();
             }
         });
@@ -241,7 +241,7 @@ public class MainWindow extends javax.swing.JFrame {
         drawingPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println("Clicked on drawing panel");
+                // System.out.println("Clicked on drawing panel");
                 if (tableProprietesChalet.getCellEditor() != null) {
                     tableProprietesChalet.getCellEditor().stopCellEditing();
                 }
@@ -272,12 +272,12 @@ public class MainWindow extends javax.swing.JFrame {
         tableContainer.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(java.awt.event.FocusEvent e) {
-                System.out.println("Focus gained");
+                // System.out.println("Focus gained");
             }
 
             @Override
             public void focusLost(java.awt.event.FocusEvent e) {
-                System.out.println("Focus lost");
+                // System.out.println("Focus lost");
             }
         
         });
@@ -301,7 +301,7 @@ public class MainWindow extends javax.swing.JFrame {
             tableProprietesAccessoire.getPcs().addPropertyChangeListener(new PropertyChangeListener() {
                 @Override
                 public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                    System.out.println("Property changed: " + evt.getPropertyName() + " " + evt.getNewValue());
+                    // System.out.println("Property changed: " + evt.getPropertyName() + " " + evt.getNewValue());
                     getControleur().setAccessoire(tableProprietesAccessoire.getAccessoireDTO());
                 }
             });
@@ -345,7 +345,7 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     public void clearAccessoiresSelectionnees() {
-        System.out.println("Clearing selected accessories");
+        // System.out.println("Clearing selected accessories");
         for (Accessoire.AccessoireDTO accessoireDTO : accessoiresSelectionnees) {
             TriangleMesh mesh = drawingPanel.afficheur.getScene().getMesh(accessoireDTO.accessoireId.toString());
             if (mesh != null) {

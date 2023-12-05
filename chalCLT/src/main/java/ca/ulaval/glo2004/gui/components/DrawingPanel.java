@@ -368,7 +368,7 @@ public class DrawingPanel extends javax.swing.JPanel {
         requestFocusInWindow();
 
         SwingUtilities.invokeLater(() -> {
-            System.out.println("InvokeAndWait " + getSize());
+            // System.out.println("InvokeAndWait " + getSize());
             afficheur.getScene().getCamera().setPosition(new Vector3D(getWidth() / 2, getHeight() / 2, -1));
             afficheur.getScene().getLight().setPosition(new Vector3D(10000, 10000, 10000));
             afficheur.getScene().getLight().setIntensity(0.5);
