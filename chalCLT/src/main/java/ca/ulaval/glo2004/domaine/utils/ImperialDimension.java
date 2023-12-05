@@ -307,8 +307,8 @@ public class ImperialDimension {
     public static ImperialDimension convertToImperial(double lengthInInches) {
         int pieds = (int) (lengthInInches / 12);
         int pouces = (int) (lengthInInches % 12);
-        int numerateur = (int) ((lengthInInches - pieds * 12 - pouces) * 16);
-        int denominateur = 16;
+        int numerateur = (int) ((lengthInInches - pieds * 12 - pouces) * 128);
+        int denominateur = 128;
         int pgcd = getGCD(numerateur, denominateur);
         numerateur /= pgcd;
         denominateur /= pgcd;
