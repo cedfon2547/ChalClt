@@ -91,8 +91,8 @@ public class TableAccessoireV2 extends JTable {
 
     public String[][] getProps() {
         String nom = accessoireDTO.accessoireNom;
-        String hauteur = ImperialDimension.convertToImperial(accessoireDTO.dimensions[0]).toString();
-        String largeur = ImperialDimension.convertToImperial(accessoireDTO.dimensions[1]).toString();
+        String hauteur = ImperialDimension.convertToImperial(accessoireDTO.dimensions[1]).toString();
+        String largeur = ImperialDimension.convertToImperial(accessoireDTO.dimensions[0]).toString();
         String positionX = ImperialDimension.convertToImperial(accessoireDTO.position[0]).toString();
         String positionY = ImperialDimension.convertToImperial(accessoireDTO.position[1]).toString();
 
@@ -126,14 +126,14 @@ public class TableAccessoireV2 extends JTable {
                     pcs.firePropertyChange("accessoireNom", oldName, value);
                     break;
                 case 1:
-                    double oldHauteur = accessoireDTO.dimensions[0];
-                    accessoireDTO.dimensions[0] = ImperialDimension.parseFromString(value).toInches();
-                    pcs.firePropertyChange("hauteur", oldHauteur, accessoireDTO.dimensions[0]);
+                    double oldHauteur = accessoireDTO.dimensions[1];
+                    accessoireDTO.dimensions[1] = ImperialDimension.parseFromString(value).toInches();
+                    pcs.firePropertyChange("hauteur", oldHauteur, accessoireDTO.dimensions[1]);
                     break;
                 case 2:
-                    double oldLargeur = accessoireDTO.dimensions[1];
-                    accessoireDTO.dimensions[1] = ImperialDimension.parseFromString(value).toInches();
-                    pcs.firePropertyChange("largeur", oldLargeur, accessoireDTO.dimensions[1]);
+                    double oldLargeur = accessoireDTO.dimensions[0];
+                    accessoireDTO.dimensions[0] = ImperialDimension.parseFromString(value).toInches();
+                    pcs.firePropertyChange("largeur", oldLargeur, accessoireDTO.dimensions[0]);
                     break;
                 case 3:
                     double oldPositionX = accessoireDTO.position[0];

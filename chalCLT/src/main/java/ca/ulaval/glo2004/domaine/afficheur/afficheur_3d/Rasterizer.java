@@ -109,11 +109,11 @@ public class Rasterizer {
         // RenderingHints.VALUE_ANTIALIAS_ON));
 
         // g2.setComposite(AlphaComposite.SrcOver);
-
+        
         for (TriangleMeshGroup group : scene.getMeshes()) {
             if (!group.getVisible())
                 continue;
-
+            
             for (TriangleMesh obj : group.getMeshes()) {
                 for (Triangle triangle : obj.getTriangles()) {
                     Vector3D[] vertices = triangle.getVertices();
@@ -122,9 +122,9 @@ public class Rasterizer {
                     Vector3D vertex2 = vertices[1];
                     Vector3D vertex3 = vertices[2];
 
-                    vertex1 = vertex1.multiply(cameraTransformMatrix);
-                    vertex2 = vertex2.multiply(cameraTransformMatrix);
-                    vertex3 = vertex3.multiply(cameraTransformMatrix);
+                    vertex1 = vertex1.add(group.getPosition()).multiply(cameraTransformMatrix);
+                    vertex2 = vertex2.add(group.getPosition()).multiply(cameraTransformMatrix);
+                    vertex3 = vertex3.add(group.getPosition()).multiply(cameraTransformMatrix);
 
                     // System.out.println(intersect(scene.getCamera().getPosition(),
                     // scene.getCamera().getDirection(),
@@ -138,22 +138,24 @@ public class Rasterizer {
                     // continue;
                     // }
 
-                    // int minY = (int) Math.max(0,
-                    // Math.ceil(Math.min(vertex1.y, Math.min(vertex2.y, vertex3.y))));
-                    // int maxY = (int) Math.min(partImage.getHeight() - 1,
-                    // Math.floor(Math.max(vertex1.y,
-                    // Math.max(vertex2.y, vertex3.y))));
+                    int minY = (int) Math.max(0,
+                            Math.ceil(Math.min(vertex1.y, Math.min(vertex2.y, vertex3.y))));
+                    int maxY = (int) Math.min(partImage.getHeight() - 1,
+                            Math.floor(Math.max(vertex1.y,
+                                    Math.max(vertex2.y, vertex3.y))));
 
                     // Calculate the bounding box
                     int minX = (int) Math.max(0, Math.min(Math.min(vertex1.x, vertex2.x), vertex3.x));
                     int maxX = (int) Math.min(dimension.width - 1, Math.max(Math.max(vertex1.x, vertex2.x), vertex3.x));
-                    int minY = (int) Math.max(startY, Math.min(Math.min(vertex1.y, vertex2.y), vertex3.y));
-                    int maxY = (int) Math.min(endY, Math.max(Math.max(vertex1.y, vertex2.y), vertex3.y));
+                    // int minY = (int) Math.max(startY, Math.min(Math.min(vertex1.y, vertex2.y),
+                    // vertex3.y));
+                    // int maxY = (int) Math.min(endY, Math.max(Math.max(vertex1.y, vertex2.y),
+                    // vertex3.y));
 
-                    // if (minY < startY)
-                    // minY = startY;
-                    // if (maxY > endY)
-                    // maxY = endY;
+                    if (minY < startY)
+                    minY = startY;
+                    if (maxY > endY)
+                    maxY = endY;
                     if (maxY < startY || minY > endY) {
                         // System.out.println("SKIP A");
                         continue;
@@ -520,7 +522,7 @@ public class Rasterizer {
 
             // The parts are splitted on the y axis. Each part are the width of the main
             // image but the height is divided by the number of threads.
-            int partHeight = panelDimension.height / nThreads;
+            int partHeight = panelDimension.height / (nThreads);
 
             // For each part, we create a future that will run the rasterization for the
             // specific image part.
@@ -530,7 +532,7 @@ public class Rasterizer {
 
                 // If the part is the last one, we need to set the endY to the height of the
                 // main image.
-                if (part == nThreads - 1) {
+                if (part == nThreads -1) {
                     endY = panelDimension.height;
                 }
 
@@ -600,6 +602,7 @@ public class Rasterizer {
 
                 g2.setColor(Color.BLACK);
                 this.drawFPSDetails(g2, new Point(10, 20));
+                this.drawCameraDetails(g2, new Point(10, 40));
             } catch (Exception e) {
 
             }
@@ -636,6 +639,7 @@ public class Rasterizer {
 
             g2.setColor(Color.BLACK);
             this.drawFPSDetails(g2, new Point(10, 20));
+            this.drawCameraDetails(g2, new Point(10, 40));
         }
     }
 

@@ -304,6 +304,7 @@ public class Afficheur {
         // TriangleMeshGroup panneauToit =
         // PanelHelper.buildPanneauToit(chaletDTO.largeur, chaletDTO.longueur,
         // chaletDTO.epaisseurMur, chaletDTO.angleToit, new Vector3D(0, 0, 0));
+        // pignonMesh = pignonMesh.rotateY(-Math.PI/2);
 
         // getScene().addMesh(pignonMesh);
         // getScene().addMesh(rallongeVerticale);
