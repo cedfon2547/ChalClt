@@ -2,13 +2,10 @@ package ca.ulaval.glo2004.gui.components;
 
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
 import java.util.Arrays;
 
 import javax.swing.*;

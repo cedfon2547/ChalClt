@@ -1,6 +1,8 @@
 package ca.ulaval.glo2004.gui;
 
 import java.awt.BorderLayout;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -8,7 +10,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
@@ -25,10 +26,8 @@ import ca.ulaval.glo2004.gui.NotificationManager.NotificationType;
 import ca.ulaval.glo2004.gui.components.ArbreDesComposantesChalet;
 import ca.ulaval.glo2004.gui.components.DrawingPanel;
 import ca.ulaval.glo2004.gui.components.MainWindowTopBarMenu;
-import ca.ulaval.glo2004.gui.components.TableAccessoire;
 import ca.ulaval.glo2004.gui.components.TableAccessoireV2;
 import ca.ulaval.glo2004.gui.components.TopButtonPanel;
-import ca.ulaval.glo2004.gui.components.TableChalet;
 import ca.ulaval.glo2004.gui.components.TableChaletV2;
 
 /*
@@ -247,6 +246,33 @@ public class MainWindow extends javax.swing.JFrame {
                 }
             }
         });
+
+        drawingPanel.addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                // TODO Auto-generated method stub
+                // drawingPanel.afficheur.getRasterizer().resizeImage(drawingPanel.getSize());
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+                // TODO Auto-generated method stub
+                
+            }
+        });
+        
         showChaletTable();
         this.getContentPane().requestFocusInWindow();
     }

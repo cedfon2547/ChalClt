@@ -2,7 +2,6 @@ package ca.ulaval.glo2004.domaine.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
@@ -256,7 +255,7 @@ public class PanelHelper {
         double diffHauteur = 0; //d/2 * Math.sin(Math.toRadians(angle));
         double space = 0;
         double a = d / 2 * Math.tan(Math.toRadians(angle));
-        double b = Math.sqrt(Math.pow(d / 2, 2) + Math.pow(a, 2)) * 2;
+        // double b = Math.sqrt(Math.pow(d / 2, 2) + Math.pow(a, 2)) * 2;
         // double b1 = b/2;
         // double b2 = d/2 * Math.sin(Math.toRadians(angle));
 
@@ -347,7 +346,6 @@ public class PanelHelper {
         double z0 = position.z;
 
         double diffHeight = depth / 2 * Math.tan(Math.toRadians(angle));
-        double innerHeight = height - diffHeight;
 
         double[] p1 = new double[] { x0, y0, z0 };
         double[] p2 = new double[] { x0, y0 - height, z0 };

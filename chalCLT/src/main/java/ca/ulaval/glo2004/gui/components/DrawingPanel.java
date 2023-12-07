@@ -25,7 +25,6 @@ import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEvent;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEventListener;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport;
-import ca.ulaval.glo2004.domaine.afficheur.Afficheur.TypeDeVue;
 import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport.MeshMouseMotionEvent;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
@@ -594,10 +593,10 @@ public class DrawingPanel extends javax.swing.JPanel {
 
     @Override
     public void paintComponent(java.awt.Graphics g) {
-        super.paintComponent(g);
-        // Enleve le controle de la lumiere
-        // centeringLight();
-        this.afficheur.draw(g, getSize());
+        // super.paintComponent(g);
+        
+        this.afficheur.getRasterizer().draw(this.getSize());
+        g.drawImage(this.afficheur.getRasterizer().getImage(), 0, 0, null);
     }
 
     public void changerVue(Afficheur.TypeDeVue vue) {

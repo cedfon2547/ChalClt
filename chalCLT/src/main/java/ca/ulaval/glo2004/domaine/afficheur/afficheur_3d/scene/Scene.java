@@ -13,7 +13,7 @@ public class Scene {
     private SceneConfiguration configuration = new SceneConfiguration();
     private ArrayList<TriangleMeshGroup> meshes = new ArrayList<TriangleMeshGroup>();
     private Light light = new Light();
-    private Camera camera = new Camera();
+    private Camera camera = new Camera(new Vector3D(0, 0, 1000), new Vector3D(0, 0, 1000));
 
     public Scene() {
     }
@@ -113,14 +113,7 @@ public class Scene {
     public void setCamera(Camera camera) {
         this.camera = camera;
     }
-
-    public void viewTop() {
-        Camera topCamera = new Camera();
-        topCamera.setPosition(new Vector3D(0, 0, -1000));
-        topCamera.setDirection(new Vector3D(Math.PI / 2, Math.PI, 0));
-        setCamera(topCamera);
-    }
-
+    
     public void setSelected(String id, boolean selected) {
         for (TriangleMeshGroup mesh : meshes) {
             if (mesh.getIdentifier().equals(id)) {

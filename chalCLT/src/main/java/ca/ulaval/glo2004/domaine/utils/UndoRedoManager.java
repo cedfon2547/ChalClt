@@ -1,12 +1,9 @@
 package ca.ulaval.glo2004.domaine.utils;
 
-import java.util.List;
 import java.util.Stack;
 
-import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.ChalCLTProjet;
 import ca.ulaval.glo2004.domaine.Chalet;
-import ca.ulaval.glo2004.domaine.Mur;
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 
 
