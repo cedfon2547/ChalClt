@@ -67,7 +67,9 @@ public class ChalCLTProjet {
         
         public void writeObject(ObjectOutputStream oos) {
             try {
-                oos.defaultWriteObject();
+                oos.writeObject(this.nom);
+                oos.writeObject(this.chalet);
+                oos.writeObject(this.preferencesUtilisateur);
             }
             catch (IOException e) {
                 // jsp
@@ -76,7 +78,9 @@ public class ChalCLTProjet {
 
         public void readObject(ObjectInputStream ois) {
             try {
-                ois.defaultReadObject();
+                this.nom = (String) ois.readObject();
+                this.chalet = (Chalet.ChaletCompletDTO) ois.readObject();
+                this.preferencesUtilisateur = (PreferencesUtilisateur.PreferencesUtilisateurDTO) ois.readObject();
             }
             catch (IOException | ClassNotFoundException e) {
                 // jsp

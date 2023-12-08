@@ -3,6 +3,7 @@ package ca.ulaval.glo2004.domaine;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -147,10 +148,10 @@ public class Controleur extends ControleurEventSupport {
 
     }
     
-    public void creerSauvegarde() {
+    public void creerSauvegarde(String path) {
         try {
             ChalCLTProjet.ChalCLTProjetDTO aSauvegarder = new ChalCLTProjet.ChalCLTProjetDTO(this.projectActif);
-            String nomFichier = aSauvegarder.nom + ".txt";
+            String nomFichier = path + "\\" + aSauvegarder.nom + ".txt";
             FileOutputStream fichier = new FileOutputStream(nomFichier);
             ObjectOutputStream oos = new ObjectOutputStream(fichier);
             oos.writeObject(aSauvegarder);
@@ -159,12 +160,14 @@ public class Controleur extends ControleurEventSupport {
         }
         catch (IOException e) {
             // jsp
+            e.printStackTrace();
         }
     }
     
-    public void ouvrirSauvegarde(String nomFichier) {
+    public void ouvrirSauvegarde(String path) {
         try {
-            FileInputStream fichier = new FileInputStream(nomFichier);
+            File f = new File(path);
+            FileInputStream fichier = new FileInputStream(f);
             ObjectInputStream ois = new ObjectInputStream(fichier);
             ChalCLTProjet.ChalCLTProjetDTO aOuvrir = (ChalCLTProjet.ChalCLTProjetDTO) ois.readObject();
             this.projectActif = new ChalCLTProjet(aOuvrir);
@@ -172,6 +175,7 @@ public class Controleur extends ControleurEventSupport {
         }
         catch (IOException | ClassNotFoundException e) {
             // jsp
+            e.printStackTrace();
         }
     }
 

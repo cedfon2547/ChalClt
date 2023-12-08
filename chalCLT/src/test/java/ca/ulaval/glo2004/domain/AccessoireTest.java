@@ -102,4 +102,22 @@ public class AccessoireTest {
         assertEquals(1.0, result[3], 0);
     }
 
+    @Test
+    public void constructeurAccessoireDTOAvecDTO() {
+        TypeAccessoire typeAccessoire = TypeAccessoire.Fenetre;
+        TypeMur typeMur = TypeMur.Droit;
+        double[] pos = {2.0, 3.0};
+        double[] dim = {1.0,2.0};
+        
+        Accessoire f = new Accessoire(typeAccessoire, typeMur,pos, dim, true);
+        Accessoire.AccessoireDTO fDTO1 = new Accessoire.AccessoireDTO(f);
+        Accessoire.AccessoireDTO fDTO2 = new Accessoire.AccessoireDTO(fDTO1);
+        
+        assertEquals(f.getAccessoireType(), fDTO2.accessoireType);
+        assertEquals(f.getTypeMur(), fDTO2.typeMur);
+        assertEquals(f.getPosition()[0], fDTO2.position[0], 0);
+        assertEquals(f.getPosition()[1], fDTO2.position[1], 0);
+        assertEquals(f.getDimension()[0], fDTO2.dimensions[0], 0);
+        assertEquals(f.getDimension()[1], fDTO2.dimensions[1], 0);
+    }
 }
