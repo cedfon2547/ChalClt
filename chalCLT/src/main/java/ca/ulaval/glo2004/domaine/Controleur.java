@@ -150,11 +150,14 @@ public class Controleur extends ControleurEventSupport {
     
     public void creerSauvegarde(String path) {
         try {
-            ChalCLTProjet.ChalCLTProjetDTO aSauvegarder = new ChalCLTProjet.ChalCLTProjetDTO(this.projectActif);
-            String nomFichier = path + "\\" + aSauvegarder.nom + ".txt";
-            FileOutputStream fichier = new FileOutputStream(nomFichier);
+            if (!path.endsWith(".chalclt")) {
+                path += ".chalclt";
+            }
+            
+            File f = new File(path);
+            FileOutputStream fichier = new FileOutputStream(f);
             ObjectOutputStream oos = new ObjectOutputStream(fichier);
-            oos.writeObject(aSauvegarder);
+            oos.writeObject(this.projectActif);
             oos.flush();
             oos.close();
         }
@@ -169,9 +172,12 @@ public class Controleur extends ControleurEventSupport {
             File f = new File(path);
             FileInputStream fichier = new FileInputStream(f);
             ObjectInputStream ois = new ObjectInputStream(fichier);
-            ChalCLTProjet.ChalCLTProjetDTO aOuvrir = (ChalCLTProjet.ChalCLTProjetDTO) ois.readObject();
-            this.projectActif = new ChalCLTProjet(aOuvrir);
+            ChalCLTProjet aOuvrir = (ChalCLTProjet) ois.readObject();
+
+            this.projectActif = aOuvrir;
             ois.close();
+
+            this.dispatchChaletChangeEvent(this.projectActif.getChalet().toDTO());
         }
         catch (IOException | ClassNotFoundException e) {
             // jsp

@@ -13,7 +13,7 @@ import java.io.IOException;
  * La classe Mur représente un mur du chalet. Un mur a un type, une hauteur, une
  * largeur et une liste d'accessoires.
  */
-public class Mur {
+public class Mur implements Serializable {
     /**
      * Le type de mur.
      */

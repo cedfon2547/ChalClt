@@ -1,11 +1,13 @@
 package ca.ulaval.glo2004.domaine;
 
+import java.io.Serializable;
+
 /*
  * La classe Retrait représente un retrait dans une pièce. Un retrait est une zone où il n'y a pas de mur,
  * de colonne ou d'obstacle. Cette classe contient des informations sur le type de retrait, les dimensions
  * et la position du retrait dans la pièce.
  */
-public class Retrait {
+public class Retrait implements Serializable {
 
     /**
      * Le type de retrait.

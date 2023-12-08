@@ -200,7 +200,8 @@ public class Accessoire extends Retrait {
         }
 
         public AccessoireDTO(AccessoireDTO accessoireDTO) {
-            super(accessoireDTO);
+            // super();
+            super(new Retrait.RetraitDTO(accessoireDTO));
             this.accessoireNom = accessoireDTO.accessoireNom;
             this.accessoireType = accessoireDTO.accessoireType;
             this.accessoireId = accessoireDTO.accessoireId;

@@ -5,7 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
 
-public class ChalCLTProjet {
+public class ChalCLTProjet implements Serializable {
     private String nom;
     private Chalet chalet;
     private PreferencesUtilisateur preferencesUtilisateur;
@@ -15,17 +15,17 @@ public class ChalCLTProjet {
         this.chalet = chalet;
         this.preferencesUtilisateur = preferencesUtilisateur;
     }
-    
+
     public ChalCLTProjet(ChalCLTProjetDTO chalCLTDTO) {
         this.nom = chalCLTDTO.nom;
-        this.chalet = Chalet.fromDTO(chalCLTDTO.chalet);
+        this.chalet = new Chalet(chalCLTDTO.chalet);
         this.preferencesUtilisateur = new PreferencesUtilisateur(chalCLTDTO.preferencesUtilisateur);
     }
 
     public ChalCLTProjet(String nom) {
         this(nom, new Chalet(), new PreferencesUtilisateur());
     }
-    
+
     public ChalCLTProjet() {
         this("NouveauProjet", new Chalet(), new PreferencesUtilisateur());
     }
@@ -53,7 +53,7 @@ public class ChalCLTProjet {
     public void setChalet(Chalet chalet) {
         this.chalet = chalet;
     }
-
+    
     public static class ChalCLTProjetDTO implements Serializable {
         public String nom;
         public Chalet.ChaletCompletDTO chalet;
@@ -62,15 +62,15 @@ public class ChalCLTProjet {
         public ChalCLTProjetDTO(ChalCLTProjet chalCLTProjet) {
             this.nom = chalCLTProjet.nom;
             this.chalet = new Chalet.ChaletCompletDTO(chalCLTProjet.chalet);
-            this.preferencesUtilisateur = chalCLTProjet.preferencesUtilisateur.toDTO();
         }
+         
+
         
         public void writeObject(ObjectOutputStream oos) {
             try {
                 oos.writeObject(this.nom);
                 oos.writeObject(this.chalet);
-                oos.writeObject(this.preferencesUtilisateur);
-            }
+              }
             catch (IOException e) {
                 // jsp
             }
@@ -80,10 +80,10 @@ public class ChalCLTProjet {
             try {
                 this.nom = (String) ois.readObject();
                 this.chalet = (Chalet.ChaletCompletDTO) ois.readObject();
-                this.preferencesUtilisateur = (PreferencesUtilisateur.PreferencesUtilisateurDTO) ois.readObject();
-            }
+              }
             catch (IOException | ClassNotFoundException e) {
                 // jsp
+         
             }
         }
         

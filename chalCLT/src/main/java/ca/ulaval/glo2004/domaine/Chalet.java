@@ -8,7 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
 
-public class Chalet {
+public class Chalet implements Serializable {
     private String nom = "ChaletDefault";
     private double margeSupplementaireRetrait = 1.0;
     private double hauteur = 96;

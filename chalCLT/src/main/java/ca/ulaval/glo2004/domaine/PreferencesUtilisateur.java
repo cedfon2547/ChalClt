@@ -5,7 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
 
-public class PreferencesUtilisateur {
+public class PreferencesUtilisateur implements Serializable {
     private boolean afficherGrille = true;
     private boolean afficherVoisinSelection = false;
     private double gridSpacing = 50;

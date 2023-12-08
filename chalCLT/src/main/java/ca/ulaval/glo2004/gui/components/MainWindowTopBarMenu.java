@@ -1,10 +1,13 @@
 package ca.ulaval.glo2004.gui.components;
 
+import java.io.File;
+
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JRadioButton;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.gui.MainWindow;
 import ca.ulaval.glo2004.gui.NotificationManager.NotificationType;
@@ -577,6 +580,8 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         }
 
         private void initComponents() {
+            Chalet.ChaletDTO chaletDTO = mainWindow.getControleur().getChalet();
+
             fileChooser = new JFileChooser();
 
             fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
@@ -587,11 +592,14 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
             fileChooser.setDialogTitle("Sélectionner le dossier de destination");
             fileChooser.setToolTipText("Sélectionner le dossier de destination");
             fileChooser.setName("ExportDestionationFileChooser"); // NOI18N
-            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             fileChooser.setMultiSelectionEnabled(false);
             fileChooser.setOpaque(true);
             fileChooser.setVisible(true);
             fileChooser.setDialogTitle("Sélectionner le dossier de destination");
+
+            fileChooser.setSelectedFile(new File(chaletDTO.nom));
+            fileChooser.setFileFilter(new FileNameExtensionFilter("Sauvegardes ChalCLT", "chalclt"));
 
             fileChooser.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -656,12 +664,12 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
             fileChooser.setDialogTitle("Sélectionner le fichier à ouvrir");
             fileChooser.setToolTipText("Sélectionner le fichier à ouvrir");
             fileChooser.setName("OpenSaveFileChooser"); // NOI18N
-            fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             fileChooser.setMultiSelectionEnabled(false);
             fileChooser.setOpaque(true);
             fileChooser.setVisible(true);
             fileChooser.setDialogTitle("Sélectionner le fichier à ouvrir");
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("Fichiers texte", "txt");
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Sauvegarde ChalCLT", "chalclt");
             fileChooser.setFileFilter(filter);
 
             fileChooser.addActionListener(new java.awt.event.ActionListener() {
