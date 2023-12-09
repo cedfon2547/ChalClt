@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -153,9 +154,9 @@ public class Rasterizer {
                     // vertex3.y));
 
                     if (minY < startY)
-                    minY = startY;
+                        minY = startY;
                     if (maxY > endY)
-                    maxY = endY;
+                        maxY = endY;
                     if (maxY < startY || minY > endY) {
                         // System.out.println("SKIP A");
                         continue;
@@ -645,6 +646,16 @@ public class Rasterizer {
 
     private void drawSelectedMeshBounding(Graphics2D g2) {
         int stroke = 1; // (int) Math.floor(1 * scene.getCamera().getScale());
+
+        /*float[] colorComp = scene.getConfiguration().getSelectionColor().getColorComponents(null); // yes this null is the correct way to do it
+        double a = 0.25, b = 10, k=0.5; // sin wave params
+        double brightness = a*Math.sin(b*new Date().getTime())+a;
+        System.out.println(brightness);
+        for (int i = 0; i < colorComp.length; i++) {
+            colorComp[i] *= brightness;
+        }
+
+        g2.setColor(new Color(colorComp[0],colorComp[1],colorComp[2]));*/
         g2.setColor(scene.getConfiguration().getSelectionColor());
 
         if (stroke >= image.getWidth() && stroke >= image.getHeight()) {
