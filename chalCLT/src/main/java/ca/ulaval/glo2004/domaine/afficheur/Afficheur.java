@@ -17,7 +17,6 @@ import ca.ulaval.glo2004.App;
 import ca.ulaval.glo2004.domaine.*;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEvent;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEventListener;
-import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport.MeshMouseMotionEvent;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.Rasterizer;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
@@ -650,6 +649,7 @@ public class Afficheur {
 
             @Override
             public void mousePressed(java.awt.event.MouseEvent evt) {
+                System.out.println("Normal: Mouse pressed");
                 // drawingPanel.grabFocus();
                 TriangleMesh clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
                 if (clickedMesh != null) {
@@ -658,11 +658,11 @@ public class Afficheur {
                     if (evt.isControlDown()) {
                         clickedMesh.setSelected(!clickedMesh.getSelected());
                     } else {
-                        deselectAllMeshed();
+                        deselectAllMeshes();
                         clickedMesh.setSelected(true);
                     }
                 } else {
-                    deselectAllMeshed();
+                    deselectAllMeshes();
                 }
 
                 eventSupport.dispatchSelectionChanged(new AfficheurEventSupport.MeshSelectionEvent(getSelection()));
@@ -671,7 +671,6 @@ public class Afficheur {
 
             @Override
             public void mouseReleased(java.awt.event.MouseEvent evt) {
-
             }
 
             @Override
@@ -705,6 +704,7 @@ public class Afficheur {
 
                 @Override
                 public void mousePressed(java.awt.event.MouseEvent evt) {
+                    System.out.println("Motion: Mouse pressed");
                     isDragging = true;
                     initialPoint = evt.getPoint();
                     initialDragCamPosition = scene.getCamera().getPosition();
@@ -714,6 +714,8 @@ public class Afficheur {
                     TriangleMesh clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
                     if (clickedMesh != null && clickedMesh.getDraggable()) {
                         initialDragMeshPosition = clickedMesh.getPosition();
+                        clickedMesh.setIsDragged(true);
+                        clickedMesh.setSelected(true);
                         lastDraggedMesh = clickedMesh;
                         dragStarted = false;
                     }
@@ -721,6 +723,7 @@ public class Afficheur {
 
                 @Override
                 public void mouseReleased(java.awt.event.MouseEvent evt) {
+                    System.out.println("Motion: Mouse released");
                     isDragging = false;
                     initialPoint = null;
                     initialDragCamPosition = null;
@@ -729,7 +732,6 @@ public class Afficheur {
                     if (lastDraggedMesh != null && dragStarted) {
                         dragStarted = false;
                         lastDraggedMesh.setIsDragged(false);
-
                         lastDraggedMesh.setSelected(true);
                         getEventSupport().dispatchMeshDragEnd(new AfficheurEventSupport.MeshMouseMotionEvent(evt,
                                 lastDraggedMesh, lastDraggedMesh.getPosition()));
@@ -767,6 +769,7 @@ public class Afficheur {
                         lastDraggedMesh = clickedMesh;
                         getScene().clearAllSelection();
                         clickedMesh.setIsDragged(true);
+                        clickedMesh.setSelected(true);
                         // getEventSupport().dispatchMeshDragStart(new
                         // AfficheurEventSupport.MeshMouseMotionEvent(evt, lastDraggedMesh,
                         // lastDraggedMesh.getPosition()));
@@ -774,10 +777,11 @@ public class Afficheur {
                 }
 
                 if (lastDraggedMesh != null) {
-                    if (dragStarted == false) {
+                    if (!dragStarted) {
                         dragStarted = true;
                         getScene().clearAllSelection();
                         lastDraggedMesh.setIsDragged(true);
+
                         getEventSupport().dispatchMeshDragStart(new AfficheurEventSupport.MeshMouseMotionEvent(evt,
                                 lastDraggedMesh, lastDraggedMesh.getPosition()));
                     }
@@ -929,7 +933,7 @@ public class Afficheur {
         drawingPanel.repaint();
     }
 
-    public void deselectAllMeshed() {
+    public void deselectAllMeshes() {
         for (TriangleMeshGroup mesh : this.scene.getMeshes()) {
             mesh.setSelected(false);
         }

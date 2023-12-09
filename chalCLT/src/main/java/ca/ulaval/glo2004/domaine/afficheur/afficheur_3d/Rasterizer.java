@@ -637,6 +637,7 @@ public class Rasterizer {
 
             this.drawInvalidMeshBounding(g2);
             this.drawSelectedMeshBounding(g2);
+            this.drawDraggedMeshBounding(g2);
 
             g2.setColor(Color.BLACK);
             this.drawFPSDetails(g2, new Point(10, 20));
@@ -678,8 +679,8 @@ public class Rasterizer {
                 if (idBuffer[depth] != null && mesh.getSelected()) {
                     if (!mesh.getValid()) {
                         g2.setColor(new Color(255, 0, 0, 150));
-                    } else if (mesh.getIsDragged()) {
-                        g2.setColor(Color.GREEN);
+                    //} else if (mesh.getIsDragged()) {
+                    //    g2.setColor(Color.GREEN);
                     } else {
                         g2.setColor(scene.getConfiguration().getSelectionColor());
                     }
@@ -757,6 +758,67 @@ public class Rasterizer {
 
                     // draw border
                     g2.setColor(new Color(255, 0, 0, 150));
+
+                    if (topPixelDepth >= 0 && idBuffer[topPixelDepth] != idBuffer[depth]) {
+                        g2.drawRect(x, y, stroke, stroke);
+                        continue;
+                    }
+
+                    if (leftPixelDepth >= 0 && leftPixelDepth <= idBuffer.length
+                            && idBuffer[leftPixelDepth] != idBuffer[depth]) {
+                        g2.drawRect(x, y, stroke, stroke);
+                        continue;
+                    }
+
+                    if (idBuffer[rightPixelDepth] != idBuffer[depth]) {
+                        g2.drawRect(x, y, stroke, stroke);
+                        continue;
+                    }
+
+                    if (bottomPixelDepth < idBuffer.length && idBuffer[bottomPixelDepth] != idBuffer[depth]) {
+                        g2.drawRect(x, y, stroke, stroke);
+                        continue;
+                    }
+                }
+            }
+        }
+    }
+
+    private void drawDraggedMeshBounding(Graphics2D g2) {
+        int stroke = 1;
+        // stroke = (int) Math.round(1 * scene.getCamera().getScale());
+
+        for (int y = 0; y < image.getHeight(); y++) {
+            if (y < stroke || y > image.getHeight() + stroke)
+                continue; // We do not draw pixel on the edge of the image
+
+            for (int x = 0; x < image.getWidth(); x++) {
+                if (x == 0 || x > image.getWidth() + stroke)
+                    continue; // We do not draw pixel on the edge of the image
+
+                final int depth = y * image.getWidth() + x;
+
+                if (depth <= 0 || depth + 1 > image.getWidth() * image.getHeight() - 1 || idBuffer[depth] == null)
+                    continue;
+
+                TriangleMesh mesh = scene.getMesh(idBuffer[depth]);
+
+                if (idBuffer[depth] != null && mesh != null && mesh.getIsDragged()) {
+
+                    // fill? dragged accessory
+                    g2.setColor(new Color(0, 255, 0, 100));
+                    g2.fillRect(x, y, 1, 1);
+
+                    // Check if the id of the pixel is the same on top, left, right and bottom.
+                    // If not, it means that the pixel is on the edge of a mesh.
+                    // So we draw the pixel in order to create a boundary
+                    int topPixelDepth = (y - 1) * image.getWidth() + x;
+                    int leftPixelDepth = y * image.getWidth() + (x - 1);
+                    int rightPixelDepth = y * image.getWidth() + (x + 1);
+                    int bottomPixelDepth = (y + 1) * image.getWidth() + x;
+
+                    // draw border
+                    g2.setColor(new Color(0, 255, 0, 150));
 
                     if (topPixelDepth >= 0 && idBuffer[topPixelDepth] != idBuffer[depth]) {
                         g2.drawRect(x, y, stroke, stroke);
