@@ -128,10 +128,31 @@ public class Chalet implements Serializable {
     }
 
     public void setLargeur(double largeur) {
+        if (sensToit == TypeSensToit.Est || sensToit == TypeSensToit.Ouest){
+            if (largeur < 3*epaisseurMur) {
+                largeur = 3*epaisseurMur;
+            }
+        }
+        else if ((sensToit == TypeSensToit.Nord || sensToit == TypeSensToit.Sud)) {
+            if (largeur < 2*epaisseurMur) {
+                largeur = 2*epaisseurMur;
+            }
+        }
         this.largeur = largeur;
     }
 
     public void setLongueur(double longueur) {
+        if (sensToit == TypeSensToit.Est || sensToit == TypeSensToit.Ouest){
+            if (longueur < 2*epaisseurMur) {
+                longueur = 2*epaisseurMur;
+            }
+        }
+        else if ((sensToit == TypeSensToit.Nord || sensToit == TypeSensToit.Sud)) {
+            if (longueur < 3*epaisseurMur) {
+                longueur = 3*epaisseurMur;
+            }
+        }
+        
         this.longueur = longueur;
     }
 
@@ -140,6 +161,9 @@ public class Chalet implements Serializable {
     }
 
     public void setMargeSupplementaireRetrait(double margeSupplementaireRetrait) {
+        if (margeSupplementaireRetrait > epaisseurMur) {
+            margeSupplementaireRetrait = epaisseurMur;
+        }
         this.margeSupplementaireRetrait = margeSupplementaireRetrait;
     }
     
@@ -153,6 +177,9 @@ public class Chalet implements Serializable {
 
     public void setSensToit(TypeSensToit sensToit) {
         this.sensToit = sensToit;
+        this.setLongueur(longueur);
+        this.setLargeur(largeur);
+        
     }
     
     public void updateChalet(ChaletDTO dtoChalet) {
@@ -160,15 +187,15 @@ public class Chalet implements Serializable {
         double oldLongueur = this.longueur;
         double oldHauteur = this.hauteur;
         
-        this.nom = dtoChalet.nom;
-        this.hauteur = dtoChalet.hauteur;
-        this.largeur = dtoChalet.largeur;
-        this.longueur = dtoChalet.longueur;
-        this.epaisseurMur = dtoChalet.epaisseurMur;
-        this.sensToit = dtoChalet.sensToit;
-        this.angleToit = dtoChalet.angleToit;
-        this.margeAccessoire = dtoChalet.margeAccessoire;
-        this.margeSupplementaireRetrait = dtoChalet.margeSupplementaireRetrait;
+        this.setNom(dtoChalet.nom);
+        this.setHauteur(dtoChalet.hauteur);
+        this.setLargeur(dtoChalet.largeur);
+        this.setLongueur(dtoChalet.longueur);
+        this.setEpaisseurMur(dtoChalet.epaisseurMur);
+        this.setSensToit(dtoChalet.sensToit);
+        this.setAngleToit(dtoChalet.angleToit);
+        this.setMargeAccessoire(dtoChalet.margeAccessoire);
+        this.setMargeSupplementaireRetrait(dtoChalet.margeSupplementaireRetrait);
         
         if (this.longueur - oldLongueur != 0.0) {
             for (Accessoire a : this.getMur(TypeMur.Gauche).getAccessoires())

@@ -181,9 +181,7 @@ public class TableChaletV2 extends JTable {
                         return;
                     }
                     
-                    if (largeur.toInches() <= 2*chaletDTO.epaisseurMur) {
-                        return;
-                    }
+                    
 
                     chaletDTO.largeur = largeur.toInches();
                     this.pcs.firePropertyChange("largeur", oldLargeur, largeur.toInches());
@@ -194,9 +192,7 @@ public class TableChaletV2 extends JTable {
                     if (longueur == null) {
                         return;
                     }
-                    if (longueur.toInches() <= 2*chaletDTO.epaisseurMur) {
-                        return;
-                    }
+                    
 
                     chaletDTO.longueur = longueur.toInches();
                     this.pcs.firePropertyChange("longueur", oldLongueur, longueur.toInches());

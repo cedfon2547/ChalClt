@@ -80,15 +80,6 @@ public class MainWindow extends javax.swing.JFrame {
 
         setJMenuBar(menu); // Add the menu bar to the window
         initComponents();
-
-        this.controleur.addChaletEventListener(new ChaletEventListener() {
-            @Override
-            public void change(ChaletEvent event) {
-                // TODO Auto-generated method stub
-                recharger();
-            }
-        });
-        ;
     }
 
     private void initComponents() {
@@ -102,14 +93,6 @@ public class MainWindow extends javax.swing.JFrame {
             @Override
             public void paintComponent(java.awt.Graphics g) {
                 super.paintComponent(g);
-
-                // For test purpose, used to draw string on the split pane divider.
-                // g.setColor(this.getForeground());
-                // int divLocation = getDividerLocation();
-                // g.drawString("T", 10, divLocation + 10);
-                // g.drawString("e", 20, divLocation + 10);
-                // g.drawString("x", 30, divLocation + 10);
-                // g.drawString("t", 40, divLocation + 10);
             }
         };
 
@@ -186,34 +169,27 @@ public class MainWindow extends javax.swing.JFrame {
         tableProprietesChalet.getPcs().addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                // System.out.println("Property changed: " + evt.getPropertyName() + " " + evt.getNewValue());
-                getControleur().setChalet(tableProprietesChalet.getChaletDTO());
+                Chalet.ChaletDTO maxChaletDTO = tableProprietesChalet.getChaletDTO();
+                getControleur().setChalet(maxChaletDTO);
             }
         });
 
         this.getControleur().addChaletEventListener((evt) -> {
-            // System.out.println("Chalet event: " + evt.getChaletDTO().toString());
-            tableProprietesChalet.updateTable(evt.getChaletDTO());
-            // recharger();
         });
 
         this.getControleur().addAccessoireEventListener(new AccessoireEventListener() {
             @Override
             public void add(AccessoireEvent event) {
-                // TODO Auto-generated method stub
                 recharger();
             }
 
             @Override
             public void remove(AccessoireEvent event) {
-                // TODO Auto-generated method stub
                 recharger();
             }
 
             @Override
             public void change(AccessoireEvent event) {
-                // TODO Auto-generated method stub
-                // System.out.println("Accessoire event: " + event.getAccessoireDTO().accessoireId);
                 if (tableProprietesAccessoire != null) {
                     tableProprietesAccessoire.updateTable(event.getAccessoireDTO());
                     recharger();
@@ -224,15 +200,11 @@ public class MainWindow extends javax.swing.JFrame {
         this.getControleur().addUndoRedoEventListener(new UndoRedoEventListener() {
             @Override
             public void undo(UndoRedoEvent event) {
-                // TODO Auto-generated method stub
-                // System.out.println("Undo event: " + event.getProjet().nom);
                 recharger();
             }
 
             @Override
             public void redo(UndoRedoEvent event) {
-                // TODO Auto-generated method stub
-                // System.out.println("Redo event: " + event.getProjet());
                 recharger();
             }
         });
@@ -240,7 +212,6 @@ public class MainWindow extends javax.swing.JFrame {
         drawingPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // System.out.println("Clicked on drawing panel");
                 if (tableProprietesChalet.getCellEditor() != null) {
                     tableProprietesChalet.getCellEditor().stopCellEditing();
                 }
@@ -250,39 +221,36 @@ public class MainWindow extends javax.swing.JFrame {
         drawingPanel.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
-                // TODO Auto-generated method stub
-                // drawingPanel.afficheur.getRasterizer().resizeImage(drawingPanel.getSize());
             }
 
             @Override
             public void componentHidden(ComponentEvent e) {
-                // TODO Auto-generated method stub
-                
+
             }
 
             @Override
             public void componentMoved(ComponentEvent e) {
-                // TODO Auto-generated method stub
-                
+
             }
 
             @Override
             public void componentShown(ComponentEvent e) {
-                // TODO Auto-generated method stub
-                
+
             }
         });
-        
+
+        this.controleur.addChaletEventListener(new ChaletEventListener() {
+            @Override
+            public void change(ChaletEvent event) {
+                recharger();
+            }
+        });
         showChaletTable();
         this.getContentPane().requestFocusInWindow();
     }
 
     public Controleur getControleur() {
         return controleur;
-    }
-
-    // todo
-    public void rechargerMainWindow() {
     }
 
     /**
@@ -294,7 +262,7 @@ public class MainWindow extends javax.swing.JFrame {
         tableContainer.setBorder(border);
         tableContainer.add(tableProprietesChalet.getTableHeader());
         tableContainer.setViewportView(tableProprietesChalet);
-        
+
         tableContainer.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(java.awt.event.FocusEvent e) {
@@ -305,7 +273,7 @@ public class MainWindow extends javax.swing.JFrame {
             public void focusLost(java.awt.event.FocusEvent e) {
                 // System.out.println("Focus lost");
             }
-        
+
         });
         // tableContainer.setBorder(tableProprietesChalet.getTitledBorder());
         // tableContainer.add(tableProprietesChalet.getTableHeader());
@@ -321,13 +289,14 @@ public class MainWindow extends javax.swing.JFrame {
         if (dtoAccessoire == null) {
             return;
         }
-        
+
         if (tableProprietesAccessoire == null) {
             tableProprietesAccessoire = new TableAccessoireV2(dtoAccessoire);
             tableProprietesAccessoire.getPcs().addPropertyChangeListener(new PropertyChangeListener() {
                 @Override
                 public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                    // System.out.println("Property changed: " + evt.getPropertyName() + " " + evt.getNewValue());
+                    // System.out.println("Property changed: " + evt.getPropertyName() + " " +
+                    // evt.getNewValue());
                     getControleur().setAccessoire(tableProprietesAccessoire.getAccessoireDTO());
                 }
             });

@@ -725,7 +725,7 @@ public class PanelHelper {
                     : this.chaletDTO.longueur;
             double hauteur = this.chaletDTO.hauteur;
             double d = this.chaletDTO.epaisseurMur;
-            double m = this.chaletDTO.margeSupplementaireRetrait / 2;
+            double m = this.chaletDTO.margeSupplementaireRetrait;
 
             // Si truncate == vrai, marge pleine retirée sur une partie de la rainure
             if (this.truncate) {

@@ -569,8 +569,8 @@ public class Rasterizer {
 
             Graphics2D g2 = (Graphics2D) image.getGraphics();
 
-            Color skyColorTransparent = new Color(116, 147, 170, 255);
-            Color skyColorOpaque = new Color(49, 73, 111, 255);
+            Color skyColorTransparent = new Color(50, 50, 50, 255);
+            Color skyColorOpaque = new Color(75, 75, 75, 255);
             Paint skyColor = new GradientPaint(180.0f, 0.0f, skyColorTransparent,
                     image.getWidth(), image.getHeight(), skyColorOpaque, true);
             g2.setPaint(skyColor);

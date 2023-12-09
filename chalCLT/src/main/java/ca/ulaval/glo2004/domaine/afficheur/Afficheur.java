@@ -17,6 +17,7 @@ import ca.ulaval.glo2004.App;
 import ca.ulaval.glo2004.domaine.*;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEvent;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEventListener;
+import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport.MeshMouseMotionEvent;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.Rasterizer;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
@@ -858,12 +859,15 @@ public class Afficheur {
                         eventSupport.dispatchMouseExitMesh(
                                 new AfficheurEventSupport.MeshMouseMotionEvent(evt, lastMouseEnteredMesh,
                                         lastMouseEnteredMesh.getPosition()));
+                        eventSupport.dispatchMouseEnterMesh(
+                                new AfficheurEventSupport.MeshMouseMotionEvent(evt, mouseEnteredMesh,
+                                        mouseEnteredMesh.getPosition()));
                     }
 
                     // pcs.firePropertyChange(AfficheurEvent.MouseEnterMesh.toString(),
                     // lastMouseEnteredMesh,
                     // mouseEnteredMesh);
-                    eventSupport.dispatchMouseEnterMesh(
+                    eventSupport.dispatchMeshHovered(
                             new AfficheurEventSupport.MeshMouseMotionEvent(evt, mouseEnteredMesh,
                                     mouseEnteredMesh.getPosition()));
                     lastMouseEnteredMesh = mouseEnteredMesh;

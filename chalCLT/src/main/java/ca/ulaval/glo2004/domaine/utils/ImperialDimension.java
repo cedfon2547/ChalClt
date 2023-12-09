@@ -23,7 +23,8 @@ import java.util.regex.Pattern;
  */
 public class ImperialDimension {
 
-    public static final Pattern patternImperial = Pattern.compile("((?<Pied>\\-?[0-9]+)?[ ?]*'[ ?]*)?((?<Pouce>\\-?[0-9]+)?[ ?]*\\\"[ ?]*)?((?<A>\\-?[0-9]+)\\/(?<B>\\-?[0-9]+)[ ?]*$)?");
+    public static final Pattern patternImperial = Pattern.compile(
+            "((?<Pied>\\-?[0-9]+)?[ ?]*'[ ?]*)?((?<Pouce>\\-?[0-9]+)?[ ?]*\\\"[ ?]*)?((?<A>\\-?[0-9]+)\\/(?<B>\\-?[0-9]+)[ ?]*$)?");
     /**
      * Le nombre de pieds dans la dimension.
      */
@@ -358,8 +359,8 @@ public class ImperialDimension {
      */
     public static ImperialDimension parseFromString(String str) {
         // Format is: 7' 3" 1/2
-        // Pattern pattern = Pattern.compile("([0-9]+)\' +([0-9]+)\" +([0-9]+)/([0-9]+)");
         
+
         if (str == null) {
             return null;
         }
@@ -378,16 +379,20 @@ public class ImperialDimension {
         if (strPieds == null && strPouces == null && strNumerateur == null && strDenominateur == null) {
             return null;
         }
-        
-        // System.out.println("Pieds: " + strPieds);
-        // System.out.println("Pouces: " + strPouces);
-        // System.out.println("Numerateur: " + strNumerateur);
-        // System.out.println("Denominateur: " + strDenominateur);
 
-        int pieds = strPieds == null ? 0 : Integer.parseInt(strPieds);
-        int pouces = strPouces == null ? 0 : Integer.parseInt(strPouces);
-        int numerateur = strNumerateur == null ? 0 : Integer.parseInt(strNumerateur);
-        int denominateur = strDenominateur == null ? 1 : Integer.parseInt(strDenominateur);
+       
+        int pieds;
+        int pouces;
+        int numerateur;
+        int denominateur;
+        try {
+            pieds = strPieds == null ? 0 : Integer.parseInt(strPieds);
+            pouces = strPouces == null ? 0 : Integer.parseInt(strPouces);
+            numerateur = strNumerateur == null ? 0 : Integer.parseInt(strNumerateur);
+            denominateur = strDenominateur == null ? 1 : Integer.parseInt(strDenominateur);
+        } catch (Exception e) {
+            return null;
+        }
 
         return format(pieds, pouces, numerateur, denominateur);
     }

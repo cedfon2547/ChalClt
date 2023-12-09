@@ -31,9 +31,9 @@ public class Retrait implements Serializable {
      * @param position La position du retrait.
      */
     public Retrait(TypeRetrait type, double[] position, double[] dimensions) {
-        this.type = type;
-        this.dimensions = dimensions;
-        this.position = position;
+        this.setType(type);
+        this.setDimensions(dimensions);
+        this.setPosition(position);
     }
 
     /**
@@ -78,10 +78,16 @@ public class Retrait implements Serializable {
 
     /**
      * Modifie les dimensions du retrait.
-     * @param dimensions Les nouvelles dimensions du retrait.
+     * @param dimension Les nouvelles dimensions du retrait.
      */
-    public void setDimensions(double[] dimensions) {
-        this.dimensions = dimensions;
+    public void setDimensions(double[] dimension) {
+        if(dimension[0] > Integer.MAX_VALUE){
+            dimension[0] = Integer.MAX_VALUE;
+        }
+        if(dimension[1] > Integer.MAX_VALUE){
+            dimension[1] = Integer.MAX_VALUE;
+        }
+        this.dimensions = dimension;
     }
 
     /**
@@ -89,6 +95,12 @@ public class Retrait implements Serializable {
      * @param position La nouvelle position du retrait.
      */
     public void setPosition(double[] position) {
+        if(position[0] > Integer.MAX_VALUE){
+            position[0] = Integer.MAX_VALUE;
+        }
+        if(position[1] > Integer.MAX_VALUE){
+            position[1] = Integer.MAX_VALUE;
+        }
         this.position = position;
     }
 

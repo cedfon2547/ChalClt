@@ -2,6 +2,7 @@ package ca.ulaval.glo2004.gui.components;
 
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +19,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Point;
 
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.AccessoireEvent;
@@ -34,6 +36,8 @@ import ca.ulaval.glo2004.gui.MainWindow;
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Controleur;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport;
+
+class TestHoverComponant extends JPanel{}
 
 class GridStepSpinner extends JSpinner {
     public GridStepSpinner() {
@@ -202,6 +206,10 @@ public class DrawingPanel extends javax.swing.JPanel {
             @Override
             public void meshHovered(AfficheurEventSupport.MeshMouseMotionEvent e) {
                 // TODO Auto-generated method stub
+                // System.out.println("hello");
+                if (!maxi.contains(e.getMesh())) {
+                    maxi.add(e.getMesh());
+                }
             }
 
             @Override
@@ -278,13 +286,14 @@ public class DrawingPanel extends javax.swing.JPanel {
             @Override
             public void mouseEnterMesh(AfficheurEventSupport.MeshMouseMotionEvent evt) {
                 // System.out.println("MouseEnterMesh " + evt.getMesh().ID);
-                repaint();
+                // repaint();
             }
 
             @Override
             public void mouseExitMesh(AfficheurEventSupport.MeshMouseMotionEvent evt) {
                 // System.out.println("MouseExitMesh " + evt.getMesh().ID);
-                repaint();
+                maxi.remove(evt.getMesh());
+                // repaint();
             }
         });
 
@@ -591,12 +600,23 @@ public class DrawingPanel extends javax.swing.JPanel {
         return mainWindow.getControleur();
     }
 
+    public List<TriangleMesh> maxi= new ArrayList<TriangleMesh>();
     @Override
     public void paintComponent(java.awt.Graphics g) {
         // super.paintComponent(g);
         
         this.afficheur.getRasterizer().draw(this.getSize());
         g.drawImage(this.afficheur.getRasterizer().getImage(), 0, 0, null);
+        for(TriangleMesh mesh: maxi){
+            Vector3D[] boundings = mesh.getBounding();
+            // boundings[0] = boundings[0].multiply(afficheur.getRasterizer().cameraTransformMatrix);
+            // boundings[1] = boundings[1].multiply(afficheur.getRasterizer().cameraTransformMatrix);
+            Point start = new Point((int) boundings[0].x,(int) boundings[1].y+10);
+            Point end = new Point((int) boundings[1].x,(int) boundings[1].y+10);
+            g.setColor(Color.BLACK);
+            g.drawLine(start.x,start.y,end.x,end.y);
+            g.drawRect((int)boundings[0].x, (int)boundings[0].y, (int)boundings[1].x, (int)boundings[1].y);
+        } 
     }
 
     public void changerVue(Afficheur.TypeDeVue vue) {
