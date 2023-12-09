@@ -278,6 +278,8 @@ public class Chalet implements Serializable {
 
     public Accessoire ajouterAccessoire(TypeMur typeMur, TypeAccessoire typeAccessoire, double[] position, double[] dimension) {
         Accessoire accessoire = new Accessoire(typeAccessoire, typeMur, position, dimension, true);
+        accessoire.setAccessoireNom(typeAccessoire.toString());
+        accessoire.setAccessoireId(UUID.randomUUID());
 
         // By default, translate the accessory to the margin specified in the chalet
         accessoire.setPosition(new double[]{margeAccessoire + this.epaisseurMur, margeAccessoire});
