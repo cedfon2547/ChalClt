@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class Chalet implements Serializable {
     private String nom = "ChaletDefault";
-    private double margeSupplementaireRetrait = 1.0;
+    private double margeSupplementaireRetrait = 0.0;
     private double hauteur = 96;
     private double largeur = 120;
     private double longueur = 120;

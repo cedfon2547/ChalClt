@@ -240,6 +240,25 @@ public class Afficheur {
         getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
         getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
 
+        TriangleMeshGroup pignonGaucheToit = PanelHelper.buildPignon(chaletDTO.largeur, chaletDTO.epaisseurMur, chaletDTO.angleToit, new Vector3D(0, 0, 0));
+        TriangleMeshGroup pignonDroitToit = PanelHelper.buildPignon(chaletDTO.largeur, chaletDTO.epaisseurMur, chaletDTO.angleToit, new Vector3D(0, 0, 0));
+        TriangleMeshGroup panneauToit = PanelHelper.buildPanneauToit2(chaletDTO.largeur, chaletDTO.longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait, new Vector3D(0, 0, 0));
+        TriangleMeshGroup rallongeVerticaleToit = PanelHelper.buildRallongeVertical(chaletDTO.largeur, chaletDTO.longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait, new Vector3D(0, 0, 0));
+
+        pignonGaucheToit = pignonGaucheToit.rotateY(Math.PI / 2);
+        pignonDroitToit = pignonDroitToit.rotateY(-Math.PI / 2);
+
+        panneauToit = panneauToit.translate(new Vector3D(0, -chaletDTO.longueur * Math.tan(Math.toRadians(chaletDTO.angleToit)) - chaletDTO.hauteur, 0));
+        panneauToit = panneauToit.translate(new Vector3D(-chaletDTO.largeur / 2, 0, -chaletDTO.longueur / 2));
+        rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(-chaletDTO.largeur / 2, -chaletDTO.longueur * Math.tan(Math.toRadians(chaletDTO.angleToit)) - chaletDTO.hauteur, -chaletDTO.longueur / 2));
+        rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(0, chaletDTO.epaisseurMur/2 * Math.cos(Math.toRadians(chaletDTO.angleToit)), 0));
+
+        getScene().addMesh(panneauToit);
+        getScene().addMesh(rallongeVerticaleToit);
+        // getScene().addMesh(pignonGaucheToit);
+        // getScene().addMesh(pignonDroitToit);
+        
+
         // // Pour tester l'importation d'objets à partir de fichiers .obj
         if (getControleur().getPreferencesUtilisateur().afficherPlancher) {
             try {
@@ -283,10 +302,6 @@ public class Afficheur {
         murGaucheGroup.updateAccessoires(murGaucheAccessoires);
 
         getScene().clearMeshes();
-        // murFacadeGroup.clear();
-        // murArriereGroup.clear();
-        // murDroitGroup.clear();
-        // murGaucheGroup.clear();
 
         getScene().addMesh(murFacadeGroup);
         getScene().addMesh(murArriereGroup);
@@ -298,6 +313,31 @@ public class Afficheur {
         getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
         getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
 
+        Chalet.ChaletDTO chaletDTO = this.getControleur().getChalet();
+        murFacadeGroup.update(chaletDTO);
+        murArriereGroup.update(chaletDTO);
+        murDroitGroup.update(chaletDTO);
+        murGaucheGroup.update(chaletDTO);
+        
+        TriangleMeshGroup pignonGaucheToit = PanelHelper.buildPignon(chaletDTO.largeur, chaletDTO.epaisseurMur, chaletDTO.angleToit, new Vector3D(0, 0, 0));
+        TriangleMeshGroup pignonDroitToit = PanelHelper.buildPignon(chaletDTO.largeur, chaletDTO.epaisseurMur, chaletDTO.angleToit, new Vector3D(0, 0, 0));
+        TriangleMeshGroup panneauToit = PanelHelper.buildPanneauToit2(chaletDTO.largeur, chaletDTO.longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait, new Vector3D(0, 0, 0));
+        TriangleMeshGroup rallongeVerticaleToit = PanelHelper.buildRallongeVertical(chaletDTO.largeur, chaletDTO.longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait, new Vector3D(0, 0, 0));
+
+        pignonGaucheToit = pignonGaucheToit.rotateY(Math.PI / 2);
+        pignonDroitToit = pignonDroitToit.rotateY(-Math.PI / 2);
+
+        panneauToit = panneauToit.translate(new Vector3D(0, -chaletDTO.longueur * Math.tan(Math.toRadians(chaletDTO.angleToit)) - chaletDTO.hauteur, 0));
+        panneauToit = panneauToit.translate(new Vector3D(-chaletDTO.largeur / 2, 0, -chaletDTO.longueur / 2));
+        rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(-chaletDTO.largeur / 2, -chaletDTO.longueur * Math.tan(Math.toRadians(chaletDTO.angleToit)) - chaletDTO.hauteur, -chaletDTO.longueur / 2));
+        rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(0, chaletDTO.epaisseurMur/2 * Math.cos(Math.toRadians(chaletDTO.angleToit)), 0));
+
+        getScene().addMesh(panneauToit);
+        getScene().addMesh(rallongeVerticaleToit);
+        
+        // getScene().addMesh(pignonGaucheToit);
+        // getScene().addMesh(pignonDroitToit);
+        
         PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = this.controleur.getPreferencesUtilisateur();
         getScene().getConfiguration().setGridStep(preferencesUtilisateurDTO.gridSpacing);
         toggleShowGrid(preferencesUtilisateurDTO.afficherGrille);
@@ -823,11 +863,11 @@ public class Afficheur {
                         Vector3D direction = initialDragCamDirection.add(new Vector3D(rotateX, rotateY, 0));
 
                         // Constraint cam direction
-                        if (direction.x > 0) {
-                            direction.x = 0;
-                        } else if (direction.x < -Math.PI / 2) {
-                            direction.x = -Math.PI / 2;
-                        }
+                        // if (direction.x > 0) {
+                        //     direction.x = 0;
+                        // } else if (direction.x < -Math.PI / 2) {
+                        //     direction.x = -Math.PI / 2;
+                        // }
 
                         getScene().getCamera().setDirection(direction);
                         updateViewGrid();

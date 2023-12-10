@@ -175,6 +175,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
 
         this.getControleur().addChaletEventListener((evt) -> {
+            recharger();
         });
 
         this.getControleur().addAccessoireEventListener(new AccessoireEventListener() {
