@@ -259,7 +259,8 @@ public class PanelHelper {
         // double b1 = b/2;
         // double b2 = d/2 * Math.sin(Math.toRadians(angle));
 
-        double hauteur = (longueur * Math.tan(Math.toRadians(angle))) - a + 1;
+        System.out.println((a - b) + " " + (b - a));
+        double hauteur = (longueur * Math.tan(Math.toRadians(angle)));
 
         double[] p1 = new double[] { x0, y0, z0 };
         double[] p2 = new double[] { x0, y0 + b, z0 + depth / 2 - m / 2 };
@@ -326,7 +327,7 @@ public class PanelHelper {
         triangles.add(new double[][] { p12, p13, p14 });
 
         TriangleMesh mesh = TriangleMesh.fromDoubleList(triangles);
-
+        mesh = mesh.translate(new Vector3D(0, (b - a) - 1, 0));
         rallongeVertGroup.addMesh(mesh);
 
         return rallongeVertGroup;
@@ -408,8 +409,6 @@ public class PanelHelper {
     public static TriangleMeshGroup buildPanneauToit2(double largeur, double longueur, double depth, double angle, double marge, Vector3D position) {
         TriangleMeshGroup panneauToitGroup = new TriangleMeshGroup();
 
-        double height = (longueur) * Math.tan(Math.toRadians(angle));
-
         double x0 = position.x;
         double y0 = position.y;
         double z0 = position.z;
@@ -418,6 +417,8 @@ public class PanelHelper {
         double a = (depth / 2) / Math.cos(Math.toRadians(angle)); //depth / 2 * Math.cos(Math.toRadians(angle));
         double b = depth / 2 * Math.tan(Math.toRadians(angle));
         
+        double height = longueur * Math.tan(Math.toRadians(angle)) + a;
+
         double p1[] = new double[] { x0, y0, z0 };
         double p2[] = new double[] { x0 + largeur, y0, z0 };
         double p3[] = new double[] { x0 + largeur, y0 + a, z0 };
@@ -493,6 +494,7 @@ public class PanelHelper {
 
 
         TriangleMesh panneauToitMesh = TriangleMesh.fromDoubleList(triangles);
+        panneauToitMesh = panneauToitMesh.translate(new Vector3D(0, -a, 0));
         panneauToitGroup.addMesh(panneauToitMesh);
         return panneauToitGroup;
 

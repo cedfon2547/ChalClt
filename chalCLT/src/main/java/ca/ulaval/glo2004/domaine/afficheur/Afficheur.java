@@ -250,8 +250,12 @@ public class Afficheur {
 
         panneauToit = panneauToit.translate(new Vector3D(0, -chaletDTO.longueur * Math.tan(Math.toRadians(chaletDTO.angleToit)) - chaletDTO.hauteur, 0));
         panneauToit = panneauToit.translate(new Vector3D(-chaletDTO.largeur / 2, 0, -chaletDTO.longueur / 2));
+        
         rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(-chaletDTO.largeur / 2, -chaletDTO.longueur * Math.tan(Math.toRadians(chaletDTO.angleToit)) - chaletDTO.hauteur, -chaletDTO.longueur / 2));
         rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(0, chaletDTO.epaisseurMur/2 * Math.cos(Math.toRadians(chaletDTO.angleToit)), 0));
+
+        panneauToit.getMesh(0).getMaterial().setColor(Color.LIGHT_GRAY);
+        rallongeVerticaleToit.getMesh(0).getMaterial().setColor(Color.LIGHT_GRAY);
 
         getScene().addMesh(panneauToit);
         getScene().addMesh(rallongeVerticaleToit);
@@ -329,8 +333,12 @@ public class Afficheur {
 
         panneauToit = panneauToit.translate(new Vector3D(0, -chaletDTO.longueur * Math.tan(Math.toRadians(chaletDTO.angleToit)) - chaletDTO.hauteur, 0));
         panneauToit = panneauToit.translate(new Vector3D(-chaletDTO.largeur / 2, 0, -chaletDTO.longueur / 2));
+        
         rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(-chaletDTO.largeur / 2, -chaletDTO.longueur * Math.tan(Math.toRadians(chaletDTO.angleToit)) - chaletDTO.hauteur, -chaletDTO.longueur / 2));
         rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(0, chaletDTO.epaisseurMur/2 * Math.cos(Math.toRadians(chaletDTO.angleToit)), 0));
+
+        panneauToit.getMesh(0).getMaterial().setColor(Color.LIGHT_GRAY);
+        rallongeVerticaleToit.getMesh(0).getMaterial().setColor(Color.LIGHT_GRAY);
 
         getScene().addMesh(panneauToit);
         getScene().addMesh(rallongeVerticaleToit);
@@ -863,11 +871,11 @@ public class Afficheur {
                         Vector3D direction = initialDragCamDirection.add(new Vector3D(rotateX, rotateY, 0));
 
                         // Constraint cam direction
-                        // if (direction.x > 0) {
-                        //     direction.x = 0;
-                        // } else if (direction.x < -Math.PI / 2) {
-                        //     direction.x = -Math.PI / 2;
-                        // }
+                        if (direction.x > 0) {
+                            direction.x = 0;
+                        } else if (direction.x < -Math.PI / 2) {
+                            direction.x = -Math.PI / 2;
+                        }
 
                         getScene().getCamera().setDirection(direction);
                         updateViewGrid();
