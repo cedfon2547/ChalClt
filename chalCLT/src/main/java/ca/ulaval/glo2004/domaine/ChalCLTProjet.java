@@ -8,7 +8,7 @@ import java.io.IOException;
 public class ChalCLTProjet implements Serializable {
     private String nom;
     private Chalet chalet;
-    private PreferencesUtilisateur preferencesUtilisateur;
+    private PreferencesUtilisateur preferencesUtilisateur = new PreferencesUtilisateur();
 
     public ChalCLTProjet(String nom, Chalet chalet, PreferencesUtilisateur preferencesUtilisateur) {
         this.nom = nom;
@@ -62,6 +62,7 @@ public class ChalCLTProjet implements Serializable {
         public ChalCLTProjetDTO(ChalCLTProjet chalCLTProjet) {
             this.nom = chalCLTProjet.nom;
             this.chalet = new Chalet.ChaletCompletDTO(chalCLTProjet.chalet);
+            this.preferencesUtilisateur = chalCLTProjet.preferencesUtilisateur.toDTO();
         }
          
 

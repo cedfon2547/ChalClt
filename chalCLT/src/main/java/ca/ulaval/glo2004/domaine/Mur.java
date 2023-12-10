@@ -62,6 +62,7 @@ public class Mur implements Serializable {
         for (Accessoire.AccessoireDTO accessoireDTO : murDTO.accessoires) {
             Accessoire accessoire = new Accessoire(accessoireDTO);
             accessoire.setAccessoireNom(accessoireDTO.accessoireNom);
+            accessoire.setAccessoireId(accessoireDTO.accessoireId);
             this.accessoires.add(accessoire);
         }
     }

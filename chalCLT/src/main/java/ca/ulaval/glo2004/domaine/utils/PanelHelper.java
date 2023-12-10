@@ -879,6 +879,8 @@ public class PanelHelper {
                 TriangleMesh rectCuboid = new RectCuboid(new Vector3D(x0, y0, z0),
                         new Vector3D(largeurAcc, hauteurAcc, dAcc));
 
+                rectCuboid.setSelectable(true);
+                rectCuboid.setDraggable(true);
                 rectCuboid.ID = accessoireDTO.accessoireId.toString();
                 rectCuboid.setHandle(accessoireDTO.accessoireId.toString());
 
@@ -996,6 +998,12 @@ public class PanelHelper {
         }
 
         private void buildAccessoires() {
+            List<TriangleMesh> prevMeshes = new ArrayList<TriangleMesh>();
+
+            for (TriangleMeshGroup meshAccessoire : this.meshAccessoires) {
+                prevMeshes.add(meshAccessoire.copy());
+            }
+
             this.meshAccessoires.clear();
 
             for (Accessoire.AccessoireDTO accessoireDTO : this.accessoireDTOs) {
@@ -1021,6 +1029,17 @@ public class PanelHelper {
 
                 accMesh.ID = accessoireDTO.accessoireId.toString();
                 accMesh.setValid(accessoireDTO.valide);
+
+                TriangleMesh _mesh = accMesh;
+                TriangleMesh prevMesh = prevMeshes.stream().filter(m -> m.ID.equals(_mesh.ID)).findFirst().orElse(null);
+                if (prevMesh != null) {
+                    accMesh.setIsDragged(prevMesh.getIsDragged());
+                    accMesh.setSelected(prevMesh.getSelected());
+                    accMesh.setDraggableX(prevMesh.getDraggableX());
+                    accMesh.setDraggableY(prevMesh.getDraggableY());
+                    accMesh.setDraggableZ(prevMesh.getDraggableZ());
+                    accMesh.setDraggable(prevMesh.getDraggable());
+                }
 
                 switch (typeMur) {
                     case Facade:
@@ -1219,6 +1238,7 @@ public class PanelHelper {
                 case Retraits:
                     this.getMeshes().clear();
                     this.getMeshes().addAll(this.meshRetraits.getMeshes());
+                    this.getMeshes().addAll(this.meshAccessoires);
                     break;
                 // case FiniWithRetraits:
                 // this.getMeshes().clear();
@@ -1235,7 +1255,14 @@ public class PanelHelper {
                     break;
             }
         }
+
+        public void updateAccessoires(List<Accessoire.AccessoireDTO> accessoireDTOs) {
+            this.accessoireDTOs = accessoireDTOs;
+            this.buildAccessoires();
+            this.setActiveOuput(this.activeOutput);
+        }
     }
+    
 
     public static enum OutputType {
         Brut,

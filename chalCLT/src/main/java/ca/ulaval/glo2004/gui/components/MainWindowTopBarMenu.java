@@ -103,9 +103,9 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
             renduVisuelRetraitsItem.setSelected(false);
 
             renduVisuelBrutItem.setSelected(true);
-
-            mainWindow.drawingPanel.afficheur.renduVisuel = PanelHelper.OutputType.Brut;
-            mainWindow.drawingPanel.afficheur.rechargerAffichage();
+            // mainWindow.drawingPanel.afficheur.renduVisuel = PanelHelper.OutputType.Brut;
+            mainWindow.drawingPanel.afficheur.switchOutputType(PanelHelper.OutputType.Brut);
+            // mainWindow.drawingPanel.afficheur.rechargerAffichage();
         });
 
         renduVisuelFiniItem.addActionListener((evt) -> {
@@ -114,8 +114,9 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
 
             renduVisuelFiniItem.setSelected(true);
 
-            mainWindow.drawingPanel.afficheur.renduVisuel = PanelHelper.OutputType.Fini;
-            mainWindow.drawingPanel.afficheur.rechargerAffichage();
+            // mainWindow.drawingPanel.afficheur.renduVisuel = PanelHelper.OutputType.Fini;
+            mainWindow.drawingPanel.afficheur.switchOutputType(PanelHelper.OutputType.Fini);
+            // mainWindow.drawingPanel.afficheur.rechargerAffichage();
         });
 
         renduVisuelRetraitsItem.addActionListener((evt) -> {
@@ -124,8 +125,10 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
 
             renduVisuelRetraitsItem.setSelected(true);
 
-            mainWindow.drawingPanel.afficheur.renduVisuel = PanelHelper.OutputType.Retraits;
-            mainWindow.drawingPanel.afficheur.rechargerAffichage();
+            // mainWindow.drawingPanel.afficheur.renduVisuel = PanelHelper.OutputType.Retraits;
+            mainWindow.drawingPanel.afficheur.switchOutputType(PanelHelper.OutputType.Retraits);
+            // mainWindow.drawingPanel.afficheur.rechargerAffichage();
+            // mainWindow.drawingPanel.repaint();
         });
 
         // `Selection` menu

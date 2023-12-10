@@ -201,19 +201,39 @@ public class DrawingPanel extends javax.swing.JPanel {
             @Override
             public void meshClicked(AfficheurEventSupport.MeshMouseEvent evt) {
                 // System.out.println("Mesh Clicked " + mesh.ID);
+                if (evt.getClickCount() == 2) {
+                    // System.out.println("Mesh Double Clicked " + evt.getMesh().ID);
+                    if (evt.getMesh() instanceof MurTriangleMeshGroup) {
+                        switch (((MurTriangleMeshGroup) evt.getMesh()).getTypeMur()) {
+                            case Facade:
+                                changerVue(Afficheur.TypeDeVue.Facade);
+                                break;
+                            case Arriere:
+                                changerVue(Afficheur.TypeDeVue.Arriere);
+                                break;
+                            case Droit:
+                                changerVue(Afficheur.TypeDeVue.Droite);
+                                break;
+                            case Gauche:
+                                changerVue(Afficheur.TypeDeVue.Gauche);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
             }
 
             @Override
             public void meshHovered(AfficheurEventSupport.MeshMouseMotionEvent e) {
                 // TODO Auto-generated method stub
-                // System.out.println("hello");
-                if (!maxi.contains(e.getMesh())) {
-                    maxi.add(e.getMesh());
-                }
+                // System.out.println("Mesh Hovered " + e.getMesh().ID);
             }
 
             @Override
             public void meshDragged(AfficheurEventSupport.MeshMouseMotionEvent evt) {
+                // System.out.println("Mesh Dragged " + evt.getMesh().ID);
+
                 if (initialAccessoireDTO == null) {
                     Accessoire.AccessoireDTO accessoireDTO = mainWindow.getControleur()
                             .getAccessoire(UUID.fromString(evt.getMesh().ID));
@@ -256,8 +276,11 @@ public class DrawingPanel extends javax.swing.JPanel {
                         mesh.setValid(accessoireDTO.valide);
                     }
                 }
-
+                
                 evt.getMesh().setValid(accDto.valide);
+                evt.getMesh().setSelected(true);
+                evt.getMesh().setIsDragged(true);
+                
                 repaint();
             }
 
@@ -265,21 +288,23 @@ public class DrawingPanel extends javax.swing.JPanel {
             public void meshDragStart(MeshMouseMotionEvent evt) {
                 // TODO Auto-generated method stub
                 // System.out.println("MeshDragStart " + evt.getMesh().ID);
-                TriangleMeshGroup clickedMesh = (TriangleMeshGroup) evt.getMesh();
+                TriangleMesh clickedMesh = evt.getMesh();
                 Accessoire.AccessoireDTO accDto = mainWindow.getControleur()
                         .getAccessoire(UUID.fromString(clickedMesh.ID));
 
                 if (accDto != null) {
                     initialAccessoireDTO = accDto;
                     mainWindow.showAccessoireTable(accDto);
-                    clickedMesh.setSelected(true);
+                    // clickedMesh.setSelected(true);
+                    clickedMesh.setIsDragged(true);
                 }
             }
 
             @Override
-            public void meshDragEnd(MeshMouseMotionEvent e) {
+            public void meshDragEnd(MeshMouseMotionEvent evt) {
                 // TODO Auto-generated method stub
-                // System.out.println("MeshDragEnd " + e.getMesh().ID);
+                // System.out.println("MeshDragEnd " + evt.getMesh().ID);
+                // evt.getMesh().setIsDragged(false);
                 initialAccessoireDTO = null;
             }
 
@@ -292,7 +317,6 @@ public class DrawingPanel extends javax.swing.JPanel {
             @Override
             public void mouseExitMesh(AfficheurEventSupport.MeshMouseMotionEvent evt) {
                 // System.out.println("MouseExitMesh " + evt.getMesh().ID);
-                maxi.remove(evt.getMesh());
                 // repaint();
             }
         });
@@ -600,23 +624,12 @@ public class DrawingPanel extends javax.swing.JPanel {
         return mainWindow.getControleur();
     }
 
-    public List<TriangleMesh> maxi= new ArrayList<TriangleMesh>();
     @Override
     public void paintComponent(java.awt.Graphics g) {
         // super.paintComponent(g);
         
         this.afficheur.getRasterizer().draw(this.getSize());
         g.drawImage(this.afficheur.getRasterizer().getImage(), 0, 0, null);
-        for(TriangleMesh mesh: maxi){
-            Vector3D[] boundings = mesh.getBounding();
-            // boundings[0] = boundings[0].multiply(afficheur.getRasterizer().cameraTransformMatrix);
-            // boundings[1] = boundings[1].multiply(afficheur.getRasterizer().cameraTransformMatrix);
-            Point start = new Point((int) boundings[0].x,(int) boundings[1].y+10);
-            Point end = new Point((int) boundings[1].x,(int) boundings[1].y+10);
-            g.setColor(Color.BLACK);
-            g.drawLine(start.x,start.y,end.x,end.y);
-            g.drawRect((int)boundings[0].x, (int)boundings[0].y, (int)boundings[1].x, (int)boundings[1].y);
-        } 
     }
 
     public void changerVue(Afficheur.TypeDeVue vue) {

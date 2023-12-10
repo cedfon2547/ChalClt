@@ -86,6 +86,10 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
                     setIcon(porteIcon);
                 }
 
+                if (accNode.getAccessoireDTO().accessoireId == null) {
+                    return super.getTreeCellRendererComponent(tree, value, selected, expanded, isLeaf, row, focused);
+                }
+
                 Accessoire.AccessoireDTO accDto = mainWindow.getControleur()
                         .getAccessoire(accNode.getAccessoireDTO().accessoireId);
 

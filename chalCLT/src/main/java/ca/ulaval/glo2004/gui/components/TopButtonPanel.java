@@ -184,8 +184,6 @@ public class TopButtonPanel extends JPanel {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Creer porte");
-
                 Afficheur.TypeDeVue vueActive = mainWindow.drawingPanel.afficheur.getVueActive();
                 if (vueActive == Afficheur.TypeDeVue.Dessus) {
                     return;
@@ -222,7 +220,6 @@ public class TopButtonPanel extends JPanel {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Supprimer accessoire");
                 // System.out.println(mainWindow.getAccessoiresSelectionnees().size());
                 mainWindow.deleteAllAccessoiresSelectionnees();
             }

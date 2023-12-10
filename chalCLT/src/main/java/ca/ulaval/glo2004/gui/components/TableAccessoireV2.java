@@ -138,7 +138,6 @@ public class TableAccessoireV2 extends JTable {
                 case 3:
                     double oldPositionX = accessoireDTO.position[0];
                     accessoireDTO.position[0] = ImperialDimension.parseFromString(value).toInches();
-                    System.out.println(accessoireDTO.position[0]);
                     pcs.firePropertyChange("positionX", oldPositionX, accessoireDTO.position[0]);
                     break;
                 case 4:

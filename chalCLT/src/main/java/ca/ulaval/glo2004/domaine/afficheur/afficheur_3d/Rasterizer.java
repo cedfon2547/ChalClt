@@ -679,8 +679,8 @@ public class Rasterizer {
                 if (idBuffer[depth] != null && mesh.getSelected()) {
                     if (!mesh.getValid()) {
                         g2.setColor(new Color(255, 0, 0, 150));
-                    //} else if (mesh.getIsDragged()) {
-                    //    g2.setColor(Color.GREEN);
+                    } else if (mesh.getIsDragged()) {
+                       g2.setColor(Color.GREEN);
                     } else {
                         g2.setColor(scene.getConfiguration().getSelectionColor());
                     }

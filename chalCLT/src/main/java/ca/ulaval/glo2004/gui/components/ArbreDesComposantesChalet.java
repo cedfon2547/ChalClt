@@ -407,6 +407,9 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
     }
 
     public void recharger() {
+        // accessoireDTOs.clear();
+        // accessoireNodes.clear();
+
         Chalet.ChaletDTO chaletDTO = mainWindow.getControleur().getChalet();
         List<Accessoire.AccessoireDTO> accessoireDTOs = mainWindow.getControleur().getAccessoires();
 

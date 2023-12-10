@@ -3,8 +3,6 @@ package ca.ulaval.glo2004.domaine;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.ulaval.glo2004.domaine.utils.UndoRedoManager;
-
 public class ControleurEventSupport {
     private List<UserPreferencesEventListener> userPreferencesEventListeners = new ArrayList<>();
     private List<ChaletEventListener> chaletEventListeners = new ArrayList<>();

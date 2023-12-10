@@ -109,7 +109,6 @@ public class TableChaletV2 extends JTable {
 
             @Override
             public void focusLost(java.awt.event.FocusEvent e) {
-                System.out.println("comboBox focus lost");
                 cellEditor.stopCellEditing();
             }
         });

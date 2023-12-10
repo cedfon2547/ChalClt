@@ -192,7 +192,8 @@ public class MainWindow extends javax.swing.JFrame {
             public void change(AccessoireEvent event) {
                 if (tableProprietesAccessoire != null) {
                     tableProprietesAccessoire.updateTable(event.getAccessoireDTO());
-                    recharger();
+                    // drawingPanel.afficheur.rechargerAffichage();
+                    // recharger();
                 }
             }
         });
