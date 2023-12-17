@@ -13,6 +13,7 @@ import ca.ulaval.glo2004.gui.MainWindow;
 import ca.ulaval.glo2004.gui.NotificationManager.NotificationType;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
+import ca.ulaval.glo2004.gui.components.ExportationDirectoryFileChoose;
 
 public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     private javax.swing.JMenu affichageMenu;
@@ -427,14 +428,14 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     }
 
     private void ouvrirFichierItemActionPerformed(java.awt.event.ActionEvent evt) {
-        new OpenSaveDirectoryFileChoose((path) -> {
+        new OpenSaveDirectoryFileChoose(mainWindow, (path) -> {
             mainWindow.getControleur().ouvrirSauvegarde(path);
             return true;
         });
     }
 
     private void enregistrerItemActionPerformed(java.awt.event.ActionEvent evt) {
-        new ExportationDirectoryFileChoose((path) -> {
+        new ExportationDirectoryFileChoose(mainWindow, (path) -> {
             mainWindow.getControleur().creerSauvegarde(path);
             return true;
         });
@@ -457,7 +458,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     private void exporterBrutItemActionPerformed(java.awt.event.ActionEvent evt) {
         // exporterItemActionPerformed(evt);
         // System.out.println("Exporter Bruts");
-        new ExportationDirectoryFileChoose((path) -> {
+        new ExportationDirectoryFileChoose(mainWindow, (path) -> {
             // System.out.println("Path: " + path);
             mainWindow.drawingPanel.afficheur.exportSTL(path, PanelHelper.OutputType.Brut);
             return true;
@@ -467,7 +468,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     private void exporterFiniItemActionPerformed(java.awt.event.ActionEvent evt) {
         // exporterItemActionPerformed(evt);
         // System.out.println("Exporter Fini");
-        new ExportationDirectoryFileChoose((path) -> {
+        new ExportationDirectoryFileChoose(mainWindow, (path) -> {
             // System.out.println("Path: " + path);
             mainWindow.drawingPanel.afficheur.exportSTL(path, PanelHelper.OutputType.Fini);
             return true;
@@ -478,7 +479,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     private void exporterRetraitsItemActionPerformed(java.awt.event.ActionEvent evt) {
         // exporterItemActionPerformed(evt);
         // System.out.println("Exporter Retraits");
-        new ExportationDirectoryFileChoose((path) -> {
+        new ExportationDirectoryFileChoose(mainWindow, (path) -> {
             // System.out.println("Path: " + path);
             mainWindow.drawingPanel.afficheur.exportSTL(path, PanelHelper.OutputType.Retraits);
             return true;
@@ -568,148 +569,4 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         activerVue(mainWindow.drawingPanel.afficheur.getVueActive());
     }
 
-    @FunctionalInterface
-    public static interface ExportationDirectoryFileChooseListener {
-        public boolean onSelect(String path);
-    }
-
-    public class ExportationDirectoryFileChoose extends javax.swing.JFrame {
-        private JFileChooser fileChooser;
-        private ExportationDirectoryFileChooseListener listener;
-
-        public ExportationDirectoryFileChoose(ExportationDirectoryFileChooseListener listener) {
-            this.listener = listener;
-            initComponents();
-        }
-
-        private void initComponents() {
-            Chalet.ChaletDTO chaletDTO = mainWindow.getControleur().getChalet();
-
-            fileChooser = new JFileChooser();
-
-            fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
-            setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-            fileChooser.setApproveButtonText("Sélectionner");
-            fileChooser.setApproveButtonToolTipText("sélectionner");
-            fileChooser.setDialogTitle("Sélectionner le dossier de destination");
-            fileChooser.setToolTipText("Sélectionner le dossier de destination");
-            fileChooser.setName("ExportDestionationFileChooser"); // NOI18N
-            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            fileChooser.setMultiSelectionEnabled(false);
-            fileChooser.setOpaque(true);
-            fileChooser.setVisible(true);
-            fileChooser.setDialogTitle("Sélectionner le dossier de destination");
-
-            fileChooser.setSelectedFile(new File(chaletDTO.nom));
-            fileChooser.setFileFilter(new FileNameExtensionFilter("Sauvegardes ChalCLT", "chalclt"));
-
-            fileChooser.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    // System.out.println(evt.getActionCommand());
-                    if (evt.getActionCommand().equals("ApproveSelection")) {
-                        // System.out.println("ApproveSelection");
-                        boolean isValid = listener.onSelect(fileChooser.getSelectedFile().getAbsolutePath());
-
-                        // if the listener return false, the path is not valid and we should display the
-                        // error and let the user choose a different one.
-                        if (isValid) {
-                            fileChooser.setVisible(false);
-                            dispose();
-                        } else {
-
-                        }
-
-                    } else if (evt.getActionCommand().equals("CancelSelection")) {
-                        // System.out.println("CancelSelection");
-                        fileChooser.setVisible(false);
-                        dispose();
-                    }
-                }
-            });
-
-            fileChooser.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-                public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                    // System.out.println("Property Change" + evt.getPropertyName() + " " +
-                    // evt.getNewValue());
-                }
-            });
-
-            getContentPane().add(fileChooser, java.awt.BorderLayout.CENTER);
-
-            pack();
-            setVisible(true);
-        }
-    }
-    
-    @FunctionalInterface
-    public static interface OpenSaveDirectoryFileChooseListener {
-        public boolean onSelect(String path);
-    }
-
-    public class OpenSaveDirectoryFileChoose extends javax.swing.JFrame {
-        private JFileChooser fileChooser;
-        private OpenSaveDirectoryFileChooseListener listener;
-
-        public OpenSaveDirectoryFileChoose(OpenSaveDirectoryFileChooseListener listener) {
-            this.listener = listener;
-            initComponents();
-        }
-
-        private void initComponents() {
-            fileChooser = new JFileChooser();
-
-            fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
-            setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-            fileChooser.setApproveButtonText("Sélectionner");
-            fileChooser.setApproveButtonToolTipText("sélectionner");
-            fileChooser.setDialogTitle("Sélectionner le fichier à ouvrir");
-            fileChooser.setToolTipText("Sélectionner le fichier à ouvrir");
-            fileChooser.setName("OpenSaveFileChooser"); // NOI18N
-            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            fileChooser.setMultiSelectionEnabled(false);
-            fileChooser.setOpaque(true);
-            fileChooser.setVisible(true);
-            fileChooser.setDialogTitle("Sélectionner le fichier à ouvrir");
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("Sauvegarde ChalCLT", "chalclt");
-            fileChooser.setFileFilter(filter);
-
-            fileChooser.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    // System.out.println(evt.getActionCommand());
-                    if (evt.getActionCommand().equals("ApproveSelection")) {
-                        // System.out.println("ApproveSelection");
-                        boolean isValid = listener.onSelect(fileChooser.getSelectedFile().getAbsolutePath());
-
-                        // if the listener return false, the path is not valid and we should display the
-                        // error and let the user choose a different one.
-                        if (isValid) {
-                            fileChooser.setVisible(false);
-                            dispose();
-                        } else {
-
-                        }
-
-                    } else if (evt.getActionCommand().equals("CancelSelection")) {
-                        // System.out.println("CancelSelection");
-                        fileChooser.setVisible(false);
-                        dispose();
-                    }
-                }
-            });
-
-            fileChooser.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-                public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                    // System.out.println("Property Change" + evt.getPropertyName() + " " +
-                    // evt.getNewValue());
-                }
-            });
-
-            getContentPane().add(fileChooser, java.awt.BorderLayout.CENTER);
-
-            pack();
-            setVisible(true);
-        }
-    }
 }

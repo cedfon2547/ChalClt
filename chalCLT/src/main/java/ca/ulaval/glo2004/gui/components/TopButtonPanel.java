@@ -6,6 +6,7 @@ import ca.ulaval.glo2004.domaine.TypeAccessoire;
 import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEvent;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEventListener;
+import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.gui.MainWindow;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 import javax.swing.*;
@@ -27,6 +28,12 @@ public class TopButtonPanel extends JPanel {
     public JToggleButton grilleToggleBtn;
 
     public JToggleButton voisinToggleBtn;
+
+    public JToggleButton undoToggleBtn;
+
+    public JToggleButton redoToggleBtn;
+
+    public JToggleButton saveToggleBtn;
 
     public TopButtonPanel(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
@@ -55,13 +62,19 @@ public class TopButtonPanel extends JPanel {
         creerPorteBtn = new JButton("Porte");
         supprimerAccessoireBtn = new JButton("Supprimer");
         grilleToggleBtn = new JToggleButton("Grille");
-        voisinToggleBtn = new JToggleButton("Voisins");
+        voisinToggleBtn = new JToggleButton("Voisin");
+        undoToggleBtn = new JToggleButton("Annuler");
+        redoToggleBtn = new JToggleButton("Rétablir");
+        saveToggleBtn = new JToggleButton("Sauvegarder");
 
         creerFenetreBtn.setPreferredSize(new Dimension(75, 50));
         creerPorteBtn.setPreferredSize(new Dimension(75, 50));
         supprimerAccessoireBtn.setPreferredSize(new Dimension(75, 50));
-        grilleToggleBtn.setPreferredSize(new Dimension(75, 50));
-        voisinToggleBtn.setPreferredSize(new Dimension(75, 50));
+        //grilleToggleBtn.setPreferredSize(new Dimension(75, 50));
+        //voisinToggleBtn.setPreferredSize(new Dimension(75, 50));
+        undoToggleBtn.setPreferredSize(new Dimension(75, 50));
+        redoToggleBtn.setPreferredSize(new Dimension(75, 50));
+        saveToggleBtn.setPreferredSize(new Dimension(75, 50));
 
         creerFenetreBtn.setFocusPainted(false);
         creerFenetreBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -78,28 +91,49 @@ public class TopButtonPanel extends JPanel {
         supprimerAccessoireBtn.setHorizontalTextPosition(SwingConstants.CENTER);
         supprimerAccessoireBtn.setBorder(null);
 
-        grilleToggleBtn.setFocusPainted(false);
-        grilleToggleBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
-        grilleToggleBtn.setHorizontalTextPosition(SwingConstants.CENTER);
-        grilleToggleBtn.setBorder(null);
-        grilleToggleBtn.setSelected(true);
+//        grilleToggleBtn.setFocusPainted(false);
+//        grilleToggleBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+//        grilleToggleBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+//        grilleToggleBtn.setBorder(null);
+//        grilleToggleBtn.setSelected(true);
 
-        voisinToggleBtn.setFocusPainted(false);
-        voisinToggleBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
-        voisinToggleBtn.setHorizontalTextPosition(SwingConstants.CENTER);
-        voisinToggleBtn.setBorder(null);
+//        voisinToggleBtn.setFocusPainted(false);
+//        voisinToggleBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+//        voisinToggleBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+//        voisinToggleBtn.setBorder(null);
+
+        undoToggleBtn.setFocusPainted(false);
+        undoToggleBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        undoToggleBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        undoToggleBtn.setBorder(null);
+
+        redoToggleBtn.setFocusPainted(false);
+        redoToggleBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        redoToggleBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        redoToggleBtn.setBorder(null);
+
+        saveToggleBtn.setFocusPainted(false);
+        saveToggleBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        saveToggleBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        saveToggleBtn.setBorder(null);
 
         creerFenetreBtn.addActionListener(creerFenetreActionListener());
         creerPorteBtn.addActionListener(creerPortActionListener());
         supprimerAccessoireBtn.addActionListener(supprimerAccessoireActionListener());
         grilleToggleBtn.addActionListener(grilleToggleActionListener());
         voisinToggleBtn.addActionListener(voisinToggleActionListener());
+        undoToggleBtn.addActionListener(undoToggleActionListener());
+        redoToggleBtn.addActionListener(redoToggleActionListener());
+        saveToggleBtn.addActionListener(saveToggleActionListener());
 
         add(creerFenetreBtn);
         add(creerPorteBtn);
         add(supprimerAccessoireBtn);
-        add(voisinToggleBtn);
-        add(grilleToggleBtn);
+//        add(voisinToggleBtn);
+//        add(grilleToggleBtn);
+        add(undoToggleBtn);
+        add(redoToggleBtn);
+        add(saveToggleBtn);
 
         recharger();
     }
@@ -110,12 +144,18 @@ public class TopButtonPanel extends JPanel {
         String supprimerImgName = "/icons/dark/supprimer_1.png";
         String grilleImgName = "/icons/dark/grille_1.png";
         String voisinImgName = "/icons/dark/voisin_1.png";
+        String undoImgName = "/icons/dark/undo_1.png";
+        String redoImgName = "/icons/dark/redo_1.png";
+        String saveImgSave = "/icons/dark/save_1.png";
 
         URL fenetreImgURL = App.class.getResource(fenetreImgName);
         URL porteImgURL = App.class.getResource(porteImgName);
         URL supprimerImgURL = App.class.getResource(supprimerImgName);
         URL grilleImgURL = App.class.getResource(grilleImgName);
         URL voisinImgURL = App.class.getResource(voisinImgName);
+        URL undoImgURL = App.class.getResource(undoImgName);
+        URL redoImgURL = App.class.getResource(redoImgName);
+        URL saveImgURL = App.class.getResource(saveImgSave);
         Toolkit tk = Toolkit.getDefaultToolkit();
 
         Image fenetreImg = tk.getImage(fenetreImgURL);
@@ -123,24 +163,36 @@ public class TopButtonPanel extends JPanel {
         Image supprimerImg = tk.getImage(supprimerImgURL);
         Image grilleImg = tk.getImage(grilleImgURL);
         Image voisinImg = tk.getImage(voisinImgURL);
+        Image undoImg = tk.getImage(undoImgURL);
+        Image redoImg = tk.getImage(redoImgURL);
+        Image saveImg = tk.getImage(saveImgURL);
 
         ImageIcon iconFenetre = new ImageIcon(fenetreImg);
         ImageIcon iconPorte = new ImageIcon(porteImg);
         ImageIcon iconSupprimer = new ImageIcon(supprimerImg);
         ImageIcon iconGrille = new ImageIcon(grilleImg);
         ImageIcon iconVoisins = new ImageIcon(voisinImg);
+        ImageIcon iconUndo = new ImageIcon(undoImg);
+        ImageIcon iconRedo = new ImageIcon(redoImg);
+        ImageIcon iconSave = new ImageIcon(saveImg);
 
         iconFenetre.setImage(iconFenetre.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
         iconPorte.setImage(iconPorte.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
         iconSupprimer.setImage(iconSupprimer.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
         iconGrille.setImage(iconGrille.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
         iconVoisins.setImage(iconVoisins.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
+        iconUndo.setImage(iconUndo.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
+        iconRedo.setImage(iconRedo.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
+        iconSave.setImage(iconSave.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
 
         creerFenetreBtn.setIcon(iconFenetre);
         creerPorteBtn.setIcon(iconPorte);
         supprimerAccessoireBtn.setIcon(iconSupprimer);
         grilleToggleBtn.setIcon(iconGrille);
         voisinToggleBtn.setIcon(iconVoisins);
+        undoToggleBtn.setIcon(iconUndo);
+        redoToggleBtn.setIcon(iconRedo);
+        saveToggleBtn.setIcon(iconSave);
     }
 
     private ActionListener creerFenetreActionListener() {
@@ -249,6 +301,40 @@ public class TopButtonPanel extends JPanel {
                 mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO);
 
                 mainWindow.drawingPanel.afficheur.rechargerAffichage();
+            }
+        };
+    }
+
+    private ActionListener undoToggleActionListener() {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainWindow.getControleur().undo();
+                mainWindow.recharger();
+                mainWindow.drawingPanel.afficheur.rechargerAffichage();
+            }
+        };
+    }
+
+    private ActionListener redoToggleActionListener() {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainWindow.getControleur().redo();
+                mainWindow.recharger();
+                mainWindow.drawingPanel.afficheur.rechargerAffichage();
+            }
+        };
+    }
+
+    private ActionListener saveToggleActionListener() {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new ExportationDirectoryFileChoose(mainWindow, (path) -> {
+                    mainWindow.getControleur().creerSauvegarde(path);
+                    return true;
+                });
             }
         };
     }
