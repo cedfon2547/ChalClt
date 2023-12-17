@@ -37,7 +37,7 @@ public class SwitchToggleButton extends Component {
     private boolean mouseOver;
     private List<EventSwitchSelected> events;
 
-    private Color defaultBgColor = Color.DARK_GRAY;
+    private Color defaultBgColor = Color.LIGHT_GRAY;
     private Color selectedBgColor = new Color(0, 174, 255);
     private Color thumbColor = Color.WHITE;
     private Color disabledBgColor = new Color(55, 58, 64);

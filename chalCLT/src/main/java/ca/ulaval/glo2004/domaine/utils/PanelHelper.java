@@ -387,12 +387,14 @@ public class PanelHelper {
         triangles.add(new double[][] { p10, p14, p11 });
 
         triangles.add(new double[][] { p13, p8, p12 });
-        triangles.add(new double[][] { p8, p9, p12 });
+        triangles.add(new double[][] { p6, p5, p13 });
 
+        // TODO: A corriger
         TriangleMesh pignonMesh = TriangleMesh.fromDoubleList(triangles);
         pignonGroup.addMesh(pignonMesh);
         return pignonGroup;
     }
+
 
     public static TriangleMeshGroup buildPignonDroite(double largeur, double depth, double angle, Vector3D position) {
         TriangleMeshGroup pignonGroup = new TriangleMeshGroup();
@@ -456,7 +458,9 @@ public class PanelHelper {
         triangles.add(new double[][] { p10, p14, p11 });
 
         triangles.add(new double[][] { p13, p8, p12 });
-        triangles.add(new double[][] { p8, p9, p12 });
+        triangles.add(new double[][] { p6, p5, p13 }); 
+
+        // TODO: A corriger
 
         TriangleMesh pignonMesh = TriangleMesh.fromDoubleList(triangles);
         pignonGroup.addMesh(pignonMesh);

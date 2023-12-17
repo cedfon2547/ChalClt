@@ -21,6 +21,7 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.Rasterizer;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.shapes.RectCuboid;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper.MurTriangleMeshGroup;
@@ -103,18 +104,6 @@ public class Afficheur {
     }
 
     private void initialize() {
-        // this.controleur.addPropertyChangeListener(Controleur.EventType.PREFERENCES_UTILISATEUR,
-        // new java.beans.PropertyChangeListener() {
-        // @Override
-        // public void propertyChange(java.beans.PropertyChangeEvent evt) {
-        // PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO =
-        // (PreferencesUtilisateur.PreferencesUtilisateurDTO) evt
-        // .getNewValue();
-        // toggleShowGrid(preferencesUtilisateurDTO.afficherGrille);
-        // scene.getConfiguration().setGridStep(preferencesUtilisateurDTO.gridSpacing);
-        // drawingPanel.repaint();
-        // }
-        // });
         this.controleur.addUserPreferencesEventListener(new UserPreferencesEventListener() {
             @Override
             public void change(UserPreferencesEvent event) {
@@ -264,11 +253,34 @@ public class Afficheur {
         panneauToit.getMesh(0).getMaterial().setColor(Color.LIGHT_GRAY);
         rallongeVerticaleToit.getMesh(0).getMaterial().setColor(Color.LIGHT_GRAY);
 
+        panneauToit.setDraggable(false);
+        rallongeVerticaleToit.setDraggable(false);
+        pignonGaucheToit.setDraggable(false);
+        pignonDroitToit.setDraggable(false);
+
         getScene().addMesh(panneauToit);
         getScene().addMesh(rallongeVerticaleToit);
         getScene().addMesh(pignonGaucheToit);
         getScene().addMesh(pignonDroitToit);
-        
+
+        // // Create mesh representing a rule to measure the chalet
+        // double ruleWidth = 200;
+        // int stepNb = 20;
+
+        // TriangleMeshGroup ruleGroup = new TriangleMeshGroup(new ArrayList<>());
+        // TriangleMesh mainRect = new RectCuboid(new Vector3D(0, 0, 100), new Vector3D(ruleWidth, 2, 12));
+
+        // for (int i = 0; i <= stepNb; i++) {
+        //     TriangleMesh step = new RectCuboid(new Vector3D(i * ruleWidth / stepNb, -2, 100), new Vector3D(2, 2, 12));
+        //     step.getMaterial().setColor(Color.BLACK);
+        //     // step = step.translate(new Vector3D(-i * ruleWidth / stepNb, 0, 0));
+        //     ruleGroup.addMesh(step);
+        // }
+
+        // ruleGroup.addMesh(mainRect);
+        // ruleGroup = ruleGroup.translate(new Vector3D(-ruleWidth / 2, 0, 0));
+
+        // getScene().addMesh(ruleGroup);
 
         // // Pour tester l'importation d'objets à partir de fichiers .obj
         if (getControleur().getPreferencesUtilisateur().afficherPlancher) {
@@ -325,6 +337,7 @@ public class Afficheur {
         getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
 
         Chalet.ChaletDTO chaletDTO = this.getControleur().getChalet();
+        
         murFacadeGroup.update(chaletDTO);
         murArriereGroup.update(chaletDTO);
         murDroitGroup.update(chaletDTO);
@@ -353,6 +366,11 @@ public class Afficheur {
         panneauToit.getMesh(0).getMaterial().setColor(Color.LIGHT_GRAY);
         rallongeVerticaleToit.getMesh(0).getMaterial().setColor(Color.LIGHT_GRAY);
 
+        panneauToit.setDraggable(false);
+        rallongeVerticaleToit.setDraggable(false);
+        pignonGaucheToit.setDraggable(false);
+        pignonDroitToit.setDraggable(false);
+        
         getScene().addMesh(panneauToit);
         getScene().addMesh(rallongeVerticaleToit);
         getScene().addMesh(pignonGaucheToit);
@@ -710,7 +728,6 @@ public class Afficheur {
 
             Vector3D initialDragCamPosition = null;
             Vector3D initialDragCamDirection = null;
-            Vector3D initialDragMeshPosition = null;
 
             // TriangleMesh lastMouseEnteredMesh = null;
             // TriangleMesh lastDraggedMesh = null;
@@ -724,7 +741,6 @@ public class Afficheur {
                 isDragging = false;
                 initialDragCamPosition = null;
                 initialDragCamDirection = null;
-                initialDragMeshPosition = null;
                 focusedMesh = null;
                 initialFocusedMeshPosition = null;
                 // lastMouseEnteredMesh = null;

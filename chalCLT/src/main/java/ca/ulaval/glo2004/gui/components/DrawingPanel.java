@@ -2,7 +2,6 @@ package ca.ulaval.glo2004.gui.components;
 
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,7 +18,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Point;
 
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.AccessoireEvent;
@@ -30,7 +28,6 @@ import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport;
 import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport.MeshMouseMotionEvent;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper.MurTriangleMeshGroup;
 import ca.ulaval.glo2004.gui.MainWindow;
 import ca.ulaval.glo2004.domaine.Accessoire;
