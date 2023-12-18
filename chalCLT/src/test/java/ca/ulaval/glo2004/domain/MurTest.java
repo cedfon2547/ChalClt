@@ -201,6 +201,7 @@ public class MurTest {
         catch (IOException | ClassNotFoundException e) {
             // jsp
             e.printStackTrace();
+            assertTrue(false);
         }
     }
 }

@@ -1,6 +1,12 @@
 package ca.ulaval.glo2004.domain;
 
 import ca.ulaval.glo2004.domaine.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import org.junit.Test;
 
 import java.util.UUID;
@@ -209,5 +215,44 @@ public class ChaletTest {
         
         assertEquals(expectedNewPosX, chalet.getAccessoire(fenetre1DTO.accessoireId).getPosition()[0], 0.0);
         assertEquals(fenetre2DTO.position[0], chalet.getAccessoire(fenetre2DTO.accessoireId).getPosition()[0], 0.0);
+    }
+    
+        // vérifie si les méthodes writeObject et readObject fonctionnent
+    @Test
+    public void serializableValide() {
+        Chalet.ChaletCompletDTO cDTO1 = new Chalet.ChaletCompletDTO(chaletTest());
+        
+        try {
+            String path = System.getProperty("user.dir") + "\\test.txt";
+            File fichier = new File(path);
+            FileOutputStream fos = new FileOutputStream(fichier);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(cDTO1);
+            oos.flush();
+            oos.close();
+            
+            FileInputStream fis = new FileInputStream(fichier);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Chalet.ChaletCompletDTO cDTO2 = (Chalet.ChaletCompletDTO) ois.readObject();
+
+            ois.close();
+            fichier.delete();
+            
+            assertEquals(cDTO1.nom, cDTO2.nom);
+            assertEquals(cDTO1.hauteur, cDTO2.hauteur, 0);
+            assertEquals(cDTO1.largeur, cDTO2.largeur, 0);
+            assertEquals(cDTO1.longueur, cDTO2.longueur, 0);
+            assertEquals(cDTO1.epaisseurMur, cDTO2.epaisseurMur, 0);
+            assertEquals(cDTO1.sensToit, cDTO2.sensToit);
+            assertEquals(cDTO1.angleToit, cDTO2.angleToit, 0);
+            assertEquals(cDTO1.margeAccessoire, cDTO2.margeAccessoire, 0);
+            assertEquals(cDTO1.margeSupplementaireRetrait, cDTO2.margeSupplementaireRetrait, 0);
+        }
+        
+        catch (IOException | ClassNotFoundException e) {
+            // jsp
+            e.printStackTrace();
+            assertTrue(false);
+        }
     }
 }
