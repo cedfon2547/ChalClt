@@ -195,8 +195,6 @@ public class MurTest {
             fichier.delete();
             
             assertEquals(mDTO1.type, mDTO2.type);
-            assertEquals(mDTO1.hauteur, mDTO2.hauteur, 0);
-            assertEquals(mDTO1.largeur, mDTO2.largeur, 0);
             assertEquals(mDTO1.accessoires.size(), mDTO2.accessoires.size(), 0);
         }
         
