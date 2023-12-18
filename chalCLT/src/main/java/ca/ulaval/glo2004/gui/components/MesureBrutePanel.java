@@ -29,9 +29,9 @@ public class MesureBrutePanel extends JPanel {
         this.chaletDTO = chaletDTO;
         this.setLayout(new BoxLayout(this, 1));
         this.setAlignmentX(CENTER_ALIGNMENT);
-        String pathLargeurIcon = "/icons/light/horizontal.png";
-        String pathHauteurIcon = "/icons/light/vertical.png";
-        String pathEpaisseurIcon = "/icons/light/epaisseur.png";
+        String pathLargeurIcon = "/icons/dark/horizontal.png";
+        String pathHauteurIcon = "/icons/dark/vertical.png";
+        String pathEpaisseurIcon = "/icons/dark/epaisseur.png";
 
         URL largeurIconURL = App.class.getResource(pathLargeurIcon);
         URL hauteurIconURL = App.class.getResource(pathHauteurIcon);
@@ -66,7 +66,7 @@ public class MesureBrutePanel extends JPanel {
         hauteur.setAlignmentX(CENTER_ALIGNMENT);
         epaisseur.setAlignmentX(CENTER_ALIGNMENT);
 
-hauteur.setIconTextGap(6);
+        hauteur.setIconTextGap(6);
         
         this.setBackground(Color.DARK_GRAY);
         this.add(largeur);
@@ -76,7 +76,7 @@ hauteur.setIconTextGap(6);
 
     public void updatePanel(ChaletDTO chaletDTO, double largeur) {
         this.chaletDTO = chaletDTO;
-    this.largeurValueStr = ImperialDimension.format(largeur).toString();
+        this.largeurValueStr = ImperialDimension.format(largeur).toString();
         this.hauteurValueStr = ImperialDimension.format(chaletDTO.hauteur).toString();
         this.epaisseurValueStr = ImperialDimension.format(chaletDTO.epaisseurMur).toString();
         this.largeur.setText(" largeur : " + largeurValueStr);

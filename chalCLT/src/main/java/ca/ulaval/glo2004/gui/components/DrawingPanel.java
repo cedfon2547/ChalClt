@@ -96,7 +96,7 @@ public class DrawingPanel extends javax.swing.JPanel {
 
     // Afficheur.TypeDeVue vueActive = Afficheur.TypeDeVue.Dessus;
     javax.swing.JToolBar barreOutilsVue;
-    MesureBruteContainer max;
+    MesureBruteContainer mesureBruteContainer;
 
     public DrawingPanel(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
@@ -117,7 +117,7 @@ public class DrawingPanel extends javax.swing.JPanel {
 
     private void initComponents() {
         setBackground(java.awt.Color.BLACK);
-        this.max = new MesureBruteContainer(mainWindow.getControleur().getChalet());
+        this.mesureBruteContainer = new MesureBruteContainer(mainWindow.getControleur().getChalet());
         this.mainWindow.getControleur()
                 .addAccessoireEventListener(new ControleurEventSupport.AccessoireEventListener() {
                     @Override
@@ -312,8 +312,8 @@ public class DrawingPanel extends javax.swing.JPanel {
             public void meshHovered(AfficheurEventSupport.MeshMouseMotionEvent evt) {
                 // TODO Auto-generated method stub
                 // System.out.println("Mesh Hovered " + e.getMesh().ID);
-// max.updateValeurs(mainWindow.getControleur().getChalet());
-                max.show(evt.getLocationOnScreen());
+                // max.updateValeurs(mainWindow.getControleur().getChalet());
+                mesureBruteContainer.show(evt.getLocationOnScreen());
             }
 
             @Override
@@ -321,28 +321,26 @@ public class DrawingPanel extends javax.swing.JPanel {
                 // System.out.println("MouseEnterMesh " + evt.getMesh().ID);
                 // repaint();
                 // max.setChaletDTOToPanel(afficheur.getControleur().getChalet());
-if(evt.getMesh() instanceof TriangleMeshGroup){
+                if(evt.getMesh() instanceof TriangleMeshGroup){
                     ChaletDTO tempChaletDTO = mainWindow.getControleur().getChalet();
                     double tempLargeur = tempChaletDTO.largeur;
-                    double tempEpaisseur = tempChaletDTO.epaisseurMur;
+                    double tempLongueur = tempChaletDTO.longueur;
                     if (evt.getMesh().getWidth() == tempLargeur){
-                        max.updateValeurs(tempChaletDTO, tempLargeur);
+                        mesureBruteContainer.updateValeurs(tempChaletDTO, tempLargeur);
                     }
-                    else if(evt.getMesh().getWidth() == tempEpaisseur){
-                        // max.updateValeurs(getMesh().getDepth());
+                    else{
+                        mesureBruteContainer.updateValeurs(tempChaletDTO, tempLongueur);
                     }
-                    
                 }
                 // max.updateValeurs(mainWindow.getControleur().getChalet(), null);
-                max.show(evt.getLocationOnScreen());
+                mesureBruteContainer.show(evt.getLocationOnScreen());
             }
 
             @Override
             public void mouseExitMesh(AfficheurEventSupport.MeshMouseMotionEvent evt) {
-                System.out.println("MouseExitMesh " + evt.getMesh().ID);
+                // System.out.println("MouseExitMesh " + evt.getMesh().ID);
                 // repaint();
-                
-                max.hide();
+                mesureBruteContainer.hide();
             }
         });
 
@@ -694,10 +692,12 @@ if(evt.getMesh() instanceof TriangleMeshGroup){
         private void initComponents() {
             mesurePanel = new MesureBrutePanel(chaletDTO);
             dialogContainer.setLocationRelativeTo(null);
-            dialogContainer.setMinimumSize(new Dimension(100, 100));
+            dialogContainer.setUndecorated(true);
+            dialogContainer.pack();
+            dialogContainer.setMinimumSize(new Dimension(100, 80));
+            // dialogContainer.validate();
             dialogContainer.setResizable(false);
             dialogContainer.setFocusable(false);
-            dialogContainer.setUndecorated(true);
 
             mesurePanel.addMouseMotionListener(new MouseAdapter() {
                 @Override
@@ -718,6 +718,7 @@ if(evt.getMesh() instanceof TriangleMeshGroup){
         public void updateValeurs(ChaletDTO chaletDTO, double largeur){
         this.chaletDTO = chaletDTO;
             mesurePanel.updatePanel(this.chaletDTO, largeur);
+            dialogContainer.pack();
         }
 
         public void show(Point point) {
