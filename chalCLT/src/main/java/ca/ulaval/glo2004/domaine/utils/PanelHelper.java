@@ -15,7 +15,6 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.shapes.RectCuboid;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.color.ColorSpace;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
@@ -424,8 +423,6 @@ public class PanelHelper {
         triangles.add(new double[][] { p5, p6, p9 });
         triangles.add(new double[][] { p6, p9, p12});
 
-        // might be good now
-
         TriangleMesh pignonMesh = TriangleMesh.fromDoubleList(triangles);
         pignonGroup.addMesh(pignonMesh);
         return pignonGroup;
@@ -436,7 +433,7 @@ public class PanelHelper {
         double apply(double x);
     }
     
-    public static TriangleMeshGroup buildPanneauToit2(double largeur, double longueur, double depth, double angle, double marge, Vector3D position) {
+    public static TriangleMeshGroup buildPanneauToit(double largeur, double longueur, double depth, double angle, double marge, Vector3D position) {
         TriangleMeshGroup panneauToitGroup = new TriangleMeshGroup();
 
         double x0 = position.x;
@@ -544,7 +541,7 @@ public class PanelHelper {
 
     }
 
-    public static TriangleMeshGroup buildPanneauToit(double width, double longueur, double depth, double angle, double marge, Vector3D position) {
+    public static TriangleMeshGroup buildPanneauToitOld(double width, double longueur, double depth, double angle, double marge, Vector3D position) {
         TriangleMeshGroup panneauToitGroup = new TriangleMeshGroup();
 
         double height = (longueur) * Math.tan(Math.toRadians(angle));

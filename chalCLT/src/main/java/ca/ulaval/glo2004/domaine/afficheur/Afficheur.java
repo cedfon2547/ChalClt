@@ -1,26 +1,16 @@
 package ca.ulaval.glo2004.domaine.afficheur;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
-import java.awt.font.FontRenderContext;
-import java.awt.font.GlyphVector;
-import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import ca.ulaval.glo2004.App;
@@ -35,14 +25,11 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper.MurTriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper.OutputType;
-import ca.ulaval.glo2004.domaine.utils.PanelHelper.RectPlane2D;
-import ca.ulaval.glo2004.domaine.utils.ImperialDimension;
 import ca.ulaval.glo2004.domaine.utils.ObjectImporter;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.domaine.utils.STLTools;
 import java.awt.Color;
 import java.util.Objects;
-import java.util.Vector;
 
 
 public class Afficheur {
@@ -197,7 +184,7 @@ public class Afficheur {
                 chaletDTO.angleToit, new Vector3D(0, 0, 0));
         TriangleMeshGroup pignonDroitToit = PanelHelper.buildPignonDroite(chaletDTO.longueur, chaletDTO.epaisseurMur,
                 chaletDTO.angleToit, new Vector3D(0, 0, 0));
-        TriangleMeshGroup panneauToit = PanelHelper.buildPanneauToit2(chaletDTO.largeur, chaletDTO.longueur,
+        TriangleMeshGroup panneauToit = PanelHelper.buildPanneauToit(chaletDTO.largeur, chaletDTO.longueur,
                 chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait,
                 new Vector3D(0, 0, 0));
         TriangleMeshGroup rallongeVerticaleToit = PanelHelper.buildRallongeVertical(chaletDTO.largeur,

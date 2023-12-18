@@ -10,6 +10,7 @@ import java.io.File;
 
 public class ExportationDirectoryFileChoose extends javax.swing.JFrame {
     private JFileChooser fileChooser;
+
     private ExportationDirectoryFileChooseListener listener;
 
     private MainWindow mainWindow;
@@ -33,14 +34,14 @@ public class ExportationDirectoryFileChoose extends javax.swing.JFrame {
         fileChooser.setDialogTitle("Sélectionner le dossier de destination");
         fileChooser.setToolTipText("Sélectionner le dossier de destination");
         fileChooser.setName("ExportDestionationFileChooser"); // NOI18N
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setOpaque(true);
         fileChooser.setVisible(true);
         fileChooser.setDialogTitle("Sélectionner le dossier de destination");
 
-        fileChooser.setSelectedFile(new File(chaletDTO.nom));
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Sauvegardes ChalCLT", "chalclt"));
+        //fileChooser.setSelectedFile(new File(chaletDTO.nom));
+        //fileChooser.setFileFilter(new FileNameExtensionFilter("Sauvegardes ChalCLT", "chalclt"));
 
         fileChooser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
