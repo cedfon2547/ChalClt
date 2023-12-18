@@ -34,8 +34,6 @@ public class Mur implements Serializable {
      * Constructeur de la classe Mur.
      *
      * @param type    Le type de mur.
-     * @param hauteur La hauteur du mur.
-     * @param largeur La largeur du mur.
      */
     public Mur(TypeMur type, Chalet chalet) {
         this.type = type;
@@ -47,8 +45,6 @@ public class Mur implements Serializable {
      * Constructeur de la classe Mur.
      *
      * @param type        Le type de mur.
-     * @param hauteur     La hauteur du mur.
-     * @param largeur     La largeur du mur.
      * @param accessoires La liste des accessoires du mur.
      */
     public Mur(TypeMur type, Chalet chalet, List<Accessoire> accessoires) {
@@ -164,16 +160,6 @@ public class Mur implements Serializable {
         public TypeMur type;
 
         /**
-         * La hauteur du mur.
-         */
-        public double hauteur;
-
-        /**
-         * La largeur du mur.
-         */
-        public double largeur;
-
-        /**
          * La liste des accessoires du mur.
          */
         public List<Accessoire.AccessoireDTO> accessoires;
@@ -273,9 +259,6 @@ public class Mur implements Serializable {
     /**
      * Ajoute un accessoire
      *
-     * @param p_type      qui représente le type de l'accessoire
-     * @param p_position  qui représente la pôsition de l'objet
-     * @param p_dimension qui représente la dimensions de l'objet
      * @return
      */
     public Accessoire ajouterAccessoire(Accessoire accessoire) {
@@ -340,10 +323,7 @@ public class Mur implements Serializable {
     /**
      * Permet de voir la validité de l'accessoire dont les paramètres passent en
      * entrée par rapport aux autres accessoires
-     * 
-     * @param position  de l'objet qu'on veut verifier
-     * @param dimension de l'objet qu'on veut verifier
-     * @return boolean qui represente sa validite
+     *
      */
     public boolean verifierCollisionAcc(Accessoire.AccessoireDTO accessoire, double margeAcc) {
         double[] position = accessoire.position;
@@ -420,9 +400,7 @@ public class Mur implements Serializable {
     /**
      * Permet de voir si l'accessoire est dans une position valide par rapport au
      * mur et sa marge
-     * 
-     * @param p_position   position de l'accessoire
-     * @param p_dimension  dimensions de l'accessoire
+     *
      * @param margeMinimal marge minimale du projet
      * @return la validité
      */

@@ -6,9 +6,9 @@ import ca.ulaval.glo2004.domaine.TypeAccessoire;
 import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEvent;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEventListener;
-import ca.ulaval.glo2004.domaine.utils.PanelHelper;
+import ca.ulaval.glo2004.domaine.afficheur.TypeDeVue;
 import ca.ulaval.glo2004.gui.MainWindow;
-import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
+
 import javax.swing.*;
 
 import java.awt.*;
@@ -199,8 +199,8 @@ public class TopButtonPanel extends JPanel {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Afficheur.TypeDeVue vueActive = mainWindow.drawingPanel.afficheur.getVueActive();
-                if (vueActive == Afficheur.TypeDeVue.Dessus) {
+                TypeDeVue vueActive = mainWindow.drawingPanel.afficheur.getVueActive();
+                if (vueActive == TypeDeVue.Dessus) {
                     return;
                 }
 
@@ -236,8 +236,8 @@ public class TopButtonPanel extends JPanel {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Afficheur.TypeDeVue vueActive = mainWindow.drawingPanel.afficheur.getVueActive();
-                if (vueActive == Afficheur.TypeDeVue.Dessus) {
+                TypeDeVue vueActive = mainWindow.drawingPanel.afficheur.getVueActive();
+                if (vueActive == TypeDeVue.Dessus) {
                     return;
                 }
 

@@ -22,9 +22,9 @@ import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.AccessoireEvent;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.AccessoireEventListener;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.ChaletEventListener;
+import ca.ulaval.glo2004.domaine.afficheur.TypeDeVue;
 import ca.ulaval.glo2004.gui.Constants;
 import ca.ulaval.glo2004.gui.MainWindow;
-import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 
 public class ArbreDesComposantesChalet extends javax.swing.JPanel {
     MainWindow mainWindow;
@@ -232,19 +232,19 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                     switch (path.getLastPathComponent().toString()) {
                         case Constants._STRING_MUR_FACADE:
                             // System.out.println("Mur Facade");
-                            mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Facade);
+                            mainWindow.drawingPanel.changerVue(TypeDeVue.Facade);
                             break;
                         case Constants._STRING_MUR_ARRIERE:
                             // System.out.println("Mur Arriere");
-                            mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Arriere);
+                            mainWindow.drawingPanel.changerVue(TypeDeVue.Arriere);
                             break;
                         case Constants._STRING_MUR_DROIT:
                             // System.out.println("Mur droit");
-                            mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Droite);
+                            mainWindow.drawingPanel.changerVue(TypeDeVue.Droite);
                             break;
                         case Constants._STRING_MUR_GAUCHE:
                             // System.out.println("Mur gauche");
-                            mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Gauche);
+                            mainWindow.drawingPanel.changerVue(TypeDeVue.Gauche);
                             break;
                         case Constants._STRING_PANNEAU_SUPERIEUR:
                             // System.out.println("Panneau supérieur");

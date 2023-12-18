@@ -32,6 +32,7 @@ import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEventList
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport;
 import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport.MeshMouseMotionEvent;
+import ca.ulaval.glo2004.domaine.afficheur.TypeDeVue;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper.MurTriangleMeshGroup;
@@ -82,11 +83,11 @@ public class DrawingPanel extends javax.swing.JPanel {
     public static final Color inactiveBtnColor = Color.BLACK;
 
     Object[][] btns = new Object[][] {
-            { "Dessus", Afficheur.TypeDeVue.Dessus.toString(), null },
-            { "Façade", Afficheur.TypeDeVue.Facade.toString(), null },
-            { "Arrière", Afficheur.TypeDeVue.Arriere.toString(), null },
-            { "Droite", Afficheur.TypeDeVue.Droite.toString(), null },
-            { "Gauche", Afficheur.TypeDeVue.Gauche.toString(), null },
+            { "Dessus", TypeDeVue.Dessus.toString(), null },
+            { "Façade", TypeDeVue.Facade.toString(), null },
+            { "Arrière", TypeDeVue.Arriere.toString(), null },
+            { "Droite", TypeDeVue.Droite.toString(), null },
+            { "Gauche", TypeDeVue.Gauche.toString(), null },
     };
     SwitchToggleButton toggleGridSwitch;
     SwitchToggleButton toggleVoisinSwitch;
@@ -211,16 +212,16 @@ public class DrawingPanel extends javax.swing.JPanel {
                     if (evt.getMesh() instanceof MurTriangleMeshGroup) {
                         switch (((MurTriangleMeshGroup) evt.getMesh()).getTypeMur()) {
                             case Facade:
-                                changerVue(Afficheur.TypeDeVue.Facade);
+                                changerVue(TypeDeVue.Facade);
                                 break;
                             case Arriere:
-                                changerVue(Afficheur.TypeDeVue.Arriere);
+                                changerVue(TypeDeVue.Arriere);
                                 break;
                             case Droit:
-                                changerVue(Afficheur.TypeDeVue.Droite);
+                                changerVue(TypeDeVue.Droite);
                                 break;
                             case Gauche:
-                                changerVue(Afficheur.TypeDeVue.Gauche);
+                                changerVue(TypeDeVue.Gauche);
                                 break;
                             default:
                                 break;
@@ -465,7 +466,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                     for (Object[] obj : btns) {
                         if (obj[2] == btn) {
                             btn.setBackground(activeBtnColor);
-                            afficheur.setVueActive(Afficheur.TypeDeVue.valueOf((String) obj[1]));
+                            afficheur.setVueActive(TypeDeVue.valueOf((String) obj[1]));
                             changerVue(afficheur.getVueActive());
                         } else {
                             ((javax.swing.JButton) obj[2]).setBackground(inactiveBtnColor);
@@ -650,14 +651,14 @@ public class DrawingPanel extends javax.swing.JPanel {
         g.drawImage(this.afficheur.getRasterizer().getImage(), 0, 0, null);
     }
 
-    public void changerVue(Afficheur.TypeDeVue vue) {
+    public void changerVue(TypeDeVue vue) {
         afficheur.changerVue(vue);
         afficheur.rechargerAffichage();
         mainWindow.menu.activerVue(afficheur.getVueActive());
         updateToolbarBtns();
     }
 
-    public void weakChangerVue(Afficheur.TypeDeVue vue) {
+    public void weakChangerVue(TypeDeVue vue) {
         afficheur.weakChangerVue(vue); // update seulement les flags
         mainWindow.menu.activerVue(afficheur.getVueActive());
         updateToolbarBtns();

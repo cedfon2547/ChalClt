@@ -207,13 +207,13 @@ public class AfficheurEventSupport {
     }
 
     public static class ViewChangedEvent {
-        private Afficheur.TypeDeVue vue;
+        private TypeDeVue vue;
 
-        public ViewChangedEvent(Afficheur.TypeDeVue vue) {
+        public ViewChangedEvent(TypeDeVue vue) {
             this.vue = vue;
         }
 
-        public Afficheur.TypeDeVue getVue() {
+        public TypeDeVue getVue() {
             return vue;
         }
     }
