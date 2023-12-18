@@ -5,6 +5,7 @@ import java.util.List;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
+import ca.ulaval.glo2004.domaine.Controleur;
 import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.Triangle;
@@ -52,6 +53,7 @@ public class PanelHelper {
 
         }
 
+        // redundant but whatever
         double[] p1 = new double[] { x0, y0, z0 };
         double[] p2 = new double[] { x0, y0, z0 + d / 2 + m };
         double[] p3 = new double[] { x0 + d / 2 - m, y0, z0 + d / 2 + m };
@@ -247,41 +249,50 @@ public class PanelHelper {
     }
 
     public static TriangleMeshGroup buildRallongeVertical(double largeur, double longueur, double depth, double angle,
-            double m, Vector3D position) {
+            double marge, Vector3D position) {
         TriangleMeshGroup rallongeVertGroup = new TriangleMeshGroup();
 
         double x0 = position.x;
         double y0 = position.y;
         double z0 = position.z;
 
-        double a = (depth / 2) / Math.cos(Math.toRadians(angle)); //depth / 2 * Math.cos(Math.toRadians(angle));
-        double b = depth / 2 * Math.tan(Math.toRadians(angle));
+
+        double vertHalf = (depth / 2) * Math.cos(Math.toRadians(angle)); //depth / 2 * Math.cos(Math.toRadians(angle));
+        double halfDrop = (depth / 2) * Math.tan(Math.toRadians(angle));
+        double marginDrop = marge/2 * Math.tan(Math.toRadians(angle));
+
+
+        // see RoofPanel for context
+        double xsHeight = depth/2 * Math.tan(Math.toRadians(angle)); // eXceSsHeight
         
         //System.out.println((a - b) + " " + (b - a));
-        double hauteur = (longueur * Math.tan(Math.toRadians(angle)));
+        double hauteur = (longueur * Math.tan(Math.toRadians(angle))) - vertHalf + (vertHalf-xsHeight); // that last part fixes the seemingly-arbitrary gap
 
-        double[] p1 = new double[] { x0, y0, z0 };
-        double[] p2 = new double[] { x0, y0 + b, z0 + depth / 2 - m / 2 };
-        double[] p3 = new double[] { x0 + largeur, y0 + b, z0 + depth / 2 - m / 2 };
-        double[] p4 = new double[] { x0 + largeur, y0, z0 };
+        // who the fuck starts *with the top??*
 
-        double[] p5 = new double[] { x0 + depth / 2 + m / 2, y0 + b + b, z0 + depth / 2 - m / 2 };
-        double[] p6 = new double[] { x0 + depth / 2 + m / 2, y0 + b + b + b, z0 + depth };
-        double[] p7 = new double[] { x0 + largeur - depth / 2 - m / 2, y0 + b + b + b, z0 + depth };
-        double[] p8 = new double[] { x0 + largeur - depth / 2 - m / 2, y0 + b + b, z0 + depth / 2 - m / 2 };
+        // top surface
+        double[] p1 = new double[] { x0          , y0 + marge/2                        , z0 };
+        double[] p2 = new double[] { x0          , y0 + marge/2 + halfDrop - marginDrop, z0 + depth / 2 - marge / 2 };
+        double[] p3 = new double[] { x0 + largeur, y0 + marge/2 + halfDrop - marginDrop, z0 + depth / 2 - marge / 2 };
+        double[] p4 = new double[] { x0 + largeur, y0 + marge/2                        , z0 };
+        // mid top surface
+        double[] p5 = new double[] { x0 + depth / 2 + marge / 2          , y0 + marge/2 + halfDrop - marginDrop + vertHalf, z0 + depth / 2 - marge / 2 };
+        double[] p6 = new double[] { x0 + depth / 2 + marge / 2          , y0 + marge/2 + halfDrop + vertHalf + halfDrop  , z0 + depth };
+        double[] p7 = new double[] { x0 + largeur - depth / 2 - marge / 2, y0 + marge/2 + halfDrop + vertHalf + halfDrop  , z0 + depth };
+        double[] p8 = new double[] { x0 + largeur - depth / 2 - marge / 2, y0 + marge/2 + halfDrop - marginDrop + vertHalf, z0 + depth / 2 - marge / 2 };
+        // bottom T
+        double[] p9 =  new double[] { x0                                  , y0 + hauteur, z0 };
+        double[] p10 = new double[] { x0                                  , y0 + hauteur, z0 + depth / 2 - marge / 2 };
+        double[] p11 = new double[] { x0 + depth / 2 + marge / 2          , y0 + hauteur, z0 + depth / 2 - marge / 2 };
+        double[] p12 = new double[] { x0 + depth / 2 + marge / 2          , y0 + hauteur, z0 + depth };
+        double[] p13 = new double[] { x0 + largeur - depth / 2 - marge / 2, y0 + hauteur, z0 + depth };
+        double[] p14 = new double[] { x0 + largeur - depth / 2 - marge / 2, y0 + hauteur, z0 + depth / 2 - marge / 2 };
+        double[] p15 = new double[] { x0 + largeur                        , y0 + hauteur, z0 + depth / 2 - marge / 2 };
+        double[] p16 = new double[] { x0 + largeur                        , y0 + hauteur, z0 };
 
-        double[] p9 = new double[] { x0, y0 + hauteur, z0 };
-        double[] p10 = new double[] { x0, y0 + hauteur, z0 + depth / 2 - m / 2 };
-        double[] p11 = new double[] { x0 + depth / 2 + m / 2, y0 + hauteur, z0 + depth / 2 - m / 2 };
-        double[] p12 = new double[] { x0 + depth / 2 + m / 2, y0 + hauteur, z0 + depth };
-        double[] p13 = new double[] { x0 + largeur - depth / 2 - m / 2, y0 + hauteur, z0 + depth };
-        double[] p14 = new double[] { x0 + largeur - depth / 2 - m / 2, y0 + hauteur, z0 + depth / 2 - m / 2 };
-        double[] p15 = new double[] { x0 + largeur, y0 + hauteur, z0 + depth / 2 - m / 2 };
-        double[] p16 = new double[] { x0 + largeur, y0 + hauteur, z0 };
+        List<double[][]> triangles = new ArrayList<>();
 
-        List<double[][]> triangles = new ArrayList<double[][]>();
-
-                triangles.add(new double[][] { p1, p2, p3 });
+        triangles.add(new double[][] { p1, p2, p3 });
         triangles.add(new double[][] { p1, p3, p4 });
 
         triangles.add(new double[][] { p1, p4, p9 });
@@ -314,85 +325,22 @@ public class PanelHelper {
         triangles.add(new double[][] { p15, p16, p3 });
         triangles.add(new double[][] { p4, p3, p16 });
 
-                triangles.add(new double[][] { p9, p10, p16 });
+        triangles.add(new double[][] { p9, p10, p16 });
         triangles.add(new double[][] { p10, p15, p16 });
         triangles.add(new double[][] { p11, p12, p14 });
         triangles.add(new double[][] { p12, p13, p14 });
 
         TriangleMesh mesh = TriangleMesh.fromDoubleList(triangles);
-        mesh = mesh.translate(new Vector3D(0, (b - a) - 1, 0));
+        mesh = mesh.translate(new Vector3D(0,-hauteur,0));
         rallongeVertGroup.addMesh(mesh);
 
         return rallongeVertGroup;
     };
 
     public static TriangleMeshGroup buildPignonGauche(double largeur, double depth, double angle, Vector3D position) {
-        TriangleMeshGroup pignonGroup = new TriangleMeshGroup();
-
-        double height = largeur * Math.tan(Math.toRadians(angle)) - depth / 2 * Math.tan(Math.toRadians(angle));
-
-        largeur = largeur - depth;
-
-        double x0 = position.x;
-        double y0 = position.y;
-        double z0 = position.z;
-
-        double diffHeight = depth / 2 * Math.tan(Math.toRadians(angle));
-
-        double[] p1 = new double[] { x0, y0, z0 };
-        double[] p2 = new double[] { x0, y0 - height, z0 };
-        double[] p3 = new double[] { x0 + largeur, y0, z0 };
-
-        double[] p4 = new double[] { x0, y0, z0 + depth / 2 };
-        double[] p5 = new double[] { x0, y0 - height + diffHeight, z0 + depth / 2 };
-        double[] p6 = new double[] { x0, y0 - height, z0 + depth / 2 };
-
-        double[] p7 = new double[] { x0 + depth / 2, y0, z0 + depth / 2 };
-        double[] p8 = new double[] { x0 + depth / 2, y0 - ((largeur - depth) * Math.tan(Math.toRadians(angle))), z0 + depth / 2 };
-        double[] p9 = new double[] { x0 + depth / 2, y0 - ((largeur - depth / 2) * Math.tan(Math.toRadians(angle))), z0 + depth / 2 };
-
-        double[] p10 = new double[] { x0 + depth / 2, y0, z0 + depth };
-        double[] p11 = new double[] { x0 + depth / 2, y0 - ((largeur - depth) * Math.tan(Math.toRadians(angle))), z0 + depth };
-        
-        double[] p12 = new double[] { x0 + largeur, y0, z0 + depth / 2 };
-        double[] p13 = new double[] { x0 + largeur - depth / 2, y0, z0 + depth / 2};
-        double[] p14 = new double[] { x0 + largeur - depth / 2, y0, z0 + depth };
-        
-        List<double[][]> triangles = new ArrayList<double[][]>();
-        
-        triangles.add(new double[][] { p1, p3, p2 });
-
-        triangles.add(new double[][] { p1, p2, p4 });
-        triangles.add(new double[][] { p2, p6, p4 });
-
-        triangles.add(new double[][] { p4, p5, p7 });
-        triangles.add(new double[][] { p7, p5, p8 });
-
-        triangles.add(new double[][] { p9, p5, p6 });
-        triangles.add(new double[][] { p5, p9, p8 });
-
-        triangles.add(new double[][] { p7, p10, p8 });
-        triangles.add(new double[][] { p10, p11, p8  });
-        
-        triangles.add(new double[][] { p2, p6, p3 });
-        triangles.add(new double[][] { p3, p6, p12 });
-        
-        triangles.add(new double[][] { p1, p12, p3 });
-        triangles.add(new double[][] { p1, p4, p12 });
-
-        triangles.add(new double[][] { p7, p10, p13 });
-        triangles.add(new double[][] { p10, p14, p13 });
-
-        triangles.add(new double[][] { p8, p14, p11 });
-        triangles.add(new double[][] { p8, p13, p14 });
-        triangles.add(new double[][] { p10, p14, p11 });
-
-        triangles.add(new double[][] { p13, p8, p12 });
-        triangles.add(new double[][] { p6, p5, p13 });
-
-        // TODO: A corriger
-        TriangleMesh pignonMesh = TriangleMesh.fromDoubleList(triangles);
-        pignonGroup.addMesh(pignonMesh);
+        // bois please, think of the repetition!
+        TriangleMeshGroup pignonGroup = buildPignonDroite(largeur,depth,angle,position);
+        pignonGroup = pignonGroup.scale(new Vector3D(1,1,-1));
         return pignonGroup;
     }
 
@@ -400,68 +348,83 @@ public class PanelHelper {
     public static TriangleMeshGroup buildPignonDroite(double largeur, double depth, double angle, Vector3D position) {
         TriangleMeshGroup pignonGroup = new TriangleMeshGroup();
 
-        double height = largeur * Math.tan(Math.toRadians(angle)) - depth / 2 * Math.tan(Math.toRadians(angle));
-        
-        largeur = largeur - depth;
+        double marge = Controleur.getInstance().getChalet().margeSupplementaireRetrait;
+
+        double diffHeight = (depth+marge) / 2 * Math.tan(Math.toRadians(angle));
+
+        largeur = largeur - depth - marge; // not the best way to go about it tbh
+
+        double vertHalf = (depth / 2) * Math.cos(Math.toRadians(angle)); //depth / 2 * Math.cos(Math.toRadians(angle));
+        double height = (largeur+depth/2+marge/2) * Math.tan(Math.toRadians(angle)) - diffHeight;
+
+        // see Rallonge for context
+        double halfDrop = (depth / 2) * Math.tan(Math.toRadians(angle));
+        double marginDrop = marge/2 * Math.tan(Math.toRadians(angle));
+
+        double midwayHeight = height - vertHalf - halfDrop - marginDrop;
+
+        // get the components of a diagonal margin
+        double diagToVertMargin = marge * Math.cos(angle);
+        double diagToHorzMargin = marge * Math.sin(angle);
+
 
         double x0 = position.x;
         double y0 = position.y;
         double z0 = position.z;
 
-        double diffHeight = depth / 2 * Math.tan(Math.toRadians(angle));
-
-        double[] p1 = new double[] { x0, y0, z0 };
-        double[] p2 = new double[] { x0, y0 - height, z0 };
-        double[] p3 = new double[] { x0 + largeur, y0, z0 };
-
-        double[] p4 = new double[] { x0, y0, z0 - depth / 2 };
-        double[] p5 = new double[] { x0, y0 - height + diffHeight, z0 - depth / 2 };
-        double[] p6 = new double[] { x0, y0 - height, z0 - depth / 2 };
-
-        double[] p7 = new double[] { x0 + depth / 2, y0, z0 - depth / 2 };
-        double[] p8 = new double[] { x0 + depth / 2, y0 - ((largeur - depth) * Math.tan(Math.toRadians(angle))), z0 - depth / 2 };
-        double[] p9 = new double[] { x0 + depth / 2, y0 - ((largeur - depth / 2) * Math.tan(Math.toRadians(angle))), z0 - depth / 2 };
-
-        double[] p10 = new double[] { x0 + depth / 2, y0, z0 - depth };
-        double[] p11 = new double[] { x0 + depth / 2, y0 - ((largeur - depth) * Math.tan(Math.toRadians(angle))), z0 - depth };
-        
-        double[] p12 = new double[] { x0 + largeur, y0, z0 - depth / 2 };
-        double[] p13 = new double[] { x0 + largeur - depth / 2, y0, z0 - depth / 2};
-        double[] p14 = new double[] { x0 + largeur - depth / 2, y0, z0 - depth };
+        // front panel
+        double[] p1 = new double[] { x0          , y0                            , z0 };
+        double[] p2 = new double[] { x0          , y0 - height + diagToVertMargin, z0 };
+        double[] p3 = new double[] { x0 + largeur, y0                            , z0 };
+        // left panel
+        double[] p4 = new double[] { x0, y0                            , z0 - depth / 2 };
+        double[] p5 = new double[] { x0, y0 - height + diagToVertMargin, z0 - depth / 2 }; // probably also unneeded
+        double[] p6 = new double[] { x0, y0 - height + diagToVertMargin, z0 - depth / 2 };
+        // vertical corner of back left inset
+        double[] p7 = new double[] { x0 + depth / 2, y0                                  , z0 - depth / 2 };
+            //double[] p8 = new double[] { x0 + depth / 2, y0 - ((largeur-depth) * Math.tan(Math.toRadians(angle)))  , z0 - depth / 2 }; // unneeded
+        double[] p9 = new double[] { x0 + depth / 2, y0 - midwayHeight + diagToVertMargin, z0 - depth / 2 };
+        // remainder of left inset panel
+        double[] p10 = new double[] { x0 + depth / 2, y0                                  , z0 - depth };
+        double[] p11 = new double[] { x0 + depth / 2, y0 - midwayHeight + diagToVertMargin, z0 - depth };
+        // remainder of bottom T
+        double[] p12 = new double[] { x0 + largeur            , y0, z0 - depth / 2 };
+        double[] p13 = new double[] { x0 + largeur - depth / 2 - marge/2, y0, z0 - depth / 2};
+        double[] p14 = new double[] { x0 + largeur - depth / 2 - marge/2, y0, z0 - depth };
         
         List<double[][]> triangles = new ArrayList<double[][]>();
-        
-        triangles.add(new double[][] { p1, p3, p2 });
 
+        // front panel
+        triangles.add(new double[][] { p1, p3, p2 });
+        // left panel
         triangles.add(new double[][] { p1, p2, p4 });
         triangles.add(new double[][] { p2, p6, p4 });
-
-        triangles.add(new double[][] { p4, p5, p7 });
-        triangles.add(new double[][] { p7, p5, p8 });
-
-        triangles.add(new double[][] { p9, p5, p6 });
-        triangles.add(new double[][] { p5, p9, p8 });
-
-        triangles.add(new double[][] { p7, p10, p8 });
-        triangles.add(new double[][] { p10, p11, p8  });
-        
+        // back left inset panel
+        triangles.add(new double[][] { p4, p7, p5 });
+        triangles.add(new double[][] { p5, p7, p9 });
+        // left inset panel
+        triangles.add(new double[][] { p7, p10, p9 });
+        triangles.add(new double[][] { p10, p11, p9  });
+        // top panel
         triangles.add(new double[][] { p2, p6, p3 });
         triangles.add(new double[][] { p3, p6, p12 });
-        
+        // bottom T wide part
         triangles.add(new double[][] { p1, p12, p3 });
         triangles.add(new double[][] { p1, p4, p12 });
-
+        // bottom T narrow part
         triangles.add(new double[][] { p7, p10, p13 });
         triangles.add(new double[][] { p10, p14, p13 });
-
-        triangles.add(new double[][] { p8, p14, p11 });
-        triangles.add(new double[][] { p8, p13, p14 });
+        // top inset panel
+        triangles.add(new double[][] { p9, p14, p11 });
+        triangles.add(new double[][] { p9, p13, p14 });
+        // back panel
         triangles.add(new double[][] { p10, p14, p11 });
+        // back top inset panel
+        triangles.add(new double[][] { p12, p9, p13 });
+        triangles.add(new double[][] { p5, p6, p9 });
+        triangles.add(new double[][] { p6, p9, p12});
 
-        triangles.add(new double[][] { p13, p8, p12 });
-        triangles.add(new double[][] { p6, p5, p13 }); 
-
-        // TODO: A corriger
+        // might be good now
 
         TriangleMesh pignonMesh = TriangleMesh.fromDoubleList(triangles);
         pignonGroup.addMesh(pignonMesh);
@@ -469,8 +432,8 @@ public class PanelHelper {
     }
 
     @FunctionalInterface
-    public static interface Fn {
-        public double apply(double x);
+    public interface Fn {
+        double apply(double x);
     }
     
     public static TriangleMeshGroup buildPanneauToit2(double largeur, double longueur, double depth, double angle, double marge, Vector3D position) {
@@ -480,88 +443,102 @@ public class PanelHelper {
         double y0 = position.y;
         double z0 = position.z;
 
+        depth = depth+marge; // I think
+
+        double vertHalf = depth/2 * Math.cos(Math.toRadians(angle));
+        double flatLen = vertHalf/Math.tan(Math.toRadians(angle));
+        vertHalf*=-1; // because y-axis is backwards
 
         double a = (depth / 2) / Math.cos(Math.toRadians(angle)); //depth / 2 * Math.cos(Math.toRadians(angle));
-        double b = depth / 2 * Math.tan(Math.toRadians(angle));
+        double b = depth / 2 * Math.tan(Math.toRadians(angle)); // HOLY FUCK THAT'S WHAT THAT IS?? bro comment your code
         
-        double height = longueur * Math.tan(Math.toRadians(angle)) + a;
+        double height = longueur * Math.tan(Math.toRadians(angle));
+        height*=-1; // y is backwards
 
-        double p1[] = new double[] { x0, y0, z0 };
-        double p2[] = new double[] { x0 + largeur, y0, z0 };
-        double p3[] = new double[] { x0 + largeur, y0 + a, z0 };
-        double p4[] = new double[] { x0, y0 + a, z0 };
+        // it's hard to explain but basically everything breaks if we use verthalf for the front face so that's this calculation here
+        double xsHeight = depth/2 * Math.tan(Math.toRadians(angle)); // eXceSsHeight
+        xsHeight*=-1; // ditto
 
-        double p5[] = new double[] { x0 + depth / 2, y0 + a + b, z0 + depth / 2 };
-        double p6[] = new double[] { x0 + largeur - depth / 2, y0 + a + b, z0 + depth / 2 };
+        // get the components of a diagonal margin
+        double diagToVertMargin = marge * Math.cos(angle);
+        double diagToHorzMargin = marge * Math.sin(angle);
 
-        double p7[] = new double[] { x0 + depth / 2, y0 + a + b + b, z0 + depth / 2 };
-        double p8[] = new double[] { x0 + largeur - depth / 2, y0 + a + b + b, z0 + depth / 2 };
-
-        double p9[] = new double[] { x0 + depth / 2, y0 + height, z0 + longueur - depth };
-        double p10[] = new double[] { x0 + largeur - depth / 2, y0 + height, z0 + longueur - depth };
-
-        double p11[] = new double[] { x0 + depth / 2, y0 + height, z0 + longueur - depth / 2 };
-        double p12[] = new double[] { x0 + largeur - depth / 2, y0 + height, z0 + longueur - depth / 2 };
-
-        double p13[] = new double[] { x0, y0 + height, z0 + longueur - depth / 2 };
-        double p14[] = new double[] { x0 + largeur, y0 + height, z0 + longueur - depth / 2 };
-
-        double p15[] = new double[] { x0, y0 + height, z0 + longueur };
-        double p16[] = new double[] { x0 + largeur, y0 + height, z0 + longueur };
-
-        double p17[] = new double[] { x0, y0 + height - a + b, z0 + longueur };
-        double p18[] = new double[] { x0 + largeur, y0 + height - a + b, z0 + longueur };
+        // "front" panel of the roof
+        double[] p1 = new double[] { x0          , y0 + xsHeight, z0 };
+        double[] p2 = new double[] { x0 + largeur, y0 + xsHeight, z0 };
+        double[] p3 = new double[] { x0 + largeur, y0 + vertHalf, z0 };
+        double[] p4 = new double[] { x0          , y0 + vertHalf, z0 };
+        // T-shape remaining points
+        double[] p5 = new double[]  { x0                      , y0 + xsHeight, z0 + depth / 2 - diagToHorzMargin };
+        double[] p6 = new double[]  { x0 + largeur            , y0 + xsHeight, z0 + depth / 2 - diagToHorzMargin };
+        double[] p7 = new double[]  { x0 + depth / 2          , y0 + xsHeight, z0 + depth / 2 - diagToHorzMargin };
+        double[] p8 = new double[]  { x0 + largeur - depth / 2, y0 + xsHeight, z0 + depth / 2 - diagToHorzMargin };
+        double[] p9 = new double[]  { x0 + depth / 2          , y0 + xsHeight, z0 + flatLen };
+        double[] p10 = new double[] { x0 + largeur - depth / 2, y0 + xsHeight, z0 + flatLen };
+        // "back" inset panel
+        double[] p11 = new double[] { x0 + depth / 2          , y0 + height - vertHalf, z0 + longueur - depth / 2 };
+        double[] p12 = new double[] { x0 + largeur - depth / 2, y0 + height - vertHalf, z0 + longueur - depth / 2 };
+        double[] p13 = new double[] { x0 + depth / 2          , y0 + height           , z0 + longueur - depth / 2 };
+        double[] p14 = new double[] { x0 + largeur - depth / 2, y0 + height           , z0 + longueur - depth / 2 };
+        // "back" panel of the roof
+        double[] p15 = new double[] { x0          , y0 + height - diagToVertMargin/2, z0 + longueur };
+        double[] p16 = new double[] { x0 + largeur, y0 + height - diagToVertMargin/2, z0 + longueur };
+        double[] p17 = new double[] { x0          , y0 + height + vertHalf          , z0 + longueur };
+        double[] p18 = new double[] { x0 + largeur, y0 + height + vertHalf          , z0 + longueur };
         
 
         List<double[][]> triangles = new ArrayList<double[][]>();
 
-        triangles.add(new double[][] { p1, p2, p3 });
-        triangles.add(new double[][] { p1, p3, p4 });
-
-        triangles.add(new double[][] { p5, p4, p6 });
-        triangles.add(new double[][] { p4, p3, p6 });
-
-        triangles.add(new double[][] { p5, p6, p7 });
-        triangles.add(new double[][] { p6, p8, p7 });
-
-        triangles.add(new double[][] { p7, p8, p9 });
-        triangles.add(new double[][] { p8, p10, p9 });
-
-        triangles.add(new double[][] { p9, p10, p11 });
-        triangles.add(new double[][] { p10, p12, p11 });
-
-        triangles.add(new double[][] { p13, p14, p15 });
-        triangles.add(new double[][] { p15, p14, p16 });
-
-        triangles.add(new double[][] { p15, p16, p17 });
-        triangles.add(new double[][] { p16, p18, p17 });
-
-        triangles.add(new double[][] { p1, p2, p17 });
-        triangles.add(new double[][] { p2, p18, p17 });
-
-        triangles.add(new double[][] { p4, p5, p11 });
-        triangles.add(new double[][] { p13, p4, p11 });
-
-        triangles.add(new double[][] { p3, p12, p6 });
-        triangles.add(new double[][] { p3, p14, p12 });
-
-        triangles.add(new double[][] { p1, p17, p15 });
-        triangles.add(new double[][] { p4, p1, p15 });
-        triangles.add(new double[][] { p13, p4, p15 });
-
-        triangles.add(new double[][] { p2, p18, p16 });
-        triangles.add(new double[][] { p2, p16, p14 });
-        triangles.add(new double[][] { p3, p2, p14 });
-
-        triangles.add(new double[][] { p9, p11, p5 });
-        triangles.add(new double[][] { p9, p5, p7 });
-
-        triangles.add(new double[][] { p10, p12, p6 });
-        triangles.add(new double[][] { p10, p6, p8 });
+        // front panel
+        triangles.add(new double[][] { p1, p2, p3 }); //ok
+        triangles.add(new double[][] { p1, p3, p4 }); //ok
+        // back panel
+        triangles.add(new double[][] { p15, p16, p17 }); //ok
+        triangles.add(new double[][] { p16, p18, p17 }); //ok
+        // top panel
+        triangles.add(new double[][] { p3, p4, p17 }); //ok
+        triangles.add(new double[][] { p3, p17, p18 }); //ok
+        // left panel
+        triangles.add(new double[][] { p1, p4, p17 }); // ok
+        triangles.add(new double[][] { p1, p17, p15 }); // ok
+        triangles.add(new double[][] { p1, p15, p5 }); // ok
+        // right panel
+        triangles.add(new double[][] { p2, p3, p18 }); // ok
+        triangles.add(new double[][] { p2, p18, p16 }); // ok
+        triangles.add(new double[][] { p2, p16, p6 }); // ok
+        // bottom panel
+        triangles.add(new double[][] { p9, p10, p11 }); // ok
+        triangles.add(new double[][] { p10, p12, p11 }); // ok
+        // inset back panel
+        triangles.add(new double[][] { p11, p13, p12 }); // ok
+        triangles.add(new double[][] { p12, p13, p14 }); // ok
+        // inset left panel
+        triangles.add(new double[][] { p7, p11, p9 }); // ok
+        triangles.add(new double[][] { p7, p13, p11 }); // ok
+        // inset right panel
+        triangles.add(new double[][] { p8, p12, p10 }); // ok
+        triangles.add(new double[][] { p8, p14, p12 }); // ok
+        // back inset surface
+        triangles.add(new double[][] { p13, p14, p15 }); // ok
+        triangles.add(new double[][] { p14, p16, p15 }); // ok
+        // left inset surface
+        triangles.add(new double[][] { p5, p7, p13 }); // ok
+        triangles.add(new double[][] { p13, p15, p5 }); // ok
+        // right inset surface
+        triangles.add(new double[][] { p6, p8, p14 }); // ok
+        triangles.add(new double[][] { p14, p16, p6 }); // ok
+        // T wide part
+        triangles.add(new double[][] { p1, p2, p6 });
+        triangles.add(new double[][] { p6, p5, p1 });
+        // T narrow part // 7 8 9 10
+        triangles.add(new double[][] { p7, p8, p10 });
+        triangles.add(new double[][] { p10, p9, p7 });
 
 
         TriangleMesh panneauToitMesh = TriangleMesh.fromDoubleList(triangles);
-        panneauToitMesh = panneauToitMesh.translate(new Vector3D(0, -a, 0));
+        panneauToitMesh = panneauToitMesh.translate(new Vector3D(0, -xsHeight, 0));
+        panneauToitMesh = panneauToitMesh.rotateYOnPlace(Math.PI);
+        // panneauToitMesh = panneauToitMesh.scale(new Vector3D(1,-1,1)); // for looking at the underside if needed
         panneauToitGroup.addMesh(panneauToitMesh);
         return panneauToitGroup;
 
