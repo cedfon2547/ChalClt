@@ -42,6 +42,7 @@ import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.domaine.utils.STLTools;
 import java.awt.Color;
 import java.util.Objects;
+import java.util.Vector;
 
 
 public class Afficheur {
@@ -315,7 +316,9 @@ public class Afficheur {
         getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
         getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
 
-        sharedRoofCode(chaletDTO); // I split this out because it was a straight copy-paste
+        // don't show roof when looking from the top
+        if(this.scene.getCamera().getDirection().x != -Math.PI/2)
+            sharedRoofCode(chaletDTO); // I split this out because it was a straight copy-paste
 
         // // Create mesh representing a rule to measure the chalet
         // double ruleWidth = 200;
@@ -407,9 +410,8 @@ public class Afficheur {
         murGaucheGroup.update(chaletDTO);
 
         // a bit jank but i'll keep it I guess
-        if(this.vueActive!=TypeDeVue.Dessus && !this.scene.getCamera().getDirection().equals(TypeDeVue.vueDessus())) {
+        if(this.scene.getCamera().getDirection().x != -Math.PI/2)
             sharedRoofCode(chaletDTO);
-        }
 
         PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = this.controleur
                 .getPreferencesUtilisateur();
@@ -768,6 +770,7 @@ public class Afficheur {
 
             Vector3D initialDragCamPosition = null;
             Vector3D initialDragCamDirection = null;
+            Vector3D previousDragCamDirection = null;
 
             // TriangleMesh lastMouseEnteredMesh = null;
             // TriangleMesh lastDraggedMesh = null;
@@ -947,6 +950,10 @@ public class Afficheur {
 
                         getScene().getCamera().setDirection(direction);
                         updateViewGrid();
+                        if((previousDragCamDirection==null || previousDragCamDirection.x==-Math.PI/2) ^ (direction.x==-Math.PI/2)) // yes that is an XOR operation between the bools
+                            rechargerAffichage(); // to show/hide roof when snapping to vertical or breaking away from it
+
+                        previousDragCamDirection = direction;
                     } else {
                         Vector3D position = initialDragCamPosition.add(new Vector3D(diffX, diffY, 0));
                         getScene().getCamera().setPosition(position);
