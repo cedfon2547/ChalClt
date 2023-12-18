@@ -195,20 +195,15 @@ public class Accessoire extends Retrait {
             this.accessoireId = accessoire.accessoireId;
             this.typeMur = accessoire.typeMur;
             this.valide = accessoire.valide;
-            this.position = accessoire.getPosition().clone();
-            this.dimensions = accessoire.getDimension().clone();
         }
 
         public AccessoireDTO(AccessoireDTO accessoireDTO) {
-            // super();
             super(new Retrait.RetraitDTO(accessoireDTO));
             this.accessoireNom = accessoireDTO.accessoireNom;
             this.accessoireType = accessoireDTO.accessoireType;
             this.accessoireId = accessoireDTO.accessoireId;
             this.typeMur = accessoireDTO.typeMur;
             this.valide = accessoireDTO.valide;
-            this.position = accessoireDTO.position.clone();
-            this.dimensions = accessoireDTO.dimensions.clone();
         }
 
         public AccessoireDTO copy() {
@@ -220,6 +215,7 @@ public class Accessoire extends Retrait {
         
         public void writeObject(ObjectOutputStream oos) {
             try {
+                super.writeObject(oos);
                 oos.writeObject(accessoireNom);
                 String typeString;
                 switch (accessoireType) {
@@ -255,8 +251,6 @@ public class Accessoire extends Retrait {
                 }
                 oos.writeObject(typeMurString);
                 oos.writeObject(valide);
-                oos.writeObject(position);
-                oos.writeObject(dimensions);
             }
             catch (IOException e) {
                 // jsp
@@ -265,6 +259,7 @@ public class Accessoire extends Retrait {
         
         public void readObject(ObjectInputStream ois) {
             try {
+                super.readObject(ois);
                 accessoireNom = (String) ois.readObject();
                 String typeString = (String) ois.readObject();
                 switch (typeString) {
@@ -296,8 +291,6 @@ public class Accessoire extends Retrait {
                         break;
                 }
                 valide = (boolean) ois.readObject();
-                position = (double[]) ois.readObject();
-                dimensions = (double[]) ois.readObject();
             }
             catch (IOException | ClassNotFoundException e) {
                 // jsp

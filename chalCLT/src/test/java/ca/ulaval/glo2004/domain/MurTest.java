@@ -1,6 +1,12 @@
 package ca.ulaval.glo2004.domain;
 
 import ca.ulaval.glo2004.domaine.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -161,4 +167,42 @@ public class MurTest {
         assertEquals(accessoireList, mur.getAccessoires());
     }
 
+    // vérifie si les méthodes writeObject et readObject fonctionnent
+    @Test
+    public void serializableValide() {
+        TypeAccessoire typeAccessoire = TypeAccessoire.Fenetre;
+        Mur mur = setTest();
+        double[] pos = {2.0, 3.0};
+        double[] dim = {1.0,2.0};
+        mur.ajouterAccessoire(typeAccessoire, pos, dim);
+        
+        Mur.MurDTO mDTO1 = mur.toDTO();
+        
+        try {
+            String path = System.getProperty("user.dir") + "\\test.txt";
+            File fichier = new File(path);
+            FileOutputStream fos = new FileOutputStream(fichier);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(mDTO1);
+            oos.flush();
+            oos.close();
+            
+            FileInputStream fis = new FileInputStream(fichier);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Mur.MurDTO mDTO2 = (Mur.MurDTO) ois.readObject();
+
+            ois.close();
+            fichier.delete();
+            
+            assertEquals(mDTO1.type, mDTO2.type);
+            assertEquals(mDTO1.hauteur, mDTO2.hauteur, 0);
+            assertEquals(mDTO1.largeur, mDTO2.largeur, 0);
+            assertEquals(mDTO1.accessoires.size(), mDTO2.accessoires.size(), 0);
+        }
+        
+        catch (IOException | ClassNotFoundException e) {
+            // jsp
+            e.printStackTrace();
+        }
+    }
 }

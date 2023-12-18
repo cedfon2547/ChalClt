@@ -1,6 +1,9 @@
 package ca.ulaval.glo2004.domaine;
 
 import java.io.Serializable;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.IOException;
 
 /*
  * La classe Retrait représente un retrait dans une pièce. Un retrait est une zone où il n'y a pas de mur,
@@ -115,7 +118,7 @@ public class Retrait implements Serializable {
     /**
      * La classe RetraitDTO représente un objet de transfert de données pour un retrait.
      */
-    public static class RetraitDTO {
+    public static class RetraitDTO implements Serializable{
 
         /**
          * Le type de retrait.
@@ -146,6 +149,50 @@ public class Retrait implements Serializable {
             this.type = retraitDTO.type;
             this.dimensions = retraitDTO.dimensions;
             this.position = retraitDTO.position;
+        }
+        
+        public void writeObject(ObjectOutputStream oos) {
+            try {
+                String typeString;
+                switch (type) {
+                    case Rainure:
+                        typeString = "Rainure";
+                        break;
+                    case Accessoire:
+                        typeString = "Accessoire";
+                        break;
+                    default:
+                        typeString = "";
+                        break;
+                }
+                oos.writeObject(typeString);
+                oos.writeObject(position);
+                oos.writeObject(dimensions);
+            }
+            catch (IOException e) {
+                // jsp
+            }
+        }
+        
+        public void readObject(ObjectInputStream ois) {
+            try {
+                String typeString = (String) ois.readObject();
+                switch (typeString) {
+                    case "Rainure":
+                        type = TypeRetrait.Rainure;
+                        break;
+                    case "Accessoire":
+                        type = TypeRetrait.Accessoire;
+                        break;
+                    default:
+                        break;
+                }
+                position = (double[]) ois.readObject();
+                dimensions = (double[]) ois.readObject();
+            }
+            catch (IOException | ClassNotFoundException e) {
+                // jsp
+            }
         }
     }
 
