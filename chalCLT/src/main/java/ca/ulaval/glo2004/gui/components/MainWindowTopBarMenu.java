@@ -1,19 +1,13 @@
 package ca.ulaval.glo2004.gui.components;
 
-import java.io.File;
-
-import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JRadioButton;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
-import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
+import ca.ulaval.glo2004.domaine.afficheur.TypeDeVue;
 import ca.ulaval.glo2004.gui.MainWindow;
 import ca.ulaval.glo2004.gui.NotificationManager.NotificationType;
-import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
-import ca.ulaval.glo2004.gui.components.ExportationDirectoryFileChoose;
 
 public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     private javax.swing.JMenu affichageMenu;
@@ -444,7 +438,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     private void nouveauProjetItemActionPerformed(java.awt.event.ActionEvent evt) {
         // mainWindow.clearAccessoiresSelectionnees();
         mainWindow.showChaletTable();
-        mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Dessus);
+        mainWindow.drawingPanel.changerVue(TypeDeVue.Dessus);
 
         mainWindow.getControleur().creeProjet();
         // mainWindow.arbreDesComposantesChalet.buildTree();
@@ -487,23 +481,23 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     }
 
     private void vueHautItemActionPerformed(java.awt.event.ActionEvent evt) {
-        mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Dessus);
+        mainWindow.drawingPanel.changerVue(TypeDeVue.Dessus);
     }
 
     private void vueFacadeItemActionPerformed(java.awt.event.ActionEvent evt) {
-        mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Facade);
+        mainWindow.drawingPanel.changerVue(TypeDeVue.Facade);
     }
 
     private void vueArriereItemActionPerformed(java.awt.event.ActionEvent evt) {
-        mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Arriere);
+        mainWindow.drawingPanel.changerVue(TypeDeVue.Arriere);
     }
 
     private void vueDroitItemActionPerformed(java.awt.event.ActionEvent evt) {
-        mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Droite);
+        mainWindow.drawingPanel.changerVue(TypeDeVue.Droite);
     }
 
     private void vueGaucheItemActionPerformed(java.awt.event.ActionEvent evt) {
-        mainWindow.drawingPanel.changerVue(Afficheur.TypeDeVue.Gauche);
+        mainWindow.drawingPanel.changerVue(TypeDeVue.Gauche);
     }
 
     private void afficherGrilleItemActionPerformed(java.awt.event.ActionEvent evt) {
@@ -533,7 +527,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         mainWindow.drawingPanel.afficheur.rechargerAffichage();
     }
 
-    public void activerVue(Afficheur.TypeDeVue vue) {
+    public void activerVue(TypeDeVue vue) {
         // System.out.println("activerVue");
         // adhering to DRY, one switch at a time
         vueHautItem.setSelected(false);

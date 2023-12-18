@@ -37,9 +37,9 @@ public class Afficheur {
 
     private Controleur controleur;
 
-    Scene scene;
-    Rasterizer rasterizer;
-    TypeDeVue vueActive = TypeDeVue.Dessus;
+    private Scene scene;
+    private Rasterizer rasterizer;
+    private TypeDeVue vueActive = TypeDeVue.Dessus;
 
     public MurTriangleMeshGroup murFacadeGroup;
     public MurTriangleMeshGroup murArriereGroup;
@@ -191,29 +191,8 @@ public class Afficheur {
                 chaletDTO.longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait,
                 new Vector3D(0, 0, 0));
 
-        pignonGaucheToit = pignonGaucheToit.rotateY(-Math.PI / 2);
-        pignonDroitToit = pignonDroitToit.rotateY(-Math.PI / 2);
-
-        pignonGaucheToit = pignonGaucheToit.translate(pignonGaucheToit.getCenter().multiply(-1));
-        pignonDroitToit = pignonDroitToit.translate(pignonDroitToit.getCenter().multiply(-1));
-
-        pignonGaucheToit = pignonGaucheToit.translate(new Vector3D(chaletDTO.largeur / 2 - chaletDTO.epaisseurMur / 2,
-                -chaletDTO.hauteur - pignonGaucheToit.getHeight() / 2, 0));
-        pignonDroitToit = pignonDroitToit.translate(new Vector3D(-chaletDTO.largeur / 2 + chaletDTO.epaisseurMur / 2,
-                -chaletDTO.hauteur - pignonDroitToit.getHeight() / 2, 0));
-
-        panneauToit = panneauToit.translate(new Vector3D(0, - chaletDTO.hauteur, 0));
-        panneauToit = panneauToit.translate(new Vector3D(-chaletDTO.largeur / 2, 0, -chaletDTO.longueur / 2));
-
-
-        rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(-chaletDTO.largeur / 2,
-                - chaletDTO.hauteur,
-                -chaletDTO.longueur / 2));
-        //rallongeVerticaleToit = rallongeVerticaleToit.translate( // ditto
-        //new Vector3D(0, chaletDTO.epaisseurMur / 2 * Math.cos(Math.toRadians(chaletDTO.angleToit)), 0));
-
         panneauToit.getMesh(0).getMaterial().setColor(Color.LIGHT_GRAY);
-        rallongeVerticaleToit.getMesh(0).getMaterial().setColor(Color.LIGHT_GRAY);
+        rallongeVerticaleToit.getMesh(0).getMaterial().setColor(Color.BLUE);
 
         switch(chaletDTO.sensToit){
             case Nord:
@@ -1046,63 +1025,4 @@ public class Afficheur {
         this.drawingPanel.repaint();
     }
 
-    public enum TypeDeVue {
-        Dessus,
-        Facade,
-        Arriere,
-        Droite,
-        Gauche;
-
-        public static Vector3D vueDessus() {
-            return new Vector3D(-Math.PI / 2, Math.PI, 0);
-        }
-
-        public static Vector3D vueFacade() {
-            return new Vector3D(0, Math.PI, 0);
-        }
-
-        public static Vector3D vueArriere() {
-            return new Vector3D(0, 0, 0);
-        }
-
-        public static Vector3D vueDroite() {
-            return new Vector3D(0, Math.PI / 2, 0);
-        }
-
-        public static Vector3D vueGauche() {
-            return new Vector3D(0, -Math.PI / 2, 0);
-        }
-
-        public static Vector3D getDirection(TypeDeVue vue) {
-            if (vue == TypeDeVue.Dessus) {
-                return vueDessus();
-            } else if (vue == TypeDeVue.Facade) {
-                return vueFacade();
-            } else if (vue == TypeDeVue.Arriere) {
-                return vueArriere();
-            } else if (vue == TypeDeVue.Droite) {
-                return vueDroite();
-            } else if (vue == TypeDeVue.Gauche) {
-                return vueGauche();
-            }
-
-            return null;
-        }
-
-        public static TypeDeVue getTypeFromDirection(Vector3D direction) {
-            if (direction.equals(vueDessus())) {
-                return TypeDeVue.Dessus;
-            } else if (direction.equals(vueFacade())) {
-                return TypeDeVue.Facade;
-            } else if (direction.equals(vueArriere())) {
-                return TypeDeVue.Arriere;
-            } else if (direction.equals(vueDroite())) {
-                return TypeDeVue.Droite;
-            } else if (direction.equals(vueGauche())) {
-                return TypeDeVue.Gauche;
-            }
-
-            return null;
-        }
-    }
 }
