@@ -20,7 +20,12 @@ public class MesureBrutePanel extends JPanel {
     String largeurValueStr;
     String hauteurValueStr;
     String epaisseurValueStr;
-    public MesureBrutePanel(ChaletDTO chaletDTO){
+    
+    JLabel largeur = new JLabel(" largeur :" + largeurValueStr);
+    JLabel hauteur = new JLabel(" hauteur :" + hauteurValueStr);
+    JLabel epaisseur = new JLabel("épaisseur :" + epaisseurValueStr);
+
+    public MesureBrutePanel(ChaletDTO chaletDTO) {
         this.chaletDTO = chaletDTO;
         this.setLayout(new BoxLayout(this, 1));
         this.setAlignmentX(CENTER_ALIGNMENT);
@@ -49,10 +54,6 @@ public class MesureBrutePanel extends JPanel {
         hauteurValueStr = ImperialDimension.format(chaletDTO.hauteur).toString();
         epaisseurValueStr = ImperialDimension.format(chaletDTO.epaisseurMur).toString();
 
-        JLabel largeur = new JLabel("  largeur :" + largeurValueStr);
-        JLabel hauteur = new JLabel(" hauteur :" + hauteurValueStr);
-        JLabel epaisseur = new JLabel("épaisseur :" + epaisseurValueStr);
-
         largeur.setForeground(Color.LIGHT_GRAY);
         hauteur.setForeground(Color.LIGHT_GRAY);
         epaisseur.setForeground(Color.LIGHT_GRAY);
@@ -65,6 +66,7 @@ public class MesureBrutePanel extends JPanel {
         hauteur.setAlignmentX(CENTER_ALIGNMENT);
         epaisseur.setAlignmentX(CENTER_ALIGNMENT);
 
+hauteur.setIconTextGap(6);
         
         this.setBackground(Color.DARK_GRAY);
         this.add(largeur);
@@ -72,20 +74,14 @@ public class MesureBrutePanel extends JPanel {
         this.add(epaisseur);
     }
 
-    // public void setChaletDTO(ChaletDTO chaletDTO){
-    //     this.chaletDTO = chaletDTO;
-    // }
-
-    // public void setLargeur(){
-    //     ImperialDimension temp = new ImperialDimension.format(chaletDTO.largeur);
-    //     this.largeurValueStr = temp.toString();
-    // }
-
-    // public Double getHauteur(){
-    //     return chaletDTO.hauteur;
-    // }
-
-    // public Double getEpaisseur(){
-    //     return chaletDTO.epaisseurMur;
-    // }
+    public void updatePanel(ChaletDTO chaletDTO, double largeur) {
+        this.chaletDTO = chaletDTO;
+    this.largeurValueStr = ImperialDimension.format(largeur).toString();
+        this.hauteurValueStr = ImperialDimension.format(chaletDTO.hauteur).toString();
+        this.epaisseurValueStr = ImperialDimension.format(chaletDTO.epaisseurMur).toString();
+        this.largeur.setText(" largeur : " + largeurValueStr);
+        this.hauteur.setText(" hauteur : " + hauteurValueStr);
+        this.epaisseur.setText("épaisseur : " + epaisseurValueStr);
+        this.repaint();
+    }
 }

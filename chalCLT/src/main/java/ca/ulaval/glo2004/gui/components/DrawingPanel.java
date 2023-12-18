@@ -35,6 +35,7 @@ import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport.MeshMouseMotion
 import ca.ulaval.glo2004.domaine.afficheur.TypeDeVue;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
+import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper.MurTriangleMeshGroup;
 import ca.ulaval.glo2004.gui.MainWindow;
 import ca.ulaval.glo2004.domaine.Accessoire;
@@ -311,6 +312,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             public void meshHovered(AfficheurEventSupport.MeshMouseMotionEvent evt) {
                 // TODO Auto-generated method stub
                 // System.out.println("Mesh Hovered " + e.getMesh().ID);
+// max.updateValeurs(mainWindow.getControleur().getChalet());
                 max.show(evt.getLocationOnScreen());
             }
 
@@ -319,11 +321,25 @@ public class DrawingPanel extends javax.swing.JPanel {
                 // System.out.println("MouseEnterMesh " + evt.getMesh().ID);
                 // repaint();
                 // max.setChaletDTOToPanel(afficheur.getControleur().getChalet());
+if(evt.getMesh() instanceof TriangleMeshGroup){
+                    ChaletDTO tempChaletDTO = mainWindow.getControleur().getChalet();
+                    double tempLargeur = tempChaletDTO.largeur;
+                    double tempEpaisseur = tempChaletDTO.epaisseurMur;
+                    if (evt.getMesh().getWidth() == tempLargeur){
+                        max.updateValeurs(tempChaletDTO, tempLargeur);
+                    }
+                    else if(evt.getMesh().getWidth() == tempEpaisseur){
+                        // max.updateValeurs(getMesh().getDepth());
+                    }
+                    
+                }
+                // max.updateValeurs(mainWindow.getControleur().getChalet(), null);
+                max.show(evt.getLocationOnScreen());
             }
 
             @Override
             public void mouseExitMesh(AfficheurEventSupport.MeshMouseMotionEvent evt) {
-                // System.out.println("MouseExitMesh " + evt.getMesh().ID);
+                System.out.println("MouseExitMesh " + evt.getMesh().ID);
                 // repaint();
                 
                 max.hide();
@@ -699,9 +715,10 @@ public class DrawingPanel extends javax.swing.JPanel {
             dialogContainer.add(mesurePanel);
         }
 
-        // public void setChaletDTOToPanel(ChaletDTO chaletDTO){
-        //     mesurePanel.setChaletDTO(chaletDTO);
-        // }
+        public void updateValeurs(ChaletDTO chaletDTO, double largeur){
+        this.chaletDTO = chaletDTO;
+            mesurePanel.updatePanel(this.chaletDTO, largeur);
+        }
 
         public void show(Point point) {
             dialogContainer.setLocation((int) (point.getX() - mesurePanel.getWidth()),
