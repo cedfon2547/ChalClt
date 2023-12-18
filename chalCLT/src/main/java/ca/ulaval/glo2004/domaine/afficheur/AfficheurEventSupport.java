@@ -151,7 +151,7 @@ public class AfficheurEventSupport {
     public static class MeshMouseEvent extends MouseEvent {
         private TriangleMesh mesh;
         public MeshMouseEvent(MouseEvent e, TriangleMesh mesh) {
-            super(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX(), e.getY(), e.getClickCount(),
+            super(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), e.getX(), e.getY(), e.getClickCount(),
                     e.isPopupTrigger(), e.getButton());
             this.mesh = mesh;
         }

@@ -153,9 +153,9 @@ public class TopButtonPanel extends JPanel {
         URL supprimerImgURL = App.class.getResource(supprimerImgName);
         URL grilleImgURL = App.class.getResource(grilleImgName);
         URL voisinImgURL = App.class.getResource(voisinImgName);
-        URL undoImgURL = App.class.getResource(undoImgName);
-        URL redoImgURL = App.class.getResource(redoImgName);
-        URL saveImgURL = App.class.getResource(saveImgSave);
+        // URL undoImgURL = App.class.getResource(undoImgName);
+        // URL redoImgURL = App.class.getResource(redoImgName);
+        // URL saveImgURL = App.class.getResource(saveImgSave);
         Toolkit tk = Toolkit.getDefaultToolkit();
 
         Image fenetreImg = tk.getImage(fenetreImgURL);
@@ -163,36 +163,36 @@ public class TopButtonPanel extends JPanel {
         Image supprimerImg = tk.getImage(supprimerImgURL);
         Image grilleImg = tk.getImage(grilleImgURL);
         Image voisinImg = tk.getImage(voisinImgURL);
-        Image undoImg = tk.getImage(undoImgURL);
-        Image redoImg = tk.getImage(redoImgURL);
-        Image saveImg = tk.getImage(saveImgURL);
+        // Image undoImg = tk.getImage(undoImgURL);
+        // Image redoImg = tk.getImage(redoImgURL);
+        // Image saveImg = tk.getImage(saveImgURL);
 
         ImageIcon iconFenetre = new ImageIcon(fenetreImg);
         ImageIcon iconPorte = new ImageIcon(porteImg);
         ImageIcon iconSupprimer = new ImageIcon(supprimerImg);
         ImageIcon iconGrille = new ImageIcon(grilleImg);
         ImageIcon iconVoisins = new ImageIcon(voisinImg);
-        ImageIcon iconUndo = new ImageIcon(undoImg);
-        ImageIcon iconRedo = new ImageIcon(redoImg);
-        ImageIcon iconSave = new ImageIcon(saveImg);
+        // ImageIcon iconUndo = new ImageIcon(undoImg);
+        // ImageIcon iconRedo = new ImageIcon(redoImg);
+        // ImageIcon iconSave = new ImageIcon(saveImg);
 
         iconFenetre.setImage(iconFenetre.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
         iconPorte.setImage(iconPorte.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
         iconSupprimer.setImage(iconSupprimer.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
         iconGrille.setImage(iconGrille.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
         iconVoisins.setImage(iconVoisins.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
-        iconUndo.setImage(iconUndo.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
-        iconRedo.setImage(iconRedo.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
-        iconSave.setImage(iconSave.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
+        // iconUndo.setImage(iconUndo.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
+        // iconRedo.setImage(iconRedo.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
+        // iconSave.setImage(iconSave.getImage().getScaledInstance(26, 26, Image.SCALE_DEFAULT));
 
         creerFenetreBtn.setIcon(iconFenetre);
         creerPorteBtn.setIcon(iconPorte);
         supprimerAccessoireBtn.setIcon(iconSupprimer);
         grilleToggleBtn.setIcon(iconGrille);
         voisinToggleBtn.setIcon(iconVoisins);
-        undoToggleBtn.setIcon(iconUndo);
-        redoToggleBtn.setIcon(iconRedo);
-        saveToggleBtn.setIcon(iconSave);
+        // undoToggleBtn.setIcon(iconUndo);
+        // redoToggleBtn.setIcon(iconRedo);
+        // saveToggleBtn.setIcon(iconSave);
     }
 
     private ActionListener creerFenetreActionListener() {

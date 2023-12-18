@@ -1,16 +1,26 @@
 package ca.ulaval.glo2004.domaine.afficheur;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
+import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import ca.ulaval.glo2004.App;
@@ -21,16 +31,18 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.Rasterizer;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.shapes.RectCuboid;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper.MurTriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper.OutputType;
+import ca.ulaval.glo2004.domaine.utils.PanelHelper.RectPlane2D;
+import ca.ulaval.glo2004.domaine.utils.ImperialDimension;
 import ca.ulaval.glo2004.domaine.utils.ObjectImporter;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.domaine.utils.STLTools;
 import java.awt.Color;
 import java.util.Objects;
+
 
 public class Afficheur {
     private AfficheurEventSupport eventSupport = new AfficheurEventSupport();
@@ -229,10 +241,16 @@ public class Afficheur {
         getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
         getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
 
-        TriangleMeshGroup pignonGaucheToit = PanelHelper.buildPignonGauche(chaletDTO.longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, new Vector3D(0, 0, 0));
-        TriangleMeshGroup pignonDroitToit = PanelHelper.buildPignonDroite(chaletDTO.longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, new Vector3D(0, 0, 0));
-        TriangleMeshGroup panneauToit = PanelHelper.buildPanneauToit2(chaletDTO.largeur, chaletDTO.longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait, new Vector3D(0, 0, 0));
-        TriangleMeshGroup rallongeVerticaleToit = PanelHelper.buildRallongeVertical(chaletDTO.largeur, chaletDTO.longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait, new Vector3D(0, 0, 0));
+        TriangleMeshGroup pignonGaucheToit = PanelHelper.buildPignonGauche(chaletDTO.longueur, chaletDTO.epaisseurMur,
+                chaletDTO.angleToit, new Vector3D(0, 0, 0));
+        TriangleMeshGroup pignonDroitToit = PanelHelper.buildPignonDroite(chaletDTO.longueur, chaletDTO.epaisseurMur,
+                chaletDTO.angleToit, new Vector3D(0, 0, 0));
+        TriangleMeshGroup panneauToit = PanelHelper.buildPanneauToit2(chaletDTO.largeur, chaletDTO.longueur,
+                chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait,
+                new Vector3D(0, 0, 0));
+        TriangleMeshGroup rallongeVerticaleToit = PanelHelper.buildRallongeVertical(chaletDTO.largeur,
+                chaletDTO.longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait,
+                new Vector3D(0, 0, 0));
 
         pignonGaucheToit = pignonGaucheToit.rotateY(-Math.PI / 2);
         pignonDroitToit = pignonDroitToit.rotateY(-Math.PI / 2);
@@ -240,15 +258,20 @@ public class Afficheur {
         pignonGaucheToit = pignonGaucheToit.translate(pignonGaucheToit.getCenter().multiply(-1));
         pignonDroitToit = pignonDroitToit.translate(pignonDroitToit.getCenter().multiply(-1));
 
-        pignonGaucheToit = pignonGaucheToit.translate(new Vector3D(chaletDTO.largeur / 2 - chaletDTO.epaisseurMur / 2, -chaletDTO.hauteur - pignonGaucheToit.getHeight() / 2, 0));
-        pignonDroitToit = pignonDroitToit.translate(new Vector3D(-chaletDTO.largeur / 2 + chaletDTO.epaisseurMur / 2, -chaletDTO.hauteur - pignonDroitToit.getHeight() / 2, 0));
+        pignonGaucheToit = pignonGaucheToit.translate(new Vector3D(chaletDTO.largeur / 2 - chaletDTO.epaisseurMur / 2,
+                -chaletDTO.hauteur - pignonGaucheToit.getHeight() / 2, 0));
+        pignonDroitToit = pignonDroitToit.translate(new Vector3D(-chaletDTO.largeur / 2 + chaletDTO.epaisseurMur / 2,
+                -chaletDTO.hauteur - pignonDroitToit.getHeight() / 2, 0));
 
-
-        panneauToit = panneauToit.translate(new Vector3D(0, -chaletDTO.longueur * Math.tan(Math.toRadians(chaletDTO.angleToit)) - chaletDTO.hauteur, 0));
+        panneauToit = panneauToit.translate(new Vector3D(0,
+                -chaletDTO.longueur * Math.tan(Math.toRadians(chaletDTO.angleToit)) - chaletDTO.hauteur, 0));
         panneauToit = panneauToit.translate(new Vector3D(-chaletDTO.largeur / 2, 0, -chaletDTO.longueur / 2));
-        
-        rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(-chaletDTO.largeur / 2, -chaletDTO.longueur * Math.tan(Math.toRadians(chaletDTO.angleToit)) - chaletDTO.hauteur, -chaletDTO.longueur / 2));
-        rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(0, chaletDTO.epaisseurMur/2 * Math.cos(Math.toRadians(chaletDTO.angleToit)), 0));
+
+        rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(-chaletDTO.largeur / 2,
+                -chaletDTO.longueur * Math.tan(Math.toRadians(chaletDTO.angleToit)) - chaletDTO.hauteur,
+                -chaletDTO.longueur / 2));
+        rallongeVerticaleToit = rallongeVerticaleToit.translate(
+                new Vector3D(0, chaletDTO.epaisseurMur / 2 * Math.cos(Math.toRadians(chaletDTO.angleToit)), 0));
 
         panneauToit.getMesh(0).getMaterial().setColor(Color.LIGHT_GRAY);
         rallongeVerticaleToit.getMesh(0).getMaterial().setColor(Color.LIGHT_GRAY);
@@ -342,11 +365,17 @@ public class Afficheur {
         murArriereGroup.update(chaletDTO);
         murDroitGroup.update(chaletDTO);
         murGaucheGroup.update(chaletDTO);
-        
-        TriangleMeshGroup pignonGaucheToit = PanelHelper.buildPignonGauche(chaletDTO.largeur, chaletDTO.epaisseurMur, chaletDTO.angleToit, new Vector3D(0, 0, 0));
-        TriangleMeshGroup pignonDroitToit = PanelHelper.buildPignonDroite(chaletDTO.largeur, chaletDTO.epaisseurMur, chaletDTO.angleToit, new Vector3D(0, 0, 0));
-        TriangleMeshGroup panneauToit = PanelHelper.buildPanneauToit2(chaletDTO.largeur, chaletDTO.longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait, new Vector3D(0, 0, 0));
-        TriangleMeshGroup rallongeVerticaleToit = PanelHelper.buildRallongeVertical(chaletDTO.largeur, chaletDTO.longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait, new Vector3D(0, 0, 0));
+
+        TriangleMeshGroup pignonGaucheToit = PanelHelper.buildPignonGauche(chaletDTO.longueur, chaletDTO.epaisseurMur,
+                chaletDTO.angleToit, new Vector3D(0, 0, 0));
+        TriangleMeshGroup pignonDroitToit = PanelHelper.buildPignonDroite(chaletDTO.longueur, chaletDTO.epaisseurMur,
+                chaletDTO.angleToit, new Vector3D(0, 0, 0));
+        TriangleMeshGroup panneauToit = PanelHelper.buildPanneauToit2(chaletDTO.largeur, chaletDTO.longueur,
+                chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait,
+                new Vector3D(0, 0, 0));
+        TriangleMeshGroup rallongeVerticaleToit = PanelHelper.buildRallongeVertical(chaletDTO.largeur,
+                chaletDTO.longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait,
+                new Vector3D(0, 0, 0));
 
         pignonGaucheToit = pignonGaucheToit.rotateY(-Math.PI / 2);
         pignonDroitToit = pignonDroitToit.rotateY(-Math.PI / 2);
@@ -354,14 +383,20 @@ public class Afficheur {
         pignonGaucheToit = pignonGaucheToit.translate(pignonGaucheToit.getCenter().multiply(-1));
         pignonDroitToit = pignonDroitToit.translate(pignonDroitToit.getCenter().multiply(-1));
 
-        pignonGaucheToit = pignonGaucheToit.translate(new Vector3D(chaletDTO.largeur / 2 - chaletDTO.epaisseurMur / 2, -chaletDTO.hauteur - pignonGaucheToit.getHeight() / 2, 0));
-        pignonDroitToit = pignonDroitToit.translate(new Vector3D(-chaletDTO.largeur / 2 + chaletDTO.epaisseurMur / 2, -chaletDTO.hauteur - pignonDroitToit.getHeight() / 2, 0));
+        pignonGaucheToit = pignonGaucheToit.translate(new Vector3D(chaletDTO.largeur / 2 - chaletDTO.epaisseurMur / 2,
+                -chaletDTO.hauteur - pignonGaucheToit.getHeight() / 2, 0));
+        pignonDroitToit = pignonDroitToit.translate(new Vector3D(-chaletDTO.largeur / 2 + chaletDTO.epaisseurMur / 2,
+                -chaletDTO.hauteur - pignonDroitToit.getHeight() / 2, 0));
 
-        panneauToit = panneauToit.translate(new Vector3D(0, -chaletDTO.longueur * Math.tan(Math.toRadians(chaletDTO.angleToit)) - chaletDTO.hauteur, 0));
+        panneauToit = panneauToit.translate(new Vector3D(0,
+                -chaletDTO.longueur * Math.tan(Math.toRadians(chaletDTO.angleToit)) - chaletDTO.hauteur, 0));
         panneauToit = panneauToit.translate(new Vector3D(-chaletDTO.largeur / 2, 0, -chaletDTO.longueur / 2));
-        
-        rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(-chaletDTO.largeur / 2, -chaletDTO.longueur * Math.tan(Math.toRadians(chaletDTO.angleToit)) - chaletDTO.hauteur, -chaletDTO.longueur / 2));
-        rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(0, chaletDTO.epaisseurMur/2 * Math.cos(Math.toRadians(chaletDTO.angleToit)), 0));
+
+        rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(-chaletDTO.largeur / 2,
+                -chaletDTO.longueur * Math.tan(Math.toRadians(chaletDTO.angleToit)) - chaletDTO.hauteur,
+                -chaletDTO.longueur / 2));
+        rallongeVerticaleToit = rallongeVerticaleToit.translate(
+                new Vector3D(0, chaletDTO.epaisseurMur / 2 * Math.cos(Math.toRadians(chaletDTO.angleToit)), 0));
 
         panneauToit.getMesh(0).getMaterial().setColor(Color.LIGHT_GRAY);
         rallongeVerticaleToit.getMesh(0).getMaterial().setColor(Color.LIGHT_GRAY);
@@ -375,8 +410,9 @@ public class Afficheur {
         getScene().addMesh(rallongeVerticaleToit);
         getScene().addMesh(pignonGaucheToit);
         getScene().addMesh(pignonDroitToit);
-        
-        PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = this.controleur.getPreferencesUtilisateur();
+
+        PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = this.controleur
+                .getPreferencesUtilisateur();
         getScene().getConfiguration().setGridStep(preferencesUtilisateurDTO.gridSpacing);
         toggleShowGrid(preferencesUtilisateurDTO.afficherGrille);
 
@@ -631,53 +667,54 @@ public class Afficheur {
 
                 // if (clickedMesh != null && evt.getClickCount() == 2) {
 
-                //     // pcs.firePropertyChange(AfficheurEvent.MeshDoubleClicked.toString(), null,
-                //     // clickedMesh);
+                // // pcs.firePropertyChange(AfficheurEvent.MeshDoubleClicked.toString(), null,
+                // // clickedMesh);
 
-                //     if (clickedMesh instanceof PanelHelper.MurTriangleMeshGroup) {
-                //         // System.out.println("Double clicked on a wall");
-                //         switch (((PanelHelper.MurTriangleMeshGroup) clickedMesh).getTypeMur()) {
-                //             case Facade:
-                //                 changerVue(Afficheur.TypeDeVue.Facade);
-                //                 break;
-                //             case Arriere:
-                //                 changerVue(Afficheur.TypeDeVue.Arriere);
-                //                 break;
-                //             case Droit:
-                //                 changerVue(Afficheur.TypeDeVue.Droite);
-                //                 break;
-                //             case Gauche:
-                //                 changerVue(Afficheur.TypeDeVue.Gauche);
-                //                 break;
-                //             default:
-                //                 // nop, fall through
-                //         }
-                //     }
+                // if (clickedMesh instanceof PanelHelper.MurTriangleMeshGroup) {
+                // // System.out.println("Double clicked on a wall");
+                // switch (((PanelHelper.MurTriangleMeshGroup) clickedMesh).getTypeMur()) {
+                // case Facade:
+                // changerVue(Afficheur.TypeDeVue.Facade);
+                // break;
+                // case Arriere:
+                // changerVue(Afficheur.TypeDeVue.Arriere);
+                // break;
+                // case Droit:
+                // changerVue(Afficheur.TypeDeVue.Droite);
+                // break;
+                // case Gauche:
+                // changerVue(Afficheur.TypeDeVue.Gauche);
+                // break;
+                // default:
+                // // nop, fall through
+                // }
+                // }
 
-                //     // if (clickedMesh.getSelectable()) {
-                //     // clickedMesh.setSelected(true);
-                //     // }
+                // // if (clickedMesh.getSelectable()) {
+                // // clickedMesh.setSelected(true);
+                // // }
 
-                //     updateViewGrid();
-                //     // drawingPanel.repaint();
-                //     // eventSupport.dispatchMeshClicked(new
-                //     // AfficheurEventSupport.MeshMouseEvent(evt, clickedMesh));
-                //     eventSupport.dispatchViewChanged(new AfficheurEventSupport.ViewChangedEvent(getVueActive()));
-                //     return;
+                // updateViewGrid();
+                // // drawingPanel.repaint();
+                // // eventSupport.dispatchMeshClicked(new
+                // // AfficheurEventSupport.MeshMouseEvent(evt, clickedMesh));
+                // eventSupport.dispatchViewChanged(new
+                // AfficheurEventSupport.ViewChangedEvent(getVueActive()));
+                // return;
                 // } else if (clickedMesh != null && clickedMesh.getSelectable()) {
-                //     // pcs.firePropertyChange(AfficheurEvent.SelectionChanged.toString(), null,
-                //     // clickedMesh);
-                //     // pcs.firePropertyChange(AfficheurEvent.MeshClicked.toString(), null,
-                //     // clickedMesh);
-                //     // if (!evt.isControlDown()) {
-                //     // deselectAllMeshed();
-                //     // }
+                // // pcs.firePropertyChange(AfficheurEvent.SelectionChanged.toString(), null,
+                // // clickedMesh);
+                // // pcs.firePropertyChange(AfficheurEvent.MeshClicked.toString(), null,
+                // // clickedMesh);
+                // // if (!evt.isControlDown()) {
+                // // deselectAllMeshed();
+                // // }
 
-                //     // clickedMesh.setSelected(!clickedMesh.getSelected());
-                //     // eventSupport.dispatchMeshClicked(new
-                //     // AfficheurEventSupport.MeshMouseEvent(evt, clickedMesh));
-                //     // eventSupport.dispatchSelectionChanged(new
-                //     // AfficheurEventSupport.MeshSelectionEvent(getSelection()));
+                // // clickedMesh.setSelected(!clickedMesh.getSelected());
+                // // eventSupport.dispatchMeshClicked(new
+                // // AfficheurEventSupport.MeshMouseEvent(evt, clickedMesh));
+                // // eventSupport.dispatchSelectionChanged(new
+                // // AfficheurEventSupport.MeshSelectionEvent(getSelection()));
                 // }
 
                 // drawingPanel.repaint();
@@ -689,19 +726,20 @@ public class Afficheur {
                 // drawingPanel.grabFocus();
                 // TriangleMesh clickedMesh = getRasterizer().getMeshFromPoint(evt.getPoint());
                 // if (clickedMesh != null) {
-                //     // System.out.println("Mouse pressed on mesh: " + clickedMesh.ID);
+                // // System.out.println("Mouse pressed on mesh: " + clickedMesh.ID);
 
-                //     if (evt.isControlDown()) {
-                //         clickedMesh.setSelected(!clickedMesh.getSelected());
-                //     } else {
-                //         deselectAllMeshes();
-                //         clickedMesh.setSelected(true);
-                //     }
+                // if (evt.isControlDown()) {
+                // clickedMesh.setSelected(!clickedMesh.getSelected());
                 // } else {
-                //     deselectAllMeshes();
+                // deselectAllMeshes();
+                // clickedMesh.setSelected(true);
+                // }
+                // } else {
+                // deselectAllMeshes();
                 // }
 
-                // eventSupport.dispatchSelectionChanged(new AfficheurEventSupport.MeshSelectionEvent(getSelection()));
+                // eventSupport.dispatchSelectionChanged(new
+                // AfficheurEventSupport.MeshSelectionEvent(getSelection()));
                 // drawingPanel.repaint();
             }
 
@@ -947,7 +985,7 @@ public class Afficheur {
                 if (focusedMesh != null && mesh.ID.equals(focusedMesh.ID)) {
                     getEventSupport().dispatchMeshHovered(new AfficheurEventSupport.MeshMouseMotionEvent(evt,
                             focusedMesh, focusedMesh.getPosition()));
-                    
+
                     return;
                 }
             }

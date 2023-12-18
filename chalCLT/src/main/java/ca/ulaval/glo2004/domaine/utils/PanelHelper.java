@@ -14,6 +14,7 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.shapes.RectCuboid;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.color.ColorSpace;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
@@ -255,7 +256,7 @@ public class PanelHelper {
 
         double a = (depth / 2) / Math.cos(Math.toRadians(angle)); //depth / 2 * Math.cos(Math.toRadians(angle));
         double b = depth / 2 * Math.tan(Math.toRadians(angle));
-
+        
         System.out.println((a - b) + " " + (b - a));
         double hauteur = (longueur * Math.tan(Math.toRadians(angle)));
 
@@ -280,7 +281,7 @@ public class PanelHelper {
 
         List<double[][]> triangles = new ArrayList<double[][]>();
 
-        triangles.add(new double[][] { p1, p2, p3 });
+                triangles.add(new double[][] { p1, p2, p3 });
         triangles.add(new double[][] { p1, p3, p4 });
 
         triangles.add(new double[][] { p1, p4, p9 });
@@ -313,7 +314,7 @@ public class PanelHelper {
         triangles.add(new double[][] { p15, p16, p3 });
         triangles.add(new double[][] { p4, p3, p16 });
 
-        triangles.add(new double[][] { p9, p10, p16 });
+                triangles.add(new double[][] { p9, p10, p16 });
         triangles.add(new double[][] { p10, p15, p16 });
         triangles.add(new double[][] { p11, p12, p14 });
         triangles.add(new double[][] { p12, p13, p14 });
@@ -329,7 +330,7 @@ public class PanelHelper {
         TriangleMeshGroup pignonGroup = new TriangleMeshGroup();
 
         double height = largeur * Math.tan(Math.toRadians(angle)) - depth / 2 * Math.tan(Math.toRadians(angle));
-        
+
         largeur = largeur - depth;
 
         double x0 = position.x;
@@ -1335,8 +1336,8 @@ public class PanelHelper {
         private void setMaterial() {
             switch (this.typeMur) {
                 case Facade:
-                    this.meshBrut.getMaterial().setColor(new Color(255, 0, 0));
-                    this.meshFini.getMaterial().setColor(new Color(255, 0, 0));
+                    this.meshBrut.getMaterial().setColor(new Color(227, 109, 184));
+                    this.meshFini.getMaterial().setColor(new Color(227, 109, 184));
 
                     for (TriangleMesh mesh : this.meshRetraits.getMeshes()) {
                         mesh.getMaterial().setColor(
@@ -1345,8 +1346,8 @@ public class PanelHelper {
 
                     break;
                 case Arriere:
-                    this.meshBrut.getMaterial().setColor(new Color(0, 0, 255));
-                    this.meshFini.getMaterial().setColor(new Color(0, 0, 255));
+                    this.meshBrut.getMaterial().setColor(Color.CYAN);
+                    this.meshFini.getMaterial().setColor(Color.CYAN);
 
                     for (TriangleMesh mesh : this.meshRetraits.getMeshes()) {
                         mesh.getMaterial().setColor(
@@ -1365,8 +1366,8 @@ public class PanelHelper {
 
                     break;
                 case Gauche:
-                    this.meshBrut.getMaterial().setColor(new Color(255, 255, 0));
-                    this.meshFini.getMaterial().setColor(new Color(255, 255, 0));
+                    this.meshBrut.getMaterial().setColor(new Color(247, 125, 64));
+                    this.meshFini.getMaterial().setColor(new Color(247, 125, 64));
 
                     for (TriangleMesh mesh : this.meshRetraits.getMeshes()) {
                         mesh.getMaterial().setColor(
