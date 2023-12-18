@@ -211,6 +211,11 @@ public class Afficheur {
                 pignonGaucheToit = pignonGaucheToit.rotate(0, -Math.PI / 2, 0);
                 pignonGaucheToit = pignonGaucheToit.translate(
                         new Vector3D(largeur / 2, -chaletDTO.hauteur, -longueur / 2 + chaletDTO.epaisseurMur / 2));
+                
+                panneauToit.setDraggable(false);
+                rallongeVerticaleToit.setDraggable(false);
+                pignonDroitToit.setDraggable(false);
+                pignonGaucheToit.setDraggable(false);
 
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
@@ -244,6 +249,11 @@ public class Afficheur {
                 rallongeVerticaleToit = rallongeVerticaleToit.rotate(0, Math.PI, 0);
                 pignonDroitToit = pignonDroitToit.rotate(0, Math.PI, 0);
                 pignonGaucheToit = pignonGaucheToit.rotate(0, Math.PI, 0);
+                
+                panneauToit.setDraggable(false);
+                rallongeVerticaleToit.setDraggable(false);
+                pignonDroitToit.setDraggable(false);
+                pignonGaucheToit.setDraggable(false);
 
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
@@ -277,6 +287,11 @@ public class Afficheur {
                 rallongeVerticaleToit = rallongeVerticaleToit.rotate(0, Math.PI / 2, 0);
                 pignonDroitToit = pignonDroitToit.rotate(0, Math.PI / 2, 0);
                 pignonGaucheToit = pignonGaucheToit.rotate(0, Math.PI / 2, 0);
+                
+                panneauToit.setDraggable(false);
+                rallongeVerticaleToit.setDraggable(false);
+                pignonDroitToit.setDraggable(false);
+                pignonGaucheToit.setDraggable(false);
 
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
@@ -310,6 +325,11 @@ public class Afficheur {
                 rallongeVerticaleToit = rallongeVerticaleToit.rotate(0, -Math.PI / 2, 0);
                 pignonDroitToit = pignonDroitToit.rotate(0, 3*Math.PI / 2, 0);
                 pignonGaucheToit = pignonGaucheToit.rotate(0, 3*Math.PI / 2, 0);
+                
+                panneauToit.setDraggable(false);
+                rallongeVerticaleToit.setDraggable(false);
+                pignonDroitToit.setDraggable(false);
+                pignonGaucheToit.setDraggable(false);
 
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
