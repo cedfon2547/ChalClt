@@ -76,7 +76,7 @@ public class Afficheur {
 
     private void initDrawingPanel() {
         this.drawingPanel.addMouseWheelListener(this.mouseWheelListener());
-        this.drawingPanel.addMouseListener(this.mouseListener());
+        //this.drawingPanel.addMouseListener(this.mouseListener());
         this.drawingPanel.addMouseMotionListener(this.mouseMotionListener());
 
         this.drawingPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -191,7 +191,7 @@ public class Afficheur {
         drawingPanel.repaint();
     }
 
-    public void sharedRoofCode(Chalet.ChaletDTO chaletDTO){
+    private void sharedRoofCode(Chalet.ChaletDTO chaletDTO){
         TriangleMeshGroup pignonGaucheToit = PanelHelper.buildPignonGauche(chaletDTO.longueur, chaletDTO.epaisseurMur,
                 chaletDTO.angleToit, new Vector3D(0, 0, 0));
         TriangleMeshGroup pignonDroitToit = PanelHelper.buildPignonDroite(chaletDTO.longueur, chaletDTO.epaisseurMur,
@@ -226,6 +226,30 @@ public class Afficheur {
 
         panneauToit.getMesh(0).getMaterial().setColor(Color.LIGHT_GRAY);
         rallongeVerticaleToit.getMesh(0).getMaterial().setColor(Color.LIGHT_GRAY);
+
+        switch(chaletDTO.sensToit){
+            case Nord:
+                panneauToit = panneauToit.rotate(0,Math.PI,0,new Vector3D(0,1,0));
+                pignonGaucheToit = pignonGaucheToit.rotate(0,Math.PI,0,new Vector3D(0,1,0));
+                pignonDroitToit = pignonDroitToit.rotate(0,Math.PI,0,new Vector3D(0,1,0));
+                rallongeVerticaleToit = rallongeVerticaleToit.rotate(0,Math.PI,0,new Vector3D(0,1,0));
+                break;
+            case Est:
+                panneauToit = panneauToit.rotate(0,Math.PI/2,0,new Vector3D(0,1,0));
+                pignonGaucheToit = pignonGaucheToit.rotate(0,Math.PI/2,0,new Vector3D(0,1,0));
+                pignonDroitToit = pignonDroitToit.rotate(0,Math.PI/2,0,new Vector3D(0,1,0));
+                rallongeVerticaleToit = rallongeVerticaleToit.rotate(0,Math.PI/2,0,new Vector3D(0,1,0));
+                break;
+            case Ouest:
+                panneauToit = panneauToit.rotate(0,-Math.PI/2,0,new Vector3D(0,1,0));
+                pignonGaucheToit = pignonGaucheToit.rotate(0,-Math.PI/2,0,new Vector3D(0,1,0));
+                pignonDroitToit = pignonDroitToit.rotate(0,-Math.PI/2,0,new Vector3D(0,1,0));
+                rallongeVerticaleToit = rallongeVerticaleToit.rotate(0,-Math.PI/2,0,new Vector3D(0,1,0));
+                break;
+            case Sud:
+            default:
+                // nop
+        }
 
         panneauToit.setDraggable(false);
         rallongeVerticaleToit.setDraggable(false);
@@ -291,7 +315,7 @@ public class Afficheur {
         getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
         getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
 
-        sharedRoofCode(chaletDTO);
+        sharedRoofCode(chaletDTO); // I split this out because it was a straight copy-paste
 
         // // Create mesh representing a rule to measure the chalet
         // double ruleWidth = 200;
@@ -616,7 +640,8 @@ public class Afficheur {
         };
     }
 
-    // this does absolutely nothing btw
+    // purely archive for code
+    /*
     private MouseListener mouseListener() {
         return new MouseListener() {
             @Override
@@ -724,7 +749,7 @@ public class Afficheur {
             }
         };
     }
-
+    */
     private MouseMotionListener mouseMotionListener() {
         return new MouseMotionListener() {
             boolean initialized = false;

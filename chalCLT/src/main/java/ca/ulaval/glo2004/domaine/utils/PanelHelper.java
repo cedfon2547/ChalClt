@@ -268,7 +268,7 @@ public class PanelHelper {
         //System.out.println((a - b) + " " + (b - a));
         double hauteur = (longueur * Math.tan(Math.toRadians(angle))) - vertHalf + (vertHalf-xsHeight); // that last part fixes the seemingly-arbitrary gap
 
-        // who the fuck starts *with the top??*
+        // who the fuck starts *at the top??* // whatever, let this be a context clue for those investigating
 
         // top surface
         double[] p1 = new double[] { x0          , y0 + marge/2                        , z0 };
