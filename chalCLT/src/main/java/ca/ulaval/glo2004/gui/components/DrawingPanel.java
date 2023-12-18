@@ -285,7 +285,6 @@ public class DrawingPanel extends javax.swing.JPanel {
 
             @Override
             public void meshDragStart(MeshMouseMotionEvent evt) {
-                // TODO Auto-generated method stub
                 // System.out.println("MeshDragStart " + evt.getMesh().ID);
                 TriangleMesh clickedMesh = evt.getMesh();
                 Accessoire.AccessoireDTO accDto = mainWindow.getControleur()
@@ -647,13 +646,13 @@ public class DrawingPanel extends javax.swing.JPanel {
     @Override
     public void paintComponent(java.awt.Graphics g) {
         // super.paintComponent(g);
-
         this.afficheur.getRasterizer().draw(this.getSize());
         g.drawImage(this.afficheur.getRasterizer().getImage(), 0, 0, null);
     }
 
     public void changerVue(Afficheur.TypeDeVue vue) {
         afficheur.changerVue(vue);
+        afficheur.rechargerAffichage();
         mainWindow.menu.activerVue(afficheur.getVueActive());
         updateToolbarBtns();
     }

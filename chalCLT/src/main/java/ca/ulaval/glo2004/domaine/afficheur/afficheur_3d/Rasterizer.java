@@ -521,7 +521,7 @@ public class Rasterizer {
             // List containing the images of each parts of the main image
             List<BufferedImage> images = new ArrayList<>();
 
-            // The parts are splitted on the y axis. Each part are the width of the main
+            // The parts are split on the y axis. Each part are the width of the main
             // image but the height is divided by the number of threads.
             int partHeight = panelDimension.height / (nThreads);
 

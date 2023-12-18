@@ -257,7 +257,7 @@ public class PanelHelper {
         double a = (depth / 2) / Math.cos(Math.toRadians(angle)); //depth / 2 * Math.cos(Math.toRadians(angle));
         double b = depth / 2 * Math.tan(Math.toRadians(angle));
         
-        System.out.println((a - b) + " " + (b - a));
+        //System.out.println((a - b) + " " + (b - a));
         double hauteur = (longueur * Math.tan(Math.toRadians(angle)));
 
         double[] p1 = new double[] { x0, y0, z0 };
