@@ -1,11 +1,14 @@
 package ca.ulaval.glo2004.gui.components;
 
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.UUID;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,10 +19,13 @@ import javax.swing.border.EmptyBorder;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Point;
 
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
+import ca.ulaval.glo2004.domaine.Chalet.ChaletDTO;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.AccessoireEvent;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEvent;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEventListener;
@@ -34,7 +40,8 @@ import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Controleur;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport;
 
-class TestHoverComponant extends JPanel{}
+class TestHoverComponant extends JPanel {
+}
 
 class GridStepSpinner extends JSpinner {
     public GridStepSpinner() {
@@ -87,6 +94,7 @@ public class DrawingPanel extends javax.swing.JPanel {
 
     // Afficheur.TypeDeVue vueActive = Afficheur.TypeDeVue.Dessus;
     javax.swing.JToolBar barreOutilsVue;
+    MesureBruteContainer max;
 
     public DrawingPanel(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
@@ -107,7 +115,7 @@ public class DrawingPanel extends javax.swing.JPanel {
 
     private void initComponents() {
         setBackground(java.awt.Color.BLACK);
-
+        this.max = new MesureBruteContainer(mainWindow.getControleur().getChalet());
         this.mainWindow.getControleur()
                 .addAccessoireEventListener(new ControleurEventSupport.AccessoireEventListener() {
                     @Override
@@ -222,12 +230,6 @@ public class DrawingPanel extends javax.swing.JPanel {
             }
 
             @Override
-            public void meshHovered(AfficheurEventSupport.MeshMouseMotionEvent e) {
-                // TODO Auto-generated method stub
-                // System.out.println("Mesh Hovered " + e.getMesh().ID);
-            }
-
-            @Override
             public void meshDragged(AfficheurEventSupport.MeshMouseMotionEvent evt) {
                 // System.out.println("Mesh Dragged " + evt.getMesh().ID);
 
@@ -273,11 +275,11 @@ public class DrawingPanel extends javax.swing.JPanel {
                         mesh.setValid(accessoireDTO.valide);
                     }
                 }
-                
+
                 evt.getMesh().setValid(accDto.valide);
                 evt.getMesh().setSelected(true);
                 evt.getMesh().setIsDragged(true);
-                
+
                 repaint();
             }
 
@@ -306,15 +308,25 @@ public class DrawingPanel extends javax.swing.JPanel {
             }
 
             @Override
+            public void meshHovered(AfficheurEventSupport.MeshMouseMotionEvent evt) {
+                // TODO Auto-generated method stub
+                // System.out.println("Mesh Hovered " + e.getMesh().ID);
+                max.show(evt.getLocationOnScreen());
+            }
+
+            @Override
             public void mouseEnterMesh(AfficheurEventSupport.MeshMouseMotionEvent evt) {
                 // System.out.println("MouseEnterMesh " + evt.getMesh().ID);
                 // repaint();
+                // max.setChaletDTOToPanel(afficheur.getControleur().getChalet());
             }
 
             @Override
             public void mouseExitMesh(AfficheurEventSupport.MeshMouseMotionEvent evt) {
                 // System.out.println("MouseExitMesh " + evt.getMesh().ID);
                 // repaint();
+                
+                max.hide();
             }
         });
 
@@ -399,6 +411,8 @@ public class DrawingPanel extends javax.swing.JPanel {
         });
 
         buildViewToolbar();
+        // buildMurBruteValue();
+
     }
 
     @Override
@@ -414,6 +428,15 @@ public class DrawingPanel extends javax.swing.JPanel {
 
         });
     }
+
+    // private void buildMurBruteValue() {
+    //     hoveredMurlabel = new JLabel();
+    //     hoveredMurlabel.setText("TOOL_TIP_TEXT_KEY");
+    //     hoveredMurlabel.setVisible(true);
+    //     hoveredMurlabel.setOpaque(true);
+    //     invalidate();
+    //     repaint();
+    // }
 
     private void buildViewToolbar() {
         barreOutilsVue = new javax.swing.JToolBar("Barre d'outils");
@@ -624,7 +647,7 @@ public class DrawingPanel extends javax.swing.JPanel {
     @Override
     public void paintComponent(java.awt.Graphics g) {
         // super.paintComponent(g);
-        
+
         this.afficheur.getRasterizer().draw(this.getSize());
         g.drawImage(this.afficheur.getRasterizer().getImage(), 0, 0, null);
     }
@@ -639,5 +662,55 @@ public class DrawingPanel extends javax.swing.JPanel {
         afficheur.weakChangerVue(vue); // update seulement les flags
         mainWindow.menu.activerVue(afficheur.getVueActive());
         updateToolbarBtns();
+    }
+
+    public class MesureBruteContainer {
+        JDialog dialogContainer = new JDialog();
+        MesureBrutePanel mesurePanel;
+        ChaletDTO chaletDTO;
+        
+        
+        public MesureBruteContainer(ChaletDTO chaletDTO) {
+            this.chaletDTO = chaletDTO;
+            initComponents();
+        }
+
+        private void initComponents() {
+            mesurePanel = new MesureBrutePanel(chaletDTO);
+            dialogContainer.setLocationRelativeTo(null);
+            dialogContainer.setMinimumSize(new Dimension(100, 100));
+            dialogContainer.setResizable(false);
+            dialogContainer.setFocusable(false);
+            dialogContainer.setUndecorated(true);
+
+            mesurePanel.addMouseMotionListener(new MouseAdapter() {
+                @Override
+                public void mouseMoved(MouseEvent e) {
+
+                    Component child = e.getComponent();
+                    Component parent = child.getParent();
+                    MouseEvent parentMouseEvent = new MouseEvent(parent, MouseEvent.MOUSE_MOVED, e.getWhen(),
+                            e.getModifiersEx(), e.getX(), e.getY(), e.getClickCount(), false);
+                    afficheur.getEventSupport()
+                            .dispatchMeshHovered(new MeshMouseMotionEvent(parentMouseEvent, null, null));
+                    super.mouseMoved(e);
+                }
+            });
+            dialogContainer.add(mesurePanel);
+        }
+
+        // public void setChaletDTOToPanel(ChaletDTO chaletDTO){
+        //     mesurePanel.setChaletDTO(chaletDTO);
+        // }
+
+        public void show(Point point) {
+            dialogContainer.setLocation((int) (point.getX() - mesurePanel.getWidth()),
+                    (int) (point.getY() - mesurePanel.getHeight()));
+            dialogContainer.setVisible(true);
+        }
+
+        public void hide() {
+            dialogContainer.setVisible(false);
+        }
     }
 }
