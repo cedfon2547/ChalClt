@@ -950,8 +950,9 @@ public class Afficheur {
 
                         getScene().getCamera().setDirection(direction);
                         updateViewGrid();
-                        if((previousDragCamDirection==null || previousDragCamDirection.x==-Math.PI/2) ^ (direction.x==-Math.PI/2)) // yes that is an XOR operation between the bools
-                            rechargerAffichage(); // to show/hide roof when snapping to vertical or breaking away from it
+
+                        if((previousDragCamDirection==null || previousDragCamDirection.x==-Math.PI/2) ^ (direction.x==-Math.PI/2)) // yes that is an XOR operation, that's on purpose
+                            rechargerAffichage(); // to show/hide roof when snapping to or breaking away from vertical
 
                         previousDragCamDirection = direction;
                     } else {

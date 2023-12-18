@@ -1148,7 +1148,7 @@ public class PanelHelper {
 
             for (Accessoire.AccessoireDTO accessoireDTO : this.accessoireDTOs) {
                 TriangleMeshGroup accMesh = null;
-
+                
                 switch (accessoireDTO.accessoireType) {
                     case Fenetre:
                         accMesh = PanelHelper.buildWindow(accessoireDTO.dimensions[0] - 2,

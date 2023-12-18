@@ -131,7 +131,7 @@ public class DrawingPanel extends javax.swing.JPanel {
 
                     @Override
                     public void change(AccessoireEvent event) {
-                        // rechargerAffichage();
+                        afficheur.rechargerAffichage(); // turns out this is pretty critical
                     }
                 });
 
