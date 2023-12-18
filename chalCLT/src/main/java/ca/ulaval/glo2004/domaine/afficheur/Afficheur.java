@@ -366,12 +366,23 @@ public class Afficheur {
             return;
         }
 
+        Chalet.ChaletDTO chaletDTO = this.getControleur().getChalet();
         // System.out.println("Reloading View");
+
+        // turns out we need to regenerate the walls to re-truncate them
+        boolean sideTruncate = chaletDTO.sensToit == TypeSensToit.Nord || chaletDTO.sensToit == TypeSensToit.Sud;
 
         List<Accessoire.AccessoireDTO> murFacadeAccessoires = getControleur().getAccessoires(TypeMur.Facade);
         List<Accessoire.AccessoireDTO> murArriereAccessoires = getControleur().getAccessoires(TypeMur.Arriere);
         List<Accessoire.AccessoireDTO> murDroitAccessoires = getControleur().getAccessoires(TypeMur.Droit);
         List<Accessoire.AccessoireDTO> murGaucheAccessoires = getControleur().getAccessoires(TypeMur.Gauche);
+
+        murFacadeGroup = new MurTriangleMeshGroup(chaletDTO, TypeMur.Facade, murFacadeAccessoires, !sideTruncate,
+                false);
+        murArriereGroup = new MurTriangleMeshGroup(chaletDTO, TypeMur.Arriere, murArriereAccessoires, !sideTruncate,
+                false);
+        murDroitGroup = new MurTriangleMeshGroup(chaletDTO, TypeMur.Droit, murDroitAccessoires, sideTruncate, false);
+        murGaucheGroup = new MurTriangleMeshGroup(chaletDTO, TypeMur.Gauche, murGaucheAccessoires, sideTruncate, false);
 
         murFacadeGroup.updateAccessoires(murFacadeAccessoires);
         murArriereGroup.updateAccessoires(murArriereAccessoires);
@@ -389,8 +400,6 @@ public class Afficheur {
         getScene().getMeshes().addAll(murArriereGroup.getAccessoiresMeshes());
         getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
         getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
-
-        Chalet.ChaletDTO chaletDTO = this.getControleur().getChalet();
         
         murFacadeGroup.update(chaletDTO);
         murArriereGroup.update(chaletDTO);
