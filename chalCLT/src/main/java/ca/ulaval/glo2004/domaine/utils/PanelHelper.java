@@ -364,8 +364,8 @@ public class PanelHelper {
         double midwayHeight = height - vertHalf - halfDrop - marginDrop;
 
         // get the components of a diagonal margin
-        double diagToVertMargin = marge * Math.cos(angle);
-        double diagToHorzMargin = marge * Math.sin(angle);
+        double diagToVertMargin = marge * Math.cos(Math.toRadians(angle));
+        double diagToHorzMargin = marge * Math.sin(Math.toRadians(angle));
 
 
         double x0 = position.x;
@@ -373,22 +373,22 @@ public class PanelHelper {
         double z0 = position.z;
 
         // front panel
-        double[] p1 = new double[] { x0          , y0                            , z0 };
-        double[] p2 = new double[] { x0          , y0 - height + diagToVertMargin, z0 };
-        double[] p3 = new double[] { x0 + largeur, y0                            , z0 };
+        double[] p1 = new double[] { x0          , y0                              , z0 };
+        double[] p2 = new double[] { x0          , y0 - height + diagToVertMargin/2, z0 };
+        double[] p3 = new double[] { x0 + largeur, y0                              , z0 };
         // left panel
         double[] p4 = new double[] { x0, y0                            , z0 - depth / 2 };
-        double[] p5 = new double[] { x0, y0 - height + diagToVertMargin, z0 - depth / 2 }; // probably also unneeded
-        double[] p6 = new double[] { x0, y0 - height + diagToVertMargin, z0 - depth / 2 };
+        double[] p5 = new double[] { x0, y0 - height + diagToVertMargin/2, z0 - depth / 2 }; // probably also unneeded
+        double[] p6 = new double[] { x0, y0 - height + diagToVertMargin/2, z0 - depth / 2 };
         // vertical corner of back left inset
-        double[] p7 = new double[] { x0 + depth / 2, y0                                  , z0 - depth / 2 };
+        double[] p7 = new double[] { x0 + depth / 2, y0                                    , z0 - depth / 2 };
             //double[] p8 = new double[] { x0 + depth / 2, y0 - ((largeur-depth) * Math.tan(Math.toRadians(angle)))  , z0 - depth / 2 }; // unneeded
-        double[] p9 = new double[] { x0 + depth / 2, y0 - midwayHeight + diagToVertMargin, z0 - depth / 2 };
+        double[] p9 = new double[] { x0 + depth / 2, y0 - midwayHeight + diagToVertMargin/2, z0 - depth / 2 };
         // remainder of left inset panel
-        double[] p10 = new double[] { x0 + depth / 2, y0                                  , z0 - depth };
-        double[] p11 = new double[] { x0 + depth / 2, y0 - midwayHeight + diagToVertMargin, z0 - depth };
+        double[] p10 = new double[] { x0 + depth / 2, y0                                    , z0 - depth };
+        double[] p11 = new double[] { x0 + depth / 2, y0 - midwayHeight + diagToVertMargin/2, z0 - depth };
         // remainder of bottom T
-        double[] p12 = new double[] { x0 + largeur            , y0, z0 - depth / 2 };
+        double[] p12 = new double[] { x0 + largeur                      , y0, z0 - depth / 2 };
         double[] p13 = new double[] { x0 + largeur - depth / 2 - marge/2, y0, z0 - depth / 2};
         double[] p14 = new double[] { x0 + largeur - depth / 2 - marge/2, y0, z0 - depth };
         
@@ -460,8 +460,8 @@ public class PanelHelper {
         xsHeight*=-1; // ditto
 
         // get the components of a diagonal margin
-        double diagToVertMargin = marge * Math.cos(angle);
-        double diagToHorzMargin = marge * Math.sin(angle);
+        double diagToVertMargin = marge * Math.cos(Math.toRadians(angle));
+        double diagToHorzMargin = marge * Math.sin(Math.toRadians(angle));
 
         // "front" panel of the roof
         double[] p1 = new double[] { x0          , y0 + xsHeight, z0 };
@@ -469,10 +469,10 @@ public class PanelHelper {
         double[] p3 = new double[] { x0 + largeur, y0 + vertHalf, z0 };
         double[] p4 = new double[] { x0          , y0 + vertHalf, z0 };
         // T-shape remaining points
-        double[] p5 = new double[]  { x0                      , y0 + xsHeight, z0 + depth / 2 - diagToHorzMargin };
-        double[] p6 = new double[]  { x0 + largeur            , y0 + xsHeight, z0 + depth / 2 - diagToHorzMargin };
-        double[] p7 = new double[]  { x0 + depth / 2          , y0 + xsHeight, z0 + depth / 2 - diagToHorzMargin };
-        double[] p8 = new double[]  { x0 + largeur - depth / 2, y0 + xsHeight, z0 + depth / 2 - diagToHorzMargin };
+        double[] p5 = new double[]  { x0                      , y0 + xsHeight, z0 + depth / 2 - marge - diagToHorzMargin/2 };
+        double[] p6 = new double[]  { x0 + largeur            , y0 + xsHeight, z0 + depth / 2 - marge - diagToHorzMargin/2 };
+        double[] p7 = new double[]  { x0 + depth / 2          , y0 + xsHeight, z0 + depth / 2 - marge - diagToHorzMargin/2 };
+        double[] p8 = new double[]  { x0 + largeur - depth / 2, y0 + xsHeight, z0 + depth / 2 - marge - diagToHorzMargin/2 };
         double[] p9 = new double[]  { x0 + depth / 2          , y0 + xsHeight, z0 + flatLen };
         double[] p10 = new double[] { x0 + largeur - depth / 2, y0 + xsHeight, z0 + flatLen };
         // "back" inset panel
@@ -1148,7 +1148,7 @@ public class PanelHelper {
 
             for (Accessoire.AccessoireDTO accessoireDTO : this.accessoireDTOs) {
                 TriangleMeshGroup accMesh = null;
-                
+
                 switch (accessoireDTO.accessoireType) {
                     case Fenetre:
                         accMesh = PanelHelper.buildWindow(accessoireDTO.dimensions[0] - 2,
