@@ -16,7 +16,7 @@ public class Chalet implements Serializable {
     private double longueur = 120;
     private double epaisseurMur = 12.0; // Test purpose
     private TypeSensToit sensToit = TypeSensToit.Nord;
-    private double angleToit = 20.0;
+    private double angleToit = 15.0;
     private double margeAccessoire = 3.0;
 
 
