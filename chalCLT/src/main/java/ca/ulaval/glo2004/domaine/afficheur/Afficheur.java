@@ -191,29 +191,8 @@ public class Afficheur {
                 chaletDTO.longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait,
                 new Vector3D(0, 0, 0));
 
-        pignonGaucheToit = pignonGaucheToit.rotateY(-Math.PI / 2);
-        pignonDroitToit = pignonDroitToit.rotateY(-Math.PI / 2);
-
-        pignonGaucheToit = pignonGaucheToit.translate(pignonGaucheToit.getCenter().multiply(-1));
-        pignonDroitToit = pignonDroitToit.translate(pignonDroitToit.getCenter().multiply(-1));
-
-        pignonGaucheToit = pignonGaucheToit.translate(new Vector3D(chaletDTO.largeur / 2 - chaletDTO.epaisseurMur / 2,
-                -chaletDTO.hauteur - pignonGaucheToit.getHeight() / 2, 0));
-        pignonDroitToit = pignonDroitToit.translate(new Vector3D(-chaletDTO.largeur / 2 + chaletDTO.epaisseurMur / 2,
-                -chaletDTO.hauteur - pignonDroitToit.getHeight() / 2, 0));
-
-        panneauToit = panneauToit.translate(new Vector3D(0, - chaletDTO.hauteur, 0));
-        panneauToit = panneauToit.translate(new Vector3D(-chaletDTO.largeur / 2, 0, -chaletDTO.longueur / 2));
-
-
-        rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(-chaletDTO.largeur / 2,
-                - chaletDTO.hauteur,
-                -chaletDTO.longueur / 2));
-        //rallongeVerticaleToit = rallongeVerticaleToit.translate( // ditto
-        //new Vector3D(0, chaletDTO.epaisseurMur / 2 * Math.cos(Math.toRadians(chaletDTO.angleToit)), 0));
-
         panneauToit.getMesh(0).getMaterial().setColor(Color.LIGHT_GRAY);
-        rallongeVerticaleToit.getMesh(0).getMaterial().setColor(Color.LIGHT_GRAY);
+        rallongeVerticaleToit.getMesh(0).getMaterial().setColor(Color.BLUE);
 
         switch(chaletDTO.sensToit){
             case Nord:
