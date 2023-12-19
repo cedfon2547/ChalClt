@@ -979,18 +979,18 @@ public class Afficheur {
                 pignonDroitToit.ID = "pignonDroitToit";
                 pignonGaucheToit.ID = "pignonGaucheToit";
 
-                // Set visible by default since the initial view is from the top
-                if (getScene().getCamera().getDirection().x != -Math.PI / 2) {
-                    panneauToit.setVisible(true);
-                    rallongeVerticaleToit.setVisible(true);
-                    pignonDroitToit.setVisible(true);
-                    pignonGaucheToit.setVisible(true);
-                } else {
-                    panneauToit.setVisible(false);
-                    rallongeVerticaleToit.setVisible(false);
-                    pignonDroitToit.setVisible(false);
-                    pignonGaucheToit.setVisible(false);
-                }
+                // // Set visible by default since the initial view is from the top
+                // if (getScene().getCamera().getDirection().x != -Math.PI / 2) {
+                //     panneauToit.setVisible(true);
+                //     rallongeVerticaleToit.setVisible(true);
+                //     pignonDroitToit.setVisible(true);
+                //     pignonGaucheToit.setVisible(true);
+                // } else {
+                //     panneauToit.setVisible(false);
+                //     rallongeVerticaleToit.setVisible(false);
+                //     pignonDroitToit.setVisible(false);
+                //     pignonGaucheToit.setVisible(false);
+                // }
 
                 panneauToit.getMesh(0).getMaterial().setColor(panneauToitColor);
                 rallongeVerticaleToit.getMesh(0).getMaterial().setColor(rallongeVerticaleToitColor);
@@ -1038,19 +1038,6 @@ public class Afficheur {
                 pignonDroitToit.ID = "pignonDroitToit";
                 pignonGaucheToit.ID = "pignonGaucheToit";
 
-                // Set visible by default since the initial view is from the top
-                if (getScene().getCamera().getDirection().x != -Math.PI / 2) {
-                    panneauToit.setVisible(true);
-                    rallongeVerticaleToit.setVisible(true);
-                    pignonDroitToit.setVisible(true);
-                    pignonGaucheToit.setVisible(true);
-                } else {
-                    panneauToit.setVisible(false);
-                    rallongeVerticaleToit.setVisible(false);
-                    pignonDroitToit.setVisible(false);
-                    pignonGaucheToit.setVisible(false);
-                }
-
                 panneauToit.getMesh(0).getMaterial().setColor(panneauToitColor);
                 rallongeVerticaleToit.getMesh(0).getMaterial().setColor(rallongeVerticaleToitColor);
                 pignonDroitToit.getMesh(0).getMaterial().setColor(pignonDroitToitColor);
@@ -1094,6 +1081,20 @@ public class Afficheur {
             pignonGaucheToit.setHidden(oldPignonGaucheToit.getHidden());
             pignonGaucheToit.setSelected(oldPignonGaucheToit.getSelected());
         }
+
+        // Set visible by default since the initial view is from the top
+        if (getScene().getCamera().getDirection().x != -Math.PI / 2) {
+            panneauToit.setVisible(true);
+            rallongeVerticaleToit.setVisible(true);
+            pignonDroitToit.setVisible(true);
+            pignonGaucheToit.setVisible(true);
+        } else {
+            panneauToit.setVisible(false);
+            rallongeVerticaleToit.setVisible(false);
+            pignonDroitToit.setVisible(false);
+            pignonGaucheToit.setVisible(false);
+        }
+        
     }
 
     public void initializeView() {
