@@ -317,10 +317,25 @@ public class DrawingPanel extends javax.swing.JPanel {
             @Override
             public void meshHovered(AfficheurEventSupport.MeshMouseMotionEvent evt) {
                 mesureBruteContainer.show(evt.getLocationOnScreen());
+                if (evt.getMesh() == null) return;
+
+                TriangleMesh hovered = evt.getMesh();
+                if (hovered == null) return;
+
+                if (hovered.ID.length() != 36) return; // not UUID format
+
+                Accessoire.AccessoireDTO accDto = mainWindow.getControleur()
+                        .getAccessoire(UUID.fromString(hovered.ID));
+
+                if (accDto != null) {
+                    setCursor(new Cursor(Cursor.MOVE_CURSOR));
+                }
             }
 
             @Override
             public void mouseEnterMesh(AfficheurEventSupport.MeshMouseMotionEvent evt) {
+                setCursor(new Cursor(Cursor.HAND_CURSOR));
+
                 if(evt.getMesh() instanceof MurTriangleMeshGroup){
                     ChaletDTO tempChaletDTO = mainWindow.getControleur().getChalet();
                     double tempLargeur = tempChaletDTO.largeur;
@@ -339,6 +354,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             @Override
             public void mouseExitMesh(AfficheurEventSupport.MeshMouseMotionEvent evt) {
                 mesureBruteContainer.hide();
+                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         });
 
@@ -827,9 +843,25 @@ public class DrawingPanel extends javax.swing.JPanel {
         }
 
         public void show(Point point) {
+            if (point.getX() <= getLocationOnScreen().getX() + 20) {
+                dialogContainer.setVisible(false);
+                return;
+            } else if (point.getX() >= getLocationOnScreen().getX() + getWidth() - 20) {
+                dialogContainer.setVisible(false);
+                return;
+            } else if (point.getY() <= getLocationOnScreen().getY() + 20) {
+                dialogContainer.setVisible(false);
+                return;
+            } else if (point.getY() >= getLocationOnScreen().getY() + getHeight() - 20) {
+                dialogContainer.setVisible(false);
+                return;
+            }
+
             dialogContainer.setLocation((int) (point.getX() - mesurePanel.getWidth()),
                     (int) (point.getY() - mesurePanel.getHeight()));
-            dialogContainer.setVisible(true);
+            if (dialogContainer.isVisible() == false) {
+                dialogContainer.setVisible(true);
+            }
         }
 
         public void hide() {

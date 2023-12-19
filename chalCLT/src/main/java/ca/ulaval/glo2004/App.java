@@ -7,6 +7,8 @@ import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
@@ -85,8 +87,9 @@ public class App {
 
 
         mainWindow.setSize(800, 800);
+        mainWindow.setLocationByPlatform(true);
         // mainWindow.pack();
-        mainWindow.setLocationRelativeTo(null);
+        // mainWindow.setLocationRelativeTo(null);
         // mainWindow.setLocation(new Point((int) (screenSize.getWidth() / 2 - 500), (int) (screenSize.getHeight() / 2 - 500)));
 
         // JFrame configuration
