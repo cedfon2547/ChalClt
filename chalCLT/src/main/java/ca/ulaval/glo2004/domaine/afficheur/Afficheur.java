@@ -811,6 +811,11 @@ public class Afficheur {
         Color pignonDroitToitColor = new Color(255,146, 146).darker();
         Color pignonGaucheToitColor = new Color(255,146, 146).darker();
 
+        TriangleMeshGroup oldPanneauToit = this.panneauToit;
+        TriangleMeshGroup oldRallongeVerticaleToit = this.rallongeVerticaleToit;
+        TriangleMeshGroup oldPignonDroitToit = this.pignonDroitToit;
+        TriangleMeshGroup oldPignonGaucheToit = this.pignonGaucheToit;
+
         switch (chaletDTO.sensToit) {
             case Nord:
                 panneauToit = RoofPanelBuilder.buildRoofTopPanel(largeur, longueur, chaletDTO.epaisseurMur,
@@ -1057,9 +1062,46 @@ public class Afficheur {
                 getScene().addMesh(pignonGaucheToit);
                 break;
         }
+
+        if (oldPanneauToit != null) {
+            panneauToit.setVisible(oldPanneauToit.getVisible());
+            panneauToit.setDraggable(oldPanneauToit.getDraggable());
+            panneauToit.setSelectable(oldPanneauToit.getSelectable());
+            panneauToit.setHidden(oldPanneauToit.getHidden());
+            panneauToit.setSelected(oldPanneauToit.getSelected());
+        }
+
+        if (oldRallongeVerticaleToit != null) {
+            rallongeVerticaleToit.setVisible(oldRallongeVerticaleToit.getVisible());
+            rallongeVerticaleToit.setDraggable(oldRallongeVerticaleToit.getDraggable());
+            rallongeVerticaleToit.setSelectable(oldRallongeVerticaleToit.getSelectable());
+            rallongeVerticaleToit.setHidden(oldRallongeVerticaleToit.getHidden());
+            rallongeVerticaleToit.setSelected(oldRallongeVerticaleToit.getSelected());
+        }
+
+        if (oldPignonDroitToit != null) {
+            pignonDroitToit.setVisible(oldPignonDroitToit.getVisible());
+            pignonDroitToit.setDraggable(oldPignonDroitToit.getDraggable());
+            pignonDroitToit.setSelectable(oldPignonDroitToit.getSelectable());
+            pignonDroitToit.setHidden(oldPignonDroitToit.getHidden());
+            pignonDroitToit.setSelected(oldPignonDroitToit.getSelected());
+        }
+
+        if (oldPignonGaucheToit != null) {
+            pignonGaucheToit.setVisible(oldPignonGaucheToit.getVisible());
+            pignonGaucheToit.setDraggable(oldPignonGaucheToit.getDraggable());
+            pignonGaucheToit.setSelectable(oldPignonGaucheToit.getSelectable());
+            pignonGaucheToit.setHidden(oldPignonGaucheToit.getHidden());
+            pignonGaucheToit.setSelected(oldPignonGaucheToit.getSelected());
+        }
     }
 
     public void initializeView() {
+        MurTriangleMeshGroup oldFacadeGroup = this.murFacadeGroup;
+        MurTriangleMeshGroup oldArriereGroup = this.murArriereGroup;
+        MurTriangleMeshGroup oldDroitGroup = this.murDroitGroup;
+        MurTriangleMeshGroup oldGaucheGroup = this.murGaucheGroup;
+
         this.scene.clearMeshes();
 
         Chalet.ChaletDTO chaletDTO = this.getControleur().getChalet();
@@ -1094,6 +1136,40 @@ public class Afficheur {
         murArriereGroup.setActiveOuput(this.renduVisuel);
         murGaucheGroup.setActiveOuput(this.renduVisuel);
         murDroitGroup.setActiveOuput(this.renduVisuel);
+
+        // Fix of last minute in order to transfert the previous state to the new meshes
+        if (oldFacadeGroup != null) {
+            murFacadeGroup.setVisible(oldFacadeGroup.getVisible());
+            murFacadeGroup.setDraggable(oldFacadeGroup.getDraggable());
+            murFacadeGroup.setSelectable(oldFacadeGroup.getSelectable());
+            murFacadeGroup.setHidden(oldFacadeGroup.getHidden());
+            murFacadeGroup.setSelected(oldFacadeGroup.getSelected());
+        }
+
+        if (oldArriereGroup != null) {
+            murArriereGroup.setVisible(oldArriereGroup.getVisible());
+            murArriereGroup.setDraggable(oldArriereGroup.getDraggable());
+            murArriereGroup.setSelectable(oldArriereGroup.getSelectable());
+            murArriereGroup.setHidden(oldArriereGroup.getHidden());
+            murArriereGroup.setSelected(oldArriereGroup.getSelected());
+        }
+
+        if (oldDroitGroup != null) {
+            murDroitGroup.setVisible(oldDroitGroup.getVisible());
+            murDroitGroup.setDraggable(oldDroitGroup.getDraggable());
+            murDroitGroup.setSelectable(oldDroitGroup.getSelectable());
+            murDroitGroup.setHidden(oldDroitGroup.getHidden());
+            murDroitGroup.setSelected(oldDroitGroup.getSelected());
+        }
+
+        if (oldGaucheGroup != null) {
+            murGaucheGroup.setVisible(oldGaucheGroup.getVisible());
+            murGaucheGroup.setDraggable(oldGaucheGroup.getDraggable());
+            murGaucheGroup.setSelectable(oldGaucheGroup.getSelectable());
+            murGaucheGroup.setHidden(oldGaucheGroup.getHidden());
+            murGaucheGroup.setSelected(oldGaucheGroup.getSelected());
+        }
+
 
         getScene().addMesh(murFacadeGroup);
         getScene().addMesh(murArriereGroup);
@@ -1139,6 +1215,12 @@ public class Afficheur {
             return;
         }
 
+        MurTriangleMeshGroup oldFacadeGroup = this.murFacadeGroup;
+        MurTriangleMeshGroup oldArriereGroup = this.murArriereGroup;
+        MurTriangleMeshGroup oldDroitGroup = this.murDroitGroup;
+        MurTriangleMeshGroup oldGaucheGroup = this.murGaucheGroup;
+
+
         Chalet.ChaletDTO chaletDTO = this.getControleur().getChalet();
 
         boolean sideTruncate = chaletDTO.sensToit == TypeSensToit.Nord || chaletDTO.sensToit == TypeSensToit.Sud;
@@ -1161,6 +1243,40 @@ public class Afficheur {
         murGaucheGroup.updateAccessoires(murGaucheAccessoires);
 
         getScene().clearMeshes();
+
+        // Fix of last minute in order to transfert the previous state to the new meshes
+        if (oldFacadeGroup != null) {
+            murFacadeGroup.setVisible(oldFacadeGroup.getVisible());
+            murFacadeGroup.setDraggable(oldFacadeGroup.getDraggable());
+            murFacadeGroup.setSelectable(oldFacadeGroup.getSelectable());
+            murFacadeGroup.setHidden(oldFacadeGroup.getHidden());
+            murFacadeGroup.setSelected(oldFacadeGroup.getSelected());
+        }
+
+        if (oldArriereGroup != null) {
+            murArriereGroup.setVisible(oldArriereGroup.getVisible());
+            murArriereGroup.setDraggable(oldArriereGroup.getDraggable());
+            murArriereGroup.setSelectable(oldArriereGroup.getSelectable());
+            murArriereGroup.setHidden(oldArriereGroup.getHidden());
+            murArriereGroup.setSelected(oldArriereGroup.getSelected());
+        }
+
+        if (oldDroitGroup != null) {
+            murDroitGroup.setVisible(oldDroitGroup.getVisible());
+            murDroitGroup.setDraggable(oldDroitGroup.getDraggable());
+            murDroitGroup.setSelectable(oldDroitGroup.getSelectable());
+            murDroitGroup.setHidden(oldDroitGroup.getHidden());
+            murDroitGroup.setSelected(oldDroitGroup.getSelected());
+        }
+
+        if (oldGaucheGroup != null) {
+            murGaucheGroup.setVisible(oldGaucheGroup.getVisible());
+            murGaucheGroup.setDraggable(oldGaucheGroup.getDraggable());
+            murGaucheGroup.setSelectable(oldGaucheGroup.getSelectable());
+            murGaucheGroup.setHidden(oldGaucheGroup.getHidden());
+            murGaucheGroup.setSelected(oldGaucheGroup.getSelected());
+        }
+        
 
         getScene().addMesh(murFacadeGroup);
         getScene().addMesh(murArriereGroup);
