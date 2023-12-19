@@ -24,6 +24,7 @@ public class ChalCLTProjet implements Serializable {
 
     public ChalCLTProjet(String nom) {
         this(nom, new Chalet(), new PreferencesUtilisateur());
+        this.chalet.setNom(nom);
     }
 
     public ChalCLTProjet() {
