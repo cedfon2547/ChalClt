@@ -145,12 +145,20 @@ public class Retrait implements Serializable {
             this.position = retrait.position;
         }
 
+        /**
+         * Constructeur de la classe RetraitDTO.
+         * @param retrait Le RetraitDTO à partir duquel créer l'objet RetraitDTO.
+         */
         public RetraitDTO(RetraitDTO retraitDTO) {
             this.type = retraitDTO.type;
             this.dimensions = retraitDTO.dimensions;
             this.position = retraitDTO.position;
         }
         
+        /**
+         * Écrit les informations du RetraitDTO en format serializable dans le fichier de sauvegarde
+         * @param oos Objet en charge de l'écriture dans le fichier de sauvegarde
+         */
         public void writeObject(ObjectOutputStream oos) {
             try {
                 String typeString;
@@ -174,6 +182,10 @@ public class Retrait implements Serializable {
             }
         }
         
+        /**
+         * Construit un objet RetraitDTO selon les informations lues dans le fichier de sauvegarde
+         * @param ois Objet en charge de la lecture dans le fichier de sauvegarde
+         */
         public void readObject(ObjectInputStream ois) {
             try {
                 String typeString = (String) ois.readObject();
