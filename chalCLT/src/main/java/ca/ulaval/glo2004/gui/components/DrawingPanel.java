@@ -58,14 +58,14 @@ class TestHoverComponant extends JPanel {
 
 class GridStepSpinner extends JSpinner {
     public GridStepSpinner() {
-        this(0.1f);
+        this(1.0f);
     }
 
     public GridStepSpinner(float value) {
         super();
         setValue(value);
         this.setModel(new SpinnerNumberModel((float) value, 0.1f, 100.0f, 0.5f));
-        ((SpinnerNumberModel) this.getModel()).setStepSize(0.1);
+        ((SpinnerNumberModel) this.getModel()).setStepSize(1.0);
         ((JSpinner.DefaultEditor) this.getEditor()).getTextField().setColumns(3);
         ((JSpinner.DefaultEditor) this.getEditor()).getTextField().setHorizontalAlignment(JLabel.CENTER);
     }
@@ -560,7 +560,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                     preferencesUtilisateurDTO.afficherGrille);
 
             JPanel gridStepContainer = new JPanel();
-            JLabel gridStepLabel = new JLabel("Taille: ");
+            JLabel gridStepLabel = new JLabel("Taille(\"): ");
             gridStepSpinner = new GridStepSpinner();
 
             JPanel voisinContainer = new JPanel();
