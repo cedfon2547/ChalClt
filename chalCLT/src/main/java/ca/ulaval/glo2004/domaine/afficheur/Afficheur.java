@@ -1583,17 +1583,17 @@ public class Afficheur {
 
         String panneauToitRetraitFilename = String.format("\\%s_Retrait_T.stl", nomChalet);
         List<STLTools.Triangle> panneauToitRetraitStlTriangles = PanelHelper
-                .convertMeshTrianglesToStlTriangles(panneauToitRetrait.getTriangles());
+                .convertMeshTrianglesToStlTriangles(panneauToit.getMesh(0).getTriangles());
         STLTools.writeSTL(panneauToitRetraitStlTriangles, directoryPath + panneauToitRetraitFilename);
 
         String panneauPignonDroitFilename = String.format("\\%s_Retrait_PD.stl", nomChalet);
         List<STLTools.Triangle> panneauPignonDroitStlTriangles = PanelHelper
-                .convertMeshTrianglesToStlTriangles(pignonDroitToitRetrait.getMesh(0).getTriangles());
+                .convertMeshTrianglesToStlTriangles(pignonDroitToitRetrait.getTriangles());
         STLTools.writeSTL(panneauPignonDroitStlTriangles, directoryPath + panneauPignonDroitFilename);
 
         String panneauPignonGaucheFilename = String.format("\\%s_Retrait_PG.stl", nomChalet);
         List<STLTools.Triangle> panneauPignonGaucheStlTriangles = PanelHelper
-                .convertMeshTrianglesToStlTriangles(pignonGaucheToitRetrait.getMesh(0).getTriangles());
+                .convertMeshTrianglesToStlTriangles(pignonGaucheToitRetrait.getTriangles());
         STLTools.writeSTL(panneauPignonGaucheStlTriangles, directoryPath + panneauPignonGaucheFilename);
     }
 
