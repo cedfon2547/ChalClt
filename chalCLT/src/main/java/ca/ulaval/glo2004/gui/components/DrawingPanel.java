@@ -4,25 +4,33 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Point;
+import java.awt.Toolkit;
 
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.domaine.TypeMur;
@@ -38,6 +46,7 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper.MurTriangleMeshGroup;
 import ca.ulaval.glo2004.gui.MainWindow;
+import ca.ulaval.glo2004.App;
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Controleur;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport;
@@ -437,6 +446,19 @@ public class DrawingPanel extends javax.swing.JPanel {
             }
         });
 
+        // String appImgPath = "/icons/dark/rotate_icon.png";
+        // URL appImgURL = App.class.getResource(appImgPath);
+        // Image appImg = Toolkit.getDefaultToolkit().getImage(appImgURL).getScaledInstance(300, 300, Image.SCALE_SMOOTH);
+
+        // Cursor c = Toolkit.getDefaultToolkit().createCustomCursor(appImg, new Point(16, 16), "cursor");
+
+        // this.addMouseMotionListener(new MouseAdapter() {
+        //     @Override
+        //     public void mouseMoved(MouseEvent e) {
+        //         setCursor(c);
+        //     }
+        // });
+
         buildViewToolbar();
         // buildMurBruteValue();
 
@@ -449,10 +471,11 @@ public class DrawingPanel extends javax.swing.JPanel {
 
         SwingUtilities.invokeLater(() -> {
             // System.out.println("InvokeAndWait " + getSize());
+            afficheur.rechargerAffichage();
+
             afficheur.getScene().getCamera().setPosition(new Vector3D(getWidth() / 2, getHeight() / 2, -1));
             afficheur.getScene().getLight().setPosition(new Vector3D(10000, 10000, 10000));
             afficheur.getScene().getLight().setIntensity(0.5);
-
         });
     }
 
@@ -599,9 +622,69 @@ public class DrawingPanel extends javax.swing.JPanel {
                 mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO2);
             });
 
+            JPanel mouseControlsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
+            JToggleButton rotateControlBtn = new JToggleButton();
+            JToggleButton translateControlBtn = new JToggleButton();
+
+            
+            String rotateIconPath = "/icons/dark/rotate_icon.png";
+            String moveIconPath = "/icons/dark/move_icon.png";
+
+            URL rotateIconURL = App.class.getResource(rotateIconPath);
+            URL moveIconURL = App.class.getResource(moveIconPath);
+
+            Image rotateIcon = Toolkit.getDefaultToolkit().getImage(rotateIconURL).getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+            Image moveIcon = Toolkit.getDefaultToolkit().getImage(moveIconURL).getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+            
+            rotateControlBtn.setToolTipText("Contrôle de la direction");
+            translateControlBtn.setToolTipText("Contrôle de la position");
+
+            rotateControlBtn.setIcon(new ImageIcon(rotateIcon));
+            translateControlBtn.setIcon(new ImageIcon(moveIcon));
+
+            translateControlBtn.setSelected(true);
+
+            rotateControlBtn.addActionListener((evt) -> {
+                rotateControlBtn.setSelected(true);
+                translateControlBtn.setSelected(false);
+
+                afficheur.setMouseControl(Afficheur.MouseControl.Rotate);
+            });
+
+            translateControlBtn.addActionListener((evt) -> {
+                rotateControlBtn.setSelected(false);
+                translateControlBtn.setSelected(true);
+
+                afficheur.setMouseControl(Afficheur.MouseControl.Move);
+            });
+
+            rotateControlBtn.setFocusable(false);
+            translateControlBtn.setFocusable(false);
+
+            mouseControlsPanel.setOpaque(false);
+
+            mouseControlsPanel.add(translateControlBtn);
+            mouseControlsPanel.add(rotateControlBtn);
+
             toolsSwitchesContainer.add(gridContainer);
             toolsSwitchesContainer.add(gridStepContainer);
             toolsSwitchesContainer.add(voisinContainer);
+            toolsSwitchesContainer.add(mouseControlsPanel);
+
+            afficheur.getEventSupport().addMouseControlListener((mouseControl) -> {
+                System.out.println("MouseControl Changed " + mouseControl);
+                switch (mouseControl) {
+                    case Move:
+                        translateControlBtn.setSelected(true);
+                        rotateControlBtn.setSelected(false);
+                        break;
+                    case Rotate:
+                        translateControlBtn.setSelected(false);
+                        rotateControlBtn.setSelected(true);
+                        break;
+                }
+            });
+
 
             mainWindow.getControleur().addUserPreferencesEventListener(new UserPreferencesEventListener() {
                 @Override

@@ -14,6 +14,7 @@ public class AfficheurEventSupport {
     private List<MeshSelectionListener> meshSelectionListeners = new ArrayList<MeshSelectionListener>();
     private List<ViewChangedListener> viewChangedListeners = new ArrayList<ViewChangedListener>();
     private List<CameraListener> cameraListeners = new ArrayList<CameraListener>();
+    private List<MouseControlListener> mouseControlListeners = new ArrayList<MouseControlListener>();
 
     public void addZoomEventListener(ZoomEventListener listener) {
         zoomEventListeners.add(listener);
@@ -33,6 +34,10 @@ public class AfficheurEventSupport {
 
     public void addCameraListener(CameraListener listener) {
         cameraListeners.add(listener);
+    }
+
+    public void addMouseControlListener(MouseControlListener listener) {
+        mouseControlListeners.add(listener);
     }
 
     public void dispatchZoomIn() {
@@ -113,6 +118,12 @@ public class AfficheurEventSupport {
         }
     }
 
+    public void dispatchMouseControlChanged(Afficheur.MouseControl mouseControl) {
+        for (MouseControlListener listener : mouseControlListeners) {
+            listener.changed(mouseControl);
+        }
+    }
+
     public void removeZoomEventListener(ZoomEventListener listener) {
         zoomEventListeners.remove(listener);
     }
@@ -131,6 +142,10 @@ public class AfficheurEventSupport {
 
     public void removeCameraListener(CameraListener listener) {
         cameraListeners.remove(listener);
+    }
+
+    public void removeMouseControlListener(MouseControlListener listener) {
+        mouseControlListeners.remove(listener);
     }
 
     public static enum AfficheurEvent {
@@ -234,6 +249,10 @@ public class AfficheurEventSupport {
         public Vector3D getDirection() {
             return direction;
         }
+    }
+
+    public static interface MouseControlListener {
+        public void changed(Afficheur.MouseControl mouseControl);
     }
 
     public static interface ZoomEventListener {

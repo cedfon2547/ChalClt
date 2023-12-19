@@ -67,7 +67,7 @@ public class App {
 
         AppSplashScreen splashScreen = new AppSplashScreen();
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -80,11 +80,17 @@ public class App {
         ImageIcon appIcon = new ImageIcon(appImg);
 
         mainWindow.setIconImage(appIcon.getImage());
-        
+        // get screen size
+        // java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+
+
+        mainWindow.setSize(800, 800);
+        // mainWindow.pack();
+        mainWindow.setLocationRelativeTo(null);
+        // mainWindow.setLocation(new Point((int) (screenSize.getWidth() / 2 - 500), (int) (screenSize.getHeight() / 2 - 500)));
+
         // JFrame configuration
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainWindow.pack();
-        mainWindow.setSize(1000, 800);
         mainWindow.setVisible(true);
     }
 }

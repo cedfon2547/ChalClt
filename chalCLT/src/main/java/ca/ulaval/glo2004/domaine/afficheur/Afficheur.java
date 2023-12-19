@@ -2,6 +2,10 @@ package ca.ulaval.glo2004.domaine.afficheur;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
@@ -40,10 +44,10 @@ class RoofPanelBuilder {
 
         double a = epaisseur / 2 / Math.cos(Math.toRadians(angle));
         double b = epaisseur / 2 * Math.tan(Math.toRadians(angle));
-        double c = epaisseur / 2 * Math.sin(Math.toRadians(angle));
+        // double c = epaisseur / 2 * Math.sin(Math.toRadians(angle));
         double height = Math.tan(Math.toRadians(angle)) * longueur;
         double depth = epaisseur;
-        double m = marge;
+        // double m = marge;
 
         double p1[] = new double[] { x0, y0, z0 };
         double p2[] = new double[] { x0 + largeur, y0, z0 };
@@ -615,6 +619,11 @@ class RoofPanelBuilder {
 }
 
 public class Afficheur {
+    public static enum MouseControl {
+        Move,
+        Rotate,
+    }
+
     private AfficheurEventSupport eventSupport = new AfficheurEventSupport();
 
     private Controleur controleur;
@@ -634,6 +643,7 @@ public class Afficheur {
 
     public OutputType renduVisuel = OutputType.Fini;
     private JPanel drawingPanel;
+    MouseControl mouseControl = MouseControl.Move;
 
     public Afficheur(Controleur controleur, JPanel drawingPanel) {
         this.drawingPanel = drawingPanel;
@@ -717,6 +727,20 @@ public class Afficheur {
                         scene.getCamera().getPosition(), scene.getCamera().getDirection()));
             }
         });
+
+        this.drawingPanel.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                // System.out.println("keyPressed " + (e.getKeyCode() == KeyEvent.VK_SHIFT));                
+            }
+        });
+
+        this.drawingPanel.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                drawingPanel.requestFocusInWindow();
+            }
+        });
     }
 
     public AfficheurEventSupport getEventSupport() {
@@ -753,6 +777,19 @@ public class Afficheur {
 
     public void setVueActive(TypeDeVue vueActive) {
         this.vueActive = vueActive;
+    }
+
+    public void setMouseControl(MouseControl mouseControl) {
+        if (this.mouseControl == mouseControl) {
+            return;
+        }
+
+        this.mouseControl = mouseControl;
+        this.eventSupport.dispatchMouseControlChanged(mouseControl);
+    }
+
+    public MouseControl getMouseControl() {
+        return mouseControl;
     }
 
     public void switchOutputType(OutputType outputType) {
@@ -1415,6 +1452,7 @@ public class Afficheur {
             Vector3D initialFocusedMeshPosition = null;
 
             boolean isShiftDown = false;
+            boolean isTempRotate = false;
 
             protected void reset() {
                 initialPoint = null;
@@ -1424,6 +1462,7 @@ public class Afficheur {
                 focusedMesh = null;
                 initialFocusedMeshPosition = null;
                 isShiftDown = false;
+                isTempRotate = false;
             }
 
             protected void handleMousePressed(java.awt.event.MouseEvent evt) {
@@ -1485,6 +1524,11 @@ public class Afficheur {
 
                 @Override
                 public void mouseReleased(java.awt.event.MouseEvent evt) {
+                    if (isTempRotate) {
+                        setMouseControl(MouseControl.Move);
+                        isTempRotate = false;
+                    }
+
                     if (focusedMesh != null && isDragging) {
                         focusedMesh.setIsDragged(false);
 
@@ -1567,8 +1611,18 @@ public class Afficheur {
                     double diffX = evt.getPoint().x - initialPoint.getX();
                     double diffY = evt.getPoint().y - initialPoint.getY();
 
+                    if (evt.isShiftDown() && mouseControl != MouseControl.Rotate) {
+                        isTempRotate = true;
+                        setMouseControl(MouseControl.Rotate);
+                    } else if (isTempRotate && !evt.isShiftDown()) {
+                        setMouseControl(MouseControl.Move);
+                        isTempRotate = false;
+                    }
+
                     // Rotating when shift is pressed
-                    if (evt.isShiftDown()) {
+                    if (mouseControl == MouseControl.Rotate) {
+                        // if (evt.isShiftDown() && mouseControl != MouseControl.Rotate) setMouseControl(MouseControl.Rotate);
+
                         double rotateStep = Math.toRadians(1);
                         double rotateX = rotateStep * -diffY / 3; // negated Ydiff to fix the inverted y axis
                         double rotateY = rotateStep * diffX / 3;
@@ -1596,6 +1650,8 @@ public class Afficheur {
                             pignonGaucheToit.setVisible(true);
                         }
                     } else {
+                        if (!evt.isShiftDown() && mouseControl != MouseControl.Move) setMouseControl(MouseControl.Move);
+                        
                         Vector3D position = initialDragCamPosition.add(new Vector3D(diffX, diffY, 0));
                         getScene().getCamera().setPosition(position);
                     }
@@ -1606,6 +1662,14 @@ public class Afficheur {
 
             @Override
             public void mouseMoved(java.awt.event.MouseEvent evt) {
+                if (evt.isShiftDown()) {
+                    setMouseControl(MouseControl.Rotate);
+                    isTempRotate = true;
+                } else if (isTempRotate) {
+                    setMouseControl(MouseControl.Move);
+                    isTempRotate = false;
+                }
+
                 if (!initialized) {
                     handleInitialization(evt);
                 }
