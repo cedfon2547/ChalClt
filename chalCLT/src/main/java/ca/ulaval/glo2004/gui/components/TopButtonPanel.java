@@ -337,10 +337,15 @@ public class TopButtonPanel extends JPanel {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new OpenSaveDirectoryFileChoose(mainWindow, (path) -> {
+                // new OpenSaveDirectoryFileChoose(mainWindow, (path) -> {
+                //     mainWindow.getControleur().creerSauvegarde(path);
+                //     mainWindow.notificationManager.createNotification("Projet sauvegardé", "", NotificationType.SUCCESS).setTimer(2000);
+
+                //     return true;
+                // });
+                new SaveProjectDirectoryFileChooser(mainWindow, (path) -> {
                     mainWindow.getControleur().creerSauvegarde(path);
                     mainWindow.notificationManager.createNotification("Projet sauvegardé", "", NotificationType.SUCCESS).setTimer(2000);
-
                     return true;
                 });
             }

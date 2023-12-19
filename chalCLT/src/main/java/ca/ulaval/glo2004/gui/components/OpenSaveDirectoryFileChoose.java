@@ -2,6 +2,8 @@ package ca.ulaval.glo2004.gui.components;
 
 import ca.ulaval.glo2004.gui.MainWindow;
 
+import java.io.File;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -34,9 +36,14 @@ public class OpenSaveDirectoryFileChoose extends javax.swing.JFrame {
         fileChooser.setOpaque(true);
         fileChooser.setVisible(true);
         fileChooser.setDialogTitle("Sélectionner le fichier à ouvrir");
+
+        
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Sauvegarde ChalCLT", "chalclt");
         fileChooser.setFileFilter(filter);
 
+        // Open the current working directory
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+        
         fileChooser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 // System.out.println(evt.getActionCommand());

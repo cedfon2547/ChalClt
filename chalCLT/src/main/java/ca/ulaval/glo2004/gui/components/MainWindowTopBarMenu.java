@@ -386,7 +386,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     }
 
     private void enregistrerItemActionPerformed(java.awt.event.ActionEvent evt) {
-        new ExportationDirectoryFileChoose(mainWindow, (path) -> {
+        new SaveProjectDirectoryFileChooser(mainWindow, (path) -> {
             mainWindow.getControleur().creerSauvegarde(path);
             return true;
         });
