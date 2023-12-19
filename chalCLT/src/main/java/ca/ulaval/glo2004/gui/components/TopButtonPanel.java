@@ -80,8 +80,6 @@ public class TopButtonPanel extends JPanel {
         creerFenetreBtn.setPreferredSize(new Dimension(75, 50));
         creerPorteBtn.setPreferredSize(new Dimension(75, 50));
         supprimerAccessoireBtn.setPreferredSize(new Dimension(75, 50));
-        //grilleToggleBtn.setPreferredSize(new Dimension(75, 50));
-        //voisinToggleBtn.setPreferredSize(new Dimension(75, 50));
         undoToggleBtn.setPreferredSize(new Dimension(75, 50));
         redoToggleBtn.setPreferredSize(new Dimension(75, 50));
         saveToggleBtn.setPreferredSize(new Dimension(75, 50));
@@ -100,17 +98,6 @@ public class TopButtonPanel extends JPanel {
         supprimerAccessoireBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
         supprimerAccessoireBtn.setHorizontalTextPosition(SwingConstants.CENTER);
         supprimerAccessoireBtn.setBorder(null);
-
-//        grilleToggleBtn.setFocusPainted(false);
-//        grilleToggleBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
-//        grilleToggleBtn.setHorizontalTextPosition(SwingConstants.CENTER);
-//        grilleToggleBtn.setBorder(null);
-//        grilleToggleBtn.setSelected(true);
-
-//        voisinToggleBtn.setFocusPainted(false);
-//        voisinToggleBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
-//        voisinToggleBtn.setHorizontalTextPosition(SwingConstants.CENTER);
-//        voisinToggleBtn.setBorder(null);
 
         undoToggleBtn.setFocusPainted(false);
         undoToggleBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -135,13 +122,6 @@ public class TopButtonPanel extends JPanel {
         undoToggleBtn.addActionListener(undoToggleActionListener());
         redoToggleBtn.addActionListener(redoToggleActionListener());
         saveToggleBtn.addActionListener(saveToggleActionListener());
-
-        // creerFenetreBtn.addMouseMotionListener(new MouseAdapter() {
-        //     @Override
-        //     public void mouseDragged(java.awt.event.MouseEvent evt) {
-        //         System.out.println("dragged");
-        //     }
-        // });
 
         add(creerFenetreBtn);
         add(creerPorteBtn);
@@ -241,7 +221,6 @@ public class TopButtonPanel extends JPanel {
 
                 mainWindow.getControleur().ajouterAccessoire(typeMur, TypeAccessoire.Fenetre, new double[] { 0, 0 },
                         new double[] { 20, 20 });
-                // mainWindow.drawingPanel.rechargerAffichage();
 
             }
         };
@@ -278,7 +257,6 @@ public class TopButtonPanel extends JPanel {
 
                 mainWindow.getControleur().ajouterAccessoire(typeMur, TypeAccessoire.Porte, new double[] { 0, 0 },
                         new double[] { 32, 60 });
-                // mainWindow.drawingPanel.rechargerAffichage();
             }
         };
     }
@@ -287,7 +265,6 @@ public class TopButtonPanel extends JPanel {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // System.out.println(mainWindow.getAccessoiresSelectionnees().size());
                 mainWindow.deleteAllAccessoiresSelectionnees();
             }
         };
@@ -346,12 +323,6 @@ public class TopButtonPanel extends JPanel {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // new OpenSaveDirectoryFileChoose(mainWindow, (path) -> {
-                //     mainWindow.getControleur().creerSauvegarde(path);
-                //     mainWindow.notificationManager.createNotification("Projet sauvegardé", "", NotificationType.SUCCESS).setTimer(2000);
-
-                //     return true;
-                // });
                 new SaveProjectDirectoryFileChooser(mainWindow, (path) -> {
                     mainWindow.getControleur().creerSauvegarde(path);
                     mainWindow.notificationManager.createNotification("Projet sauvegardé", "", NotificationType.SUCCESS).setTimer(2000);

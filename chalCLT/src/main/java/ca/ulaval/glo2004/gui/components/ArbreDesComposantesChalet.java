@@ -50,7 +50,6 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
         this.mainWindow.getControleur().addAccessoireEventListener(new AccessoireEventListener() {
             @Override
             public void change(AccessoireEvent event) {
-                // TODO Auto-generated method stub
                 Accessoire.AccessoireDTO accessoireDTO = event.getAccessoireDTO();
                 updateNoeudAccessoire(accessoireDTO);
 
@@ -58,7 +57,6 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
 
             @Override
             public void add(AccessoireEvent event) {
-                // TODO Auto-generated method stub
                 Accessoire.AccessoireDTO accDto = event.getAccessoireDTO();
                 ajouterNoeudAccessoire(accDto);
 
@@ -176,7 +174,6 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
         return new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
                 // mainWindow.clearAccessoiresSelectionnees();
-
                 TreePath[] treePaths = arbreComposantesChalet.getSelectionPaths();
 
                 if (treePaths == null) {
@@ -234,32 +231,24 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
                 if (evt.getClickCount() == 2 && evt.getButton() == java.awt.event.MouseEvent.BUTTON1) {
                     switch (path.getLastPathComponent().toString()) {
                         case Constants._STRING_MUR_FACADE:
-                            // System.out.println("Mur Facade");
                             mainWindow.drawingPanel.changerVue(TypeDeVue.Facade);
                             break;
                         case Constants._STRING_MUR_ARRIERE:
-                            // System.out.println("Mur Arriere");
                             mainWindow.drawingPanel.changerVue(TypeDeVue.Arriere);
                             break;
                         case Constants._STRING_MUR_DROIT:
-                            // System.out.println("Mur droit");
                             mainWindow.drawingPanel.changerVue(TypeDeVue.Droite);
                             break;
                         case Constants._STRING_MUR_GAUCHE:
-                            // System.out.println("Mur gauche");
                             mainWindow.drawingPanel.changerVue(TypeDeVue.Gauche);
                             break;
                         case Constants._STRING_PANNEAU_SUPERIEUR:
-                            // System.out.println("Panneau supérieur");
                             break;
                         case Constants._STRING_RALLONGE_VERTICALE:
-                            // System.out.println("Rallonge verticale");
                             break;
                         case Constants._STRING_PIGNON_DROIT:
-                            // System.out.println("Pignon droit");
                             break;
                         case Constants._STRING_PIGNON_GAUCHE:
-                            // System.out.println("Pignon gauche");
                             break;
                     }
 
@@ -279,8 +268,6 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
 
             @Override
             public void focusLost(java.awt.event.FocusEvent evt) {
-                // System.out.println("Focus lost "
-                //         + (evt.getOppositeComponent() == mainWindow.topButtonPanel.supprimerAccessoireBtn));
                 if (evt.getOppositeComponent() != mainWindow.topButtonPanel.supprimerAccessoireBtn) {
                     mainWindow.clearAccessoiresSelectionnees();
                     setSelectedAccessoire(mainWindow.accessoiresSelectionnees);
@@ -292,7 +279,6 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
     public void rechargerNoeudAccessoire(Accessoire.AccessoireDTO accessoireDTO) {
         for (AccessoireTreeNode accNode : accessoireNodes) {
             if (accNode.getAccessoireDTO().accessoireId == accessoireDTO.accessoireId) {
-                // accNode.setUserObject(accessoireDTO);
                 ((DefaultTreeModel) arbreComposantesChalet.getModel()).reload(accNode);
                 break;
             }
@@ -410,9 +396,6 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
     }
 
     public void recharger() {
-        // accessoireDTOs.clear();
-        // accessoireNodes.clear();
-
         Chalet.ChaletDTO chaletDTO = mainWindow.getControleur().getChalet();
         List<Accessoire.AccessoireDTO> accessoireDTOs = mainWindow.getControleur().getAccessoires();
 

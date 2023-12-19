@@ -37,7 +37,6 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
         Image murImg = tk.getImage(murImgURL);
         Image chaletImg = tk.getImage(chaletImgURL);
 
-        // URL iconUrl = this.getClass().getResource("\\icons\\fenetre_tree.png");
         this.fenetreIcon = new ImageIcon(fenetreImg);
         this.fenetreIcon.setImage(this.fenetreIcon.getImage().getScaledInstance(19, 19, Image.SCALE_DEFAULT));
         this.porteIcon = new ImageIcon(porteImg);
