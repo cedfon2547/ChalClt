@@ -151,7 +151,7 @@ public class Controleur extends ControleurEventSupport {
     public void creerSauvegarde(String path) {
         try {
             if (!path.endsWith(".chalclt")) {
-                path += ".chalclt";
+                path += ( "\\"+ this.projectActif.getChalet().getNom() + ".chalclt");
             }
             
             File f = new File(path);
