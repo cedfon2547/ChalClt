@@ -400,6 +400,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         mainWindow.getControleur().creeProjet();
         // mainWindow.arbreDesComposantesChalet.buildTree();
         mainWindow.reloadArbreComposantes();
+        mainWindow.tableProprietesChalet.updateTable(mainWindow.getControleur().getChalet());
         mainWindow.drawingPanel.afficheur.rechargerAffichage();
 
         mainWindow.dispatchNotificationAlert("Nouveau Projet", "Un nouveau projet a été créé.", NotificationType.INFO,
