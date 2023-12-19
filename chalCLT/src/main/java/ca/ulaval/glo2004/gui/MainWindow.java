@@ -71,7 +71,6 @@ public class MainWindow extends javax.swing.JFrame {
     public TopButtonPanel topButtonPanel;
 
     public List<Accessoire.AccessoireDTO> accessoiresSelectionnees = new ArrayList<Accessoire.AccessoireDTO>();
-    public List<TypeMur> mursSelectionnes = new ArrayList<TypeMur>();
 
     public NotificationManager notificationManager = new NotificationManager(this);
 
@@ -277,7 +276,6 @@ public class MainWindow extends javax.swing.JFrame {
             public void focusLost(java.awt.event.FocusEvent e) {
                 // System.out.println("Focus lost");
             }
-
         });
         // tableContainer.setBorder(tableProprietesChalet.getTitledBorder());
         // tableContainer.add(tableProprietesChalet.getTableHeader());
@@ -317,18 +315,6 @@ public class MainWindow extends javax.swing.JFrame {
 
     public List<Accessoire.AccessoireDTO> getAccessoiresSelectionnees() {
         return accessoiresSelectionnees;
-    }
-
-    public void ajouterMurSelectionne(TypeMur typeMur) {
-        mursSelectionnes.add(typeMur);
-    }
-
-    public void retirerMurSelectionne(TypeMur typeMur) {
-        mursSelectionnes.remove(typeMur);
-    }
-
-    public void clearMursSelectionnes() {
-        mursSelectionnes.clear();
     }
 
     public void ajouterAccessoireSelectionnee(Accessoire.AccessoireDTO accessoireDTO) {

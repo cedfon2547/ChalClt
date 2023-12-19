@@ -148,9 +148,7 @@ public class PanelHelper {
 
         return triangles;
     }
-
-    // bye old version
-
+    
     public static TriangleMeshGroup buildWindow(double width, double height, Vector3D position, double frameWidth) {
         double x0 = position.x, y0 = position.y, z0 = position.z;
 

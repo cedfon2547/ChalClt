@@ -25,7 +25,6 @@ import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Camera;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.scene.Scene;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper.MurTriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper.OutputType;
-import ca.ulaval.glo2004.domaine.utils.PanelHelper.TypeExport;
 import ca.ulaval.glo2004.domaine.utils.ObjectImporter;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper;
 import ca.ulaval.glo2004.domaine.utils.STLTools;
@@ -45,6 +44,10 @@ public class Afficheur {
     public MurTriangleMeshGroup murArriereGroup;
     public MurTriangleMeshGroup murDroitGroup;
     public MurTriangleMeshGroup murGaucheGroup;
+    public TriangleMeshGroup panneauToit;
+    public TriangleMeshGroup rallongeVerticaleToit;
+    public TriangleMeshGroup pignonGaucheToit;
+    public TriangleMeshGroup pignonDroitToit;
 
     public OutputType renduVisuel = OutputType.Fini;
     private JPanel drawingPanel;
@@ -178,15 +181,10 @@ public class Afficheur {
         this.renduVisuel = outputType;
         drawingPanel.repaint();
     }
-
+    
     private void sharedRoofCode(Chalet.ChaletDTO chaletDTO) {
         double longueur = chaletDTO.longueur;
         double largeur = chaletDTO.largeur;
-
-        TriangleMeshGroup panneauToit;
-        TriangleMeshGroup rallongeVerticaleToit;
-        TriangleMeshGroup pignonGaucheToit;
-        TriangleMeshGroup pignonDroitToit;
 
         switch (chaletDTO.sensToit) {
             case Nord:
@@ -216,6 +214,11 @@ public class Afficheur {
                 rallongeVerticaleToit.setDraggable(false);
                 pignonDroitToit.setDraggable(false);
                 pignonGaucheToit.setDraggable(false);
+
+                panneauToit.ID = "panneauToit";
+                rallongeVerticaleToit.ID = "rallongeVerticaleToit";
+                pignonDroitToit.ID = "pignonDroitToit";
+                pignonGaucheToit.ID = "pignonGaucheToit";
 
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
@@ -255,6 +258,11 @@ public class Afficheur {
                 pignonDroitToit.setDraggable(false);
                 pignonGaucheToit.setDraggable(false);
 
+                panneauToit.ID = "panneauToit";
+                rallongeVerticaleToit.ID = "rallongeVerticaleToit";
+                pignonDroitToit.ID = "pignonDroitToit";
+                pignonGaucheToit.ID = "pignonGaucheToit";
+
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
                 getScene().addMesh(pignonDroitToit);
@@ -293,6 +301,11 @@ public class Afficheur {
                 pignonDroitToit.setDraggable(false);
                 pignonGaucheToit.setDraggable(false);
 
+                panneauToit.ID = "panneauToit";
+                rallongeVerticaleToit.ID = "rallongeVerticaleToit";
+                pignonDroitToit.ID = "pignonDroitToit";
+                pignonGaucheToit.ID = "pignonGaucheToit";
+
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
                 getScene().addMesh(pignonDroitToit);
@@ -330,6 +343,11 @@ public class Afficheur {
                 rallongeVerticaleToit.setDraggable(false);
                 pignonDroitToit.setDraggable(false);
                 pignonGaucheToit.setDraggable(false);
+
+                panneauToit.ID = "panneauToit";
+                rallongeVerticaleToit.ID = "rallongeVerticaleToit";
+                pignonDroitToit.ID = "pignonDroitToit";
+                pignonGaucheToit.ID = "pignonGaucheToit";
 
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
@@ -391,29 +409,8 @@ public class Afficheur {
         getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
 
         // don't show roof when looking from the top
-        if (this.scene.getCamera().getDirection().x != -Math.PI / 2)
-            sharedRoofCode(chaletDTO); // I split this out because it was a straight copy-paste
-
-        // // Create mesh representing a rule to measure the chalet
-        // double ruleWidth = 200;
-        // int stepNb = 20;
-
-        // TriangleMeshGroup ruleGroup = new TriangleMeshGroup(new ArrayList<>());
-        // TriangleMesh mainRect = new RectCuboid(new Vector3D(0, 0, 100), new
-        // Vector3D(ruleWidth, 2, 12));
-
-        // for (int i = 0; i <= stepNb; i++) {
-        // TriangleMesh step = new RectCuboid(new Vector3D(i * ruleWidth / stepNb, -2,
-        // 100), new Vector3D(2, 2, 12));
-        // step.getMaterial().setColor(Color.BLACK);
-        // // step = step.translate(new Vector3D(-i * ruleWidth / stepNb, 0, 0));
-        // ruleGroup.addMesh(step);
-        // }
-
-        // ruleGroup.addMesh(mainRect);
-        // ruleGroup = ruleGroup.translate(new Vector3D(-ruleWidth / 2, 0, 0));
-
-        // getScene().addMesh(ruleGroup);
+        // if (this.scene.getCamera().getDirection().x != -Math.PI / 2)
+        sharedRoofCode(chaletDTO); // I split this out because it was a straight copy-paste
 
         // // Pour tester l'importation d'objets à partir de fichiers .obj
         if (getControleur().getPreferencesUtilisateur().afficherPlancher) {
@@ -486,8 +483,10 @@ public class Afficheur {
         murGaucheGroup.update(chaletDTO);
 
         // a bit jank but i'll keep it I guess
-        if (this.scene.getCamera().getDirection().x != -Math.PI / 2)
-            sharedRoofCode(chaletDTO);
+        // if (this.scene.getCamera().getDirection().x != -Math.PI / 2)
+        //     sharedRoofCode(chaletDTO);
+
+        sharedRoofCode(chaletDTO);
 
         PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO = this.controleur
                 .getPreferencesUtilisateur();
@@ -496,6 +495,23 @@ public class Afficheur {
 
         updateViewGrid();
         drawingPanel.repaint();
+    }
+
+    public void exportStlToit(String directoryPath, String nomChalet) {
+        List<STLTools.Triangle> pignonDroitStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(pignonDroitToit.getMesh(0).getTriangles());
+        List<STLTools.Triangle> pignonGaucheStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(pignonGaucheToit.getMesh(0).getTriangles());
+        List<STLTools.Triangle> panneauStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(panneauToit.getMesh(0).getTriangles());
+        List<STLTools.Triangle> rallongeVerticaleStlTriangles = PanelHelper.convertMeshTrianglesToStlTriangles(rallongeVerticaleToit.getMesh(0).getTriangles());
+
+        String pignonDroitFileName = String.format("\\%s_Fini_PignonDroit.stl", nomChalet);
+        String pignonGaucheFileName = String.format("\\%s_Fini_PignonGauche.stl", nomChalet);
+        String panneauFileName = String.format("\\%s_Fini_Panneau.stl", nomChalet);
+        String rallongeVerticaleFileName = String.format("\\%s_Fini_RallongeVerticale.stl", nomChalet);
+        
+        STLTools.writeSTL(pignonDroitStlTriangles, directoryPath + pignonDroitFileName);
+        STLTools.writeSTL(pignonGaucheStlTriangles, directoryPath + pignonGaucheFileName);
+        STLTools.writeSTL(panneauStlTriangles, directoryPath + panneauFileName);
+        STLTools.writeSTL(rallongeVerticaleStlTriangles, directoryPath + rallongeVerticaleFileName);
     }
 
     public void exportStlFini(String directoryPath, String nomChalet) {
@@ -532,6 +548,8 @@ public class Afficheur {
         STLTools.writeSTL(arriereStlTriangles, directoryPath + arriereFileName);
         STLTools.writeSTL(gaucheStlTriangles, directoryPath + gaucheFileName);
         STLTools.writeSTL(droitStlTriangles, directoryPath + droitFileName);
+
+        exportStlToit(directoryPath, nomChalet);
     }
 
     public static class RetraitTest {
@@ -727,121 +745,6 @@ public class Afficheur {
         };
     }
 
-    // purely archive for code
-    /*
-     * private MouseListener mouseListener() {
-     * return new MouseListener() {
-     * 
-     * @Override
-     * public void mouseClicked(java.awt.event.MouseEvent evt) {
-     * // drawingPanel.grabFocus();
-     * 
-     * // TriangleMesh clickedMesh =
-     * getRasterizer().getMeshFromPoint(evt.getPoint());
-     * 
-     * // // if (clickedMesh == null) {
-     * // // deselectAllMeshed();
-     * // // eventSupport.dispatchSelectionChanged(new
-     * // // AfficheurEventSupport.MeshSelectionEvent(getSelection()));
-     * // // drawingPanel.repaint();
-     * // // return;
-     * // // }
-     * 
-     * // if (clickedMesh != null && evt.getClickCount() == 2) {
-     * 
-     * // // pcs.firePropertyChange(AfficheurEvent.MeshDoubleClicked.toString(),
-     * null,
-     * // // clickedMesh);
-     * 
-     * // if (clickedMesh instanceof PanelHelper.MurTriangleMeshGroup) {
-     * // // System.out.println("Double clicked on a wall");
-     * // switch (((PanelHelper.MurTriangleMeshGroup) clickedMesh).getTypeMur()) {
-     * // case Facade:
-     * // changerVue(Afficheur.TypeDeVue.Facade);
-     * // break;
-     * // case Arriere:
-     * // changerVue(Afficheur.TypeDeVue.Arriere);
-     * // break;
-     * // case Droit:
-     * // changerVue(Afficheur.TypeDeVue.Droite);
-     * // break;
-     * // case Gauche:
-     * // changerVue(Afficheur.TypeDeVue.Gauche);
-     * // break;
-     * // default:
-     * // // nop, fall through
-     * // }
-     * // }
-     * 
-     * // // if (clickedMesh.getSelectable()) {
-     * // // clickedMesh.setSelected(true);
-     * // // }
-     * 
-     * // updateViewGrid();
-     * // // drawingPanel.repaint();
-     * // // eventSupport.dispatchMeshClicked(new
-     * // // AfficheurEventSupport.MeshMouseEvent(evt, clickedMesh));
-     * // eventSupport.dispatchViewChanged(new
-     * // AfficheurEventSupport.ViewChangedEvent(getVueActive()));
-     * // return;
-     * // } else if (clickedMesh != null && clickedMesh.getSelectable()) {
-     * // // pcs.firePropertyChange(AfficheurEvent.SelectionChanged.toString(),
-     * null,
-     * // // clickedMesh);
-     * // // pcs.firePropertyChange(AfficheurEvent.MeshClicked.toString(), null,
-     * // // clickedMesh);
-     * // // if (!evt.isControlDown()) {
-     * // // deselectAllMeshed();
-     * // // }
-     * 
-     * // // clickedMesh.setSelected(!clickedMesh.getSelected());
-     * // // eventSupport.dispatchMeshClicked(new
-     * // // AfficheurEventSupport.MeshMouseEvent(evt, clickedMesh));
-     * // // eventSupport.dispatchSelectionChanged(new
-     * // // AfficheurEventSupport.MeshSelectionEvent(getSelection()));
-     * // }
-     * 
-     * // drawingPanel.repaint();
-     * }
-     * 
-     * @Override
-     * public void mousePressed(java.awt.event.MouseEvent evt) {
-     * // System.out.println("Normal: Mouse pressed");
-     * // drawingPanel.grabFocus();
-     * // TriangleMesh clickedMesh =
-     * getRasterizer().getMeshFromPoint(evt.getPoint());
-     * // if (clickedMesh != null) {
-     * // // System.out.println("Mouse pressed on mesh: " + clickedMesh.ID);
-     * 
-     * // if (evt.isControlDown()) {
-     * // clickedMesh.setSelected(!clickedMesh.getSelected());
-     * // } else {
-     * // deselectAllMeshes();
-     * // clickedMesh.setSelected(true);
-     * // }
-     * // } else {
-     * // deselectAllMeshes();
-     * // }
-     * 
-     * // eventSupport.dispatchSelectionChanged(new
-     * // AfficheurEventSupport.MeshSelectionEvent(getSelection()));
-     * // drawingPanel.repaint();
-     * }
-     * 
-     * @Override
-     * public void mouseReleased(java.awt.event.MouseEvent evt) {
-     * }
-     * 
-     * @Override
-     * public void mouseEntered(java.awt.event.MouseEvent evt) {
-     * }
-     * 
-     * @Override
-     * public void mouseExited(java.awt.event.MouseEvent evt) {
-     * }
-     * };
-     * }
-     */
     private MouseMotionListener mouseMotionListener() {
         return new MouseMotionListener() {
             boolean initialized = false;
@@ -1031,10 +934,33 @@ public class Afficheur {
 
                         getScene().getCamera().setDirection(direction);
                         updateViewGrid();
+                        if (direction.x == -Math.PI / 2) {
+                            panneauToit.setVisible(false);
+                            rallongeVerticaleToit.setVisible(false);
+                            pignonDroitToit.setVisible(false);
+                            pignonGaucheToit.setVisible(false);
+                        } else {
+                            panneauToit.setVisible(true);
+                            rallongeVerticaleToit.setVisible(true);
+                            pignonDroitToit.setVisible(true);
+                            pignonGaucheToit.setVisible(true);
+                        }
 
-                        if ((previousDragCamDirection == null || previousDragCamDirection.x == -Math.PI / 2)
-                                ^ (direction.x == -Math.PI / 2)) // yes that is an XOR operation, that's on purpose
-                            rechargerAffichage(); // to show/hide roof when snapping to or breaking away from vertical
+                        // if ((previousDragCamDirection == null || previousDragCamDirection.x == -Math.PI / 2)
+                        //         ^ (direction.x == -Math.PI / 2)) // yes that is an XOR operation, that's on purpose
+                        //     {
+                        //         System.out.println("Snap!!");
+                        //         panneauToit.setVisible(false);
+                        //         rallongeVerticaleToit.setVisible(false);
+                        //         pignonDroitToit.setVisible(false);
+                        //         pignonGaucheToit.setVisible(false);
+                        //         // rechargerAffichage(); // to show/hide roof when snapping to or breaking away from vertical
+                        //     } else {
+                        //         panneauToit.setVisible(true);
+                        //         rallongeVerticaleToit.setVisible(true);
+                        //         pignonDroitToit.setVisible(true);
+                        //         pignonGaucheToit.setVisible(true);
+                        //     }
 
                         previousDragCamDirection = direction;
                     } else {
