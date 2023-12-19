@@ -936,10 +936,10 @@ public class Afficheur {
         double longueur = chaletDTO.longueur;
         double largeur = chaletDTO.largeur;
 
-        Color panneauToitColor = new Color(255,146, 146);
-        Color rallongeVerticaleToitColor = new Color(255,146, 146);
-        Color pignonDroitToitColor = new Color(255,146, 146).darker();
-        Color pignonGaucheToitColor = new Color(255,146, 146).darker();
+        Color panneauToitColor = new Color(240, 245, 88);
+        Color rallongeVerticaleToitColor = new Color(240, 245, 88);
+        Color pignonDroitToitColor = new Color(58, 232, 152);
+        Color pignonGaucheToitColor = new Color(58, 232, 152);
 
         TriangleMeshGroup oldPanneauToit = this.panneauToit;
         TriangleMeshGroup oldRallongeVerticaleToit = this.rallongeVerticaleToit;
