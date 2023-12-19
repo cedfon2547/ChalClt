@@ -220,11 +220,19 @@ public class Afficheur {
                 pignonDroitToit.ID = "pignonDroitToit";
                 pignonGaucheToit.ID = "pignonGaucheToit";
 
+
                 // Set visible by default since the initial view is from the top
-                panneauToit.setVisible(false);
-                rallongeVerticaleToit.setVisible(false);
-                pignonDroitToit.setVisible(false);
-                pignonGaucheToit.setVisible(false);
+                if (getScene().getCamera().getDirection().x != -Math.PI / 2) {
+                    panneauToit.setVisible(true);
+                    rallongeVerticaleToit.setVisible(true);
+                    pignonDroitToit.setVisible(true);
+                    pignonGaucheToit.setVisible(true);
+                } else {
+                    panneauToit.setVisible(false);
+                    rallongeVerticaleToit.setVisible(false);
+                    pignonDroitToit.setVisible(false);
+                    pignonGaucheToit.setVisible(false);
+                }
 
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
@@ -270,10 +278,17 @@ public class Afficheur {
                 pignonGaucheToit.ID = "pignonGaucheToit";
 
                 // Set visible by default since the initial view is from the top
-                panneauToit.setVisible(false);
-                rallongeVerticaleToit.setVisible(false);
-                pignonDroitToit.setVisible(false);
-                pignonGaucheToit.setVisible(false);
+                if (getScene().getCamera().getDirection().x != -Math.PI / 2) {
+                    panneauToit.setVisible(true);
+                    rallongeVerticaleToit.setVisible(true);
+                    pignonDroitToit.setVisible(true);
+                    pignonGaucheToit.setVisible(true);
+                } else {
+                    panneauToit.setVisible(false);
+                    rallongeVerticaleToit.setVisible(false);
+                    pignonDroitToit.setVisible(false);
+                    pignonGaucheToit.setVisible(false);
+                }
 
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
@@ -319,10 +334,17 @@ public class Afficheur {
                 pignonGaucheToit.ID = "pignonGaucheToit";
 
                 // Set visible by default since the initial view is from the top
-                panneauToit.setVisible(false);
-                rallongeVerticaleToit.setVisible(false);
-                pignonDroitToit.setVisible(false);
-                pignonGaucheToit.setVisible(false);
+                if (getScene().getCamera().getDirection().x != -Math.PI / 2) {
+                    panneauToit.setVisible(true);
+                    rallongeVerticaleToit.setVisible(true);
+                    pignonDroitToit.setVisible(true);
+                    pignonGaucheToit.setVisible(true);
+                } else {
+                    panneauToit.setVisible(false);
+                    rallongeVerticaleToit.setVisible(false);
+                    pignonDroitToit.setVisible(false);
+                    pignonGaucheToit.setVisible(false);
+                }
 
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
@@ -368,10 +390,17 @@ public class Afficheur {
                 pignonGaucheToit.ID = "pignonGaucheToit";
 
                 // Set visible by default since the initial view is from the top
-                panneauToit.setVisible(false);
-                rallongeVerticaleToit.setVisible(false);
-                pignonDroitToit.setVisible(false);
-                pignonGaucheToit.setVisible(false);
+                if (getScene().getCamera().getDirection().x != -Math.PI / 2) {
+                    panneauToit.setVisible(true);
+                    rallongeVerticaleToit.setVisible(true);
+                    pignonDroitToit.setVisible(true);
+                    pignonGaucheToit.setVisible(true);
+                } else {
+                    panneauToit.setVisible(false);
+                    rallongeVerticaleToit.setVisible(false);
+                    pignonDroitToit.setVisible(false);
+                    pignonGaucheToit.setVisible(false);
+                }
 
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
@@ -382,8 +411,6 @@ public class Afficheur {
     }
 
     public void initializeView() {
-        // System.out.println("Initialize View");
-
         this.scene.clearMeshes();
 
         Chalet.ChaletDTO chaletDTO = this.getControleur().getChalet();
@@ -391,8 +418,6 @@ public class Afficheur {
                 .getPreferencesUtilisateur();
         getScene().getConfiguration().setGridStep(preferencesUtilisateurDTO.gridSpacing);
         toggleShowGrid(preferencesUtilisateurDTO.afficherGrille);
-
-        // getScene().clearMeshes();
 
         boolean sideTruncate = chaletDTO.sensToit == TypeSensToit.Nord || chaletDTO.sensToit == TypeSensToit.Sud;
 
@@ -411,7 +436,6 @@ public class Afficheur {
         // Si true, des trous sont formés dans les murs pour les accessoires
         // Présentement à false puisque les accessoires sont des objets 3D
         // Nécessaire pour les exportations
-        // seems a bit redundant
         murFacadeGroup.setComputeHoles(false);
         murArriereGroup.setComputeHoles(false);
         murDroitGroup.setComputeHoles(false);
@@ -467,9 +491,7 @@ public class Afficheur {
         }
 
         Chalet.ChaletDTO chaletDTO = this.getControleur().getChalet();
-        // System.out.println("Reloading View");
 
-        // turns out we need to regenerate the walls to re-truncate them
         boolean sideTruncate = chaletDTO.sensToit == TypeSensToit.Nord || chaletDTO.sensToit == TypeSensToit.Sud;
 
         List<Accessoire.AccessoireDTO> murFacadeAccessoires = getControleur().getAccessoires(TypeMur.Facade);
@@ -755,12 +777,10 @@ public class Afficheur {
                 if (evt.getPreciseWheelRotation() < 0) {
                     scene.getCamera().zoomInDirection(evt.getPoint(), ((JPanel) evt.getSource()).getSize(),
                             evt.isShiftDown());
-                    // pcs.firePropertyChange(AfficheurEvent.ZoomIn.toString(), null, null);
                     eventSupport.dispatchZoomIn();
                 } else {
                     scene.getCamera().zoomOutDirection(evt.getPoint(), ((JPanel) evt.getSource()).getSize(),
                             evt.isShiftDown());
-                    // pcs.firePropertyChange(AfficheurEvent.ZoomOut.toString(), null, null);
                     eventSupport.dispatchZoomOut();
                 }
 
@@ -778,10 +798,7 @@ public class Afficheur {
 
             Vector3D initialDragCamPosition = null;
             Vector3D initialDragCamDirection = null;
-            Vector3D previousDragCamDirection = null;
 
-            // TriangleMesh lastMouseEnteredMesh = null;
-            // TriangleMesh lastDraggedMesh = null;
             TriangleMesh focusedMesh = null;
             Vector3D initialFocusedMeshPosition = null;
 
@@ -794,8 +811,6 @@ public class Afficheur {
                 initialDragCamDirection = null;
                 focusedMesh = null;
                 initialFocusedMeshPosition = null;
-                // lastMouseEnteredMesh = null;
-                // lastDraggedMesh = null;
                 isShiftDown = false;
             }
 
@@ -853,7 +868,6 @@ public class Afficheur {
 
                 @Override
                 public void mousePressed(java.awt.event.MouseEvent evt) {
-                    // System.out.println("Motion: Mouse pressed");
                     handleMousePressed(evt);
                 }
 
@@ -969,24 +983,6 @@ public class Afficheur {
                             pignonDroitToit.setVisible(true);
                             pignonGaucheToit.setVisible(true);
                         }
-
-                        // if ((previousDragCamDirection == null || previousDragCamDirection.x == -Math.PI / 2)
-                        //         ^ (direction.x == -Math.PI / 2)) // yes that is an XOR operation, that's on purpose
-                        //     {
-                        //         System.out.println("Snap!!");
-                        //         panneauToit.setVisible(false);
-                        //         rallongeVerticaleToit.setVisible(false);
-                        //         pignonDroitToit.setVisible(false);
-                        //         pignonGaucheToit.setVisible(false);
-                        //         // rechargerAffichage(); // to show/hide roof when snapping to or breaking away from vertical
-                        //     } else {
-                        //         panneauToit.setVisible(true);
-                        //         rallongeVerticaleToit.setVisible(true);
-                        //         pignonDroitToit.setVisible(true);
-                        //         pignonGaucheToit.setVisible(true);
-                        //     }
-
-                        previousDragCamDirection = direction;
                     } else {
                         Vector3D position = initialDragCamPosition.add(new Vector3D(diffX, diffY, 0));
                         getScene().getCamera().setPosition(position);
@@ -1067,7 +1063,6 @@ public class Afficheur {
                 || direction.equals(TypeDeVue.getDirection(TypeDeVue.Arriere))
                 || direction.equals(TypeDeVue.getDirection(TypeDeVue.Droite))
                 || direction.equals(TypeDeVue.getDirection(TypeDeVue.Gauche))) {
-            // getScene().getConfiguration().setShowGridXZ(showGrid);
             getScene().getConfiguration().setShowGridYZ(showGrid);
             getScene().getConfiguration().setShowGridXY(showGrid);
         } else {

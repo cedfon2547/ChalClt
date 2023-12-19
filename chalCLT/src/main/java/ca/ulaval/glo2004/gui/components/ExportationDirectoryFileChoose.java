@@ -3,7 +3,10 @@ package ca.ulaval.glo2004.gui.components;
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.gui.MainWindow;
 
+import java.io.File;
+
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 public class ExportationDirectoryFileChoose extends javax.swing.JFrame {
@@ -32,20 +35,21 @@ public class ExportationDirectoryFileChoose extends javax.swing.JFrame {
         fileChooser.setDialogTitle("Sélectionner le dossier de destination");
         fileChooser.setToolTipText("Sélectionner le dossier de destination");
         fileChooser.setName("ExportDestionationFileChooser"); // NOI18N
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setOpaque(true);
         fileChooser.setVisible(true);
         fileChooser.setDialogTitle("Sélectionner le dossier de destination");
 
-        //fileChooser.setSelectedFile(new File(chaletDTO.nom));
-        //fileChooser.setFileFilter(new FileNameExtensionFilter("Sauvegardes ChalCLT", "chalclt"));
+
+        fileChooser.setSelectedFile(new File(chaletDTO.nom + ".chalclt"));
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Sauvegardes ChalCLT", "chalclt"));
 
         fileChooser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 // System.out.println(evt.getActionCommand());
                 if (evt.getActionCommand().equals("ApproveSelection")) {
-                    // System.out.println("ApproveSelection");
+                    System.out.println("ApproveSelection " + fileChooser.getSelectedFile().getAbsolutePath());
                     boolean isValid = listener.onSelect(fileChooser.getSelectedFile().getAbsolutePath());
 
                     // if the listener return false, the path is not valid and we should display the
@@ -62,13 +66,6 @@ public class ExportationDirectoryFileChoose extends javax.swing.JFrame {
                     fileChooser.setVisible(false);
                     dispose();
                 }
-            }
-        });
-
-        fileChooser.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                // System.out.println("Property Change" + evt.getPropertyName() + " " +
-                // evt.getNewValue());
             }
         });
 

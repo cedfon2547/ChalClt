@@ -262,7 +262,7 @@ public class PanelHelper {
         double y0 = position.y;
         double z0 = position.z;
 
-        double a = (depth / 2) / Math.cos(Math.toRadians(angle)); // depth / 2 * Math.cos(Math.toRadians(angle));
+        // double a = (depth / 2) / Math.cos(Math.toRadians(angle)); // depth / 2 * Math.cos(Math.toRadians(angle));
         double b = depth / 2 * Math.tan(Math.toRadians(angle));
         double hauteur = (longueur * Math.tan(Math.toRadians(angle)));
 
@@ -791,14 +791,14 @@ public class PanelHelper {
         double height = (largeur + depth / 2 + marge / 2) * Math.tan(Math.toRadians(angle)) - diffHeight;
 
         // see Rallonge for context
-        double halfDrop = (depth / 2) * Math.tan(Math.toRadians(angle));
+        // double halfDrop = (depth / 2) * Math.tan(Math.toRadians(angle));
         double marginDrop = marge / 2 * Math.tan(Math.toRadians(angle));
 
         double midwayHeight = height - vertHalf - marginDrop;
 
         // get the components of a diagonal margin
         double diagToVertMargin = marge * Math.cos(Math.toRadians(angle));
-        double diagToHorzMargin = marge * Math.sin(Math.toRadians(angle));
+        // double diagToHorzMargin = marge * Math.sin(Math.toRadians(angle));
 
         double x0 = position.x;
         double y0 = position.y;
@@ -962,8 +962,8 @@ public class PanelHelper {
         double flatLen = vertHalf / Math.tan(Math.toRadians(angle));
         vertHalf *= -1; // because y-axis is backwards
 
-        double a = (depth / 2) / Math.cos(Math.toRadians(angle)); // depth / 2 * Math.cos(Math.toRadians(angle));
-        double b = depth / 2 * Math.tan(Math.toRadians(angle)); // HOLY FUCK THAT'S WHAT THAT IS?? bro comment your code
+        // double a = (depth / 2) / Math.cos(Math.toRadians(angle)); // depth / 2 * Math.cos(Math.toRadians(angle));
+        // double b = depth / 2 * Math.tan(Math.toRadians(angle)); // HOLY FUCK THAT'S WHAT THAT IS?? bro comment your code
 
         double height = longueur * Math.tan(Math.toRadians(angle));
         height *= -1; // y is backwards

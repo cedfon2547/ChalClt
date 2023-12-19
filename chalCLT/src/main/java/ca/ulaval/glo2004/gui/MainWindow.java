@@ -15,7 +15,6 @@ import javax.swing.border.TitledBorder;
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.Controleur;
-import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.AccessoireEvent;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.AccessoireEventListener;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.ChaletEvent;
