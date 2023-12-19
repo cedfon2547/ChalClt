@@ -138,7 +138,7 @@ public class DrawingPanel extends javax.swing.JPanel {
 
                     @Override
                     public void change(AccessoireEvent event) {
-                        afficheur.rechargerAffichage(); // turns out this is pretty critical
+                        afficheur.rechargerAffichage();
                     }
                 });
 
@@ -211,9 +211,7 @@ public class DrawingPanel extends javax.swing.JPanel {
 
             @Override
             public void meshClicked(AfficheurEventSupport.MeshMouseEvent evt) {
-                // System.out.println("Mesh Clicked " + mesh.ID);
                 if (evt.getClickCount() == 2) {
-                    // System.out.println("Mesh Double Clicked " + evt.getMesh().ID);
                     if (evt.getMesh() instanceof MurTriangleMeshGroup) {
                         switch (((MurTriangleMeshGroup) evt.getMesh()).getTypeMur()) {
                             case Facade:
@@ -237,8 +235,6 @@ public class DrawingPanel extends javax.swing.JPanel {
 
             @Override
             public void meshDragged(AfficheurEventSupport.MeshMouseMotionEvent evt) {
-                // System.out.println("Mesh Dragged " + evt.getMesh().ID);
-
                 if (initialAccessoireDTO == null) {
                     if (evt.getMesh().ID.length() != 36)
                         return;
@@ -287,14 +283,11 @@ public class DrawingPanel extends javax.swing.JPanel {
 
                 evt.getMesh().setValid(accDto.valide);
                 evt.getMesh().setSelected(true);
-                // evt.getMesh().setIsDragged(true);
-
                 repaint();
             }
 
             @Override
             public void meshDragStart(MeshMouseMotionEvent evt) {
-                // System.out.println("MeshDragStart " + evt.getMesh().ID);
                 TriangleMesh clickedMesh = evt.getMesh();
                 Accessoire.AccessoireDTO accDto = mainWindow.getControleur()
                         .getAccessoire(UUID.fromString(clickedMesh.ID));
@@ -302,7 +295,6 @@ public class DrawingPanel extends javax.swing.JPanel {
                 if (accDto != null) {
                     initialAccessoireDTO = accDto;
                     mainWindow.showAccessoireTable(accDto);
-                    // clickedMesh.setSelected(true);
                     clickedMesh.setIsDragged(true);
                 }
 
@@ -380,7 +372,6 @@ public class DrawingPanel extends javax.swing.JPanel {
                 });
 
                 if (isRoofOrWall) {
-                    // System.out.println("Only Wall Selected");
                     mainWindow.clearAccessoiresSelectionnees();
                     mainWindow.showChaletTable();
                     return;
@@ -416,7 +407,6 @@ public class DrawingPanel extends javax.swing.JPanel {
         this.afficheur.getScene().getConfiguration().addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                // System.out.println("Scene Configuration changed");
             }
         });
 
@@ -447,7 +437,6 @@ public class DrawingPanel extends javax.swing.JPanel {
 
             @Override
             public void cameraPositionChanged(AfficheurEventSupport.CameraEvent evt) {
-                // System.out.println("Camera Position Changed");
                 mesureBruteContainer.hide();
             }
         });
@@ -465,33 +454,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                 repaint();
             }
         });
-
-
-        // this.mainWindow.getControleur().addUndoRedoEventListener(new UndoRedoEventListener() {
-        //     @Override
-        //     public void undo(UndoRedoEvent event) {
-        //         // System.out.println("UNDO");
-        //         toggleVoisinSwitch.setSelected(mainWindow.getControleur().getPreferencesUtilisateur().afficherVoisinSelection);
-        //         toggleVoisinOption();
-        //     }
-
-        //     @Override
-        //     public void redo(UndoRedoEvent event) {
-        //         // System.out.println("REDO");
-        //         toggleVoisinSwitch.setSelected(mainWindow.getControleur().getPreferencesUtilisateur().afficherVoisinSelection);
-        //         toggleVoisinOption();
-
-        //     }
-        // });
-
-        // this.mainWindow.getControleur().addUserPreferencesEventListener((evt) -> {
-        //     System.out.println("Preferences Changed");
-        //     toggleVoisinSwitch.setSelected(evt.preferencesUtilisateurDTO.afficherVoisinSelection);
-        // });
-
         buildViewToolbar();
-        // buildMurBruteValue();
-
     }
 
     @Override
@@ -500,7 +463,6 @@ public class DrawingPanel extends javax.swing.JPanel {
         requestFocusInWindow();
 
         SwingUtilities.invokeLater(() -> {
-            // System.out.println("InvokeAndWait " + getSize());
             afficheur.rechargerAffichage();
 
             afficheur.getScene().getCamera().setPosition(new Vector3D(getWidth() / 2, getHeight() / 2, -1));
@@ -533,7 +495,6 @@ public class DrawingPanel extends javax.swing.JPanel {
 
             btn.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    // System.out.println("Vue de " + label + " activée");
                     for (Object[] obj : btns) {
                         if (obj[2] == btn) {
                             btn.setBackground(activeBtnColor);
@@ -607,7 +568,6 @@ public class DrawingPanel extends javax.swing.JPanel {
             gridStepSpinner.setEnabled(preferencesUtilisateurDTO.afficherGrille);
 
             gridStepSpinner.addChangeListener((evt) -> {
-                // System.out.println("Grid Step Changed: " + grilleStepSpinner.getValue());
                 PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = mainWindow.getControleur()
                         .getPreferencesUtilisateur();
 
@@ -615,19 +575,14 @@ public class DrawingPanel extends javax.swing.JPanel {
                 mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO2);
                 afficheur.getScene().getConfiguration().setGridStep(preferencesUtilisateurDTO2.gridSpacing);
                 afficheur.updateViewGrid();
-                // mainWindow.drawingPanel.rechargerAffichage();
             });
 
             toggleGridSwitch.addEventSelected((evt) -> {
-                // System.out.println("Grid Selected: " + switchGrille.isSelected());
                 PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = mainWindow.getControleur()
                         .getPreferencesUtilisateur();
 
                 preferencesUtilisateurDTO2.afficherGrille = toggleGridSwitch.isSelected();
                 mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO2);
-                // afficheur.toggleShowGrid(switchGrid.isSelected());
-                // afficheur.updateViewGrid();
-                // mainWindow.drawingPanel.rechargerAffichage();
             });
 
             toggleVoisinSwitch.setEnabled(false);
@@ -641,7 +596,6 @@ public class DrawingPanel extends javax.swing.JPanel {
             });
 
             toggleVoisinSwitch.addEventSelected((evt) -> {
-                // System.out.println("Voisin Selected: " + toggleVoisinSwitch.isSelected());
 
                 toggleVoisinOption();
             });
@@ -697,7 +651,6 @@ public class DrawingPanel extends javax.swing.JPanel {
             toolsSwitchesContainer.add(mouseControlsPanel);
 
             afficheur.getEventSupport().addMouseControlListener((mouseControl) -> {
-                // System.out.println("MouseControl Changed " + mouseControl);
                 switch (mouseControl) {
                     case Move:
                         translateControlBtn.setSelected(true);
@@ -762,7 +715,6 @@ public class DrawingPanel extends javax.swing.JPanel {
                 }
             }
         } else {
-            // toggleVoisinSwitch.setSelected(false);
             if (afficheur.getSelection().size() == 0) {
                 toggleVoisinSwitch.setEnabled(false);
             }
@@ -807,7 +759,6 @@ public class DrawingPanel extends javax.swing.JPanel {
 
     @Override
     public void paintComponent(java.awt.Graphics g) {
-        // super.paintComponent(g);
         this.afficheur.getRasterizer().draw(this.getSize());
         g.drawImage(this.afficheur.getRasterizer().getImage(), 0, 0, null);
     }
@@ -823,14 +774,6 @@ public class DrawingPanel extends javax.swing.JPanel {
         afficheur.weakChangerVue(vue); // update seulement les flags
         mainWindow.menu.activerVue(afficheur.getVueActive());
         updateToolbarBtns();
-
-        // if (vue == TypeDeVue.Dessus) {
-        // mainWindow.topButtonPanel.creerFenetreBtn.setEnabled(false);
-        // mainWindow.topButtonPanel.creerPorteBtn.setEnabled(false);
-        // } else {
-        // mainWindow.topButtonPanel.creerFenetreBtn.setEnabled(true);
-        // mainWindow.topButtonPanel.creerPorteBtn.setEnabled(true);
-        // }
     }
 
     public class MesureBruteContainer {
@@ -849,7 +792,6 @@ public class DrawingPanel extends javax.swing.JPanel {
             dialogContainer.setUndecorated(true);
             dialogContainer.pack();
             dialogContainer.setMinimumSize(new Dimension(100, 80));
-            // dialogContainer.validate();
             dialogContainer.setResizable(false);
             dialogContainer.setFocusable(false);
             dialogContainer.setFocusableWindowState(false);
