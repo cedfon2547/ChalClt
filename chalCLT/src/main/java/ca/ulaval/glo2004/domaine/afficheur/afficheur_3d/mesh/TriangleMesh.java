@@ -15,6 +15,7 @@ public class TriangleMesh {
     private boolean selected = false;
     private boolean selectable = true;
     private boolean visible = true;
+    private boolean hidden = false;
     private boolean valid = true;
     private boolean draggable = true;
     private boolean draggableX = true;
@@ -95,6 +96,14 @@ public class TriangleMesh {
 
     public boolean getValid() {
         return valid;
+    }
+
+    public boolean getHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
     }
 
     public void setDraggable(boolean draggable) {

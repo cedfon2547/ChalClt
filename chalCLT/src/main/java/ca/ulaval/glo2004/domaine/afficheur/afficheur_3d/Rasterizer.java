@@ -5,7 +5,6 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -112,10 +111,13 @@ public class Rasterizer {
         // g2.setComposite(AlphaComposite.SrcOver);
         
         for (TriangleMeshGroup group : scene.getMeshes()) {
-            if (!group.getVisible())
+            if (!group.getVisible() || group.getHidden())
                 continue;
             
             for (TriangleMesh obj : group.getMeshes()) {
+                if (!obj.getVisible() || obj.getHidden())
+                    continue;
+                
                 for (Triangle triangle : obj.getTriangles()) {
                     Vector3D[] vertices = triangle.getVertices();
 
