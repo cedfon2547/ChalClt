@@ -25,6 +25,7 @@ import java.awt.GridLayout;
 import java.awt.Point;
 
 import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
+import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.domaine.Chalet.ChaletDTO;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.AccessoireEvent;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEvent;
@@ -35,7 +36,6 @@ import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport.MeshMouseMotion
 import ca.ulaval.glo2004.domaine.afficheur.TypeDeVue;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
-import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMeshGroup;
 import ca.ulaval.glo2004.domaine.utils.PanelHelper.MurTriangleMeshGroup;
 import ca.ulaval.glo2004.gui.MainWindow;
 import ca.ulaval.glo2004.domaine.Accessoire;
@@ -52,8 +52,6 @@ class GridStepSpinner extends JSpinner {
 
     public GridStepSpinner(float value) {
         super();
-        // this.setModel(new javax.swing.SpinnerNumberModel((float) value, 0.0f, 100.0f,
-        // 0.5f));
         setValue(value);
         this.setModel(new SpinnerNumberModel((float) value, 0.1f, 100.0f, 0.5f));
         ((SpinnerNumberModel) this.getModel()).setStepSize(0.1);
@@ -94,7 +92,6 @@ public class DrawingPanel extends javax.swing.JPanel {
     private SwitchToggleButton toggleVoisinSwitch;
     private GridStepSpinner gridStepSpinner;
 
-    // Afficheur.TypeDeVue vueActive = Afficheur.TypeDeVue.Dessus;
     private javax.swing.JToolBar barreOutilsVue;
     private MesureBruteContainer mesureBruteContainer;
 
@@ -122,7 +119,6 @@ public class DrawingPanel extends javax.swing.JPanel {
                 .addAccessoireEventListener(new ControleurEventSupport.AccessoireEventListener() {
                     @Override
                     public void add(AccessoireEvent event) {
-                        // TODO Auto-generated method stub
                         afficheur.rechargerAffichage();
                     }
 
@@ -140,7 +136,6 @@ public class DrawingPanel extends javax.swing.JPanel {
         addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(java.awt.event.KeyEvent e) {
-                // System.out.println("Key Pressed");
                 Vector3D lightPosition = afficheur.getScene().getLight().getPosition();
                 int step = 100;
 
@@ -181,24 +176,24 @@ public class DrawingPanel extends javax.swing.JPanel {
 
             @Override
             public void keyReleased(java.awt.event.KeyEvent e) {
-                // System.out.println("Key Released");
+
             }
 
             @Override
             public void keyTyped(java.awt.event.KeyEvent e) {
-                // System.out.println("Key Typed");
+
             }
         });
 
         this.afficheur.getEventSupport().addZoomEventListener(new AfficheurEventSupport.ZoomEventListener() {
             @Override
             public void zoomIn() {
-                // System.out.println("ZoomIn");
+
             }
 
             @Override
             public void zoomOut() {
-                // System.out.println("ZoomOut");
+
             }
         });
 
@@ -236,6 +231,9 @@ public class DrawingPanel extends javax.swing.JPanel {
                 // System.out.println("Mesh Dragged " + evt.getMesh().ID);
 
                 if (initialAccessoireDTO == null) {
+                    if (evt.getMesh().ID.length() != 36)
+                        return;
+
                     Accessoire.AccessoireDTO accessoireDTO = mainWindow.getControleur()
                             .getAccessoire(UUID.fromString(evt.getMesh().ID));
                     if (accessoireDTO == null)
@@ -298,49 +296,39 @@ public class DrawingPanel extends javax.swing.JPanel {
                     // clickedMesh.setSelected(true);
                     clickedMesh.setIsDragged(true);
                 }
+
+                mesureBruteContainer.hide();
             }
 
             @Override
             public void meshDragEnd(MeshMouseMotionEvent evt) {
-                // TODO Auto-generated method stub
-                // System.out.println("MeshDragEnd " + evt.getMesh().ID);
-                // evt.getMesh().setIsDragged(false);
                 initialAccessoireDTO = null;
             }
 
             @Override
             public void meshHovered(AfficheurEventSupport.MeshMouseMotionEvent evt) {
-                // TODO Auto-generated method stub
-                // System.out.println("Mesh Hovered " + e.getMesh().ID);
-                // max.updateValeurs(mainWindow.getControleur().getChalet());
                 mesureBruteContainer.show(evt.getLocationOnScreen());
             }
 
             @Override
             public void mouseEnterMesh(AfficheurEventSupport.MeshMouseMotionEvent evt) {
-                // System.out.println("MouseEnterMesh " + evt.getMesh().ID);
-                // repaint();
-                // max.setChaletDTOToPanel(afficheur.getControleur().getChalet());
-                if(evt.getMesh() instanceof TriangleMeshGroup){
+                if(evt.getMesh() instanceof MurTriangleMeshGroup){
                     ChaletDTO tempChaletDTO = mainWindow.getControleur().getChalet();
                     double tempLargeur = tempChaletDTO.largeur;
                     double tempLongueur = tempChaletDTO.longueur;
-                    if (evt.getMesh().getWidth() == tempLargeur){
+                    if (((MurTriangleMeshGroup) evt.getMesh()).getTypeMur() == TypeMur.Facade || ((MurTriangleMeshGroup) evt.getMesh()).getTypeMur() == TypeMur.Arriere){
                         mesureBruteContainer.updateValeurs(tempChaletDTO, tempLargeur);
                     }
                     else{
                         mesureBruteContainer.updateValeurs(tempChaletDTO, tempLongueur);
                     }
                 }
-                // max.updateValeurs(mainWindow.getControleur().getChalet(), null);
+                
                 mesureBruteContainer.show(evt.getLocationOnScreen());
             }
 
             @Override
             public void mouseExitMesh(AfficheurEventSupport.MeshMouseMotionEvent evt) {
-                // System.out.println("MouseExitMesh " + evt.getMesh().ID);
-                // repaint();
-                
                 mesureBruteContainer.hide();
             }
         });
@@ -415,7 +403,6 @@ public class DrawingPanel extends javax.swing.JPanel {
                 }
 
                 if (evt.getDirection().getX() < -Math.PI / 4) {
-                    System.out.println("Camera Direction Changed");
                     weakChangerVue(TypeDeVue.Dessus);
                 } else if (angle < (Math.PI + Math.PI / 4) && angle > (Math.PI - Math.PI / 4)) {
                     weakChangerVue(TypeDeVue.Facade);
@@ -426,11 +413,14 @@ public class DrawingPanel extends javax.swing.JPanel {
                 } else if (angle < (Math.PI * 3 / 2 + Math.PI / 4) && angle > (Math.PI * 3 / 2 - Math.PI / 4)) {
                     weakChangerVue(TypeDeVue.Gauche);
                 }
+
+                mesureBruteContainer.hide();
             }
 
             @Override
             public void cameraPositionChanged(AfficheurEventSupport.CameraEvent evt) {
                 // System.out.println("Camera Position Changed");
+                mesureBruteContainer.hide();
             }
         });
 
@@ -465,15 +455,6 @@ public class DrawingPanel extends javax.swing.JPanel {
 
         });
     }
-
-    // private void buildMurBruteValue() {
-    // hoveredMurlabel = new JLabel();
-    // hoveredMurlabel.setText("TOOL_TIP_TEXT_KEY");
-    // hoveredMurlabel.setVisible(true);
-    // hoveredMurlabel.setOpaque(true);
-    // invalidate();
-    // repaint();
-    // }
 
     private void buildViewToolbar() {
         barreOutilsVue = new javax.swing.JToolBar("Barre d'outils");
@@ -709,6 +690,14 @@ public class DrawingPanel extends javax.swing.JPanel {
         afficheur.weakChangerVue(vue); // update seulement les flags
         mainWindow.menu.activerVue(afficheur.getVueActive());
         updateToolbarBtns();
+
+        // if (vue == TypeDeVue.Dessus) {
+        //     mainWindow.topButtonPanel.creerFenetreBtn.setEnabled(false);
+        //     mainWindow.topButtonPanel.creerPorteBtn.setEnabled(false);
+        // } else {
+        //     mainWindow.topButtonPanel.creerFenetreBtn.setEnabled(true);
+        //     mainWindow.topButtonPanel.creerPorteBtn.setEnabled(true);
+        // }
     }
 
     public class MesureBruteContainer {
@@ -730,6 +719,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             // dialogContainer.validate();
             dialogContainer.setResizable(false);
             dialogContainer.setFocusable(false);
+            dialogContainer.setFocusableWindowState(false);
 
             mesurePanel.addMouseMotionListener(new MouseAdapter() {
                 @Override

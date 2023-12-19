@@ -9,6 +9,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 import ca.ulaval.glo2004.App;
 import ca.ulaval.glo2004.domaine.Chalet.ChaletDTO;
@@ -68,6 +69,12 @@ public class MesureBrutePanel extends JPanel {
         hauteur.setIconTextGap(6);
         
         this.setBackground(Color.DARK_GRAY);
+        Border innerBorder = javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5);
+        Border outerBorder = javax.swing.BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2, true);
+        Border border = javax.swing.BorderFactory.createCompoundBorder(outerBorder, innerBorder);
+
+        this.setBorder(border);
+
         this.add(largeur);
         this.add(hauteur);
         this.add(epaisseur);

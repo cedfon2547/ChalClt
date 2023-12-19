@@ -129,18 +129,6 @@ public class Rasterizer {
                     vertex2 = vertex2.add(group.getPosition()).multiply(cameraTransformMatrix);
                     vertex3 = vertex3.add(group.getPosition()).multiply(cameraTransformMatrix);
 
-                    // System.out.println(intersect(scene.getCamera().getPosition(),
-                    // scene.getCamera().getDirection(),
-                    // vertex1, vertex2, vertex3));
-
-                    // Vector3D intersect = this.intersect(scene.getCamera().getPosition(),
-                    // scene.getCamera().getDirection(), vertex1,
-                    // vertex2, vertex3);
-                    // if (intersect != null) {
-                    // // System.out.println("SKIP " + intersect);
-                    // continue;
-                    // }
-
                     int minY = (int) Math.max(0,
                             Math.ceil(Math.min(vertex1.y, Math.min(vertex2.y, vertex3.y))));
                     int maxY = (int) Math.min(partImage.getHeight() - 1,
@@ -150,10 +138,6 @@ public class Rasterizer {
                     // Calculate the bounding box
                     int minX = (int) Math.max(0, Math.min(Math.min(vertex1.x, vertex2.x), vertex3.x));
                     int maxX = (int) Math.min(dimension.width - 1, Math.max(Math.max(vertex1.x, vertex2.x), vertex3.x));
-                    // int minY = (int) Math.max(startY, Math.min(Math.min(vertex1.y, vertex2.y),
-                    // vertex3.y));
-                    // int maxY = (int) Math.min(endY, Math.max(Math.max(vertex1.y, vertex2.y),
-                    // vertex3.y));
 
                     if (minY < startY)
                         minY = startY;
@@ -602,10 +586,11 @@ public class Rasterizer {
 
                 this.drawInvalidMeshBounding(g2);
                 this.drawSelectedMeshBounding(g2);
+                this.drawDraggedMeshBounding(g2);
 
-                g2.setColor(Color.BLACK);
-                this.drawFPSDetails(g2, new Point(10, 20));
-                this.drawCameraDetails(g2, new Point(10, 40));
+                // g2.setColor(Color.BLACK);
+                // this.drawFPSDetails(g2, new Point(10, 20));
+                // this.drawCameraDetails(g2, new Point(10, 40));
             } catch (Exception e) {
 
             }
@@ -641,9 +626,9 @@ public class Rasterizer {
             this.drawSelectedMeshBounding(g2);
             this.drawDraggedMeshBounding(g2);
 
-            g2.setColor(Color.BLACK);
-            this.drawFPSDetails(g2, new Point(10, 20));
-            this.drawCameraDetails(g2, new Point(10, 40));
+            // g2.setColor(Color.BLACK);
+            // this.drawFPSDetails(g2, new Point(10, 20));
+            // this.drawCameraDetails(g2, new Point(10, 40));
         }
     }
 

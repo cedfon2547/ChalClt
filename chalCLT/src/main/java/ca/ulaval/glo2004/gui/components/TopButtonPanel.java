@@ -8,6 +8,7 @@ import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEvent;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEventListener;
 import ca.ulaval.glo2004.domaine.afficheur.TypeDeVue;
 import ca.ulaval.glo2004.gui.MainWindow;
+import ca.ulaval.glo2004.gui.NotificationManager.NotificationType;
 
 import javax.swing.*;
 
@@ -126,11 +127,16 @@ public class TopButtonPanel extends JPanel {
         redoToggleBtn.addActionListener(redoToggleActionListener());
         saveToggleBtn.addActionListener(saveToggleActionListener());
 
+        // creerFenetreBtn.addMouseMotionListener(new MouseAdapter() {
+        //     @Override
+        //     public void mouseDragged(java.awt.event.MouseEvent evt) {
+        //         System.out.println("dragged");
+        //     }
+        // });
+
         add(creerFenetreBtn);
         add(creerPorteBtn);
         add(supprimerAccessoireBtn);
-//        add(voisinToggleBtn);
-//        add(grilleToggleBtn);
         add(undoToggleBtn);
         add(redoToggleBtn);
         add(saveToggleBtn);
@@ -331,8 +337,10 @@ public class TopButtonPanel extends JPanel {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new ExportationDirectoryFileChoose(mainWindow, (path) -> {
+                new OpenSaveDirectoryFileChoose(mainWindow, (path) -> {
                     mainWindow.getControleur().creerSauvegarde(path);
+                    mainWindow.notificationManager.createNotification("Projet sauvegardé", "", NotificationType.SUCCESS).setTimer(2000);
+
                     return true;
                 });
             }

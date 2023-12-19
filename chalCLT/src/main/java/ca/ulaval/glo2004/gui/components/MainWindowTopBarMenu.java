@@ -22,12 +22,9 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     private javax.swing.JMenuItem exporterFiniItem;
     private javax.swing.JMenuItem exporterRetraitsItem;
     private javax.swing.JMenu fichierMenu;
-    private javax.swing.JMenuItem ajouterAccessoire;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem nouveauProjetItem;
     private javax.swing.JMenuItem ouvrirFichierItem;
     private javax.swing.JMenuItem retablirItem;
-    private javax.swing.JMenu selectionMenu;
     private javax.swing.JRadioButtonMenuItem vueArriereItem;
     private javax.swing.JRadioButtonMenuItem vueDroitItem;
     private javax.swing.JRadioButtonMenuItem vueFacadeItem;
@@ -119,12 +116,6 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
             mainWindow.drawingPanel.afficheur.switchOutputType(PanelHelper.OutputType.Retraits);
         });
 
-        // `Selection` menu
-        selectionMenu = new javax.swing.JMenu("Sélection");
-        // `Selection` menu subitems
-        ajouterAccessoire = new javax.swing.JMenuItem("Ajouter un accessoire");
-        jMenuItem2 = new javax.swing.JMenuItem("Retirer tous les accessoires");
-
         // Add menu items to the menu
         fichierMenu.add(nouveauProjetItem);
         fichierMenu.add(ouvrirFichierItem);
@@ -145,9 +136,6 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         affichageMenu.add(afficherMursVoisinsItem);
         affichageMenu.add(renduVisuelItem);
 
-        selectionMenu.add(ajouterAccessoire);
-        selectionMenu.add(jMenuItem2);
-
         setTooltips();
         setAccessibility();
         setKeyboardShortcuts();
@@ -165,7 +153,6 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         add(fichierMenu);
         add(editionMenu);
         add(affichageMenu);
-        add(selectionMenu);
 
         // Add action listener for each menu item
         nouveauProjetItem.addActionListener(new java.awt.event.ActionListener() {
@@ -258,17 +245,6 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
             }
         });
 
-        ajouterAccessoire.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                // jMenuItem1ActionPerformed(evt);
-            }
-        });
-
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                // jMenuItem2ActionPerformed(evt);
-            }
-        });
     }
 
     private void setTooltips() {
@@ -296,9 +272,6 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
         vueGaucheItem.setToolTipText("Côté gauche");
         afficherGrilleItem.setToolTipText("Afficher grille");
         afficherMursVoisinsItem.setToolTipText("Afficher murs voisins");
-        selectionMenu.setToolTipText("Sélection");
-        ajouterAccessoire.setToolTipText("Item1");
-        jMenuItem2.setToolTipText("Item2");
     }
 
     private void setAccessibility() {
@@ -365,15 +338,6 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
 
         afficherMursVoisinsItem.getAccessibleContext().setAccessibleName("Afficher murs voisins");
         afficherMursVoisinsItem.getAccessibleContext().setAccessibleDescription("Afficher murs voisins");
-
-        selectionMenu.getAccessibleContext().setAccessibleName("Sélection");
-        selectionMenu.getAccessibleContext().setAccessibleDescription("Sélection");
-
-        ajouterAccessoire.getAccessibleContext().setAccessibleName("Item1");
-        ajouterAccessoire.getAccessibleContext().setAccessibleDescription("Item1");
-
-        jMenuItem2.getAccessibleContext().setAccessibleName("Item2");
-        jMenuItem2.getAccessibleContext().setAccessibleDescription("Item2");
     }
 
     private void setKeyboardShortcuts() {

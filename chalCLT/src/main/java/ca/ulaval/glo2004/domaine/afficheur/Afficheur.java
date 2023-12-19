@@ -31,6 +31,589 @@ import ca.ulaval.glo2004.domaine.utils.STLTools;
 import java.awt.Color;
 import java.util.Objects;
 
+class RoofPanelBuilder {
+    public static TriangleMeshGroup buildRoofTopPanel(double largeur, double longueur, double epaisseur, double angle,
+            double marge) {
+        double x0 = 0;
+        double y0 = 0;
+        double z0 = 0;
+
+        double a = epaisseur / 2 / Math.cos(Math.toRadians(angle));
+        double b = epaisseur / 2 * Math.tan(Math.toRadians(angle));
+        double c = epaisseur / 2 * Math.sin(Math.toRadians(angle));
+        double height = Math.tan(Math.toRadians(angle)) * longueur;
+        double depth = epaisseur;
+        double m = marge;
+
+        double p1[] = new double[] { x0, y0, z0 };
+        double p2[] = new double[] { x0 + largeur, y0, z0 };
+        double p3[] = new double[] { x0 + largeur, y0 + a, z0 };
+        double p4[] = new double[] { x0, y0 + a, z0 };
+
+        double p5[] = new double[] { x0 + depth / 2, y0 + a + b, z0 + depth / 2 };
+        double p6[] = new double[] { x0 + largeur - depth / 2, y0 + a + b, z0 + depth / 2 };
+
+        double p7[] = new double[] { x0 + depth / 2, y0 + a + b + b, z0 + depth / 2 };
+        double p8[] = new double[] { x0 + largeur - depth / 2, y0 + a + b + b, z0 + depth / 2 };
+
+        double p9[] = new double[] { x0 + depth / 2, y0 + height, z0 + longueur - depth };
+        double p10[] = new double[] { x0 + largeur - depth / 2, y0 + height, z0 + longueur - depth };
+
+        double p11[] = new double[] { x0 + depth / 2, y0 + height, z0 + longueur - depth / 2 };
+        double p12[] = new double[] { x0 + largeur - depth / 2, y0 + height, z0 + longueur - depth / 2 };
+
+        double p13[] = new double[] { x0, y0 + height, z0 + longueur - depth / 2 };
+        double p14[] = new double[] { x0 + largeur, y0 + height, z0 + longueur - depth / 2 };
+
+        double p15[] = new double[] { x0, y0 + height, z0 + longueur };
+        double p16[] = new double[] { x0 + largeur, y0 + height, z0 + longueur };
+
+        double p17[] = new double[] { x0, y0 + height - a + b, z0 + longueur };
+        double p18[] = new double[] { x0 + largeur, y0 + height - a + b, z0 + longueur };
+
+        List<double[][]> triangles = new ArrayList<double[][]>();
+
+        triangles.add(new double[][] { p1, p2, p3 });
+        triangles.add(new double[][] { p1, p3, p4 });
+
+        triangles.add(new double[][] { p5, p4, p6 });
+        triangles.add(new double[][] { p4, p3, p6 });
+
+        triangles.add(new double[][] { p5, p6, p7 });
+        triangles.add(new double[][] { p6, p8, p7 });
+
+        triangles.add(new double[][] { p7, p8, p9 });
+        triangles.add(new double[][] { p8, p10, p9 });
+
+        triangles.add(new double[][] { p9, p10, p11 });
+        triangles.add(new double[][] { p10, p12, p11 });
+
+        triangles.add(new double[][] { p13, p14, p15 });
+        triangles.add(new double[][] { p15, p14, p16 });
+
+        triangles.add(new double[][] { p15, p16, p17 });
+        triangles.add(new double[][] { p16, p18, p17 });
+
+        triangles.add(new double[][] { p1, p2, p17 });
+        triangles.add(new double[][] { p2, p18, p17 });
+
+        triangles.add(new double[][] { p4, p5, p11 });
+        triangles.add(new double[][] { p13, p4, p11 });
+
+        triangles.add(new double[][] { p3, p12, p6 });
+        triangles.add(new double[][] { p3, p14, p12 });
+
+        triangles.add(new double[][] { p1, p17, p15 });
+        triangles.add(new double[][] { p4, p1, p15 });
+        triangles.add(new double[][] { p13, p4, p15 });
+
+        triangles.add(new double[][] { p2, p18, p16 });
+        triangles.add(new double[][] { p2, p16, p14 });
+        triangles.add(new double[][] { p3, p2, p14 });
+
+        triangles.add(new double[][] { p9, p11, p5 });
+        triangles.add(new double[][] { p9, p5, p7 });
+
+        triangles.add(new double[][] { p10, p12, p6 });
+        triangles.add(new double[][] { p10, p6, p8 });
+
+        TriangleMeshGroup group = new TriangleMeshGroup();
+        TriangleMesh mesh = TriangleMesh.fromDoubleList(triangles);
+        group.addMesh(mesh);
+        return group;
+    }
+
+    public static TriangleMeshGroup buildRoofLeftGable(double largeur, double epaisseur, double angle, double marge) {
+        TriangleMeshGroup pignonGroup = new TriangleMeshGroup();
+
+        double a = (epaisseur / 2) / Math.cos(Math.toRadians(angle));
+        double b = (epaisseur / 2) * Math.tan(Math.toRadians(angle));
+
+        double x0 = 0;
+        double y0 = 0;
+        double z0 = 0;
+
+        double m = marge;
+        double d = epaisseur;
+
+        double h = (largeur - m / 2) * Math.tan(Math.toRadians(angle)) - a - b;
+
+        largeur = largeur - d;
+
+        double[] p1 = new double[] { x0 + m / 2, y0, z0 };
+        double[] p2 = new double[] { x0 + m / 2, y0, z0 + d / 2 - m / 2 };
+        double[] p3 = new double[] { x0 + d / 2 + m, y0, z0 + d / 2 - m / 2 };
+        double[] p4 = new double[] { x0 + d / 2 + m, y0, z0 + d };
+        double[] p5 = new double[] { x0 + largeur - d / 2 - m, y0, z0 + d };
+        double[] p6 = new double[] { x0 + largeur - d / 2 - m, y0, z0 + d / 2 - m / 2 };
+        double[] p7 = new double[] { x0 + largeur - m / 2, y0, z0 + d / 2 - m / 2 };
+        double[] p8 = new double[] { x0 + largeur - m / 2, y0, z0 };
+
+        double[] p9 = new double[] { x0 + m / 2, y0 - h, z0 };
+        double[] p10 = new double[] { x0 + m / 2, y0 - h, z0 + d / 2 - m / 2 };
+        double[] p11 = new double[] { x0 + d / 2 + m, y0 - h + (d / 2 + m / 2) * Math.tan(Math.toRadians(angle)),
+                z0 + d / 2 - m / 2 };
+
+        double[] p12 = new double[] { x0 + d / 2 + m, y0 - h + (d / 2 + m / 2) * Math.tan(Math.toRadians(angle)) + b,
+                z0 + d / 2 - m / 2 };
+        double[] p13 = new double[] { x0 + d / 2 + m, y0 - h + (d / 2 + m / 2) * Math.tan(Math.toRadians(angle)) + b,
+                z0 + d };
+
+        List<double[][]> triangles = new ArrayList<double[][]>();
+
+        triangles.add(new double[][] { p1, p2, p8 });
+        triangles.add(new double[][] { p2, p7, p8 });
+        triangles.add(new double[][] { p3, p4, p6 });
+        triangles.add(new double[][] { p4, p5, p6 });
+
+        triangles.add(new double[][] { p1, p2, p9 });
+        triangles.add(new double[][] { p2, p10, p9 });
+
+        triangles.add(new double[][] { p2, p3, p10 });
+        triangles.add(new double[][] { p3, p11, p10 });
+
+        triangles.add(new double[][] { p3, p4, p12 });
+        triangles.add(new double[][] { p4, p13, p12 });
+
+        triangles.add(new double[][] { p4, p13, p5 });
+        triangles.add(new double[][] { p5, p13, p6 });
+        triangles.add(new double[][] { p6, p13, p12 });
+
+        triangles.add(new double[][] { p7, p8, p9 });
+        triangles.add(new double[][] { p7, p9, p10 });
+
+        triangles.add(new double[][] { p7, p10, p11 });
+        triangles.add(new double[][] { p6, p7, p11 });
+        triangles.add(new double[][] { p6, p11, p12 });
+
+        triangles.add(new double[][] { p1, p8, p9 });
+
+        TriangleMesh pignonMesh = TriangleMesh.fromDoubleList(triangles);
+
+        pignonGroup.addMesh(pignonMesh);
+        return pignonGroup;
+    }
+
+    public static TriangleMeshGroup buildRoofRightGable(double largeur, double epaisseur, double angle, double marge) {
+        TriangleMeshGroup pignonGroup = new TriangleMeshGroup();
+
+        double a = (epaisseur / 2) / Math.cos(Math.toRadians(angle));
+        double b = (epaisseur / 2) * Math.tan(Math.toRadians(angle));
+
+        double x0 = 0;
+        double y0 = 0;
+        double z0 = 0;
+
+        double m = marge;
+        double d = epaisseur;
+
+        double h = (largeur - m / 2) * Math.tan(Math.toRadians(angle)) - a - b;
+
+        largeur = largeur - d;
+
+        double[] p1 = new double[] { x0 + m / 2, y0, z0 };
+        double[] p2 = new double[] { x0 + m / 2, y0, z0 - d / 2 + m / 2 };
+        double[] p3 = new double[] { x0 + d / 2 + m, y0, z0 - d / 2 + m / 2 };
+        double[] p4 = new double[] { x0 + d / 2 + m, y0, z0 - d };
+        double[] p5 = new double[] { x0 + largeur - d / 2 - m, y0, z0 - d };
+        double[] p6 = new double[] { x0 + largeur - d / 2 - m, y0, z0 - d / 2 + m / 2 };
+        double[] p7 = new double[] { x0 + largeur - m / 2, y0, z0 - d / 2 + m / 2 };
+        double[] p8 = new double[] { x0 + largeur - m / 2, y0, z0 };
+
+        double[] p9 = new double[] { x0 + m / 2, y0 - h, z0 };
+        double[] p10 = new double[] { x0 + m / 2, y0 - h, z0 - d / 2 + m / 2 };
+        double[] p11 = new double[] { x0 + d / 2 + m, y0 - h + (d / 2 + m / 2) * Math.tan(Math.toRadians(angle)),
+                z0 - d / 2 + m / 2 };
+
+        double[] p12 = new double[] { x0 + d / 2 + m, y0 - h + (d / 2 + m / 2) * Math.tan(Math.toRadians(angle)) + b,
+                z0 - d / 2 + m / 2 };
+        double[] p13 = new double[] { x0 + d / 2 + m, y0 - h + (d / 2 + m / 2) * Math.tan(Math.toRadians(angle)) + b,
+                z0 - d };
+
+        List<double[][]> triangles = new ArrayList<double[][]>();
+
+        triangles.add(new double[][] { p1, p2, p8 });
+        triangles.add(new double[][] { p2, p7, p8 });
+        triangles.add(new double[][] { p3, p4, p6 });
+        triangles.add(new double[][] { p4, p5, p6 });
+
+        triangles.add(new double[][] { p1, p2, p9 });
+        triangles.add(new double[][] { p2, p10, p9 });
+
+        triangles.add(new double[][] { p2, p3, p10 });
+        triangles.add(new double[][] { p3, p11, p10 });
+
+        triangles.add(new double[][] { p3, p4, p12 });
+        triangles.add(new double[][] { p4, p13, p12 });
+
+        triangles.add(new double[][] { p4, p13, p5 });
+        triangles.add(new double[][] { p5, p13, p6 });
+        triangles.add(new double[][] { p6, p13, p12 });
+
+        triangles.add(new double[][] { p7, p8, p9 });
+        triangles.add(new double[][] { p7, p9, p10 });
+
+        triangles.add(new double[][] { p7, p10, p11 });
+        triangles.add(new double[][] { p6, p7, p11 });
+        triangles.add(new double[][] { p6, p11, p12 });
+
+        triangles.add(new double[][] { p1, p8, p9 });
+
+        TriangleMesh pignonMesh = TriangleMesh.fromDoubleList(triangles);
+
+        pignonGroup.addMesh(pignonMesh);
+        return pignonGroup;
+    }
+
+    public static TriangleMeshGroup buildRoofRightGableRemoval(double largeur, double epaisseur, double angle, double marge) {
+        TriangleMeshGroup pignonGroup = new TriangleMeshGroup();
+
+        double a = (epaisseur / 2) / Math.cos(Math.toRadians(angle));
+        double b = (epaisseur / 2) * Math.tan(Math.toRadians(angle));
+
+        double x0 = 0;
+        double y0 = 0;
+        double z0 = 0;
+
+        double m = marge;
+        double d = epaisseur;
+
+        double h = (largeur - m / 2) * Math.tan(Math.toRadians(angle)) - a - b;
+
+        largeur = largeur - d;
+
+        double[] p1 = new double[] { x0 + m / 2, y0 - h, z0 };
+        double[] p2 = new double[] { x0 + largeur - m / 2, y0 - h, z0 };
+        double[] p3 = new double[] { x0 + largeur - m / 2, y0, z0 };
+
+        double[] p4 = new double[] { x0 + m / 2, y0 - h, z0 - d / 2 + m / 2 };
+        double[] p5 = new double[] { x0 + largeur - m / 2, y0 - h, z0 - d / 2 + m / 2 };
+        double[] p6 = new double[] { x0 + largeur - m / 2, y0, z0 - d / 2 + m / 2 };
+
+        // Left removal
+        double[] p7 = new double[] { x0 + m / 2, y0, z0 - d / 2 + m / 2 };
+        double[] p8 = new double[] { x0 + m / 2, y0, z0 - d };
+        double[] p9 = new double[] { x0 + d/2 + m, y0, z0 - d };
+        double[] p10 = new double[] { x0 + d/2 + m, y0, z0 - d / 2 + m / 2 };
+
+        double[] p11 = new double[] { x0 + m / 2, y0 - h, z0 - d / 2 + m / 2 };
+        double[] p12 = new double[] { x0 + m / 2, y0 - h, z0 - d };
+        double[] p13 = new double[] { x0 + d/2 + m, y0 - h, z0 - d };
+        double[] p14 = new double[] { x0 + d/2 + m, y0 - h, z0 - d / 2 + m / 2 };
+
+        // Right removal
+        double[] p15 = new double[] { x0 + largeur - m / 2, y0, z0 - d / 2 + m / 2 };
+        double[] p16 = new double[] { x0 + largeur - m / 2, y0, z0 - d };
+        double[] p17 = new double[] { x0 + largeur - d/2 - m, y0, z0 - d };
+        double[] p18 = new double[] { x0 + largeur - d/2 - m, y0, z0 - d / 2 + m / 2 };
+
+        double[] p19 = new double[] { x0 + largeur - m / 2, y0 - h, z0 - d / 2 + m / 2 };
+        double[] p20 = new double[] { x0 + largeur - m / 2, y0 - h, z0 - d };
+        double[] p21 = new double[] { x0 + largeur - d/2 - m, y0 - h, z0 - d };
+        double[] p22 = new double[] { x0 + largeur - d/2 - m, y0 - h, z0 - d / 2 + m / 2 };
+
+        // Second triangle removal
+        double[] p23 = new double[] { x0 + d / 2 + m, y0 - h + (d / 2 + m / 2) * Math.tan(Math.toRadians(angle)),
+                z0 - d / 2 + m / 2 };
+
+        double[] p24 = new double[] { x0 + d / 2 + m, y0 - h + (d / 2 + m / 2) * Math.tan(Math.toRadians(angle)) + b,
+                z0 - d / 2 + m / 2 };
+        double[] p25 = new double[] { x0 + d / 2 + m, y0 - h + (d / 2 + m / 2) * Math.tan(Math.toRadians(angle)) + b,
+                z0 - d };
+        List<double[][]> triangles = new ArrayList<double[][]>();
+        
+        // Main triangle removal
+        triangles.add(new double[][] { p1, p2, p3 });
+        triangles.add(new double[][] { p4, p5, p6 });
+        triangles.add(new double[][] { p1, p2, p4 });
+        triangles.add(new double[][] { p2, p5, p4 });
+        triangles.add(new double[][] { p2, p3, p5 });
+        triangles.add(new double[][] { p3, p6, p5 });
+        triangles.add(new double[][] { p1, p3, p4 });
+        triangles.add(new double[][] { p3, p6, p4 });
+
+        // Left removal
+        triangles.add(new double[][] { p7, p8, p9 });
+        triangles.add(new double[][] { p7, p9, p10 });
+
+        triangles.add(new double[][] { p11, p12, p13 });
+        triangles.add(new double[][] { p11, p13, p14 });
+
+        triangles.add(new double[][] { p7, p8, p11 });
+        triangles.add(new double[][] { p8, p12, p11 });
+
+        triangles.add(new double[][] { p8, p9, p12 });
+        triangles.add(new double[][] { p9, p13, p12 });
+
+        triangles.add(new double[][] { p9, p10, p13 });
+        triangles.add(new double[][] { p10, p14, p13 });
+
+        triangles.add(new double[][] { p10, p7, p14 });
+        triangles.add(new double[][] { p7, p11, p14 });
+
+        // Right removal
+        triangles.add(new double[][] { p15, p16, p17 });
+        triangles.add(new double[][] { p15, p17, p18 });
+
+        triangles.add(new double[][] { p19, p20, p21 });
+        triangles.add(new double[][] { p19, p21, p22 });
+
+        triangles.add(new double[][] { p15, p16, p19 });
+        triangles.add(new double[][] { p16, p20, p19 });
+
+        triangles.add(new double[][] { p16, p17, p20 });
+        triangles.add(new double[][] { p17, p21, p20 });
+
+        triangles.add(new double[][] { p17, p18, p21 });
+        triangles.add(new double[][] { p18, p22, p21 });
+
+        triangles.add(new double[][] { p18, p15, p22 });
+        triangles.add(new double[][] { p15, p19, p22 });
+
+        // Second triangle removal
+        triangles.add(new double[][] { p17, p18, p25 });
+        triangles.add(new double[][] { p18, p24, p25 });
+
+        triangles.add(new double[][] { p13, p22, p21 });
+        triangles.add(new double[][] { p13, p14, p22 });
+
+        triangles.add(new double[][] { p13, p17, p21 });
+        triangles.add(new double[][] { p25, p17, p13 });
+
+        triangles.add(new double[][] { p23, p24, p18 });
+        triangles.add(new double[][] { p22, p19, p23 });
+
+        TriangleMesh pignonMesh = TriangleMesh.fromDoubleList(triangles);
+
+        pignonGroup.addMesh(pignonMesh);
+        return pignonGroup;
+    }
+
+    public static TriangleMeshGroup buildRoofVerticalPanel(double largeur, double longueur, double epaisseur, double angle, double marge) {
+        TriangleMeshGroup vertPanelGroup = new TriangleMeshGroup();
+
+        double x0 = 0;
+        double y0 = 0;
+        double z0 = 0;
+
+        double m = marge;
+        double d = epaisseur;
+
+        double a = (d / 2) / Math.cos(Math.toRadians(angle));
+        double b = (d / 2 - m / 2) * Math.tan(Math.toRadians(angle));
+        double c = (d / 2 + m / 2) * Math.tan(Math.toRadians(angle));
+
+        double h = longueur * Math.tan(Math.toRadians(angle)) - a;
+
+
+        double[] p1 = new double[] { x0, y0, z0 };
+        double[] p2 = new double[] { x0, y0, z0 + d / 2 - m / 2 };
+        double[] p3 = new double[] { x0 + d / 2 + m / 2, y0, z0 + d / 2 - m / 2 };
+        double[] p4 = new double[] { x0 + d / 2 + m / 2, y0, z0 + d };
+        double[] p5 = new double[] { x0 + largeur - d / 2 - m / 2, y0, z0 + d };
+        double[] p6 = new double[] { x0 + largeur - d / 2 - m / 2, y0, z0 + d / 2 - m / 2 };
+        double[] p7 = new double[] { x0 + largeur, y0, z0 + d / 2 - m / 2 };
+        double[] p8 = new double[] { x0 + largeur, y0, z0 };
+
+        double[] p9 = new double[] { x0, y0 - h, z0 };
+        double[] p10 = new double[] { x0 + largeur, y0 - h, z0 };
+
+        double[] p11 = new double[] { x0, y0 - h + b, z0 + d / 2 - m / 2 };
+        double[] p12 = new double[] { x0 + largeur, y0 - h + b, z0 + d / 2 - m / 2 };
+
+        double[] p13 = new double[] { x0 + d / 2 + m / 2, y0 - h + b, z0 + d / 2 - m / 2 };
+        double[] p14 = new double[] { x0 + largeur - d / 2 - m / 2, y0 - h + b, z0 + d / 2 - m / 2 };
+
+        double[] p15 = new double[] { x0 + d / 2 + m / 2, y0 - h + b + b, z0 + d / 2 - m / 2 };
+        double[] p16 = new double[] { x0 + largeur - d / 2 - m / 2, y0 - h + b + b, z0 + d / 2 - m / 2 };
+
+        double[] p17 = new double[] { x0 + d / 2 + m / 2, y0 - h + b + b + c, z0 + d };
+        double[] p18 = new double[] { x0 + largeur - d / 2 - m / 2, y0 - h + b + b + c, z0 + d };
+
+        List<double[][]> triangles = new ArrayList<double[][]>();
+
+        triangles.add(new double[][] { p1, p2, p8 });
+        triangles.add(new double[][] { p2, p7, p8 });
+        triangles.add(new double[][] { p3, p4, p6 });
+        triangles.add(new double[][] { p4, p5, p6 });
+
+        triangles.add(new double[][] { p1, p9, p10 });
+        triangles.add(new double[][] { p8, p1, p10 });
+
+        triangles.add(new double[][] { p9, p10, p11 });
+        triangles.add(new double[][] { p10, p12, p11 });
+
+        triangles.add(new double[][] { p1, p2, p11 });
+        triangles.add(new double[][] { p1, p11, p9 });
+
+        triangles.add(new double[][] { p2, p3, p11 });
+        triangles.add(new double[][] { p3, p13, p11 });
+
+        triangles.add(new double[][] { p8, p7, p12 });
+        triangles.add(new double[][] { p8, p12, p10 });
+
+        triangles.add(new double[][] { p7, p6, p14 });
+        triangles.add(new double[][] { p7, p14, p12 });
+
+        triangles.add(new double[][] { p13, p14, p15 });
+        triangles.add(new double[][] { p14, p16, p15 });
+        
+        triangles.add(new double[][] { p15, p16, p17 });
+        triangles.add(new double[][] { p16, p18, p17 });
+
+        triangles.add(new double[][] { p4, p17, p15 });
+        triangles.add(new double[][] { p3, p4, p15 });
+
+        triangles.add(new double[][] { p4, p5, p17 });
+        triangles.add(new double[][] { p5, p18, p17 });
+
+        triangles.add(new double[][] { p5, p6, p18 });
+        triangles.add(new double[][] { p6, p16, p18 });
+
+        TriangleMesh vertPanelMesh = TriangleMesh.fromDoubleList(triangles);
+
+        vertPanelMesh.getMaterial().setColor(Color.RED);
+        vertPanelGroup.addMesh(vertPanelMesh);
+
+        return vertPanelGroup;
+    }
+
+    public static TriangleMeshGroup buildRoofVerticalPanelRemoval(double largeur, double longueur, double epaisseur, double angle, double marge) {
+        TriangleMeshGroup vertPanelGroup = new TriangleMeshGroup();
+
+        double x0 = 0;
+        double y0 = 0;
+        double z0 = 0;
+
+        double m = marge;
+        double d = epaisseur;
+
+        double a = (d / 2) / Math.cos(Math.toRadians(angle));
+        double b = (d / 2 - m / 2) * Math.tan(Math.toRadians(angle));
+        double c = (d / 2 + m / 2) * Math.tan(Math.toRadians(angle));
+
+        double h = longueur * Math.tan(Math.toRadians(angle)) - a;
+
+        // Right removal
+        double[] p1 = { x0, y0, z0 + d };
+        double[] p2 = { x0 + d / 2 + m / 2, y0, z0 + d };
+        double[] p3 = { x0 + d / 2 + m / 2, y0, z0 + d / 2 - m / 2 };
+        double[] p4 = { x0, y0, z0 + d / 2 - m / 2 };
+
+        double[] p5 = { x0, y0 - h, z0 + d };
+        double[] p6 = { x0 + d / 2 + m / 2, y0 - h, z0 + d };
+        double[] p7 = { x0 + d / 2 + m / 2, y0 - h, z0 + d / 2 - m / 2 };
+        double[] p8 = { x0, y0 - h, z0 + d / 2 - m / 2 };
+
+        // Left removal
+        double[] p9 = { x0 + largeur - d/2 - m/2, y0, z0 + d };
+        double[] p10 = { x0 + largeur, y0, z0 + d };
+        double[] p11 = { x0 + largeur, y0, z0 + d / 2 - m / 2 };
+        double[] p12 = { x0 + largeur - d/2 - m/2, y0, z0 + d / 2 - m / 2 };
+
+        double[] p13 = { x0 + largeur - d/2 - m/2, y0 - h, z0 + d };
+        double[] p14 = { x0 + largeur, y0 - h, z0 + d };
+        double[] p15 = { x0 + largeur, y0 - h, z0 + d / 2 - m / 2 };
+        double[] p16 = { x0 + largeur - d/2 - m/2, y0 - h, z0 + d / 2 - m / 2 };
+        
+        // Top removal
+        double[] p17 = { x0, y0 - h, z0 };
+        double[] p18 = { x0 + largeur, y0 - h, z0 };
+        double[] p19 = { x0 + largeur, y0 - h, z0 + d / 2 - m / 2 };
+        double[] p20 = { x0, y0 - h, z0 + d / 2 - m / 2 };
+
+        double[] p21 = { x0, y0 - h + b, z0 + d / 2 - m / 2 };
+        double[] p22 = { x0 + largeur, y0 - h + b, z0 + d / 2 - m / 2 };
+        
+        // Second Top removal
+        double[] p23 = new double[] { x0 + d / 2 + m / 2, y0 - h + b + b, z0 + d / 2 - m / 2 };
+        double[] p24 = new double[] { x0 + largeur - d / 2 - m / 2, y0 - h + b + b, z0 + d / 2 - m / 2 };
+
+        double[] p25 = new double[] { x0 + d / 2 + m / 2, y0 - h + b + b + c, z0 + d };
+        double[] p26 = new double[] { x0 + largeur - d / 2 - m / 2, y0 - h + b + b + c, z0 + d };
+        
+        List<double[][]> triangles = new ArrayList<double[][]>();
+
+        // Right removal
+        triangles.add(new double[][] { p1, p2, p3 });
+        triangles.add(new double[][] { p1, p3, p4 });
+
+        triangles.add(new double[][] { p5, p6, p7 });
+        triangles.add(new double[][] { p5, p7, p8 });
+
+        triangles.add(new double[][] { p1, p2, p5 });
+        triangles.add(new double[][] { p2, p6, p5 });
+
+        triangles.add(new double[][] { p2, p3, p6 });
+        triangles.add(new double[][] { p3, p7, p6 });
+
+        triangles.add(new double[][] { p3, p4, p7 });
+        triangles.add(new double[][] { p4, p8, p7 });
+
+        triangles.add(new double[][] { p4, p1, p8 });
+        triangles.add(new double[][] { p1, p5, p8 });
+
+        // Left removal
+        triangles.add(new double[][] { p9, p10, p11 });
+        triangles.add(new double[][] { p9, p11, p12 });
+
+        triangles.add(new double[][] { p13, p14, p15 });
+        triangles.add(new double[][] { p13, p15, p16 });
+
+        triangles.add(new double[][] { p9, p10, p13 });
+        triangles.add(new double[][] { p10, p14, p13 });
+
+        triangles.add(new double[][] { p10, p11, p14 });
+        triangles.add(new double[][] { p11, p15, p14 });
+
+        triangles.add(new double[][] { p11, p12, p15 });
+        triangles.add(new double[][] { p12, p16, p15 });
+
+        triangles.add(new double[][] { p12, p9, p16 });
+        triangles.add(new double[][] { p9, p13, p16 });
+        
+        // Top removal
+        triangles.add(new double[][] { p17, p18, p19 });
+        triangles.add(new double[][] { p17, p19, p20 });
+
+        triangles.add(new double[][] { p21, p22, p19 });
+        triangles.add(new double[][] { p21, p19, p20 });
+
+        triangles.add(new double[][] { p17, p18, p21 });
+        triangles.add(new double[][] { p18, p22, p21 });
+
+        triangles.add(new double[][] { p17, p21, p20 });
+        triangles.add(new double[][] { p18, p19, p22 });
+        
+        // Second Top removal
+        triangles.add(new double[][] { p23, p24, p26 });
+        triangles.add(new double[][] { p23, p26, p25 });
+
+        triangles.add(new double[][] { p6, p7, p23 });
+        triangles.add(new double[][] { p6, p23, p25 });
+
+        triangles.add(new double[][] { p13, p26, p24 });
+        triangles.add(new double[][] { p13, p24, p16 });
+
+        triangles.add(new double[][] { p6, p13, p7 });
+        triangles.add(new double[][] { p13, p16, p7 });
+
+        triangles.add(new double[][] { p6, p13, p25 });
+        triangles.add(new double[][] { p25, p13, p26 });
+
+        triangles.add(new double[][] {p23, p7, p24 });
+        triangles.add(new double[][] {p7, p16, p24 });
+        
+        TriangleMesh vertPanelMesh = TriangleMesh.fromDoubleList(triangles);
+
+        vertPanelMesh.getMaterial().setColor(Color.RED);
+        vertPanelGroup.addMesh(vertPanelMesh);
+        return vertPanelGroup;
+    }
+
+    
+}
+
 public class Afficheur {
     private AfficheurEventSupport eventSupport = new AfficheurEventSupport();
 
@@ -186,26 +769,30 @@ public class Afficheur {
         double longueur = chaletDTO.longueur;
         double largeur = chaletDTO.largeur;
 
+        Color panneauToitColor = new Color(255,146, 146);
+        Color rallongeVerticaleToitColor = new Color(255,146, 146);
+        Color pignonDroitToitColor = new Color(255,146, 146).darker();
+        Color pignonGaucheToitColor = new Color(255,146, 146).darker();
+
         switch (chaletDTO.sensToit) {
             case Nord:
-                panneauToit = PanelHelper.buildPanneauToit2(largeur, longueur, chaletDTO.epaisseurMur,
-                        chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait, new Vector3D(0, 0, 0));
+                panneauToit = RoofPanelBuilder.buildRoofTopPanel(largeur, longueur, chaletDTO.epaisseurMur,
+                        chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
                 panneauToit = panneauToit.translate(
                         new Vector3D(-largeur / 2, -chaletDTO.hauteur - panneauToit.getHeight(), -longueur / 2));
 
-                rallongeVerticaleToit = PanelHelper.buildRallongeVertical2(largeur, longueur, chaletDTO.epaisseurMur,
-                        chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait, new Vector3D(0, 0, 0));
-                rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(-largeur / 2,
-                        -chaletDTO.hauteur - rallongeVerticaleToit.getHeight(), -longueur / 2));
+                rallongeVerticaleToit = RoofPanelBuilder.buildRoofVerticalPanel(largeur, longueur, chaletDTO.epaisseurMur,
+                        chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
 
-                pignonDroitToit = PanelHelper.buildPignonDroite2(longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit,
-                        new Vector3D(0, 0, 0));
+                rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(-largeur / 2,
+                        -chaletDTO.hauteur, -longueur / 2));
+
+                pignonDroitToit = RoofPanelBuilder.buildRoofRightGable(longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
                 pignonDroitToit = pignonDroitToit.rotate(0, -Math.PI / 2, 0);
                 pignonDroitToit = pignonDroitToit.translate(
                         new Vector3D(-largeur / 2, -chaletDTO.hauteur, -longueur / 2 + chaletDTO.epaisseurMur / 2));
 
-                pignonGaucheToit = PanelHelper.buildPignonGauche2(longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit,
-                        new Vector3D(0, 0, 0));
+                pignonGaucheToit = RoofPanelBuilder.buildRoofLeftGable(longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
                 pignonGaucheToit = pignonGaucheToit.rotate(0, -Math.PI / 2, 0);
                 pignonGaucheToit = pignonGaucheToit.translate(
                         new Vector3D(largeur / 2, -chaletDTO.hauteur, -longueur / 2 + chaletDTO.epaisseurMur / 2));
@@ -234,30 +821,44 @@ public class Afficheur {
                     pignonGaucheToit.setVisible(false);
                 }
 
+                panneauToit.getMesh(0).getMaterial().setColor(panneauToitColor);
+                rallongeVerticaleToit.getMesh(0).getMaterial().setColor(rallongeVerticaleToitColor);
+                pignonDroitToit.getMesh(0).getMaterial().setColor(pignonDroitToitColor);
+                pignonGaucheToit.getMesh(0).getMaterial().setColor(pignonGaucheToitColor);
+
+                // TriangleMeshGroup m = RoofPanelBuilder.buildRoofVerticalPanelRemoval(largeur, longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
+                // m = m.translate(new Vector3D(-largeur / 2,
+                //         -chaletDTO.hauteur, -longueur / 2));
+
+                // TriangleMeshGroup m2 = RoofPanelBuilder.buildRoofRightGableRemoval(longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
+
+                // m2 = m2.rotate(0, -Math.PI / 2, 0);
+                // m2 = m2.translate(
+                //         new Vector3D(-largeur / 2, -chaletDTO.hauteur, -longueur / 2 + chaletDTO.epaisseurMur / 2));
+                    
+                // getScene().addMesh(m);
+                // getScene().addMesh(m2);
+
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
                 getScene().addMesh(pignonDroitToit);
                 getScene().addMesh(pignonGaucheToit);
                 break;
             case Sud:
-                panneauToit = PanelHelper.buildPanneauToit2(largeur, longueur, chaletDTO.epaisseurMur,
-                        chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait, new Vector3D(0, 0, 0));
+                panneauToit = RoofPanelBuilder.buildRoofTopPanel(largeur, longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
                 panneauToit = panneauToit.translate(
                         new Vector3D(-largeur / 2, -chaletDTO.hauteur - panneauToit.getHeight(), -longueur / 2));
 
-                rallongeVerticaleToit = PanelHelper.buildRallongeVertical2(largeur, longueur, chaletDTO.epaisseurMur,
-                        chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait, new Vector3D(0, 0, 0));
+                rallongeVerticaleToit = RoofPanelBuilder.buildRoofVerticalPanel(largeur, longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
                 rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(-largeur / 2,
-                        -chaletDTO.hauteur - rallongeVerticaleToit.getHeight(), -longueur / 2));
+                        -chaletDTO.hauteur, -longueur / 2));
 
-                pignonDroitToit = PanelHelper.buildPignonDroite2(longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit,
-                        new Vector3D(0, 0, 0));
+                pignonDroitToit = RoofPanelBuilder.buildRoofRightGable(longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
                 pignonDroitToit = pignonDroitToit.rotate(0, -Math.PI / 2, 0);
                 pignonDroitToit = pignonDroitToit.translate(
                         new Vector3D(-largeur / 2, -chaletDTO.hauteur, -longueur / 2 + chaletDTO.epaisseurMur / 2));
 
-                pignonGaucheToit = PanelHelper.buildPignonGauche2(longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit,
-                        new Vector3D(0, 0, 0));
+                pignonGaucheToit = RoofPanelBuilder.buildRoofLeftGable(longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
                 pignonGaucheToit = pignonGaucheToit.rotate(0, -Math.PI / 2, 0);
                 pignonGaucheToit = pignonGaucheToit.translate(
                         new Vector3D(largeur / 2, -chaletDTO.hauteur, -longueur / 2 + chaletDTO.epaisseurMur / 2));
@@ -290,30 +891,33 @@ public class Afficheur {
                     pignonGaucheToit.setVisible(false);
                 }
 
+                panneauToit.getMesh(0).getMaterial().setColor(panneauToitColor);
+                rallongeVerticaleToit.getMesh(0).getMaterial().setColor(rallongeVerticaleToitColor);
+                pignonDroitToit.getMesh(0).getMaterial().setColor(pignonDroitToitColor);
+                pignonGaucheToit.getMesh(0).getMaterial().setColor(pignonGaucheToitColor);
+
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
                 getScene().addMesh(pignonDroitToit);
                 getScene().addMesh(pignonGaucheToit);
                 break;
             case Est:
-                panneauToit = PanelHelper.buildPanneauToit2(longueur, largeur, chaletDTO.epaisseurMur,
-                        chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait, new Vector3D(0, 0, 0));
+                panneauToit = RoofPanelBuilder.buildRoofTopPanel(longueur, largeur, chaletDTO.epaisseurMur,
+                        chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
                 panneauToit = panneauToit.translate(
                         new Vector3D(-longueur / 2, -chaletDTO.hauteur - panneauToit.getHeight(), -largeur / 2));
 
-                rallongeVerticaleToit = PanelHelper.buildRallongeVertical2(longueur, largeur, chaletDTO.epaisseurMur,
-                        chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait, new Vector3D(0, 0, 0));
+                rallongeVerticaleToit = RoofPanelBuilder.buildRoofVerticalPanel(longueur, largeur, chaletDTO.epaisseurMur,
+                        chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
                 rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(-longueur / 2,
-                        -chaletDTO.hauteur - rallongeVerticaleToit.getHeight(), -largeur / 2));
+                        -chaletDTO.hauteur, -largeur / 2));
 
-                pignonDroitToit = PanelHelper.buildPignonDroite2(largeur, chaletDTO.epaisseurMur, chaletDTO.angleToit,
-                        new Vector3D(0, 0, 0));
+                pignonDroitToit = RoofPanelBuilder.buildRoofRightGable(largeur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
                 pignonDroitToit = pignonDroitToit.rotate(0, -Math.PI / 2, 0);
                 pignonDroitToit = pignonDroitToit.translate(
                         new Vector3D(-longueur / 2, -chaletDTO.hauteur, -largeur / 2 + chaletDTO.epaisseurMur / 2));
 
-                pignonGaucheToit = PanelHelper.buildPignonGauche2(largeur, chaletDTO.epaisseurMur, chaletDTO.angleToit,
-                        new Vector3D(0, 0, 0));
+                pignonGaucheToit = RoofPanelBuilder.buildRoofLeftGable(largeur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
                 pignonGaucheToit = pignonGaucheToit.rotate(0, -Math.PI / 2, 0);
                 pignonGaucheToit = pignonGaucheToit.translate(
                         new Vector3D(longueur / 2, -chaletDTO.hauteur, -largeur / 2 + chaletDTO.epaisseurMur / 2));
@@ -346,30 +950,33 @@ public class Afficheur {
                     pignonGaucheToit.setVisible(false);
                 }
 
+                panneauToit.getMesh(0).getMaterial().setColor(panneauToitColor);
+                rallongeVerticaleToit.getMesh(0).getMaterial().setColor(rallongeVerticaleToitColor);
+                pignonDroitToit.getMesh(0).getMaterial().setColor(pignonDroitToitColor);
+                pignonGaucheToit.getMesh(0).getMaterial().setColor(pignonGaucheToitColor);
+
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
                 getScene().addMesh(pignonDroitToit);
                 getScene().addMesh(pignonGaucheToit);
                 break;
             case Ouest:
-                panneauToit = PanelHelper.buildPanneauToit2(longueur, largeur, chaletDTO.epaisseurMur,
-                        chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait, new Vector3D(0, 0, 0));
+                panneauToit = RoofPanelBuilder.buildRoofTopPanel(longueur, largeur, chaletDTO.epaisseurMur,
+                        chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
                 panneauToit = panneauToit.translate(
                         new Vector3D(-longueur / 2, -chaletDTO.hauteur - panneauToit.getHeight(), -largeur / 2));
 
-                rallongeVerticaleToit = PanelHelper.buildRallongeVertical2(longueur, largeur, chaletDTO.epaisseurMur,
-                        chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait, new Vector3D(0, 0, 0));
+                rallongeVerticaleToit = RoofPanelBuilder.buildRoofVerticalPanel(longueur, largeur, chaletDTO.epaisseurMur,
+                        chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
                 rallongeVerticaleToit = rallongeVerticaleToit.translate(new Vector3D(-longueur / 2,
-                        -chaletDTO.hauteur - rallongeVerticaleToit.getHeight(), -largeur / 2));
+                        -chaletDTO.hauteur, -largeur / 2));
 
-                pignonDroitToit = PanelHelper.buildPignonDroite2(largeur, chaletDTO.epaisseurMur, chaletDTO.angleToit,
-                        new Vector3D(0, 0, 0));
+                pignonDroitToit = RoofPanelBuilder.buildRoofRightGable(largeur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
                 pignonDroitToit = pignonDroitToit.rotate(0, -Math.PI / 2, 0);
                 pignonDroitToit = pignonDroitToit.translate(
                         new Vector3D(-longueur / 2, -chaletDTO.hauteur, -largeur / 2 + chaletDTO.epaisseurMur / 2));
 
-                pignonGaucheToit = PanelHelper.buildPignonGauche2(largeur, chaletDTO.epaisseurMur, chaletDTO.angleToit,
-                        new Vector3D(0, 0, 0));
+                pignonGaucheToit = RoofPanelBuilder.buildRoofLeftGable(largeur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
                 pignonGaucheToit = pignonGaucheToit.rotate(0, -Math.PI / 2, 0);
                 pignonGaucheToit = pignonGaucheToit.translate(
                         new Vector3D(longueur / 2, -chaletDTO.hauteur, -largeur / 2 + chaletDTO.epaisseurMur / 2));
@@ -401,6 +1008,11 @@ public class Afficheur {
                     pignonDroitToit.setVisible(false);
                     pignonGaucheToit.setVisible(false);
                 }
+
+                panneauToit.getMesh(0).getMaterial().setColor(panneauToitColor);
+                rallongeVerticaleToit.getMesh(0).getMaterial().setColor(rallongeVerticaleToitColor);
+                pignonDroitToit.getMesh(0).getMaterial().setColor(pignonDroitToitColor);
+                pignonGaucheToit.getMesh(0).getMaterial().setColor(pignonGaucheToitColor);
 
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
