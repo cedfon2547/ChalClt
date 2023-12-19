@@ -289,7 +289,7 @@ public class DrawingPanel extends javax.swing.JPanel {
 
                 evt.getMesh().setValid(accDto.valide);
                 evt.getMesh().setSelected(true);
-                evt.getMesh().setIsDragged(true);
+                // evt.getMesh().setIsDragged(true);
 
                 repaint();
             }

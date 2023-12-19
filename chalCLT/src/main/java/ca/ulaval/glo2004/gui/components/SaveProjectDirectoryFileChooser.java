@@ -51,6 +51,10 @@ public class SaveProjectDirectoryFileChooser extends javax.swing.JFrame {
                     // System.out.println("ApproveSelection");
                     boolean isValid = listener.onSelect(fileChooser.getSelectedFile().getAbsolutePath());
 
+                    // if (!isValid) {
+                    //     JOptionPane.showConfirmDialog(null, "Une erreur s'est produit lors de la sauvegarde du projet'", "Erreur lors de la sauvegarde", JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE);
+                    // }
+                    
                     // if the listener return false, the path is not valid and we should display the
                     // error and let the user choose a different one.
                     if (isValid) {

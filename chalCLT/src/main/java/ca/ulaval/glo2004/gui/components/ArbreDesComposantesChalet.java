@@ -179,9 +179,12 @@ public class ArbreDesComposantesChalet extends javax.swing.JPanel {
 
                 TreePath[] treePaths = arbreComposantesChalet.getSelectionPaths();
 
-                if (treePaths == null)
+                if (treePaths == null) {
+                    mainWindow.clearAccessoiresSelectionnees();
                     return;
+                }
 
+                mainWindow.clearAccessoiresSelectionnees();
                 for (TreePath path : treePaths) {
                     if (path.getLastPathComponent() instanceof AccessoireTreeNode) {
                         AccessoireTreeNode nodeAcc = (AccessoireTreeNode) path.getLastPathComponent();

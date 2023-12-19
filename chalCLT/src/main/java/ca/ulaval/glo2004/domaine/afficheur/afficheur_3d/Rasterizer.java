@@ -587,10 +587,6 @@ public class Rasterizer {
                 this.drawInvalidMeshBounding(g2);
                 this.drawSelectedMeshBounding(g2);
                 this.drawDraggedMeshBounding(g2);
-
-                // g2.setColor(Color.BLACK);
-                // this.drawFPSDetails(g2, new Point(10, 20));
-                // this.drawCameraDetails(g2, new Point(10, 40));
             } catch (Exception e) {
 
             }
@@ -625,10 +621,6 @@ public class Rasterizer {
             this.drawInvalidMeshBounding(g2);
             this.drawSelectedMeshBounding(g2);
             this.drawDraggedMeshBounding(g2);
-
-            // g2.setColor(Color.BLACK);
-            // this.drawFPSDetails(g2, new Point(10, 20));
-            // this.drawCameraDetails(g2, new Point(10, 40));
         }
     }
 
@@ -832,102 +824,12 @@ public class Rasterizer {
         }
     }
 
-    // private void drawCameraDirectionCube(Graphics g, int cubeX, int cubeY, int
-    // size) {
-    // // TODO: Re implement this method
-    // int cubeSize = size;
-    // int padding = 10;
-    // Vector3D cubePosition = new Vector3D(cubeX, cubeY, 1000);
-    // Vector3D cubeDimension = new Vector3D(cubeSize, cubeSize, cubeSize);
-    // RectCuboid cube = new RectCuboid(cubePosition, cubeDimension);
-    // cube.getMaterial().setColor(Color.WHITE);
-
-    // // scene.formatTriangles(cube);
-
-    // cube.getMaterial().setAmbient(0.1);
-    // double[] cubeZBuffer = new double[zBuffer.length];
-    // Arrays.fill(cubeZBuffer, Double.NEGATIVE_INFINITY);
-
-    // for (Triangle triangle : cube.getTriangles()) {
-    // triangle = triangle.translate(cube.getCenter().multiply(-1))
-    // .transform(Matrix.rotationMatrix(scene.getCamera().getDirection().getX(),
-    // scene.getCamera().getDirection().getY(),
-    // scene.getCamera().getDirection().getZ()));
-    // triangle = triangle
-    // .translate(new Vector3D(image.getWidth() - cubeSize - padding,
-    // image.getHeight() - cubeSize - padding, 0));
-    // Vector3D[] vertices = triangle.getVertices();
-
-    // Vector3D vertex1 = new Vector3D(vertices[0]);
-    // Vector3D vertex2 = new Vector3D(vertices[1]);
-    // Vector3D vertex3 = new Vector3D(vertices[2]);
-
-    // // vertex1 = vertex1.multiply(transform);
-    // // vertex2 = vertex2.multiply(transform);
-    // // vertex3 = vertex3.multiply(transform);
-
-    // int minX = (int) Math.max(0,
-    // Math.ceil(Math.min(vertex1.x, Math.min(vertex2.x, vertex3.x))));
-    // int maxX = (int) Math.min(image.getWidth() - 1,
-    // Math.floor(Math.max(vertex1.x,
-    // Math.max(vertex2.x, vertex3.x))));
-    // int minY = (int) Math.max(0,
-    // Math.ceil(Math.min(vertex1.y, Math.min(vertex2.y, vertex3.y))));
-    // int maxY = (int) Math.min(image.getHeight() - 1,
-    // Math.floor(Math.max(vertex1.y,
-    // Math.max(vertex2.y, vertex3.y))));
-
-    // double triangleArea = (vertex1.y - vertex3.y) * (vertex2.x - vertex3.x)
-    // + (vertex2.y - vertex3.y) * (vertex3.x - vertex1.x);
-
-    // Vector3D norm = triangle.getNormal().normalize();
-
-    // for (int y = minY; y <= maxY; y++) {
-    // for (int x = minX; x <= maxX; x++) {
-
-    // double b1 = ((y - vertex3.y) * (vertex2.x - vertex3.x)
-    // + (vertex2.y - vertex3.y) * (vertex3.x - x))
-    // / triangleArea;
-    // double b2 = ((y - vertex1.y) * (vertex3.x - vertex1.x)
-    // + (vertex3.y - vertex1.y) * (vertex1.x - x))
-    // / triangleArea;
-    // double b3 = ((y - vertex2.y) * (vertex1.x - vertex2.x)
-    // + (vertex1.y - vertex2.y) * (vertex2.x - x))
-    // / triangleArea;
-
-    // boolean isInside = b1 >= 0 && b1 <= 1 && b2 >= 0 && b2 <= 1
-    // && b3 >= 0
-    // && b3 < 1;
-
-    // // Check if the scene ground intersect with the triangle
-
-    // if (isInside) {
-    // double depth = b1 * (vertex1.z
-    // - scene.getCamera().getPosition().z)
-    // + b2 * (vertex2.z - scene.getCamera()
-    // .getPosition().z)
-    // + b3 * (vertex3.z - scene.getCamera()
-    // .getPosition().z);
-    // int zIndex = y * image.getWidth() + x;
-
-    // if (cubeZBuffer[zIndex] < depth) {
-    // cubeZBuffer[zIndex] = depth;
-
-    // Color finalColor = lightModel.calculateColor(cube.getMaterial(),
-    // scene.getCamera(),
-    // norm, new Vector3D(x, y, depth), scene.getLight());
-    // g.setColor(finalColor);
-    // g.fillRect(x, y, 1, 1);
-    // }
-    // }
-    // }
-    // }
-    // }
-    // }
+    private int MAX_AXIS_LENGTH = 5000;
 
     private void drawAxes(Graphics2D g2, Matrix transform) {
+        int stepCounts = (int) (MAX_AXIS_LENGTH / scene.getConfiguration().getGridStep());
         int axisLength = (int) Math
-                .floor(scene.getConfiguration().getGridStep() * scene.getConfiguration().getStepCounts());
+                .floor(scene.getConfiguration().getGridStep() * stepCounts);
 
         g2.setStroke(new BasicStroke(scene.getConfiguration().getAxisStrokeWidth()));
 
@@ -963,7 +865,8 @@ public class Rasterizer {
         g2.setStroke(new BasicStroke(scene.getConfiguration().getGridStrokeWidth()));
 
         double gridStep = scene.getConfiguration().getGridStep();
-        int axisLength = (int) (gridStep * scene.getConfiguration().getStepCounts());
+        int stepCounts = (int) (MAX_AXIS_LENGTH / gridStep);    
+        int axisLength = (int) (gridStep * stepCounts);
 
         for (double i = 0; i <= axisLength; i += gridStep) {
             Vector3D x3 = new Vector3D(i, -axisLength, 0);
@@ -1001,7 +904,8 @@ public class Rasterizer {
         g2.setStroke(new BasicStroke(scene.getConfiguration().getGridStrokeWidth()));
 
         double gridStep = scene.getConfiguration().getGridStep();
-        int axisLength = (int) (gridStep * scene.getConfiguration().getStepCounts());
+        int stepCounts = (int) (MAX_AXIS_LENGTH / gridStep);
+        int axisLength = (int) (gridStep * stepCounts);
 
         for (double i = 0; i <= axisLength; i += gridStep) {
             Vector3D x1 = new Vector3D(i, 0, -axisLength);
@@ -1039,7 +943,8 @@ public class Rasterizer {
         g2.setStroke(new BasicStroke(scene.getConfiguration().getGridStrokeWidth()));
 
         double gridStep = scene.getConfiguration().getGridStep();
-        int axisLength = (int) (gridStep * scene.getConfiguration().getStepCounts());
+        int stepCounts = (int) (MAX_AXIS_LENGTH / gridStep);
+        int axisLength = (int) (gridStep * stepCounts);
 
         for (double i = 0; i <= axisLength; i += gridStep) {
             Vector3D x1 = new Vector3D(0, -axisLength, i);
