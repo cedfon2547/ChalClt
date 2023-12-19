@@ -46,8 +46,17 @@ public class TopButtonPanel extends JPanel {
             public void change(UserPreferencesEvent event) {
                 PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateur = event
                         .getPreferencesUtilisateurDTO();
-                grilleToggleBtn.setSelected(preferencesUtilisateur.afficherGrille);
-                voisinToggleBtn.setSelected(preferencesUtilisateur.afficherVoisinSelection);
+                
+                // grilleToggleBtn.setSelected(preferencesUtilisateur.afficherGrille);
+                // voisinToggleBtn.setSelected(preferencesUtilisateur.afficherVoisinSelection);
+
+                // if (preferencesUtilisateur.afficherVoisinSelection) {
+                //     creerFenetreBtn.setEnabled(false);
+                //     creerPorteBtn.setEnabled(false);
+                // } else {
+                //     creerFenetreBtn.setEnabled(true);
+                //     creerPorteBtn.setEnabled(true);
+                // }
             }
         });
     }

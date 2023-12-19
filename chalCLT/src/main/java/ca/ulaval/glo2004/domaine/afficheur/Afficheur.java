@@ -1081,10 +1081,42 @@ public class Afficheur {
         getScene().addMesh(murDroitGroup);
         getScene().addMesh(murGaucheGroup);
 
-        if (!controleur.getPreferencesUtilisateur().afficherVoisinSelection) {
+        if (murFacadeGroup.getVisible() && !murFacadeGroup.getHidden()) {
             getScene().getMeshes().addAll(murFacadeGroup.getAccessoiresMeshes());
+        }
+
+        if (murArriereGroup.getVisible() && !murArriereGroup.getHidden()) {
             getScene().getMeshes().addAll(murArriereGroup.getAccessoiresMeshes());
+        }
+
+        if (murDroitGroup.getVisible() && !murDroitGroup.getHidden()) {
             getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
+        }
+
+        if (murGaucheGroup.getVisible() && !murGaucheGroup.getHidden()) {
+            getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
+        }
+
+        // if (!controleur.getPreferencesUtilisateur().afficherVoisinSelection) {
+        //     getScene().getMeshes().addAll(murFacadeGroup.getAccessoiresMeshes());
+        //     getScene().getMeshes().addAll(murArriereGroup.getAccessoiresMeshes());
+        //     getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
+        //     getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
+        // }
+
+        if (murFacadeGroup.getVisible() && !murFacadeGroup.getHidden()) {
+            getScene().getMeshes().addAll(murFacadeGroup.getAccessoiresMeshes());
+        }
+
+        if (murArriereGroup.getVisible() && !murArriereGroup.getHidden()) {
+            getScene().getMeshes().addAll(murArriereGroup.getAccessoiresMeshes());
+        }
+
+        if (murDroitGroup.getVisible() && !murDroitGroup.getHidden()) {
+            getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
+        }
+
+        if (murGaucheGroup.getVisible() && !murGaucheGroup.getHidden()) {
             getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
         }
 
@@ -1195,10 +1227,26 @@ public class Afficheur {
         // getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
         // getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
 
-        if (!controleur.getPreferencesUtilisateur().afficherVoisinSelection) {
+        // if (!controleur.getPreferencesUtilisateur().afficherVoisinSelection) {
+        //     getScene().getMeshes().addAll(murFacadeGroup.getAccessoiresMeshes());
+        //     getScene().getMeshes().addAll(murArriereGroup.getAccessoiresMeshes());
+        //     getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
+        //     getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
+        // }
+
+        if (murFacadeGroup.getVisible() && !murFacadeGroup.getHidden()) {
             getScene().getMeshes().addAll(murFacadeGroup.getAccessoiresMeshes());
+        }
+
+        if (murArriereGroup.getVisible() && !murArriereGroup.getHidden()) {
             getScene().getMeshes().addAll(murArriereGroup.getAccessoiresMeshes());
+        }
+
+        if (murDroitGroup.getVisible() && !murDroitGroup.getHidden()) {
             getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
+        }
+
+        if (murGaucheGroup.getVisible() && !murGaucheGroup.getHidden()) {
             getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
         }
 
