@@ -77,7 +77,7 @@ class GridStepSpinner extends JSpinner {
 }
 
 public class DrawingPanel extends javax.swing.JPanel {
-    MainWindow mainWindow;
+    private MainWindow mainWindow;
     public Afficheur afficheur;
 
     public static final Color activeBtnColor = Color.DARK_GRAY;
@@ -90,13 +90,13 @@ public class DrawingPanel extends javax.swing.JPanel {
             { "Droite", TypeDeVue.Droite.toString(), null },
             { "Gauche", TypeDeVue.Gauche.toString(), null },
     };
-    SwitchToggleButton toggleGridSwitch;
-    SwitchToggleButton toggleVoisinSwitch;
-    GridStepSpinner gridStepSpinner;
+    private SwitchToggleButton toggleGridSwitch;
+    private SwitchToggleButton toggleVoisinSwitch;
+    private GridStepSpinner gridStepSpinner;
 
     // Afficheur.TypeDeVue vueActive = Afficheur.TypeDeVue.Dessus;
-    javax.swing.JToolBar barreOutilsVue;
-    MesureBruteContainer mesureBruteContainer;
+    private javax.swing.JToolBar barreOutilsVue;
+    private MesureBruteContainer mesureBruteContainer;
 
     public DrawingPanel(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
