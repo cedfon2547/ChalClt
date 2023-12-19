@@ -38,7 +38,7 @@ public class SaveProjectDirectoryFileChooser extends javax.swing.JFrame {
         fileChooser.setDialogTitle("Sélectionner le fichier à ouvrir");
 
         // Will use the current working directory + chalet name
-        File defaultSelectedFile = new File(System.getProperty("user.dir") + String.format("\\%s", mainWindow.getControleur().getChalet().nom));
+        File defaultSelectedFile = new File(System.getProperty("user.dir") + String.format("\\%s.chalclt", mainWindow.getControleur().getChalet().nom));
         fileChooser.setSelectedFile(defaultSelectedFile);
 
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Sauvegarde ChalCLT", "chalclt");
