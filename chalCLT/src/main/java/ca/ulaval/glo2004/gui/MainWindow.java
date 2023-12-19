@@ -158,7 +158,7 @@ public class MainWindow extends javax.swing.JFrame {
         mainWindowSplitPane.setLeftComponent(sidePanelSplitPane);
 
         mainWindowSplitPane.setDividerLocation(200);
-        sidePanelSplitPane.setDividerLocation(200);
+        sidePanelSplitPane.setDividerLocation(300);
 
         setLayout(new BorderLayout());
         topButtonPanel = new TopButtonPanel(this);

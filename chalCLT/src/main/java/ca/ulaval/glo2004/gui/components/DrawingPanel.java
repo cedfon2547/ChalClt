@@ -407,7 +407,25 @@ public class DrawingPanel extends javax.swing.JPanel {
         this.afficheur.getEventSupport().addCameraListener(new AfficheurEventSupport.CameraListener() {
             @Override
             public void cameraDirectionChanged(AfficheurEventSupport.CameraEvent evt) {
-                // System.out.println("Camera Direction Changed");
+                // Normalizing angles
+                double angle = evt.getDirection().getY() % (Math.PI * 2);
+
+                if (angle < 0) {
+                    angle += Math.PI * 2;
+                }
+
+                if (evt.getDirection().getX() < -Math.PI / 4) {
+                    System.out.println("Camera Direction Changed");
+                    weakChangerVue(TypeDeVue.Dessus);
+                } else if (angle < (Math.PI + Math.PI / 4) && angle > (Math.PI - Math.PI / 4)) {
+                    weakChangerVue(TypeDeVue.Facade);
+                } else if (angle < (0 + Math.PI / 4) && angle > (0 - Math.PI / 4)) {
+                    weakChangerVue(TypeDeVue.Arriere);
+                } else if (angle < (Math.PI / 2 + Math.PI / 4) && angle > (Math.PI / 2 - Math.PI / 4)) {
+                    weakChangerVue(TypeDeVue.Droite);
+                } else if (angle < (Math.PI * 3 / 2 + Math.PI / 4) && angle > (Math.PI * 3 / 2 - Math.PI / 4)) {
+                    weakChangerVue(TypeDeVue.Gauche);
+                }
             }
 
             @Override
@@ -579,18 +597,16 @@ public class DrawingPanel extends javax.swing.JPanel {
             });
 
             toggleVoisinSwitch.addEventSelected((evt) -> {
-                System.out.println("Voisin Selected: " + toggleVoisinSwitch.isSelected());
+                // System.out.println("Voisin Selected: " + toggleVoisinSwitch.isSelected());
 
                 if (afficheur.getSelection().size() != 0 && toggleVoisinSwitch.isSelected()) {
                     for (TriangleMesh mesh : afficheur.getScene().getMeshes()) {
-                        System.out.println("Selected " + mesh.ID + " " + mesh.getSelected());
                         if (!mesh.getSelected()) {
                             mesh.setHidden(true);
                         }
                     }
                 } else {
                     for (TriangleMesh mesh : afficheur.getScene().getMeshes()) {
-                        System.out.println("Selected " + mesh.ID + " " + mesh.getSelected());
                         mesh.setHidden(false);
                     }
                 }
@@ -600,7 +616,6 @@ public class DrawingPanel extends javax.swing.JPanel {
 
                 preferencesUtilisateurDTO2.afficherVoisinSelection = toggleVoisinSwitch.isSelected();
                 mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO2);
-                // afficheur.rechargerAffichage();
             });
 
             toolsSwitchesContainer.add(gridContainer);
@@ -610,7 +625,6 @@ public class DrawingPanel extends javax.swing.JPanel {
             mainWindow.getControleur().addUserPreferencesEventListener(new UserPreferencesEventListener() {
                 @Override
                 public void change(UserPreferencesEvent event) {
-                    // System.out.println("Preferences Utilisateur changed");
                     PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = event
                             .getPreferencesUtilisateurDTO();
 
@@ -622,7 +636,6 @@ public class DrawingPanel extends javax.swing.JPanel {
                     mainWindow.drawingPanel.afficheur.getScene().getConfiguration()
                             .setGridStep(preferencesUtilisateurDTO2.gridSpacing);
                     afficheur.updateViewGrid();
-                    // mainWindow.drawingPanel.rechargerAffichage();
                 }
             });
         }
