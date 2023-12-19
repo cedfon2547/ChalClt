@@ -36,6 +36,8 @@ import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.domaine.Chalet.ChaletDTO;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.AccessoireEvent;
+import ca.ulaval.glo2004.domaine.ControleurEventSupport.UndoRedoEvent;
+import ca.ulaval.glo2004.domaine.ControleurEventSupport.UndoRedoEventListener;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEvent;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEventListener;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
@@ -319,12 +321,15 @@ public class DrawingPanel extends javax.swing.JPanel {
             @Override
             public void meshHovered(AfficheurEventSupport.MeshMouseMotionEvent evt) {
                 mesureBruteContainer.show(evt.getLocationOnScreen());
-                if (evt.getMesh() == null) return;
+                if (evt.getMesh() == null)
+                    return;
 
                 TriangleMesh hovered = evt.getMesh();
-                if (hovered == null) return;
+                if (hovered == null)
+                    return;
 
-                if (hovered.ID.length() != 36) return; // not UUID format
+                if (hovered.ID.length() != 36)
+                    return; // not UUID format
 
                 Accessoire.AccessoireDTO accDto = mainWindow.getControleur()
                         .getAccessoire(UUID.fromString(hovered.ID));
@@ -338,18 +343,18 @@ public class DrawingPanel extends javax.swing.JPanel {
             public void mouseEnterMesh(AfficheurEventSupport.MeshMouseMotionEvent evt) {
                 setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-                if(evt.getMesh() instanceof MurTriangleMeshGroup){
+                if (evt.getMesh() instanceof MurTriangleMeshGroup) {
                     ChaletDTO tempChaletDTO = mainWindow.getControleur().getChalet();
                     double tempLargeur = tempChaletDTO.largeur;
                     double tempLongueur = tempChaletDTO.longueur;
-                    if (((MurTriangleMeshGroup) evt.getMesh()).getTypeMur() == TypeMur.Facade || ((MurTriangleMeshGroup) evt.getMesh()).getTypeMur() == TypeMur.Arriere){
+                    if (((MurTriangleMeshGroup) evt.getMesh()).getTypeMur() == TypeMur.Facade
+                            || ((MurTriangleMeshGroup) evt.getMesh()).getTypeMur() == TypeMur.Arriere) {
                         mesureBruteContainer.updateValeurs(tempChaletDTO, tempLargeur);
-                    }
-                    else{
+                    } else {
                         mesureBruteContainer.updateValeurs(tempChaletDTO, tempLongueur);
                     }
                 }
-                
+
                 mesureBruteContainer.show(evt.getLocationOnScreen());
             }
 
@@ -459,22 +464,33 @@ public class DrawingPanel extends javax.swing.JPanel {
                 positionDefault.x = getWidth() / 2;
                 positionDefault.y = getHeight() / 2;
                 afficheur.getScene().getCamera().setPosition(positionDefault);
+                afficheur.rechargerAffichage();
                 updateToolbarBtns();
                 repaint();
             }
         });
 
-        // String appImgPath = "/icons/dark/rotate_icon.png";
-        // URL appImgURL = App.class.getResource(appImgPath);
-        // Image appImg = Toolkit.getDefaultToolkit().getImage(appImgURL).getScaledInstance(300, 300, Image.SCALE_SMOOTH);
 
-        // Cursor c = Toolkit.getDefaultToolkit().createCustomCursor(appImg, new Point(16, 16), "cursor");
-
-        // this.addMouseMotionListener(new MouseAdapter() {
+        // this.mainWindow.getControleur().addUndoRedoEventListener(new UndoRedoEventListener() {
         //     @Override
-        //     public void mouseMoved(MouseEvent e) {
-        //         setCursor(c);
+        //     public void undo(UndoRedoEvent event) {
+        //         // System.out.println("UNDO");
+        //         toggleVoisinSwitch.setSelected(mainWindow.getControleur().getPreferencesUtilisateur().afficherVoisinSelection);
+        //         toggleVoisinOption();
         //     }
+
+        //     @Override
+        //     public void redo(UndoRedoEvent event) {
+        //         // System.out.println("REDO");
+        //         toggleVoisinSwitch.setSelected(mainWindow.getControleur().getPreferencesUtilisateur().afficherVoisinSelection);
+        //         toggleVoisinOption();
+
+        //     }
+        // });
+
+        // this.mainWindow.getControleur().addUserPreferencesEventListener((evt) -> {
+        //     System.out.println("Preferences Changed");
+        //     toggleVoisinSwitch.setSelected(evt.preferencesUtilisateurDTO.afficherVoisinSelection);
         // });
 
         buildViewToolbar();
@@ -631,44 +647,24 @@ public class DrawingPanel extends javax.swing.JPanel {
             toggleVoisinSwitch.addEventSelected((evt) -> {
                 // System.out.println("Voisin Selected: " + toggleVoisinSwitch.isSelected());
 
-                if (afficheur.getSelection().size() != 0 && toggleVoisinSwitch.isSelected()) {
-                    for (TriangleMesh mesh : afficheur.getScene().getMeshes()) {
-                        if (!mesh.getSelected()) {
-                            mesh.setHidden(true);
-                        }
-                    }
-                } else {
-                    // toggleVoisinSwitch.setSelected(false);
-                    if (afficheur.getSelection().size() == 0) {
-                        toggleVoisinSwitch.setEnabled(false);
-                    }
-
-                    for (TriangleMesh mesh : afficheur.getScene().getMeshes()) {
-                        mesh.setHidden(false);
-                    }
-                }
-
-                PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = mainWindow.getControleur()
-                        .getPreferencesUtilisateur();
-
-                preferencesUtilisateurDTO2.afficherVoisinSelection = toggleVoisinSwitch.isSelected();
-                mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO2);
+                toggleVoisinOption();
             });
 
             JPanel mouseControlsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
             JToggleButton rotateControlBtn = new JToggleButton();
             JToggleButton translateControlBtn = new JToggleButton();
 
-            
             String rotateIconPath = "/icons/dark/rotate_icon.png";
             String moveIconPath = "/icons/dark/move_icon.png";
 
             URL rotateIconURL = App.class.getResource(rotateIconPath);
             URL moveIconURL = App.class.getResource(moveIconPath);
 
-            Image rotateIcon = Toolkit.getDefaultToolkit().getImage(rotateIconURL).getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            Image moveIcon = Toolkit.getDefaultToolkit().getImage(moveIconURL).getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            
+            Image rotateIcon = Toolkit.getDefaultToolkit().getImage(rotateIconURL).getScaledInstance(20, 20,
+                    Image.SCALE_SMOOTH);
+            Image moveIcon = Toolkit.getDefaultToolkit().getImage(moveIconURL).getScaledInstance(20, 20,
+                    Image.SCALE_SMOOTH);
+
             rotateControlBtn.setToolTipText("Contrôle de la direction");
             translateControlBtn.setToolTipText("Contrôle de la position");
 
@@ -718,7 +714,6 @@ public class DrawingPanel extends javax.swing.JPanel {
                 }
             });
 
-
             mainWindow.getControleur().addUserPreferencesEventListener(new UserPreferencesEventListener() {
                 @Override
                 public void change(UserPreferencesEvent event) {
@@ -761,6 +756,31 @@ public class DrawingPanel extends javax.swing.JPanel {
                                         Short.MAX_VALUE)
                                 .addComponent(barreOutilsVue, javax.swing.GroupLayout.PREFERRED_SIZE,
                                         javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)));
+    }
+
+    public void toggleVoisinOption() {
+        if (afficheur.getSelection().size() != 0 && toggleVoisinSwitch.isSelected()) {
+            for (TriangleMesh mesh : afficheur.getScene().getMeshes()) {
+                if (!mesh.getSelected()) {
+                    mesh.setHidden(true);
+                }
+            }
+        } else {
+            // toggleVoisinSwitch.setSelected(false);
+            if (afficheur.getSelection().size() == 0) {
+                toggleVoisinSwitch.setEnabled(false);
+            }
+
+            for (TriangleMesh mesh : afficheur.getScene().getMeshes()) {
+                mesh.setHidden(false);
+            }
+        }
+
+        PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = mainWindow.getControleur()
+                .getPreferencesUtilisateur();
+
+        preferencesUtilisateurDTO2.afficherVoisinSelection = toggleVoisinSwitch.isSelected();
+        mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO2);
     }
 
     public void updateToolbarBtns() {
@@ -808,11 +828,11 @@ public class DrawingPanel extends javax.swing.JPanel {
         updateToolbarBtns();
 
         // if (vue == TypeDeVue.Dessus) {
-        //     mainWindow.topButtonPanel.creerFenetreBtn.setEnabled(false);
-        //     mainWindow.topButtonPanel.creerPorteBtn.setEnabled(false);
+        // mainWindow.topButtonPanel.creerFenetreBtn.setEnabled(false);
+        // mainWindow.topButtonPanel.creerPorteBtn.setEnabled(false);
         // } else {
-        //     mainWindow.topButtonPanel.creerFenetreBtn.setEnabled(true);
-        //     mainWindow.topButtonPanel.creerPorteBtn.setEnabled(true);
+        // mainWindow.topButtonPanel.creerFenetreBtn.setEnabled(true);
+        // mainWindow.topButtonPanel.creerPorteBtn.setEnabled(true);
         // }
     }
 
