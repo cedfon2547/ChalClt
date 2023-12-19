@@ -688,7 +688,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             toolsSwitchesContainer.add(mouseControlsPanel);
 
             afficheur.getEventSupport().addMouseControlListener((mouseControl) -> {
-                System.out.println("MouseControl Changed " + mouseControl);
+                // System.out.println("MouseControl Changed " + mouseControl);
                 switch (mouseControl) {
                     case Move:
                         translateControlBtn.setSelected(true);

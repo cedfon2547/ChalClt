@@ -9,12 +9,15 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.RoundRectangle2D;
 import java.net.URL;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 
@@ -24,10 +27,16 @@ class AppSplashScreen extends JFrame {
 
         String appImgPath = "/icons/dark/chalclt_logo.png";
         URL appImgURL = App.class.getResource(appImgPath);
-        Image appImg = Toolkit.getDefaultToolkit().getImage(appImgURL).getScaledInstance(300, 300, Image.SCALE_SMOOTH);
+        Image appImg = Toolkit.getDefaultToolkit().getImage(appImgURL).getScaledInstance(350, 350, Image.SCALE_SMOOTH);
         ImageIcon appIcon = new ImageIcon(appImg);
 
+        Border lineBorder = BorderFactory.createLineBorder(getForeground(), 2, true);
+        Border emptyBorder = BorderFactory.createEmptyBorder(0, 0, 0, 5);
+        Border border = BorderFactory.createCompoundBorder(lineBorder, emptyBorder);
+
         JPanel splashScreenPanel = new JPanel(new BorderLayout());
+        splashScreenPanel.setBorder(border);
+
         JLabel splashScreenimgLabel = new JLabel();
         JLabel spashScreenTitleLabel = new JLabel("ChalCLT");
         
@@ -69,7 +78,7 @@ public class App {
 
         AppSplashScreen splashScreen = new AppSplashScreen();
         try {
-            Thread.sleep(1000);
+            Thread.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
