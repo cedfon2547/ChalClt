@@ -61,7 +61,6 @@ public class OpenSaveDirectoryFileChoose extends javax.swing.JFrame {
                     }
 
                 } else if (evt.getActionCommand().equals("CancelSelection")) {
-                    // System.out.println("CancelSelection");
                     fileChooser.setVisible(false);
                     dispose();
                 }
@@ -70,8 +69,6 @@ public class OpenSaveDirectoryFileChoose extends javax.swing.JFrame {
 
         fileChooser.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                // System.out.println("Property Change" + evt.getPropertyName() + " " +
-                // evt.getNewValue());
             }
         });
 

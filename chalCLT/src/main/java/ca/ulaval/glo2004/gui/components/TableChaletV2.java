@@ -114,7 +114,6 @@ public class TableChaletV2 extends JTable {
         });
 
         sensToitComboBox.addActionListener((evt) -> {
-            // System.out.println("comboBox action");
             cellEditor.stopCellEditing();
         });
     }

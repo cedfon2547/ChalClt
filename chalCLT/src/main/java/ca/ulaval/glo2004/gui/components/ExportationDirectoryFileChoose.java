@@ -22,8 +22,6 @@ public class ExportationDirectoryFileChoose extends javax.swing.JFrame {
     }
 
     private void initComponents() {
-        // Chalet.ChaletDTO chaletDTO = mainWindow.getControleur().getChalet();
-
         fileChooser = new JFileChooser();
 
         fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
@@ -45,7 +43,6 @@ public class ExportationDirectoryFileChoose extends javax.swing.JFrame {
 
         fileChooser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                // System.out.println(evt.getActionCommand());
                 if (evt.getActionCommand().equals("ApproveSelection")) {
                     System.out.println("ApproveSelection " + fileChooser.getSelectedFile().getAbsolutePath());
                     boolean isValid = listener.onSelect(fileChooser.getSelectedFile().getAbsolutePath());
@@ -60,7 +57,6 @@ public class ExportationDirectoryFileChoose extends javax.swing.JFrame {
                     }
 
                 } else if (evt.getActionCommand().equals("CancelSelection")) {
-                    // System.out.println("CancelSelection");
                     fileChooser.setVisible(false);
                     dispose();
                 }
