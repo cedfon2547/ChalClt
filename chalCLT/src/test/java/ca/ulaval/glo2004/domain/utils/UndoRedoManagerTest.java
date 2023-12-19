@@ -210,7 +210,7 @@ public class UndoRedoManagerTest {
         
         assertEquals(2, manager.getUndoStackSize(), 0);
         assertEquals(0, manager.getRedoStackSize(), 0);
-        //assertNotEquals(posPorteExpected, projet.getChalet().getAccessoire(porteId).getPosition()[0], 0);
+        assertEquals(posPorteExpected, projet.getChalet().getAccessoire(porteId).getPosition()[0], 0);
         
         manager.undo(projet);
         
@@ -259,7 +259,7 @@ public class UndoRedoManagerTest {
         assertEquals(3, manager.getUndoStackSize(), 0);
         assertEquals(0, manager.getRedoStackSize(), 0);
         assertNotEquals(posPorteExpected, projet.getChalet().getAccessoire(porteId).getPosition()[1], 0);
-        //assertNotEquals(posFenetreExpected, projet.getChalet().getAccessoire(fenetreId).getPosition()[1], 0);
+        assertEquals(posFenetreExpected, projet.getChalet().getAccessoire(fenetreId).getPosition()[1], 0);
         
         manager.undo(projet);
         

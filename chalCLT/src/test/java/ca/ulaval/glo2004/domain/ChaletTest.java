@@ -99,12 +99,11 @@ public class ChaletTest {
         Accessoire porte = chalet.ajouterAccessoire(TypeMur.Facade, TypeAccessoire.Porte, pos, dim);
         porte.setPosition(pos);
         Accessoire.AccessoireDTO porteDTO = porte.toDTO();
-        double bottomMargin = porte.getMarginWithRect(porteDTO.position, porteDTO.dimensions)[3];
         Chalet.ChaletDTO test = chalet.toDTO();
         test.hauteur = 16.0;
         chalet.updateChalet(test);
         
-        assertEquals(test.hauteur - bottomMargin - porteDTO.dimensions[1], chalet.getAccessoire(porteDTO.accessoireId).getPosition()[1], 0.0);
+        assertEquals(test.hauteur - test.margeAccessoire - porteDTO.dimensions[1], chalet.getAccessoire(porteDTO.accessoireId).getPosition()[1], 0.0);
     }
     
     @Test
@@ -254,5 +253,33 @@ public class ChaletTest {
             e.printStackTrace();
             assertTrue(false);
         }
+    }
+    
+    @Test
+    public void calculAngleToit() {
+        Chalet chalet = chaletTest();
+        double oldLongueur = chalet.getLongueur();
+        
+        chalet.setAngleToit(25.0);
+        
+        assertEquals(25.0, chalet.getAngleToit(), 0);
+        assertEquals(oldLongueur, chalet.getLongueur(), 0);
+        // vérifier la hauteur de la rallonge si possible
+    }
+    
+    @Test
+    public void changerSensToit() {
+        Chalet chalet = chaletTest();
+        
+        chalet.setLongueur(192.0);
+        double oldLongueur = chalet.getLongueur();
+        double oldLargeur = chalet.getLargeur();
+        
+        chalet.setSensToit(TypeSensToit.Est);
+        
+        assertEquals(TypeSensToit.Est, chalet.getSensToit());
+        assertEquals(oldLargeur, chalet.getLargeur(), 0);
+        assertEquals(oldLongueur, chalet.getLongueur(), 0);
+        // vérifier la hauteur de la rallonge si possible
     }
 }
