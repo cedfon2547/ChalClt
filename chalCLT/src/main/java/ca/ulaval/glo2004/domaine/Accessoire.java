@@ -1,7 +1,6 @@
 package ca.ulaval.glo2004.domaine;
 
 import java.util.UUID;
-import java.io.Serializable;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
@@ -177,7 +176,7 @@ public class Accessoire extends Retrait {
      * Représente un objet de transfert de données pour un objet Accessoire.
      * Hérite de {@link ca.ulaval.glo2004.domaine.Retrait.RetraitDTO}.
      */
-    public static class AccessoireDTO extends Retrait.RetraitDTO implements Serializable {
+    public static class AccessoireDTO extends Retrait.RetraitDTO {
         public TypeAccessoire accessoireType;
         public String accessoireNom;
         public UUID accessoireId;

@@ -15,7 +15,6 @@ import javax.swing.border.TitledBorder;
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.Controleur;
-import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.AccessoireEvent;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.AccessoireEventListener;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.ChaletEvent;
@@ -71,7 +70,6 @@ public class MainWindow extends javax.swing.JFrame {
     public TopButtonPanel topButtonPanel;
 
     public List<Accessoire.AccessoireDTO> accessoiresSelectionnees = new ArrayList<Accessoire.AccessoireDTO>();
-    public List<TypeMur> mursSelectionnes = new ArrayList<TypeMur>();
 
     public NotificationManager notificationManager = new NotificationManager(this);
 
@@ -160,7 +158,7 @@ public class MainWindow extends javax.swing.JFrame {
         mainWindowSplitPane.setLeftComponent(sidePanelSplitPane);
 
         mainWindowSplitPane.setDividerLocation(200);
-        sidePanelSplitPane.setDividerLocation(200);
+        sidePanelSplitPane.setDividerLocation(300);
 
         setLayout(new BorderLayout());
         topButtonPanel = new TopButtonPanel(this);
@@ -277,7 +275,6 @@ public class MainWindow extends javax.swing.JFrame {
             public void focusLost(java.awt.event.FocusEvent e) {
                 // System.out.println("Focus lost");
             }
-
         });
         // tableContainer.setBorder(tableProprietesChalet.getTitledBorder());
         // tableContainer.add(tableProprietesChalet.getTableHeader());
@@ -317,18 +314,6 @@ public class MainWindow extends javax.swing.JFrame {
 
     public List<Accessoire.AccessoireDTO> getAccessoiresSelectionnees() {
         return accessoiresSelectionnees;
-    }
-
-    public void ajouterMurSelectionne(TypeMur typeMur) {
-        mursSelectionnes.add(typeMur);
-    }
-
-    public void retirerMurSelectionne(TypeMur typeMur) {
-        mursSelectionnes.remove(typeMur);
-    }
-
-    public void clearMursSelectionnes() {
-        mursSelectionnes.clear();
     }
 
     public void ajouterAccessoireSelectionnee(Accessoire.AccessoireDTO accessoireDTO) {

@@ -77,7 +77,7 @@ class GridStepSpinner extends JSpinner {
 }
 
 public class DrawingPanel extends javax.swing.JPanel {
-    MainWindow mainWindow;
+    private MainWindow mainWindow;
     public Afficheur afficheur;
 
     public static final Color activeBtnColor = Color.DARK_GRAY;
@@ -90,13 +90,13 @@ public class DrawingPanel extends javax.swing.JPanel {
             { "Droite", TypeDeVue.Droite.toString(), null },
             { "Gauche", TypeDeVue.Gauche.toString(), null },
     };
-    SwitchToggleButton toggleGridSwitch;
-    SwitchToggleButton toggleVoisinSwitch;
-    GridStepSpinner gridStepSpinner;
+    private SwitchToggleButton toggleGridSwitch;
+    private SwitchToggleButton toggleVoisinSwitch;
+    private GridStepSpinner gridStepSpinner;
 
     // Afficheur.TypeDeVue vueActive = Afficheur.TypeDeVue.Dessus;
-    javax.swing.JToolBar barreOutilsVue;
-    MesureBruteContainer max;
+    private javax.swing.JToolBar barreOutilsVue;
+    private MesureBruteContainer mesureBruteContainer;
 
     public DrawingPanel(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
@@ -117,7 +117,7 @@ public class DrawingPanel extends javax.swing.JPanel {
 
     private void initComponents() {
         setBackground(java.awt.Color.BLACK);
-        this.max = new MesureBruteContainer(mainWindow.getControleur().getChalet());
+        this.mesureBruteContainer = new MesureBruteContainer(mainWindow.getControleur().getChalet());
         this.mainWindow.getControleur()
                 .addAccessoireEventListener(new ControleurEventSupport.AccessoireEventListener() {
                     @Override
@@ -312,8 +312,8 @@ public class DrawingPanel extends javax.swing.JPanel {
             public void meshHovered(AfficheurEventSupport.MeshMouseMotionEvent evt) {
                 // TODO Auto-generated method stub
                 // System.out.println("Mesh Hovered " + e.getMesh().ID);
-// max.updateValeurs(mainWindow.getControleur().getChalet());
-                max.show(evt.getLocationOnScreen());
+                // max.updateValeurs(mainWindow.getControleur().getChalet());
+                mesureBruteContainer.show(evt.getLocationOnScreen());
             }
 
             @Override
@@ -321,48 +321,53 @@ public class DrawingPanel extends javax.swing.JPanel {
                 // System.out.println("MouseEnterMesh " + evt.getMesh().ID);
                 // repaint();
                 // max.setChaletDTOToPanel(afficheur.getControleur().getChalet());
-if(evt.getMesh() instanceof TriangleMeshGroup){
+                if(evt.getMesh() instanceof TriangleMeshGroup){
                     ChaletDTO tempChaletDTO = mainWindow.getControleur().getChalet();
                     double tempLargeur = tempChaletDTO.largeur;
-                    double tempEpaisseur = tempChaletDTO.epaisseurMur;
+                    double tempLongueur = tempChaletDTO.longueur;
                     if (evt.getMesh().getWidth() == tempLargeur){
-                        max.updateValeurs(tempChaletDTO, tempLargeur);
+                        mesureBruteContainer.updateValeurs(tempChaletDTO, tempLargeur);
                     }
-                    else if(evt.getMesh().getWidth() == tempEpaisseur){
-                        // max.updateValeurs(getMesh().getDepth());
+                    else{
+                        mesureBruteContainer.updateValeurs(tempChaletDTO, tempLongueur);
                     }
-                    
                 }
                 // max.updateValeurs(mainWindow.getControleur().getChalet(), null);
-                max.show(evt.getLocationOnScreen());
+                mesureBruteContainer.show(evt.getLocationOnScreen());
             }
 
             @Override
             public void mouseExitMesh(AfficheurEventSupport.MeshMouseMotionEvent evt) {
-                System.out.println("MouseExitMesh " + evt.getMesh().ID);
+                // System.out.println("MouseExitMesh " + evt.getMesh().ID);
                 // repaint();
                 
-                max.hide();
+                mesureBruteContainer.hide();
             }
         });
 
         this.afficheur.getEventSupport().addMeshSelectionListener(new AfficheurEventSupport.MeshSelectionListener() {
             @Override
             public void selectionChanged(AfficheurEventSupport.MeshSelectionEvent evt) {
-                boolean isOnlyWall = evt.getSelectedMeshIDs().stream().allMatch((id) -> {
+                boolean isRoofOrWall = evt.getSelectedMeshIDs().stream().allMatch((id) -> {
                     TriangleMesh mesh = afficheur.getScene().getMesh(id);
-                    if (mesh instanceof MurTriangleMeshGroup) {
+
+                    if (mesh instanceof MurTriangleMeshGroup || mesh == afficheur.panneauToit
+                            || mesh == afficheur.pignonDroitToit || mesh == afficheur.pignonGaucheToit
+                            || mesh == afficheur.rallongeVerticaleToit) {
                         return true;
                     }
+
                     mainWindow.arbreDesComposantesChalet
                             .setSelectedAccessoire(mainWindow.getAccessoiresSelectionnees());
 
                     return false;
                 });
 
-                if (isOnlyWall) {
+                if (isRoofOrWall) {
+                    System.out.println("Only Wall Selected");
                     mainWindow.clearAccessoiresSelectionnees();
                     mainWindow.showChaletTable();
+                    return;
                 }
 
                 if (evt.getSelectedMeshIDs().size() == 0) {
@@ -372,8 +377,6 @@ if(evt.getMesh() instanceof TriangleMeshGroup){
                     mainWindow.clearAccessoiresSelectionnees();
 
                     for (String id : evt.getSelectedMeshIDs()) {
-                        // System.out.println(id);
-
                         Accessoire.AccessoireDTO accessoireDTO = mainWindow.getControleur()
                                 .getAccessoire(UUID.fromString(id));
 
@@ -404,7 +407,25 @@ if(evt.getMesh() instanceof TriangleMeshGroup){
         this.afficheur.getEventSupport().addCameraListener(new AfficheurEventSupport.CameraListener() {
             @Override
             public void cameraDirectionChanged(AfficheurEventSupport.CameraEvent evt) {
-                // System.out.println("Camera Direction Changed");
+                // Normalizing angles
+                double angle = evt.getDirection().getY() % (Math.PI * 2);
+
+                if (angle < 0) {
+                    angle += Math.PI * 2;
+                }
+
+                if (evt.getDirection().getX() < -Math.PI / 4) {
+                    System.out.println("Camera Direction Changed");
+                    weakChangerVue(TypeDeVue.Dessus);
+                } else if (angle < (Math.PI + Math.PI / 4) && angle > (Math.PI - Math.PI / 4)) {
+                    weakChangerVue(TypeDeVue.Facade);
+                } else if (angle < (0 + Math.PI / 4) && angle > (0 - Math.PI / 4)) {
+                    weakChangerVue(TypeDeVue.Arriere);
+                } else if (angle < (Math.PI / 2 + Math.PI / 4) && angle > (Math.PI / 2 - Math.PI / 4)) {
+                    weakChangerVue(TypeDeVue.Droite);
+                } else if (angle < (Math.PI * 3 / 2 + Math.PI / 4) && angle > (Math.PI * 3 / 2 - Math.PI / 4)) {
+                    weakChangerVue(TypeDeVue.Gauche);
+                }
             }
 
             @Override
@@ -416,7 +437,7 @@ if(evt.getMesh() instanceof TriangleMeshGroup){
         this.afficheur.getEventSupport().addViewChangedListener(new AfficheurEventSupport.ViewChangedListener() {
             @Override
             public void viewChanged(AfficheurEventSupport.ViewChangedEvent evt) {
-                // System.out.println("View Changed");
+                System.out.println("View Changed");
                 Vector3D positionDefault = afficheur.getScene().getCamera().getPosition();
                 positionDefault.x = getWidth() / 2;
                 positionDefault.y = getHeight() / 2;
@@ -446,12 +467,12 @@ if(evt.getMesh() instanceof TriangleMeshGroup){
     }
 
     // private void buildMurBruteValue() {
-    //     hoveredMurlabel = new JLabel();
-    //     hoveredMurlabel.setText("TOOL_TIP_TEXT_KEY");
-    //     hoveredMurlabel.setVisible(true);
-    //     hoveredMurlabel.setOpaque(true);
-    //     invalidate();
-    //     repaint();
+    // hoveredMurlabel = new JLabel();
+    // hoveredMurlabel.setText("TOOL_TIP_TEXT_KEY");
+    // hoveredMurlabel.setVisible(true);
+    // hoveredMurlabel.setOpaque(true);
+    // invalidate();
+    // repaint();
     // }
 
     private void buildViewToolbar() {
@@ -576,13 +597,25 @@ if(evt.getMesh() instanceof TriangleMeshGroup){
             });
 
             toggleVoisinSwitch.addEventSelected((evt) -> {
-                // System.out.println("Voisin Selected: " + switchVoisin.isSelected());
+                // System.out.println("Voisin Selected: " + toggleVoisinSwitch.isSelected());
+
+                if (afficheur.getSelection().size() != 0 && toggleVoisinSwitch.isSelected()) {
+                    for (TriangleMesh mesh : afficheur.getScene().getMeshes()) {
+                        if (!mesh.getSelected()) {
+                            mesh.setHidden(true);
+                        }
+                    }
+                } else {
+                    for (TriangleMesh mesh : afficheur.getScene().getMeshes()) {
+                        mesh.setHidden(false);
+                    }
+                }
+
                 PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = mainWindow.getControleur()
                         .getPreferencesUtilisateur();
 
                 preferencesUtilisateurDTO2.afficherVoisinSelection = toggleVoisinSwitch.isSelected();
                 mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO2);
-                afficheur.rechargerAffichage();
             });
 
             toolsSwitchesContainer.add(gridContainer);
@@ -592,7 +625,6 @@ if(evt.getMesh() instanceof TriangleMeshGroup){
             mainWindow.getControleur().addUserPreferencesEventListener(new UserPreferencesEventListener() {
                 @Override
                 public void change(UserPreferencesEvent event) {
-                    // System.out.println("Preferences Utilisateur changed");
                     PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateurDTO2 = event
                             .getPreferencesUtilisateurDTO();
 
@@ -604,7 +636,6 @@ if(evt.getMesh() instanceof TriangleMeshGroup){
                     mainWindow.drawingPanel.afficheur.getScene().getConfiguration()
                             .setGridStep(preferencesUtilisateurDTO2.gridSpacing);
                     afficheur.updateViewGrid();
-                    // mainWindow.drawingPanel.rechargerAffichage();
                 }
             });
         }
@@ -684,8 +715,7 @@ if(evt.getMesh() instanceof TriangleMeshGroup){
         JDialog dialogContainer = new JDialog();
         MesureBrutePanel mesurePanel;
         ChaletDTO chaletDTO;
-        
-        
+
         public MesureBruteContainer(ChaletDTO chaletDTO) {
             this.chaletDTO = chaletDTO;
             initComponents();
@@ -694,10 +724,12 @@ if(evt.getMesh() instanceof TriangleMeshGroup){
         private void initComponents() {
             mesurePanel = new MesureBrutePanel(chaletDTO);
             dialogContainer.setLocationRelativeTo(null);
-            dialogContainer.setMinimumSize(new Dimension(100, 100));
+            dialogContainer.setUndecorated(true);
+            dialogContainer.pack();
+            dialogContainer.setMinimumSize(new Dimension(100, 80));
+            // dialogContainer.validate();
             dialogContainer.setResizable(false);
             dialogContainer.setFocusable(false);
-            dialogContainer.setUndecorated(true);
 
             mesurePanel.addMouseMotionListener(new MouseAdapter() {
                 @Override
@@ -715,9 +747,10 @@ if(evt.getMesh() instanceof TriangleMeshGroup){
             dialogContainer.add(mesurePanel);
         }
 
-        public void updateValeurs(ChaletDTO chaletDTO, double largeur){
-        this.chaletDTO = chaletDTO;
+        public void updateValeurs(ChaletDTO chaletDTO, double largeur) {
+            this.chaletDTO = chaletDTO;
             mesurePanel.updatePanel(this.chaletDTO, largeur);
+            dialogContainer.pack();
         }
 
         public void show(Point point) {
