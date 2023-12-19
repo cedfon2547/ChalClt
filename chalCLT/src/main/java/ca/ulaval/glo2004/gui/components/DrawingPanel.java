@@ -18,7 +18,6 @@ import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
 import java.awt.BorderLayout;
@@ -36,15 +35,11 @@ import ca.ulaval.glo2004.domaine.PreferencesUtilisateur;
 import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.domaine.Chalet.ChaletDTO;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.AccessoireEvent;
-import ca.ulaval.glo2004.domaine.ControleurEventSupport.UndoRedoEvent;
-import ca.ulaval.glo2004.domaine.ControleurEventSupport.UndoRedoEventListener;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEvent;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEventListener;
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport;
 import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport.MeshMouseMotionEvent;
-import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport.MeshSelectionEvent;
-import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport.MeshSelectionListener;
 import ca.ulaval.glo2004.domaine.afficheur.TypeDeVue;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
@@ -56,6 +51,7 @@ import ca.ulaval.glo2004.domaine.Controleur;
 import ca.ulaval.glo2004.domaine.ControleurEventSupport;
 
 class TestHoverComponant extends JPanel {
+    
 }
 
 class GridStepSpinner extends JSpinner {

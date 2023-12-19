@@ -44,8 +44,8 @@ public class TopButtonPanel extends JPanel {
         mainWindow.getControleur().addUserPreferencesEventListener(new UserPreferencesEventListener() {
             @Override
             public void change(UserPreferencesEvent event) {
-                PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateur = event
-                        .getPreferencesUtilisateurDTO();
+                // PreferencesUtilisateur.PreferencesUtilisateurDTO preferencesUtilisateur = event
+                //         .getPreferencesUtilisateurDTO();
                 
                 // grilleToggleBtn.setSelected(preferencesUtilisateur.afficherGrille);
                 // voisinToggleBtn.setSelected(preferencesUtilisateur.afficherVoisinSelection);
