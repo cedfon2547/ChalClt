@@ -29,11 +29,11 @@ public class TopButtonPanel extends JPanel {
 
     public JToggleButton voisinToggleBtn;
 
-    public JToggleButton undoToggleBtn;
+    public JButton undoToggleBtn;
 
-    public JToggleButton redoToggleBtn;
+    public JButton redoToggleBtn;
 
-    public JToggleButton saveToggleBtn;
+    public JButton saveToggleBtn;
 
     public TopButtonPanel(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
@@ -63,9 +63,9 @@ public class TopButtonPanel extends JPanel {
         supprimerAccessoireBtn = new JButton("Supprimer");
         grilleToggleBtn = new JToggleButton("Grille");
         voisinToggleBtn = new JToggleButton("Voisin");
-        undoToggleBtn = new JToggleButton("Annuler");
-        redoToggleBtn = new JToggleButton("Rétablir");
-        saveToggleBtn = new JToggleButton("Sauvegarder");
+        undoToggleBtn = new JButton("Annuler");
+        redoToggleBtn = new JButton("Rétablir");
+        saveToggleBtn = new JButton("Sauvegarder");
 
         creerFenetreBtn.setPreferredSize(new Dimension(75, 50));
         creerPorteBtn.setPreferredSize(new Dimension(75, 50));
