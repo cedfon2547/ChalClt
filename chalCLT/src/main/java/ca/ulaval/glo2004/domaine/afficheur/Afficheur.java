@@ -839,34 +839,6 @@ public class Afficheur {
                 pignonGaucheToit = pignonGaucheToit.translate(
                         new Vector3D(largeur / 2, -chaletDTO.hauteur, -longueur / 2 + chaletDTO.epaisseurMur / 2));
                 
-                panneauToit.setDraggable(false);
-                rallongeVerticaleToit.setDraggable(false);
-                pignonDroitToit.setDraggable(false);
-                pignonGaucheToit.setDraggable(false);
-
-                panneauToit.ID = "panneauToit";
-                rallongeVerticaleToit.ID = "rallongeVerticaleToit";
-                pignonDroitToit.ID = "pignonDroitToit";
-                pignonGaucheToit.ID = "pignonGaucheToit";
-
-
-                // Set visible by default since the initial view is from the top
-                if (getScene().getCamera().getDirection().x != -Math.PI / 2) {
-                    panneauToit.setVisible(true);
-                    rallongeVerticaleToit.setVisible(true);
-                    pignonDroitToit.setVisible(true);
-                    pignonGaucheToit.setVisible(true);
-                } else {
-                    panneauToit.setVisible(false);
-                    rallongeVerticaleToit.setVisible(false);
-                    pignonDroitToit.setVisible(false);
-                    pignonGaucheToit.setVisible(false);
-                }
-
-                panneauToit.getMesh(0).getMaterial().setColor(panneauToitColor);
-                rallongeVerticaleToit.getMesh(0).getMaterial().setColor(rallongeVerticaleToitColor);
-                pignonDroitToit.getMesh(0).getMaterial().setColor(pignonDroitToitColor);
-                pignonGaucheToit.getMesh(0).getMaterial().setColor(pignonGaucheToitColor);
 
                 // TriangleMeshGroup m = RoofPanelBuilder.buildRoofVerticalPanelRemoval(largeur, longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
                 // m = m.translate(new Vector3D(-largeur / 2,
@@ -881,10 +853,6 @@ public class Afficheur {
                 // getScene().addMesh(m);
                 // getScene().addMesh(m2);
 
-                getScene().addMesh(panneauToit);
-                getScene().addMesh(rallongeVerticaleToit);
-                getScene().addMesh(pignonDroitToit);
-                getScene().addMesh(pignonGaucheToit);
                 break;
             case Sud:
                 panneauToit = RoofPanelBuilder.buildRoofTopPanel(largeur, longueur, chaletDTO.epaisseurMur, chaletDTO.angleToit, chaletDTO.margeSupplementaireRetrait);
@@ -910,38 +878,6 @@ public class Afficheur {
                 pignonDroitToit = pignonDroitToit.rotate(0, Math.PI, 0);
                 pignonGaucheToit = pignonGaucheToit.rotate(0, Math.PI, 0);
                 
-                panneauToit.setDraggable(false);
-                rallongeVerticaleToit.setDraggable(false);
-                pignonDroitToit.setDraggable(false);
-                pignonGaucheToit.setDraggable(false);
-
-                panneauToit.ID = "panneauToit";
-                rallongeVerticaleToit.ID = "rallongeVerticaleToit";
-                pignonDroitToit.ID = "pignonDroitToit";
-                pignonGaucheToit.ID = "pignonGaucheToit";
-
-                // Set visible by default since the initial view is from the top
-                if (getScene().getCamera().getDirection().x != -Math.PI / 2) {
-                    panneauToit.setVisible(true);
-                    rallongeVerticaleToit.setVisible(true);
-                    pignonDroitToit.setVisible(true);
-                    pignonGaucheToit.setVisible(true);
-                } else {
-                    panneauToit.setVisible(false);
-                    rallongeVerticaleToit.setVisible(false);
-                    pignonDroitToit.setVisible(false);
-                    pignonGaucheToit.setVisible(false);
-                }
-
-                panneauToit.getMesh(0).getMaterial().setColor(panneauToitColor);
-                rallongeVerticaleToit.getMesh(0).getMaterial().setColor(rallongeVerticaleToitColor);
-                pignonDroitToit.getMesh(0).getMaterial().setColor(pignonDroitToitColor);
-                pignonGaucheToit.getMesh(0).getMaterial().setColor(pignonGaucheToitColor);
-
-                getScene().addMesh(panneauToit);
-                getScene().addMesh(rallongeVerticaleToit);
-                getScene().addMesh(pignonDroitToit);
-                getScene().addMesh(pignonGaucheToit);
                 break;
             case Est:
                 panneauToit = RoofPanelBuilder.buildRoofTopPanel(longueur, largeur, chaletDTO.epaisseurMur,
@@ -969,38 +905,6 @@ public class Afficheur {
                 pignonDroitToit = pignonDroitToit.rotate(0, Math.PI / 2, 0);
                 pignonGaucheToit = pignonGaucheToit.rotate(0, Math.PI / 2, 0);
                 
-                panneauToit.setDraggable(false);
-                rallongeVerticaleToit.setDraggable(false);
-                pignonDroitToit.setDraggable(false);
-                pignonGaucheToit.setDraggable(false);
-
-                panneauToit.ID = "panneauToit";
-                rallongeVerticaleToit.ID = "rallongeVerticaleToit";
-                pignonDroitToit.ID = "pignonDroitToit";
-                pignonGaucheToit.ID = "pignonGaucheToit";
-
-                // // Set visible by default since the initial view is from the top
-                // if (getScene().getCamera().getDirection().x != -Math.PI / 2) {
-                //     panneauToit.setVisible(true);
-                //     rallongeVerticaleToit.setVisible(true);
-                //     pignonDroitToit.setVisible(true);
-                //     pignonGaucheToit.setVisible(true);
-                // } else {
-                //     panneauToit.setVisible(false);
-                //     rallongeVerticaleToit.setVisible(false);
-                //     pignonDroitToit.setVisible(false);
-                //     pignonGaucheToit.setVisible(false);
-                // }
-
-                panneauToit.getMesh(0).getMaterial().setColor(panneauToitColor);
-                rallongeVerticaleToit.getMesh(0).getMaterial().setColor(rallongeVerticaleToitColor);
-                pignonDroitToit.getMesh(0).getMaterial().setColor(pignonDroitToitColor);
-                pignonGaucheToit.getMesh(0).getMaterial().setColor(pignonGaucheToitColor);
-
-                getScene().addMesh(panneauToit);
-                getScene().addMesh(rallongeVerticaleToit);
-                getScene().addMesh(pignonDroitToit);
-                getScene().addMesh(pignonGaucheToit);
                 break;
             case Ouest:
                 panneauToit = RoofPanelBuilder.buildRoofTopPanel(longueur, largeur, chaletDTO.epaisseurMur,
@@ -1028,27 +932,23 @@ public class Afficheur {
                 pignonDroitToit = pignonDroitToit.rotate(0, 3*Math.PI / 2, 0);
                 pignonGaucheToit = pignonGaucheToit.rotate(0, 3*Math.PI / 2, 0);
                 
-                panneauToit.setDraggable(false);
-                rallongeVerticaleToit.setDraggable(false);
-                pignonDroitToit.setDraggable(false);
-                pignonGaucheToit.setDraggable(false);
-
-                panneauToit.ID = "panneauToit";
-                rallongeVerticaleToit.ID = "rallongeVerticaleToit";
-                pignonDroitToit.ID = "pignonDroitToit";
-                pignonGaucheToit.ID = "pignonGaucheToit";
-
-                panneauToit.getMesh(0).getMaterial().setColor(panneauToitColor);
-                rallongeVerticaleToit.getMesh(0).getMaterial().setColor(rallongeVerticaleToitColor);
-                pignonDroitToit.getMesh(0).getMaterial().setColor(pignonDroitToitColor);
-                pignonGaucheToit.getMesh(0).getMaterial().setColor(pignonGaucheToitColor);
-
-                getScene().addMesh(panneauToit);
-                getScene().addMesh(rallongeVerticaleToit);
-                getScene().addMesh(pignonDroitToit);
-                getScene().addMesh(pignonGaucheToit);
                 break;
         }
+
+        panneauToit.setDraggable(false);
+        rallongeVerticaleToit.setDraggable(false);
+        pignonDroitToit.setDraggable(false);
+        pignonGaucheToit.setDraggable(false);
+
+        panneauToit.ID = "panneauToit";
+        rallongeVerticaleToit.ID = "rallongeVerticaleToit";
+        pignonDroitToit.ID = "pignonDroitToit";
+        pignonGaucheToit.ID = "pignonGaucheToit";
+
+        panneauToit.getMesh(0).getMaterial().setColor(panneauToitColor);
+        rallongeVerticaleToit.getMesh(0).getMaterial().setColor(rallongeVerticaleToitColor);
+        pignonDroitToit.getMesh(0).getMaterial().setColor(pignonDroitToitColor);
+        pignonGaucheToit.getMesh(0).getMaterial().setColor(pignonGaucheToitColor);
 
         if (oldPanneauToit != null) {
             panneauToit.setVisible(oldPanneauToit.getVisible());
@@ -1095,6 +995,10 @@ public class Afficheur {
             pignonGaucheToit.setVisible(false);
         }
         
+        getScene().addMesh(panneauToit);
+        getScene().addMesh(rallongeVerticaleToit);
+        getScene().addMesh(pignonDroitToit);
+        getScene().addMesh(pignonGaucheToit);
     }
 
     public void initializeView() {
