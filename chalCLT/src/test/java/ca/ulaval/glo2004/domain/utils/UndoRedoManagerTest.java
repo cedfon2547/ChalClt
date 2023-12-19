@@ -9,11 +9,19 @@ import org.junit.Test;
 
 import ca.ulaval.glo2004.domaine.Accessoire;
 import ca.ulaval.glo2004.domaine.ChalCLTProjet;
+import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.domaine.TypeAccessoire;
 import ca.ulaval.glo2004.domaine.TypeMur;
 import ca.ulaval.glo2004.domaine.TypeSensToit;
 import ca.ulaval.glo2004.domaine.utils.UndoRedoManager;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.UUID;
+import static org.junit.Assert.assertTrue;
 
 public class UndoRedoManagerTest {
     private UndoRedoManager manager;
@@ -267,5 +275,74 @@ public class UndoRedoManagerTest {
         assertEquals(1, manager.getRedoStackSize(), 0);
         assertEquals(posPorteExpected, projet.getChalet().getAccessoire(porteId).getPosition()[1], 0);
         assertEquals(posFenetreExpected, projet.getChalet().getAccessoire(fenetreId).getPosition()[1], 0);
+    }
+    
+    @Test
+    public void sauvegardeUndoRedoValide() {
+        Chalet.ChaletCompletDTO cDTO1 = new Chalet.ChaletCompletDTO(projet.getChalet());
+        
+        try {            
+            String path = System.getProperty("user.dir") + "\\test.txt";
+            File fichier = new File(path);
+            FileOutputStream fos = new FileOutputStream(fichier);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(cDTO1);
+            oos.flush();
+            oos.close();
+            
+            projet.getChalet().setLargeur(192.0);
+            projet.getChalet().setLongueur(144.0);
+            projet.getChalet().setHauteur(120.0);
+            projet.getChalet().setNom("Sauvegarde");
+        
+            double[] pos = {2.0, 3.0};
+            double[] dim = {10.0, 12.0};
+            projet.getChalet().ajouterAccessoire(TypeMur.Facade, TypeAccessoire.Porte, pos, dim);
+            projet.getChalet().ajouterAccessoire(TypeMur.Droit, TypeAccessoire.Fenetre, pos, dim);
+            projet.getChalet().setAngleToit(20.0);
+            projet.getChalet().setSensToit(TypeSensToit.Est);
+        
+            manager.saveState(new ChalCLTProjet.ChalCLTProjetDTO(projet));
+            
+            FileInputStream fis = new FileInputStream(fichier);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Chalet.ChaletCompletDTO cDTO2 = (Chalet.ChaletCompletDTO) ois.readObject();
+            projet.setChalet(new Chalet(cDTO2));
+            ois.close();
+            fichier.delete();
+            
+            assertEquals(120.0, projet.getChalet().getLargeur(), 0);
+            assertEquals(120.0, projet.getChalet().getLongueur(), 0);
+            assertEquals(96.0, projet.getChalet().getHauteur(), 0);
+            assertEquals(15.0, projet.getChalet().getAngleToit(), 0);
+            assertEquals(TypeSensToit.Nord, projet.getChalet().getSensToit());
+            assertEquals(0, projet.getChalet().getAccessoires().size(), 0);
+            assertEquals("Test", projet.getChalet().getNom());
+            
+            manager.undo(projet);
+            
+            assertEquals(192.0, projet.getChalet().getLargeur(), 0);
+            assertEquals(144.0, projet.getChalet().getLongueur(), 0);
+            assertEquals(120.0, projet.getChalet().getHauteur(), 0);
+            assertEquals(20.0, projet.getChalet().getAngleToit(), 0);
+            assertEquals(TypeSensToit.Est, projet.getChalet().getSensToit());
+            assertEquals(2, projet.getChalet().getAccessoires().size(), 0);
+            assertEquals("Sauvegarde", projet.getChalet().getNom());
+            
+            manager.redo(projet);
+            
+            assertEquals(120.0, projet.getChalet().getLargeur(), 0);
+            assertEquals(120.0, projet.getChalet().getLongueur(), 0);
+            assertEquals(96.0, projet.getChalet().getHauteur(), 0);
+            assertEquals(15.0, projet.getChalet().getAngleToit(), 0);
+            assertEquals(TypeSensToit.Nord, projet.getChalet().getSensToit());
+            assertEquals(0, projet.getChalet().getAccessoires().size(), 0);
+            assertEquals("Test", projet.getChalet().getNom());
+        }
+        catch (IOException | ClassNotFoundException e) {
+            // jsp
+            e.printStackTrace();
+            assertTrue(false);
+        }   
     }
 }
