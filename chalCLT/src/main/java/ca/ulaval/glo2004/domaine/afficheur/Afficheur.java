@@ -1497,6 +1497,8 @@ public class Afficheur {
                     getEventSupport().dispatchMeshClicked(new AfficheurEventSupport.MeshMouseEvent(evt, clickedMesh));
                 } else {
                     scene.clearAllSelection();
+                    getEventSupport().dispatchSelectionChanged(new AfficheurEventSupport.MeshSelectionEvent(
+                                    getSelection()));
                 }
 
                 drawingPanel.repaint();

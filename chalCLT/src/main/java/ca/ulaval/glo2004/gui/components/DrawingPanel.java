@@ -41,6 +41,8 @@ import ca.ulaval.glo2004.domaine.ControleurEventSupport.UserPreferencesEventList
 import ca.ulaval.glo2004.domaine.afficheur.Afficheur;
 import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport;
 import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport.MeshMouseMotionEvent;
+import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport.MeshSelectionEvent;
+import ca.ulaval.glo2004.domaine.afficheur.AfficheurEventSupport.MeshSelectionListener;
 import ca.ulaval.glo2004.domaine.afficheur.TypeDeVue;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.base.Vector3D;
 import ca.ulaval.glo2004.domaine.afficheur.afficheur_3d.mesh.TriangleMesh;
@@ -616,6 +618,16 @@ public class DrawingPanel extends javax.swing.JPanel {
                 // mainWindow.drawingPanel.rechargerAffichage();
             });
 
+            toggleVoisinSwitch.setEnabled(false);
+
+            afficheur.getEventSupport().addMeshSelectionListener((evt) -> {
+                if (evt.getSelectedMeshIDs().size() == 0 && !toggleVoisinSwitch.isSelected()) {
+                    toggleVoisinSwitch.setEnabled(false);
+                } else {
+                    toggleVoisinSwitch.setEnabled(true);
+                }
+            });
+
             toggleVoisinSwitch.addEventSelected((evt) -> {
                 // System.out.println("Voisin Selected: " + toggleVoisinSwitch.isSelected());
 
@@ -626,6 +638,11 @@ public class DrawingPanel extends javax.swing.JPanel {
                         }
                     }
                 } else {
+                    // toggleVoisinSwitch.setSelected(false);
+                    if (afficheur.getSelection().size() == 0) {
+                        toggleVoisinSwitch.setEnabled(false);
+                    }
+
                     for (TriangleMesh mesh : afficheur.getScene().getMeshes()) {
                         mesh.setHidden(false);
                     }

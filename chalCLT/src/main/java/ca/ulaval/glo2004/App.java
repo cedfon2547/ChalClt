@@ -7,9 +7,6 @@ import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.RoundRectangle2D;
 import java.net.URL;
 
 import javax.swing.BorderFactory;
@@ -31,7 +28,7 @@ class AppSplashScreen extends JFrame {
         ImageIcon appIcon = new ImageIcon(appImg);
 
         Border lineBorder = BorderFactory.createLineBorder(getForeground(), 2, true);
-        Border emptyBorder = BorderFactory.createEmptyBorder(0, 0, 0, 5);
+        Border emptyBorder = BorderFactory.createEmptyBorder(0, 0, 0, 10);
         Border border = BorderFactory.createCompoundBorder(lineBorder, emptyBorder);
 
         JPanel splashScreenPanel = new JPanel(new BorderLayout());
