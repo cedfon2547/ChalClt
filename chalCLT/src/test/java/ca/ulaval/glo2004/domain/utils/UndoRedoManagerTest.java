@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.UUID;
-import static org.junit.Assert.assertTrue;
 
 public class UndoRedoManagerTest {
     private UndoRedoManager manager;
