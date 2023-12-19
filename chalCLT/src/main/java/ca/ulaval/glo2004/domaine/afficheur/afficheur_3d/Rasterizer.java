@@ -208,225 +208,6 @@ public class Rasterizer {
         return partImage;
     }
 
-    // private Vector3D intersect(Vector3D origine, Vector3D direction, Vector3D v1,
-    // Vector3D v2, Vector3D v3) {
-    // // Compute the planes normal vector
-    // Vector3D v1v2 = v2.sub(v1);
-    // Vector3D v1v3 = v3.sub(v1);
-
-    // // No need to normalize
-    // Vector3D N = v1v2.cross(v1v3); // N
-    // double denom = N.dot(N);
-
-    // // Step 1: finding P
-    // // Check if ray and plane are parallel ?
-    // double NdotRayDirection = N.dot(direction);
-    // if (Math.abs(NdotRayDirection) < 0.0001) // almost 0
-    // return null; // they are parallel so they don't intersect !
-
-    // // compute d parameter using equation 2
-    // double d = -N.dot(v1);
-
-    // // compute t (equation 3)
-    // double t = -(N.dot(origine) + d) / NdotRayDirection;
-    // // check if the triangle is in behind the ray
-    // if (t < 0)
-    // return null; // the triangle is behind
-
-    // // compute the intersection point using equation 1
-    // Vector3D P = origine.add(direction.multiply(t));
-
-    // // Step 2: inside-outside test
-    // Vector3D C; // vector perpendicular to triangle's plane
-
-    // // edge 0
-    // Vector3D edge0 = v2.sub(v1);
-    // Vector3D vp0 = P.sub(v1);
-    // C = edge0.cross(vp0);
-    // if (N.dot(C) < 0)
-    // return null; // P is on the right side
-
-    // // edge 1
-    // Vector3D edge1 = v3.sub(v2);
-    // Vector3D vp1 = P.sub(v2);
-    // C = edge1.cross(vp1);
-    // if (N.dot(C) < 0)
-    // return null; // P is on the right side
-
-    // // edge 2
-    // Vector3D edge2 = v1.sub(v3);
-    // Vector3D vp2 = P.sub(v3);
-    // C = edge2.cross(vp2);
-    // if (N.dot(C) < 0)
-    // return null; // P is on the right side;
-
-    // return P.multiply(1 / denom);
-    // }
-
-    // private BufferedImage rasterize(Dimension panelDimension) {
-    // if (image == null) {
-    // image = new BufferedImage(panelDimension.width, panelDimension.height,
-    // BufferedImage.TYPE_INT_ARGB);
-    // }
-    // zBuffer = new double[image.getWidth() * image.getHeight()];
-    // Arrays.fill(zBuffer, Double.NEGATIVE_INFINITY);
-
-    // idBuffer = new String[image.getWidth() * image.getHeight()];
-    // Arrays.fill(idBuffer, null);
-
-    // Graphics2D g2 = (Graphics2D) image.createGraphics();
-
-    // g2.setRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING,
-    // RenderingHints.VALUE_ANTIALIAS_ON));
-
-    // g2.setComposite(AlphaComposite.SrcOver);
-
-    // // g2.setColor(java.awt.Color.WHITE);
-    // // g2.fillRect(0, 0, image.getWidth(), image.getHeight());
-
-    // Color skyColorTransparent = new Color(116, 147, 170, 255);
-    // Color skyColorOpaque = new Color(49, 73, 111, 255);
-    // Paint skyColor = new GradientPaint(180.0f, 0.0f, skyColorTransparent,
-    // image.getWidth(), image.getHeight(), skyColorOpaque, true);
-    // g2.setPaint(skyColor);
-    // g2.fillRect(0, 0, (int) panelDimension.getWidth(), (int)
-    // panelDimension.getHeight());
-
-    // Matrix transform =
-    // this.scene.getCamera().perspectiveMatrix.multiply(scene.getCamera().transform());
-
-    // // potential inverse transform matrix
-    // // [ux uy uz -dot(u,t)]
-    // // [vx vy vz -dot(v,t)]
-    // // [wx wy wz -dot(w,t)]
-    // // [ 0 0 0 1 ]
-    // // Vector3D modifiedLightPos =
-    // // scene.getLight().getPosition().multiply(transform);
-    // // Vector3D modifiedLightPos = scene.getLight().getPosition();
-
-    // if (scene.getConfiguration().getShowGridXY()) {
-    // this.drawGridXY(g2, transform);
-    // }
-
-    // if (scene.getConfiguration().getShowGridXZ()) {
-    // this.drawGridXZ(g2, transform);
-    // }
-
-    // if (scene.getConfiguration().getShowGridYZ()) {
-    // this.drawGridYZ(g2, transform);
-    // }
-    // if (scene.getConfiguration().getShowAxis()) {
-    // this.drawAxes(g2, transform);
-    // }
-
-    // for (TriangleMeshGroup group : scene.getMeshes()) {
-    // if (!group.getVisible())
-    // continue;
-
-    // for (TriangleMesh obj : group.getMeshes()) {
-    // for (Triangle triangle : obj.getTriangles()) {
-
-    // Vector3D[] vertices = triangle.getVertices();
-
-    // Vector3D vertex1 = vertices[0];// new
-    // Vector3D(vertices[0]).multiply(_transform);
-    // Vector3D vertex2 = vertices[1];// new
-    // Vector3D(vertices[1]).multiply(_transform);
-    // Vector3D vertex3 = vertices[2];// new
-    // Vector3D(vertices[2]).multiply(_transform);
-
-    // vertex1 = vertex1.multiply(transform);
-    // vertex2 = vertex2.multiply(transform);
-    // vertex3 = vertex3.multiply(transform);
-
-    // // vertex1 = vertex1.multiply(scene.getCamera().getPerspectiveMatrix());
-    // // vertex2 = vertex2.multiply(scene.getCamera().getPerspectiveMatrix());
-    // // vertex3 = vertex3.multiply(scene.getCamera().getPerspectiveMatrix());
-
-    // // Apply perspective projection
-    // // vertex1.x /= vertex1.w;
-    // // vertex1.y /= vertex1.w;
-    // // vertex1.z /= vertex1.w;
-
-    // // vertex2.x /= vertex2.w;
-    // // vertex2.y /= vertex2.w;
-    // // vertex2.z /= vertex2.w;
-
-    // // vertex3.x /= vertex3.w;
-    // // vertex3.y /= vertex3.w;
-    // // vertex3.z /= vertex3.w;
-
-    // int minX = (int) Math.max(0,
-    // Math.ceil(Math.min(vertex1.x, Math.min(vertex2.x, vertex3.x))));
-    // int maxX = (int) Math.min(image.getWidth() - 1,
-    // Math.floor(Math.max(vertex1.x,
-    // Math.max(vertex2.x, vertex3.x))));
-    // int minY = (int) Math.max(0,
-    // Math.ceil(Math.min(vertex1.y, Math.min(vertex2.y, vertex3.y))));
-    // int maxY = (int) Math.min(image.getHeight() - 1,
-    // Math.floor(Math.max(vertex1.y,
-    // Math.max(vertex2.y, vertex3.y))));
-
-    // double triangleArea = (vertex1.y - vertex3.y) * (vertex2.x - vertex3.x)
-    // + (vertex2.y - vertex3.y) * (vertex3.x - vertex1.x);
-
-    // Vector3D norm = triangle.getNormal().normalize();
-
-    // // transformedTriangles.add(new Triangle(vertex1, vertex2, vertex3));
-
-    // for (int y = minY; y <= maxY; y++) {
-    // for (int x = minX; x <= maxX; x++) {
-
-    // double b1 = ((y - vertex3.y) * (vertex2.x - vertex3.x)
-    // + (vertex2.y - vertex3.y) * (vertex3.x - x))
-    // / triangleArea;
-    // double b2 = ((y - vertex1.y) * (vertex3.x - vertex1.x)
-    // + (vertex3.y - vertex1.y) * (vertex1.x - x))
-    // / triangleArea;
-    // double b3 = ((y - vertex2.y) * (vertex1.x - vertex2.x)
-    // + (vertex1.y - vertex2.y) * (vertex2.x - x))
-    // / triangleArea;
-
-    // boolean isInside = b1 >= 0 && b1 <= 1 && b2 >= 0 && b2 <= 1
-    // && b3 >= 0
-    // && b3 < 1;
-
-    // if (isInside) {
-    // double depth = b1 * (vertex1.z
-    // - scene.getCamera().getPosition().z)
-    // + b2 * (vertex2.z - scene.getCamera()
-    // .getPosition().z)
-    // + b3 * (vertex3.z - scene.getCamera()
-    // .getPosition().z);
-    // int zIndex = y * image.getWidth() + x;
-
-    // if (zBuffer[zIndex] < depth) {
-    // zBuffer[zIndex] = depth;
-    // idBuffer[zIndex] = group.getIdentifier();
-
-    // Color finalColor = lightModel.calculateColor(obj.getMaterial(),
-    // scene.getCamera(),
-    // norm, new Vector3D(x, y, depth), scene.getLight());
-    // // image.setRGB(x, y, finalColor.getRGB());
-    // g2.setColor(finalColor); // g2.setColor(new Color(finalColor.getRed(),
-    // // finalColor.getGreen(), finalColor.getBlue(), 50));
-    // g2.fillRect(x, y, 1, 1);
-    // }
-    // }
-    // }
-    // }
-    // }
-    // }
-    // }
-
-    // this.drawInvalidMeshBounding(g2);
-    // this.drawSelectedMeshBounding(g2);
-
-    // // g2.dispose();
-
-    // return image;
-    // }
-
     public BufferedImage getImage() {
         return image;
     }
@@ -626,16 +407,6 @@ public class Rasterizer {
 
     private void drawSelectedMeshBounding(Graphics2D g2) {
         int stroke = 1; // (int) Math.floor(1 * scene.getCamera().getScale());
-
-        /*float[] colorComp = scene.getConfiguration().getSelectionColor().getColorComponents(null); // yes this null is the correct way to do it
-        double a = 0.25, b = 10, k=0.5; // sin wave params
-        double brightness = a*Math.sin(b*new Date().getTime())+a;
-        System.out.println(brightness);
-        for (int i = 0; i < colorComp.length; i++) {
-            colorComp[i] *= brightness;
-        }
-
-        g2.setColor(new Color(colorComp[0],colorComp[1],colorComp[2]));*/
         g2.setColor(scene.getConfiguration().getSelectionColor());
 
         if (stroke >= image.getWidth() && stroke >= image.getHeight()) {
@@ -836,25 +607,17 @@ public class Rasterizer {
         Vector3D xAxis1 = new Vector3D(-axisLength, 0, 0);
         Vector3D xAxis2 = new Vector3D(axisLength, 0, 0);
 
-        // Vector3D yAxis1 = new Vector3D(0, -axisLength, 0);
-        // Vector3D yAxis2 = new Vector3D(0, axisLength, 0);
-
         Vector3D zAxis1 = new Vector3D(0, 0, -axisLength);
         Vector3D zAxis2 = new Vector3D(0, 0, axisLength);
 
         // Transform axis
         xAxis1 = xAxis1.multiply(transform);
         xAxis2 = xAxis2.multiply(transform);
-        // yAxis1 = yAxis1.multiply(transform);
-        // yAxis2 = yAxis2.multiply(transform);
         zAxis1 = zAxis1.multiply(transform);
         zAxis2 = zAxis2.multiply(transform);
 
         g2.setColor(Color.RED);
         g2.drawLine((int) xAxis1.x, (int) xAxis1.y, (int) xAxis2.x, (int) xAxis2.y);
-
-        // g2.setColor(Color.GREEN);
-        // g2.drawLine((int) yAxis1.x, (int) yAxis1.y, (int) yAxis2.x, (int) yAxis2.y);
 
         g2.setColor(Color.BLUE);
         g2.drawLine((int) zAxis1.x, (int) zAxis1.y, (int) zAxis2.x, (int) zAxis2.y);

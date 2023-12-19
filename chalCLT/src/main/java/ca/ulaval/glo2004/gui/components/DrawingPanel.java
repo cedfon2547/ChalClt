@@ -781,6 +781,7 @@ public class DrawingPanel extends javax.swing.JPanel {
 
         preferencesUtilisateurDTO2.afficherVoisinSelection = toggleVoisinSwitch.isSelected();
         mainWindow.getControleur().setPreferencesUtilisateur(preferencesUtilisateurDTO2);
+        afficheur.rechargerAffichage();
     }
 
     public void updateToolbarBtns() {
