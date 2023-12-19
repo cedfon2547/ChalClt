@@ -4,8 +4,6 @@ import ca.ulaval.glo2004.domaine.Chalet;
 import ca.ulaval.glo2004.gui.MainWindow;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
 
 
 public class ExportationDirectoryFileChoose extends javax.swing.JFrame {
