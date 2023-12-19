@@ -242,21 +242,6 @@ public class Mur implements Serializable {
     }
 
     /**
-     * Convertit un objet de transfert de données (DTO) en un mur.
-     *
-     * @param dto Le DTO à partir duquel créer le mur.
-     * @return Le mur correspondant au DTO.
-     */
-    // public static Mur fromDTO(MurDTO dto) {
-    // List<Accessoire> accessoires = new ArrayList<Accessoire>();
-    // for (Accessoire.AccessoireDTO accessoireDTO : dto.accessoires) {
-    // accessoires.add(Accessoire.fromDTO(accessoireDTO));
-    // }
-
-    // return new Mur(dto.type, dto.hauteur, dto.largeur, accessoires);
-    // }
-
-    /**
      * Ajoute un accessoire
      *
      * @return
@@ -285,12 +270,25 @@ public class Mur implements Serializable {
         this.verifierValiditeAccessoire(accessoire, chalet.getMargeAccessoire(), chalet.getEpaisseurMur());
         return accessoire;
     }
-
+    /**
+     * Permet d'ajouter un accessoire au mur
+     *
+     * @param p_type type du mur
+     * @param p_position position de l'accessoire
+     * @param p_dimension dimension de l'accesoire
+     * @return l'accessoire en question
+     */
     public Accessoire ajouterAccessoire(TypeAccessoire p_type, double[] p_position, double[] p_dimension) {
         Accessoire accessoire = new Accessoire(p_type, this.type, p_position, p_dimension, true);
         return ajouterAccessoire(accessoire);
     }
 
+    /**
+     * Permet de modifier un accessoire au mur
+     *
+     * @param accessoireDTO le DTO de l'accessoire qu'on veut modifier
+     * @return l'accessoire en question
+     */
     public Accessoire updateAccessoire(Accessoire.AccessoireDTO accessoireDTO) {
         Accessoire accessoire = this.getAccessoire(accessoireDTO.accessoireId);
         accessoire.updateAccessoire(accessoireDTO);
@@ -415,10 +413,7 @@ public class Mur implements Serializable {
 
         return murLessMarginRect.contains(accRect);
 
-        // return (p_position[0] - margeMinimal < 0 && p_dimension[0] + p_position[0] +
-        // margeMinimal > this.getLargeur())
-        // && (p_position[1] - margeMinimal < 0
-        // && p_dimension[1] + p_position[1] + margeMinimal > this.getHauteur());
+
     }
 
     public boolean verifierMargeAcc(Accessoire accessoire, double margeMinimal) {
@@ -435,6 +430,14 @@ public class Mur implements Serializable {
                 new double[] { this.chalet.getLargeur(), this.chalet.getHauteur() });
     }
 
+    /**
+     * Permet de verifier la validite d'un accessoire
+     *
+     * @param accessoire accessoire qu'on veut vérifier
+     * @param margeMinimal
+     * @param epaisseurMur epaisseur des murs
+     * @return le boolean de la verification
+     */
     public boolean verifierValiditeAccessoire(Accessoire accessoire, double margeMinimal,
             double epaisseurMur) {
         double largeur = this.type == TypeMur.Facade || this.type == TypeMur.Arriere ? this.chalet.getLargeur()
@@ -461,15 +464,7 @@ public class Mur implements Serializable {
         double[] margins = Accessoire.getMarginWithRect(accessoire.toDTO(), new double[] { 0, 0 },
                 new double[] { largeur, this.chalet.getHauteur() });
 
-        // if (accessoire.getAccessoireType() == TypeAccessoire.Porte) {
-        // // Bottom margin is always 0 for a door
-        // // Only need to check left, top and right margins
-        // if (margins[0] < margeMinimal + epaisseurMur || margins[2] < margeMinimal +
-        // epaisseurMur
-        // || margins[1] < margeMinimal) {
-        // return false; // Invalide
-        // }
-        // Condition pour exterieur du mur a retouche au besion
+
         if (margins[0] > largeur - epaisseurMur - accessoire.getDimension()[0]) {
             return false;
         }
@@ -490,6 +485,12 @@ public class Mur implements Serializable {
         return true;
     }
 
+    /**
+     * update la validite de l'accessoire
+     *
+     * @param margeMinimal typpe du mur
+     * @param epaisseurMur type du mur
+     */
     public void updateValiditeAccessoires(double margeMinimal, double epaisseurMur) {
         for (Accessoire accessoire : accessoires) {
             accessoire.setValide(verifierValiditeAccessoire(accessoire, margeMinimal, epaisseurMur));

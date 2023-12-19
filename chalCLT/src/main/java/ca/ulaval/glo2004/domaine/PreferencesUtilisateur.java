@@ -25,6 +25,9 @@ public class PreferencesUtilisateur implements Serializable {
         this.afficherPlancher = preferencesUtilisateurDTO.afficherPlancher;
     }
 
+    /**
+     * Getter et setter
+     */
     public boolean getAfficherPlancher(){return afficherPlancher;}
 
     public void setAfficherPlancher(boolean afficherPlancher) {
