@@ -14,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
@@ -36,7 +37,7 @@ class AppSplashScreen extends JFrame {
 
         JLabel splashScreenimgLabel = new JLabel();
         JLabel spashScreenTitleLabel = new JLabel("ChalCLT");
-        
+
         splashScreenimgLabel.setHorizontalAlignment(JLabel.CENTER);
         splashScreenimgLabel.setVerticalAlignment(JLabel.CENTER);
 
@@ -44,7 +45,7 @@ class AppSplashScreen extends JFrame {
         spashScreenTitleLabel.setVerticalAlignment(JLabel.BOTTOM);
         spashScreenTitleLabel.setForeground(java.awt.Color.WHITE);
         spashScreenTitleLabel.setFont(new java.awt.Font("Serif Bold", java.awt.Font.BOLD, 50));
-        
+
         splashScreenimgLabel.setIcon(appIcon);
         splashScreenPanel.add(splashScreenimgLabel, BorderLayout.CENTER);
         splashScreenPanel.add(spashScreenTitleLabel, BorderLayout.SOUTH);
@@ -68,38 +69,34 @@ public class App {
         FlatMacDarkLaf.setup();
         Controleur controleur = Controleur.getInstance();
 
-
-        MainWindow mainWindow = new MainWindow(controleur);
-
         // If we want to display the splash screen for a certain amount of time
 
         AppSplashScreen splashScreen = new AppSplashScreen();
-        try {
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
-        splashScreen.dispose();
+        SwingUtilities.invokeLater(() -> {
+            MainWindow mainWindow = new MainWindow(controleur);
 
-        String appImgPath = "/icons/dark/chalclt_logo.png";
-        URL appImgURL = App.class.getResource(appImgPath);
-        Image appImg = Toolkit.getDefaultToolkit().getImage(appImgURL).getScaledInstance(300, 300, Image.SCALE_SMOOTH);
-        ImageIcon appIcon = new ImageIcon(appImg);
+            String appImgPath = "/icons/dark/chalclt_logo.png";
+            URL appImgURL = App.class.getResource(appImgPath);
+            Image appImg = Toolkit.getDefaultToolkit().getImage(appImgURL).getScaledInstance(300, 300,
+                    Image.SCALE_SMOOTH);
+            ImageIcon appIcon = new ImageIcon(appImg);
 
-        mainWindow.setIconImage(appIcon.getImage());
-        // get screen size
-        // java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+            mainWindow.setIconImage(appIcon.getImage());
 
+            mainWindow.setSize(800, 800);
+            mainWindow.setLocationByPlatform(true);
+            mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        mainWindow.setSize(800, 800);
-        mainWindow.setLocationByPlatform(true);
-        // mainWindow.pack();
-        // mainWindow.setLocationRelativeTo(null);
-        // mainWindow.setLocation(new Point((int) (screenSize.getWidth() / 2 - 500), (int) (screenSize.getHeight() / 2 - 500)));
+            // If needed to simulate waiting time.
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-        // JFrame configuration
-        mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainWindow.setVisible(true);
+            splashScreen.dispose();
+            mainWindow.setVisible(true);
+        });
     }
 }

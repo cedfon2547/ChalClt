@@ -379,7 +379,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                 });
 
                 if (isRoofOrWall) {
-                    System.out.println("Only Wall Selected");
+                    // System.out.println("Only Wall Selected");
                     mainWindow.clearAccessoiresSelectionnees();
                     mainWindow.showChaletTable();
                     return;
