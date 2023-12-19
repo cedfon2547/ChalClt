@@ -1575,25 +1575,25 @@ public class Afficheur {
         STLTools.writeSTL(stl_rainure2_Droit, directoryPath + facadeRetraitsFileDroit2);
 
         
-        String rallongeVerticaleRetraitFilename = String.format("\\%s_Retrait_R.stl", nomChalet);
-        List<STLTools.Triangle> rallongeVertRetraitTriangles = PanelHelper
-                .convertMeshTrianglesToStlTriangles(rallongeVerticaleToitRetrait.getMesh(0).getTriangles());
-        STLTools.writeSTL(rallongeVertRetraitTriangles, directoryPath + rallongeVerticaleRetraitFilename);
-
-
+        // Not really implement....
         String panneauToitRetraitFilename = String.format("\\%s_Retrait_T.stl", nomChalet);
         List<STLTools.Triangle> panneauToitRetraitStlTriangles = PanelHelper
                 .convertMeshTrianglesToStlTriangles(panneauToit.getMesh(0).getTriangles());
         STLTools.writeSTL(panneauToitRetraitStlTriangles, directoryPath + panneauToitRetraitFilename);
 
+        String rallongeVerticaleRetraitFilename = String.format("\\%s_Retrait_R.stl", nomChalet);
+        List<STLTools.Triangle> rallongeVertRetraitTriangles = PanelHelper
+                .convertMeshTrianglesToStlTriangles(rallongeVerticaleToitRetrait.getMesh(0).getTriangles());
+        STLTools.writeSTL(rallongeVertRetraitTriangles, directoryPath + rallongeVerticaleRetraitFilename);
+
         String panneauPignonDroitFilename = String.format("\\%s_Retrait_PD.stl", nomChalet);
         List<STLTools.Triangle> panneauPignonDroitStlTriangles = PanelHelper
-                .convertMeshTrianglesToStlTriangles(pignonDroitToitRetrait.getTriangles());
+                .convertMeshTrianglesToStlTriangles(pignonDroitToitRetrait.getMesh(0).getTriangles());
         STLTools.writeSTL(panneauPignonDroitStlTriangles, directoryPath + panneauPignonDroitFilename);
 
         String panneauPignonGaucheFilename = String.format("\\%s_Retrait_PG.stl", nomChalet);
         List<STLTools.Triangle> panneauPignonGaucheStlTriangles = PanelHelper
-                .convertMeshTrianglesToStlTriangles(pignonGaucheToitRetrait.getTriangles());
+                .convertMeshTrianglesToStlTriangles(pignonGaucheToitRetrait.getMesh(0).getTriangles());
         STLTools.writeSTL(panneauPignonGaucheStlTriangles, directoryPath + panneauPignonGaucheFilename);
     }
 
