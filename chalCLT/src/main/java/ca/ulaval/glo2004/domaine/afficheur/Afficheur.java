@@ -220,6 +220,12 @@ public class Afficheur {
                 pignonDroitToit.ID = "pignonDroitToit";
                 pignonGaucheToit.ID = "pignonGaucheToit";
 
+                // Set visible by default since the initial view is from the top
+                panneauToit.setVisible(false);
+                rallongeVerticaleToit.setVisible(false);
+                pignonDroitToit.setVisible(false);
+                pignonGaucheToit.setVisible(false);
+
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
                 getScene().addMesh(pignonDroitToit);
@@ -262,6 +268,12 @@ public class Afficheur {
                 rallongeVerticaleToit.ID = "rallongeVerticaleToit";
                 pignonDroitToit.ID = "pignonDroitToit";
                 pignonGaucheToit.ID = "pignonGaucheToit";
+
+                // Set visible by default since the initial view is from the top
+                panneauToit.setVisible(false);
+                rallongeVerticaleToit.setVisible(false);
+                pignonDroitToit.setVisible(false);
+                pignonGaucheToit.setVisible(false);
 
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
@@ -306,6 +318,12 @@ public class Afficheur {
                 pignonDroitToit.ID = "pignonDroitToit";
                 pignonGaucheToit.ID = "pignonGaucheToit";
 
+                // Set visible by default since the initial view is from the top
+                panneauToit.setVisible(false);
+                rallongeVerticaleToit.setVisible(false);
+                pignonDroitToit.setVisible(false);
+                pignonGaucheToit.setVisible(false);
+
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
                 getScene().addMesh(pignonDroitToit);
@@ -348,6 +366,12 @@ public class Afficheur {
                 rallongeVerticaleToit.ID = "rallongeVerticaleToit";
                 pignonDroitToit.ID = "pignonDroitToit";
                 pignonGaucheToit.ID = "pignonGaucheToit";
+
+                // Set visible by default since the initial view is from the top
+                panneauToit.setVisible(false);
+                rallongeVerticaleToit.setVisible(false);
+                pignonDroitToit.setVisible(false);
+                pignonGaucheToit.setVisible(false);
 
                 getScene().addMesh(panneauToit);
                 getScene().addMesh(rallongeVerticaleToit);
