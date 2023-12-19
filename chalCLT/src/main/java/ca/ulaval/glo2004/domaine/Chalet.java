@@ -39,6 +39,7 @@ public class Chalet implements Serializable {
         this.margeSupplementaireRetrait = margeSupplementaireRetrait;
     }
 
+
     public Chalet(ChaletDTO dto) {
         this(dto.nom, dto.hauteur, dto.largeur, dto.longueur, dto.epaisseurMur, dto.sensToit, dto.angleToit, dto.margeAccessoire, dto.margeSupplementaireRetrait);
     }
@@ -66,6 +67,9 @@ public class Chalet implements Serializable {
         }
     }
 
+    /**
+     * Setter et Accesseur
+     */
     public Mur getMur(TypeMur type) {
         for (Mur mur : murs) {
             if (mur.getType() == type) {
@@ -276,6 +280,16 @@ public class Chalet implements Serializable {
         return accessoireDTOs;
     }
 
+
+    /**
+     * Permet d'ajouter un accessoire au chalet
+     *
+     * @param typeMur typpe du mur
+     * @param typeAccessoire type du mur
+     * @param position position de l'accessoire
+     * @param dimension dimension de l'accesoire
+     * @return l'accessoire en question
+     */
     public Accessoire ajouterAccessoire(TypeMur typeMur, TypeAccessoire typeAccessoire, double[] position, double[] dimension) {
         Accessoire accessoire = new Accessoire(typeAccessoire, typeMur, position, dimension, true);
         accessoire.setAccessoireNom(typeAccessoire.toString());
@@ -292,6 +306,12 @@ public class Chalet implements Serializable {
         return accessoire;
     }
 
+    /**
+     * Permet de modifier un accessoire
+     *
+     * @param accessoireDTO le DTO de l'accessoire qu'on veut modifier
+     * @return l'accessoire en question
+     */
     public Accessoire updateAccessoire(Accessoire.AccessoireDTO accessoireDTO) {
         Mur mur = getMur(accessoireDTO.typeMur);
         Accessoire accessoire = mur.updateAccessoire(accessoireDTO);
@@ -300,6 +320,13 @@ public class Chalet implements Serializable {
         return accessoire;
     }
 
+    /**
+     * Permet de retirer un accessoire au chalet
+     *
+     * @param typeMur typpe du mur
+     * @param uuid uuid de l'accessoire
+     * @return l'accessoire qui a été retiré
+     */
     public Accessoire retirerAccessoire(TypeMur typeMur, UUID uuid) {
         Mur mur = getMur(typeMur);
         Accessoire accessoire = mur.retirerAccessoire(uuid);
@@ -370,7 +397,6 @@ public class Chalet implements Serializable {
         public double margeAccessoire;
         public double margeSupplementaireRetrait;
         public Mur.MurDTO[] murs;
-        // public Toit.ToitDTO toit; TODO: a completer
 
         public ChaletCompletDTO(Chalet chalet) {
             this.nom = chalet.nom;
@@ -386,7 +412,6 @@ public class Chalet implements Serializable {
             for (int i = 0; i < chalet.murs.length; i++) {
                 this.murs[i] = chalet.murs[i].toDTO();
             }
-            // this.toit = chalet.toit.toDTO();
         }
         
         public void writeObject(ObjectOutputStream oos) {
@@ -420,7 +445,6 @@ public class Chalet implements Serializable {
                 oos.writeObject(margeSupplementaireRetrait);
             }
             catch (IOException e) {
-                // jsp
             }
         }
         
@@ -453,7 +477,6 @@ public class Chalet implements Serializable {
                 margeSupplementaireRetrait = (double) ois.readObject();
             }
             catch (IOException | ClassNotFoundException e) {
-                // jsp
             }
         }
     }
@@ -461,7 +484,7 @@ public class Chalet implements Serializable {
     public static Chalet fromDTO(ChaletDTO dto) {
         return new Chalet(dto);
     }
-    
+
     public static Chalet fromDTO(ChaletCompletDTO dto) {
         return new Chalet(dto);
     }

@@ -36,6 +36,9 @@ public class UndoRedoManager {
     private Stack<ProjetState> undoStack = new Stack<>();
     private Stack<ProjetState> redoStack = new Stack<>();
 
+    /**
+     * Getter et Setter
+     */
     public int getUndoStackSize() {
         return undoStack.size();
     }
@@ -49,6 +52,11 @@ public class UndoRedoManager {
         redoStack.clear();
     }
 
+    /**
+     * Permet de undo un changement
+     *
+     * @param projet le projet
+     */
     public void undo(ChalCLTProjet projet) {
         if (undoStack.isEmpty()) {
             return;
@@ -59,6 +67,11 @@ public class UndoRedoManager {
         applyChange(projet, sauvegardeDTO);
     }
 
+    /**
+     * Permet de redo un changement qui a préalablement été undo
+     *
+     * @param projet le projet
+     */
     public void redo(ChalCLTProjet projet) {
         if (redoStack.isEmpty()) {
             return;
@@ -74,12 +87,6 @@ public class UndoRedoManager {
         projet.setPreferencesUtilisateur(new PreferencesUtilisateur(sauvegardeDTO.getPreferencesUtilisateur()));
 
         Chalet newChalet = new Chalet(sauvegardeDTO.getChalet());
-        // for (Mur.MurDTO murDTO: sauvegardeDTO.getChalet().murs) {
-        //     Mur mur = newChalet.getMur(murDTO.type);
-        //     for (Accessoire.AccessoireDTO accessoireDTO: murDTO.accessoires) {
-        //         mur.ajouterAccessoire(new Accessoire(accessoireDTO));
-        //     }
-        // }
         
         projet.setChalet(newChalet);
     }

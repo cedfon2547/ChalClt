@@ -408,20 +408,14 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     }
 
     private void exporterBrutItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // exporterItemActionPerformed(evt);
-        // System.out.println("Exporter Bruts");
         new ExportationDirectoryFileChoose(mainWindow, (path) -> {
-            // System.out.println("Path: " + path);
             mainWindow.drawingPanel.afficheur.exportSTL(path, PanelHelper.OutputType.Brut);
             return true;
         });
     }
 
     private void exporterFiniItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // exporterItemActionPerformed(evt);
-        // System.out.println("Exporter Fini");
         new ExportationDirectoryFileChoose(mainWindow, (path) -> {
-            // System.out.println("Path: " + path);
             mainWindow.drawingPanel.afficheur.exportSTL(path, PanelHelper.OutputType.Fini);
             return true;
         });
@@ -429,10 +423,7 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     }
 
     private void exporterRetraitsItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // exporterItemActionPerformed(evt);
-        // System.out.println("Exporter Retraits");
         new ExportationDirectoryFileChoose(mainWindow, (path) -> {
-            // System.out.println("Path: " + path);
             mainWindow.drawingPanel.afficheur.exportSTL(path, PanelHelper.OutputType.Retraits);
             return true;
         });
@@ -468,25 +459,21 @@ public class MainWindowTopBarMenu extends javax.swing.JMenuBar {
     }
 
     private void afficherMursVoisinsItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
     }
 
     private void annulerItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // System.out.println("UNDO");
         mainWindow.getControleur().undo();
         mainWindow.recharger();
         mainWindow.drawingPanel.afficheur.rechargerAffichage();
     }
 
     private void retablirItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // System.out.println("REDO");
         mainWindow.getControleur().redo();
         mainWindow.recharger();
         mainWindow.drawingPanel.afficheur.rechargerAffichage();
     }
 
     public void activerVue(TypeDeVue vue) {
-        // System.out.println("activerVue");
         // adhering to DRY, one switch at a time
         vueHautItem.setSelected(false);
         vueFacadeItem.setSelected(false);

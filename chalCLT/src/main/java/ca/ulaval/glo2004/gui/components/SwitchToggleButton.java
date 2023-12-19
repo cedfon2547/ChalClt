@@ -95,7 +95,6 @@ public class SwitchToggleButton extends Component {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
-        // runEvent();
     }
 
     @Override
