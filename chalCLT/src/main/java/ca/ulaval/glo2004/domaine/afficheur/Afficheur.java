@@ -1081,10 +1081,12 @@ public class Afficheur {
         getScene().addMesh(murDroitGroup);
         getScene().addMesh(murGaucheGroup);
 
-        getScene().getMeshes().addAll(murFacadeGroup.getAccessoiresMeshes());
-        getScene().getMeshes().addAll(murArriereGroup.getAccessoiresMeshes());
-        getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
-        getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
+        if (!controleur.getPreferencesUtilisateur().afficherVoisinSelection) {
+            getScene().getMeshes().addAll(murFacadeGroup.getAccessoiresMeshes());
+            getScene().getMeshes().addAll(murArriereGroup.getAccessoiresMeshes());
+            getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
+            getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
+        }
 
         // don't show roof when looking from the top
         // if (this.scene.getCamera().getDirection().x != -Math.PI / 2)
@@ -1188,10 +1190,17 @@ public class Afficheur {
         getScene().addMesh(murDroitGroup);
         getScene().addMesh(murGaucheGroup);
 
-        getScene().getMeshes().addAll(murFacadeGroup.getAccessoiresMeshes());
-        getScene().getMeshes().addAll(murArriereGroup.getAccessoiresMeshes());
-        getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
-        getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
+        // getScene().getMeshes().addAll(murFacadeGroup.getAccessoiresMeshes());
+        // getScene().getMeshes().addAll(murArriereGroup.getAccessoiresMeshes());
+        // getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
+        // getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
+
+        if (!controleur.getPreferencesUtilisateur().afficherVoisinSelection) {
+            getScene().getMeshes().addAll(murFacadeGroup.getAccessoiresMeshes());
+            getScene().getMeshes().addAll(murArriereGroup.getAccessoiresMeshes());
+            getScene().getMeshes().addAll(murDroitGroup.getAccessoiresMeshes());
+            getScene().getMeshes().addAll(murGaucheGroup.getAccessoiresMeshes());
+        }
 
         murFacadeGroup.update(chaletDTO);
         murArriereGroup.update(chaletDTO);

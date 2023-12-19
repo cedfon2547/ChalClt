@@ -830,6 +830,20 @@ public class PanelHelper {
                         break;
                 }
 
+                TriangleMesh prev = prevMeshes.stream().filter(m -> m.ID.equals(_mesh.ID)).findFirst().orElse(null);
+
+                if (prev != null) {
+                    accMesh.setSelectable(prev.getSelectable());
+                    accMesh.setDraggable(prev.getDraggable());
+                    accMesh.setDraggableX(prev.getDraggableX());
+                    accMesh.setDraggableY(prev.getDraggableY());
+                    accMesh.setDraggableZ(prev.getDraggableZ());
+                    accMesh.setIsDragged(prev.getIsDragged());
+                    accMesh.setSelected(prev.getSelected());
+                    accMesh.setVisible(prev.getVisible());
+                    accMesh.setHidden(prev.getHidden());
+                }
+
                 accMesh = accMesh.translate(new Vector3D(0, -chaletDTO.hauteur / 2, 0));
                 this.meshAccessoires.add(accMesh);
             }
