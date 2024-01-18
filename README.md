@@ -21,13 +21,39 @@ Mise en contexte
 > [Plus d'information](2023A_Projet_session.pdf)
 
 ## Contribution
+> Je considère qu'il est important de noter que je n'avais jamais utilisé Java et encore moins Swing avant ce projet.
+
+- Implémentation de l'environnement en 3D (from scratch!! Interdiction d'utiliser des dépendances comme JavaFX)
+  - Implémentation de la structure des objets (mesh), camera, material, etc...
+  - Transformation & Changement de système de coordonées
+  - Rastérization
+  - Projection
+  - Source lumineuse
+- Structure du modèle du domaine
+- Construction des objets 3D et leurs manipulation
+- Construction des STL, exportation & importation
+  - Il faut noter que le moteur 3D à été développer de facon à être le plus générique possible et supporte tout type de structure 3D. Seulement, cela n'a pas été ajouter comme fonctionnalité puisque ce n'était pas dans les objectifs.
+- Puis bin du stock en lien avec pas mal toute le reste
+  > Voir commits au besoin
 
 ## Résultats
+Bin satisfait. nous étions la seule équipe à avoir présentée une interface graphique en 3 dimensions. L'application a été sélectionner pour le concours, mais n'a malheureusement pas gagné.
 
-## Compétences
+## Compétences mise en pratique ou acquises
+- Les bases de Java, ses concepts & son environnement de programmation 
+- Beaucoup trop de mathématique relié au rendu en 3D 🥲
+- Utilisation de Swing 😅
+- Structuration d'un projet selon le principe du controleur unique de Larmann (pu certain du nom, mais c'était ce qui était demandé)
+- Travail en équipe & communication (pas toujours facile...)
+- Design pattern
+- Puis bin d'autre chose que j'oubli forcément
 
+Finalement, il s'agit d'un projet qui a été en général agréable à réaliser. L'interface graphique en 3 dimensions à été un bon défi à relevé et je suis plutôt satisfait du résulat même si cela est loin d'être parfait, il s'agit de ma première expérience avec le graphisme 3D, ainsi que son fonctionnement.
 
+Le code n'a jamais été retouché depuis la remise finale. Aucune refactorisation n'a été faite et il aurait aussi été préférable de mieux commenter le projet en lien avec son fonctionnement (surtout le moteur de rendu 3D).
 
+---
+# Résultat final
 <img src="images/ui_1.png"></img>
 <img src="images/ui_2.png"></img>
 <img src="images/ui_3.png"></img>
